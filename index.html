@@ -21,16 +21,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; scroll-behavior: smooth; }
         body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
 
-        /* 1. TOP OFFER BANNER */
+        /* TOP OFFER BANNER */
         .top-banner {
             background: linear-gradient(to right, var(--gold), #f3e5ab, var(--gold));
-            color: #000;
-            text-align: center;
-            padding: 8px 15px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 1001;
-            position: relative;
+            color: #000; text-align: center; padding: 8px 15px;
+            font-size: 14px; font-weight: 600; z-index: 1001; position: relative;
         }
         .top-banner span { background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; margin-left: 5px; }
 
@@ -68,9 +63,10 @@
         .hero-content p { font-size: 16px; color: var(--text-muted); margin-bottom: 30px; line-height: 1.6; }
 
         .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-        .btn { padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn { padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
         .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
-        .btn-call { background: var(--bg-card); color: var(--brand-light-blue); border: 1px solid rgba(0, 191, 255, 0.3); backdrop-filter: blur(10px); }
+        .btn-call { background: var(--bg-card); color: var(--brand-light-blue); border: 1px solid rgba(0, 191, 255, 0.3); }
+        .btn-location { background: var(--bg-card); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.3); }
         .btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
 
         .hero-images-container { position: relative; width: 100%; max-width: 420px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; align-items: center; }
@@ -85,7 +81,7 @@
         .section-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
         .section-header p { color: var(--text-muted); font-size: 15px; }
 
-        /* 2. PRICING SECTION */
+        /* PRICING SECTION */
         .pricing { padding: 60px 5%; background: rgba(255,255,255,0.02); }
         .price-menu { max-width: 700px; margin: 0 auto; background: var(--bg-card); border-radius: 20px; padding: 30px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .price-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
@@ -93,12 +89,14 @@
         .price-name { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
         .price-tag { font-size: 18px; font-weight: 700; color: var(--brand-light-blue); }
 
-        /* 3. BEFORE & AFTER SECTION */
+        /* BEFORE & AFTER SECTION (COMPACT FIX) */
         .before-after { padding: 60px 5%; }
-        .ba-container { display: flex; gap: 20px; max-width: 800px; margin: 0 auto; }
-        .ba-box { flex: 1; position: relative; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); aspect-ratio: 4/3; }
+        .ba-container { display: flex; flex-direction: row; gap: 15px; max-width: 600px; margin: 0 auto; }
+        .ba-box { flex: 1; position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); aspect-ratio: 4/4; }
         .ba-box img { width: 100%; height: 100%; object-fit: cover; }
-        .ba-label { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .ba-label { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+        
+        .direction-wrapper { text-align: center; margin-top: 35px; }
 
         /* SERVICES GRID */
         .services { padding: 60px 5%; }
@@ -109,7 +107,7 @@
         .service-card h3 { font-size: 20px; margin-bottom: 8px; }
         .service-card p { color: var(--text-muted); line-height: 1.5; font-size: 14px; }
 
-        /* 4. CUSTOMER REVIEWS */
+        /* CUSTOMER REVIEWS */
         .reviews { padding: 60px 5%; background: rgba(255,255,255,0.02); }
         .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .review-card { background: var(--bg-card); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
@@ -126,15 +124,11 @@
         .footer-contact i { color: var(--brand-light-blue); }
         .footer-bottom { text-align: center; color: #475569; font-size: 13px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
 
-        /* 5. FLOATING WHATSAPP BUBBLE */
+        /* FLOATING WHATSAPP BUBBLE */
         .floating-wa {
-            position: fixed; bottom: 30px; right: 30px;
-            background: #25D366; color: white;
-            width: 60px; height: 60px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 35px; box-shadow: 0 4px 15px rgba(37,211,102,0.4);
-            z-index: 9999; animation: pulse 2s infinite; transition: 0.3s;
-            text-decoration: none;
+            position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white;
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 35px; box-shadow: 0 4px 15px rgba(37,211,102,0.4); z-index: 9999; animation: pulse 2s infinite; transition: 0.3s; text-decoration: none;
         }
         .floating-wa:hover { transform: scale(1.1); }
         @keyframes pulse {
@@ -149,7 +143,11 @@
             .hero-content { max-width: 100%; }
             .hero-images-container { max-width: 320px; margin: 0 auto; }
             .action-buttons { justify-content: center; }
-            .ba-container { flex-direction: column; }
+            
+            /* Keeps the Before/After compact and side-by-side on mobile */
+            .ba-container { flex-direction: row; gap: 10px; max-width: 100%; }
+            .ba-box { aspect-ratio: 1/1; }
+            
             .footer-content { flex-direction: column; text-align: center; }
             .footer-contact p { justify-content: center; }
             .floating-wa { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 30px; }
@@ -158,7 +156,7 @@
 </head>
 <body>
 
-    <!-- 1. Top Offer Banner -->
+    <!-- Top Offer Banner -->
     <div class="top-banner">
         🎁 Book today & Get 20% OFF on your first Dry Cleaning order! Code: <span>PARTH20</span>
     </div>
@@ -206,7 +204,7 @@
         </div>
     </section>
 
-    <!-- 2. Transparent Pricing Section -->
+    <!-- Transparent Pricing Section -->
     <section class="pricing" id="pricing">
         <div class="section-header">
             <h2>Transparent Pricing</h2>
@@ -233,21 +231,30 @@
         </div>
     </section>
 
-    <!-- 3. Before & After Section -->
+    <!-- Before & After Section (COMPACT AND FIXED) -->
     <section class="before-after">
         <div class="section-header">
             <h2>The Parth Magic</h2>
             <p>See the difference our expert cleaning makes.</p>
         </div>
+        
+        <!-- Images Side by Side -->
         <div class="ba-container">
             <div class="ba-box">
-                <img src="https://images.unsplash.com/photo-1621570277341-356191c01f62?auto=format&fit=crop&w=600&q=80" alt="Before Cleaning">
+                <img src="https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&w=500&q=80" alt="Before Cleaning">
                 <div class="ba-label" style="color:#ff4757;">Before</div>
             </div>
             <div class="ba-box">
-                <img src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?auto=format&fit=crop&w=600&q=80" alt="After Cleaning">
+                <img src="https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=500&q=80" alt="After Cleaning">
                 <div class="ba-label" style="color:#4ade80;">After</div>
             </div>
+        </div>
+
+        <!-- Get Directions Button -->
+        <div class="direction-wrapper">
+            <a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="btn btn-location">
+                <i class="fas fa-map-marker-alt"></i> Get Directions to Shop
+            </a>
         </div>
     </section>
 
@@ -276,7 +283,7 @@
         </div>
     </section>
 
-    <!-- 4. Customer Reviews -->
+    <!-- Customer Reviews -->
     <section class="reviews">
         <div class="section-header">
             <h2>Loved by Lucknow</h2>
@@ -320,7 +327,7 @@
         </div>
     </footer>
 
-    <!-- 5. Floating WhatsApp Bubble -->
+    <!-- Floating WhatsApp Bubble -->
     <a href="https://wa.me/919235601645?text=Hello%20Parth%20Dry%20Clean,%20I%20am%20visiting%20your%20website%20and%20want%20to%20book%20a%20pickup." target="_blank" class="floating-wa">
         <i class="fab fa-whatsapp"></i>
     </a>
