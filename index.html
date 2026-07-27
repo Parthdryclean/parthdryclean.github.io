@@ -23,8 +23,40 @@
             --border-color: rgba(255, 255, 255, 0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow-x: hidden; line-height: 1.6; }
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: 'Outfit', sans-serif; 
+            overflow-x: hidden; 
+            line-height: 1.6;
+            position: relative;
+        }
 
+        /* Premium glowing background – larger, softer, moving slowly */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(0,119,255,0.12) 0%, transparent 55%),
+                radial-gradient(circle at 85% 75%, rgba(0,191,255,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 45% 80%, rgba(212,175,55,0.05) 0%, transparent 60%),
+                radial-gradient(circle at 70% 15%, rgba(0,191,255,0.06) 0%, transparent 45%),
+                radial-gradient(circle at 25% 60%, rgba(0,119,255,0.04) 0%, transparent 55%);
+            z-index: -1;
+            animation: slowGlow 30s ease-in-out infinite alternate;
+        }
+        @keyframes slowGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(1.5%, 2%) scale(1.01); }
+            66% { transform: translate(-1%, -1.5%) scale(1.005); }
+            100% { transform: translate(1%, -0.5%) scale(1.01); }
+        }
+
+        /* Rest of the CSS remains exactly the same as before */
         .loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s; }
         .loader.hidden { opacity: 0; visibility: hidden; }
         .loader-circle { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--brand-blue); border-radius: 50%; animation: spin 1s linear infinite; }
@@ -41,7 +73,6 @@
         nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 15px; transition: 0.3s; }
         nav a:hover { color: var(--brand-light-blue); }
 
-        /* Mobile menu button – right aligned */
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -608,9 +639,33 @@
             resetBookingForm();
             renderCategories();
             updatePriceSummary();
+            history.pushState({ popup: 'booking' }, '', '#booking');
         }
 
-        function closeBooking() { document.getElementById('bookingOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        function closeBooking() {
+            document.getElementById('bookingOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if (history.state && history.state.popup === 'booking') {
+                history.back();
+            }
+        }
+
+        document.getElementById('bookingOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeBooking();
+        });
+
+        window.addEventListener('popstate', function(e) {
+            if (e.state && e.state.popup === 'booking') {
+                // nothing
+            } else {
+                if (document.getElementById('bookingOverlay').style.display === 'flex') {
+                    document.getElementById('bookingOverlay').style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    history.pushState(null, '', window.location.href);
+                }
+            }
+        });
+
         function resetBookingForm() {
             document.getElementById('custName').value = '';
             document.getElementById('custPhone').value = '';
@@ -618,7 +673,9 @@
             document.getElementById('custPickupDate').value = '';
             document.getElementById('custPickupTime').value = '';
             document.getElementById('custNotes').value = '';
-            selectedCategory = null; selectedItems = {}; promoUsed = false;
+            selectedCategory = null;
+            selectedItems = {};
+            promoUsed = false;
             document.getElementById('itemsContainer').innerHTML = '';
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('bookingLoading').style.display = 'none';
@@ -626,7 +683,6 @@
             document.getElementById('step1').style.display = 'block';
             document.getElementById('priceSummary').style.display = 'block';
         }
-        document.getElementById('bookingOverlay').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
 
         async function submitBooking() {
             const name = document.getElementById('custName').value.trim();
@@ -635,6 +691,7 @@
             const pickupDate = document.getElementById('custPickupDate').value;
             const pickupTime = document.getElementById('custPickupTime').value;
             const notes = document.getElementById('custNotes').value.trim() || 'N/A';
+
             if (!name || !phone || !address || !pickupDate || !pickupTime) { alert('Fill required fields'); return; }
             if (phone.length !== 10) { alert('Valid 10-digit mobile'); return; }
 
@@ -682,6 +739,9 @@
             document.getElementById('bookingOverlay').style.display = 'none';
             showSuccessPopup();
             document.body.style.overflow = 'auto';
+            if (history.state && history.state.popup === 'booking') {
+                history.back();
+            }
         }
 
         function showSuccessPopup() {
