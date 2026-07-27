@@ -34,19 +34,31 @@
         .top-banner span { background: #000; color: #fff; padding: 3px 10px; border-radius: 20px; margin-left: 5px; font-weight: 700; }
         .close-banner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; }
 
-        header { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: rgba(5,11,20,0.92); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
+        header { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: rgba(5,11,20,0.92); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; position: relative; }
         .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; background: linear-gradient(135deg, var(--brand-light-blue), var(--brand-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
         .logo img { height: 45px; object-fit: contain; }
         nav ul { list-style: none; display: flex; gap: 25px; }
         nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 15px; transition: 0.3s; }
         nav a:hover { color: var(--brand-light-blue); }
-        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; }
+
+        /* Mobile menu button – right aligned */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
         .trust-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 16px 5%; background: rgba(0,119,255,0.05); border-bottom: 1px solid var(--border-color); }
         .trust-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #e2e8f0; }
         .trust-item i { color: var(--brand-light-blue); font-size: 18px; }
 
-        /* Live order banner */
         #liveOrderBanner { background: linear-gradient(135deg, rgba(0,191,255,0.1), rgba(0,119,255,0.05)); border: 1px solid rgba(0,191,255,0.25); border-radius: 16px; padding: 16px 24px; margin: 0 5% 20px; display: none; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; text-align: center; }
 
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 5%; gap: 40px; flex-wrap: wrap; }
@@ -218,7 +230,13 @@
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 991px) { .hero { flex-direction: column; text-align: center; } .hero-content { max-width: 100%; } .action-buttons { justify-content: center; } .info-section { grid-template-columns: 1fr; } }
-        @media (max-width: 768px) { nav ul { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(5,11,20,0.98); flex-direction: column; padding: 20px; } nav ul.active { display: flex; } .mobile-menu-btn { display: block; } .service-categories { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            nav ul { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(5,11,20,0.98); flex-direction: column; padding: 20px; }
+            nav ul.active { display: flex; }
+            .mobile-menu-btn { display: block; }
+            .service-categories { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -245,7 +263,6 @@
         <div class="trust-item"><i class="fas fa-clock"></i> Express Delivery</div>
     </div>
 
-    <!-- LIVE ORDER BANNER -->
     <div id="liveOrderBanner">
         <div>
             <span style="color: var(--text-muted);">📋 Your Order</span>
@@ -593,11 +610,7 @@
             updatePriceSummary();
         }
 
-        function closeBooking() {
-            document.getElementById('bookingOverlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
+        function closeBooking() { document.getElementById('bookingOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
         function resetBookingForm() {
             document.getElementById('custName').value = '';
             document.getElementById('custPhone').value = '';
@@ -605,9 +618,7 @@
             document.getElementById('custPickupDate').value = '';
             document.getElementById('custPickupTime').value = '';
             document.getElementById('custNotes').value = '';
-            selectedCategory = null;
-            selectedItems = {};
-            promoUsed = false;
+            selectedCategory = null; selectedItems = {}; promoUsed = false;
             document.getElementById('itemsContainer').innerHTML = '';
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('bookingLoading').style.display = 'none';
@@ -615,7 +626,6 @@
             document.getElementById('step1').style.display = 'block';
             document.getElementById('priceSummary').style.display = 'block';
         }
-
         document.getElementById('bookingOverlay').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
 
         async function submitBooking() {
@@ -625,8 +635,7 @@
             const pickupDate = document.getElementById('custPickupDate').value;
             const pickupTime = document.getElementById('custPickupTime').value;
             const notes = document.getElementById('custNotes').value.trim() || 'N/A';
-            
-            if (!name || !phone || !address || !pickupDate || !pickupTime) { alert('Fill all required fields!'); return; }
+            if (!name || !phone || !address || !pickupDate || !pickupTime) { alert('Fill required fields'); return; }
             if (phone.length !== 10) { alert('Valid 10-digit mobile'); return; }
 
             let itemsList = [];
@@ -643,8 +652,6 @@
             const subtotal = parseInt(document.getElementById('subtotalAmount').textContent.replace('₹',''));
             const total = parseInt(document.getElementById('totalAmount').textContent.replace('₹',''));
             const discount = promoUsed ? 0 : subtotal - total;
-            const serviceStr = itemsList.join(', ');
-
             currentOrderId = 'PDC' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
 
             document.getElementById('submitBtn').style.display = 'none';
@@ -653,9 +660,8 @@
             document.getElementById('bookingLoading').style.display = 'block';
 
             const orderData = {
-                orderId: currentOrderId,
-                name, phone, address,
-                service: serviceStr,
+                orderId: currentOrderId, name, phone, address,
+                service: itemsList.join(', '),
                 pickupDate, pickupTime, notes,
                 subtotal, discount, total,
                 status: 'Pending',
@@ -665,9 +671,7 @@
             try {
                 await database.ref('orders/' + currentOrderId).set(orderData);
                 await database.ref('customers/' + phone).set({ name, address });
-                if (!promoUsed && discount > 0) {
-                    await database.ref('promoUsage/' + phone).set(true);
-                }
+                if (!promoUsed && discount > 0) await database.ref('promoUsage/' + phone).set(true);
                 await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) });
             } catch (e) {}
 
@@ -692,28 +696,19 @@
         }
 
         function closeSuccess() { document.getElementById('successOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-        function trackFromSuccess() {
-            const booking = JSON.parse(localStorage.getItem('lastBooking'));
-            closeSuccess();
-            openTracking();
-            if (booking) { document.getElementById('trackOrderIdPopup').value = booking.orderId; trackOrderById(); }
-        }
+        function trackFromSuccess() { const b = JSON.parse(localStorage.getItem('lastBooking')); closeSuccess(); openTracking(); if (b) { document.getElementById('trackOrderIdPopup').value = b.orderId; trackOrderById(); } }
         document.getElementById('successOverlay').addEventListener('click', function(e) { if (e.target === this) closeSuccess(); });
 
         function openTracking() { document.getElementById('trackingOverlay').style.display = 'flex'; document.body.style.overflow = 'hidden'; document.getElementById('trackingDetails').style.display = 'none'; }
         function closeTracking() { document.getElementById('trackingOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
-        function openTrackingFromInput() {
-            const val = document.getElementById('trackInput').value.trim().toUpperCase();
-            openTracking();
-            if (val) { document.getElementById('trackOrderIdPopup').value = val; trackOrderById(); }
-        }
+        function openTrackingFromInput() { const v = document.getElementById('trackInput').value.trim().toUpperCase(); openTracking(); if (v) { document.getElementById('trackOrderIdPopup').value = v; trackOrderById(); } }
         document.getElementById('trackingOverlay').addEventListener('click', function(e) { if (e.target === this) closeTracking(); });
 
         function trackOrderById() {
-            const orderId = document.getElementById('trackOrderIdPopup').value.trim().toUpperCase();
-            if (!orderId) { alert('Enter Order ID'); return; }
-            database.ref('orders/' + orderId).once('value').then(snapshot => {
-                if (snapshot.exists()) displayTrackingData(snapshot.val());
+            const oid = document.getElementById('trackOrderIdPopup').value.trim().toUpperCase();
+            if (!oid) { alert('Enter Order ID'); return; }
+            database.ref('orders/' + oid).once('value').then(s => {
+                if (s.exists()) displayTrackingData(s.val());
                 else { alert('Not found'); document.getElementById('trackingDetails').style.display = 'none'; }
             });
         }
@@ -728,33 +723,16 @@
         }
 
         function updateTrackingSteps(status) {
-            const steps = ['Pending', 'Picked Up', 'Washing', 'Ironing', 'Ready', 'Delivered'];
-            const ids = ['sPending', 'sPicked', 'sWashing', 'sIroning', 'sReady', 'sDelivered'];
+            const steps = ['Pending','Picked Up','Washing','Ironing','Ready','Delivered'];
+            const ids = ['sPending','sPicked','sWashing','sIroning','sReady','sDelivered'];
             ids.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active','completed'); });
             const idx = steps.indexOf(status);
-            ids.forEach((id,i) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (i < idx) el.classList.add('completed');
-                    else if (i === idx) el.classList.add('active');
-                }
-            });
+            ids.forEach((id,i) => { const el = document.getElementById(id); if (el) { if (i < idx) el.classList.add('completed'); else if (i === idx) el.classList.add('active'); } });
             document.getElementById('currentStatus').textContent = status;
         }
 
-        // Order History
-        function openHistory() {
-            document.getElementById('historyOverlay').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            document.getElementById('historyPhone').value = '';
-            document.getElementById('historyList').style.display = 'none';
-            document.getElementById('historyEmpty').style.display = 'none';
-        }
-
-        function closeHistory() {
-            document.getElementById('historyOverlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+        function openHistory() { document.getElementById('historyOverlay').style.display = 'flex'; document.body.style.overflow = 'hidden'; document.getElementById('historyPhone').value = ''; document.getElementById('historyList').style.display = 'none'; document.getElementById('historyEmpty').style.display = 'none'; }
+        function closeHistory() { document.getElementById('historyOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
         document.getElementById('historyOverlay').addEventListener('click', function(e) { if (e.target === this) closeHistory(); });
 
         async function loadOrderHistory() {
@@ -763,26 +741,17 @@
             const snapshot = await database.ref('orders').orderByChild('phone').equalTo(phone).once('value');
             const listDiv = document.getElementById('historyList');
             const emptyDiv = document.getElementById('historyEmpty');
-            if (!snapshot.exists()) {
-                listDiv.style.display = 'none';
-                emptyDiv.style.display = 'block';
-                return;
-            }
+            if (!snapshot.exists()) { listDiv.style.display = 'none'; emptyDiv.style.display = 'block'; return; }
             let html = '';
             snapshot.forEach(child => {
                 const o = child.val();
-                html += `<div class="history-item">
-                    <div><span class="hist-order-id">${o.orderId}</span> - <small>${o.pickupDate}</small></div>
-                    <div>${o.service}</div>
-                    <div class="hist-date">Status: ${o.status || 'Pending'}</div>
-                </div>`;
+                html += `<div class="history-item"><div><span class="hist-order-id">${o.orderId}</span> - <small>${o.pickupDate}</small></div><div>${o.service}</div><div class="hist-date">Status: ${o.status || 'Pending'}</div></div>`;
             });
             listDiv.innerHTML = html;
             listDiv.style.display = 'block';
             emptyDiv.style.display = 'none';
         }
 
-        // Live order banner
         (function initLiveBanner() {
             const lastBooking = JSON.parse(localStorage.getItem('lastBooking'));
             if (lastBooking && lastBooking.orderId) {
@@ -790,8 +759,7 @@
                 banner.style.display = 'flex';
                 document.getElementById('liveOrderId').textContent = lastBooking.orderId;
                 database.ref('orders/' + lastBooking.orderId + '/status').on('value', (snapshot) => {
-                    const status = snapshot.val() || 'Pending';
-                    document.getElementById('liveOrderStatus').textContent = status;
+                    document.getElementById('liveOrderStatus').textContent = snapshot.val() || 'Pending';
                 });
             }
         })();
@@ -806,28 +774,12 @@
         }
 
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
-        function toggleFAQ(el) {
-            const item = el.parentElement;
-            document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('active'));
-            if (!item.classList.contains('active')) item.classList.add('active');
-        }
+        function toggleFAQ(el) { const item = el.parentElement; document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('active')); if (!item.classList.contains('active')) item.classList.add('active'); }
 
-        function handleScroll() {
-            document.querySelectorAll('.fade-in').forEach(el => {
-                if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('visible');
-            });
-        }
+        function handleScroll() { document.querySelectorAll('.fade-in').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('visible'); }); }
         window.addEventListener('scroll', handleScroll);
-        window.addEventListener('load', () => {
-            setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
-            handleScroll();
-        });
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', function(e) {
-                const t = document.querySelector(this.getAttribute('href'));
-                if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
-            });
-        });
+        window.addEventListener('load', () => { setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500); handleScroll(); });
+        document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', function(e) { const t = document.querySelector(this.getAttribute('href')); if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); } }); });
 
         renderCategories();
         updatePriceSummary();
