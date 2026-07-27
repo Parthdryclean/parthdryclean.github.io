@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parth Dry Clean | Premium Laundry & Dry Cleaning in Lucknow</title>
-    
     <meta name="description" content="Best dry cleaning service in Indira Nagar, Lucknow. Free doorstep pickup & delivery. 20% off first order.">
-    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         :root {
             --bg-dark: #050b14;
@@ -23,7 +22,6 @@
             --danger: #ef4444;
             --border-color: rgba(255, 255, 255, 0.08);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow-x: hidden; line-height: 1.6; }
 
@@ -47,6 +45,9 @@
         .trust-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 16px 5%; background: rgba(0,119,255,0.05); border-bottom: 1px solid var(--border-color); }
         .trust-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #e2e8f0; }
         .trust-item i { color: var(--brand-light-blue); font-size: 18px; }
+
+        /* Live order banner */
+        #liveOrderBanner { background: linear-gradient(135deg, rgba(0,191,255,0.1), rgba(0,119,255,0.05)); border: 1px solid rgba(0,191,255,0.25); border-radius: 16px; padding: 16px 24px; margin: 0 5% 20px; display: none; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; text-align: center; }
 
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 5%; gap: 40px; flex-wrap: wrap; }
         .hero-content { max-width: 550px; }
@@ -114,11 +115,10 @@
         .track-inline input { flex: 1; padding: 14px 20px; border-radius: 50px; border: 2px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-size: 15px; outline: none; text-transform: uppercase; }
         .track-inline input:focus { border-color: var(--brand-light-blue); }
 
-        /* ============ BOOKING POPUP ============ */
-        .booking-overlay, .success-overlay, .tracking-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
+        /* Booking Popup */
+        .booking-overlay, .success-overlay, .tracking-overlay, .history-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .booking-popup { background: linear-gradient(160deg, #0a1628 0%, #0d1f3c 50%, #0a1a30 100%); border: 1px solid rgba(0,191,255,0.2); border-radius: 24px; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.6); animation: slideUp 0.5s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        
         .popup-header { background: linear-gradient(135deg, rgba(0,119,255,0.15), rgba(0,191,255,0.08)); padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; border-radius: 24px 24px 0 0; }
         .popup-header-left { display: flex; align-items: center; gap: 12px; }
         .popup-header-icon { width: 44px; height: 44px; background: rgba(0,191,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--brand-light-blue); }
@@ -129,7 +129,6 @@
 
         .popup-body { padding: 24px 28px; }
 
-        /* Service Categories */
         .service-categories { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
         .category-card { padding: 14px; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02); text-align: center; }
         .category-card:hover { border-color: rgba(0,191,255,0.3); background: rgba(0,191,255,0.04); }
@@ -138,61 +137,51 @@
         .category-card .cat-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
         .category-card .cat-desc { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        /* Items within category */
-        .items-container { margin-top: 10px; }
         .items-list { display: none; }
         .items-list.active { display: block; }
-        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.01); transition: all 0.3s; }
-        .item-row:hover { border-color: rgba(255,255,255,0.15); }
+        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.01); }
         .item-info { display: flex; align-items: center; gap: 10px; }
         .item-info i { color: var(--brand-light-blue); font-size: 16px; width: 20px; }
         .item-info .item-name { font-size: 13px; font-weight: 500; }
         .item-info .item-price { font-size: 12px; color: var(--brand-light-blue); font-weight: 600; margin-left: 8px; }
         .qty-control { display: flex; align-items: center; gap: 8px; }
-        .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; font-size: 14px; }
         .qty-btn:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
         .qty-display { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
         .qty-display.active-qty { color: var(--brand-light-blue); }
 
-        /* Price Summary */
         .price-summary-box { background: linear-gradient(135deg, rgba(0,191,255,0.08), rgba(0,119,255,0.04)); border: 1px solid rgba(0,191,255,0.2); border-radius: 16px; padding: 18px; margin: 20px 0; }
         .price-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 13px; color: var(--text-muted); }
         .price-row.total { font-size: 18px; font-weight: 800; color: var(--brand-light-blue); margin-top: 5px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); }
         .price-row.discount { color: var(--success); font-size: 12px; }
-        .price-row.discount span { background: rgba(16,185,129,0.15); padding: 2px 10px; border-radius: 20px; font-weight: 600; }
+        .price-row.discount.used { color: var(--danger); text-decoration: line-through; }
 
-        /* Form Fields */
         .form-group { margin-bottom: 16px; }
         .form-group label { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
         .form-group label i { color: var(--brand-light-blue); font-size: 14px; width: 16px; }
         .required-star { color: var(--danger); }
-        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: all 0.3s; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; }
         .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--brand-light-blue); box-shadow: 0 0 0 4px rgba(0,191,255,0.06); }
         .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
         .form-select option { background: #0d1f3c; color: #fff; }
-        .form-textarea { resize: vertical; min-height: 50px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        .submit-btn { width: 100%; padding: 15px; border-radius: 14px; border: none; background: linear-gradient(135deg, #0077ff, #00bfff); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.3s; }
+        .submit-btn { width: 100%; padding: 15px; border-radius: 14px; border: none; background: linear-gradient(135deg, #0077ff, #00bfff); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,119,255,0.35); }
         .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .booking-loading { text-align: center; padding: 40px; display: none; }
         .booking-loading .spinner { width: 44px; height: 44px; border: 3px solid rgba(255,255,255,0.08); border-top-color: var(--brand-blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 16px; }
 
-        /* Success Popup */
-        .success-popup { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(16,185,129,0.3); border-radius: 24px; padding: 40px 30px; max-width: 420px; text-align: center; animation: slideUp 0.5s ease; position: relative; }
-        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(16,185,129,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 42px; color: var(--success); border: 2px solid rgba(16,185,129,0.3); animation: scaleIn 0.6s ease; }
-        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .success-popup { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(16,185,129,0.3); border-radius: 24px; padding: 40px 30px; max-width: 440px; text-align: center; animation: slideUp 0.5s ease; position: relative; }
+        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(16,185,129,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 42px; color: var(--success); border: 2px solid rgba(16,185,129,0.3); }
         .order-id-box { background: rgba(0,191,255,0.08); border: 1px dashed rgba(0,191,255,0.3); border-radius: 14px; padding: 16px; margin: 20px 0; }
         .order-id-box .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         .order-id-box .id { font-size: 26px; font-weight: 800; color: var(--brand-light-blue); letter-spacing: 2px; }
         .success-btns { display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn-success { flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Outfit', sans-serif; }
         .btn-track-order { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
         .btn-wa-share { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; border: none; }
         .close-success { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
 
-        /* Tracking Popup */
         .tracking-popup { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(0,191,255,0.2); border-radius: 24px; max-width: 540px; animation: slideUp 0.5s ease; }
         .tracking-popup .popup-header { border-radius: 24px 24px 0 0; }
         .tracking-popup .popup-body { padding: 24px 28px; }
@@ -203,13 +192,18 @@
         .info-row:last-child { border-bottom: none; }
         .tracking-status-bar { display: flex; align-items: center; justify-content: space-between; margin: 20px 0; }
         .status-step { text-align: center; }
-        .step-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-size: 13px; color: #64748b; transition: all 0.3s; }
+        .step-circle { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-size: 13px; color: #64748b; }
         .status-step span { font-size: 9px; color: #64748b; }
         .status-step.active .step-circle { background: rgba(0,119,255,0.2); border-color: #0077ff; color: #00bfff; }
         .status-step.completed .step-circle { background: rgba(16,185,129,0.2); border-color: #10b981; color: #10b981; }
         .status-line { flex: 1; height: 2px; background: rgba(255,255,255,0.08); margin-bottom: 15px; }
         .current-status-badge { text-align: center; padding: 12px; background: rgba(0,191,255,0.08); border-radius: 10px; font-size: 13px; color: #94a3b8; }
         .current-status-badge span { color: #00bfff; font-weight: 700; }
+
+        .history-list { max-height: 60vh; overflow-y: auto; }
+        .history-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
+        .history-item .hist-order-id { font-weight: 700; color: var(--brand-light-blue); }
+        .history-item .hist-date { font-size: 12px; color: var(--text-muted); }
 
         footer { background: #03070e; padding: 40px 5% 20px; border-top: 1px solid var(--border-color); }
         .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 25px; }
@@ -228,9 +222,7 @@
     </style>
 </head>
 <body>
-
     <div class="loader" id="loader"><div class="loader-circle"></div></div>
-
     <div class="top-banner" id="topBanner">🎁 Book today & Get 20% OFF! Code: <span>PARTH20</span> <span class="close-banner" onclick="document.getElementById('topBanner').style.display='none'">✕</span></div>
 
     <header>
@@ -241,6 +233,7 @@
             <li><a href="#pricing">Pricing</a></li>
             <li><a href="#services">Services</a></li>
             <li><a href="#track-section">Track Order</a></li>
+            <li><a href="#" onclick="openHistory(); return false;">My Orders</a></li>
             <li><a href="#faq">FAQ</a></li>
         </ul></nav>
     </header>
@@ -252,6 +245,19 @@
         <div class="trust-item"><i class="fas fa-clock"></i> Express Delivery</div>
     </div>
 
+    <!-- LIVE ORDER BANNER -->
+    <div id="liveOrderBanner">
+        <div>
+            <span style="color: var(--text-muted);">📋 Your Order</span>
+            <strong id="liveOrderId" style="color: var(--brand-light-blue); font-size: 16px; margin: 0 5px;"></strong>
+            <span style="color: var(--text-muted);"> • Status:</span>
+            <span id="liveOrderStatus" style="color: var(--brand-light-blue); font-weight: 700;">Pending</span>
+        </div>
+        <button onclick="trackLiveOrder()" style="background: var(--brand-blue); border: none; color: #fff; padding: 10px 24px; border-radius: 50px; cursor: pointer; font-weight: 600; font-family: 'Outfit', sans-serif; white-space: nowrap;">
+            <i class="fas fa-search"></i> Track
+        </button>
+    </div>
+
     <section class="hero" id="home">
         <div class="hero-content fade-in">
             <div class="premium-tag"><i class="fas fa-crown"></i> Premium Care</div>
@@ -259,7 +265,7 @@
             <p>Expert dry cleaning & laundry in Indira Nagar, Lucknow. Free doorstep pickup and safe delivery.</p>
             <div class="action-buttons">
                 <button class="btn btn-book-now" onclick="openBooking()"><i class="fas fa-calendar-check"></i> Book Now</button>
-                <a href="https://wa.me/919235601645" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="#" class="btn btn-whatsapp" onclick="openBooking(); return false;"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
                 <a href="tel:+919235601645" class="btn btn-call"><i class="fas fa-phone-alt"></i> Call Us</a>
             </div>
         </div>
@@ -310,7 +316,7 @@
         <div class="section-header fade-in"><h2>FAQs</h2></div>
         <div class="faq-item"><div class="faq-question" onclick="toggleFAQ(this)"><span>Is doorstep pickup free?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes! Free pickup and drop across Lucknow.</div></div>
         <div class="faq-item"><div class="faq-question" onclick="toggleFAQ(this)"><span>Turnaround time?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard: 48 hours. Express: same-day available.</div></div>
-        <div class="faq-item"><div class="faq-question" onclick="toggleFAQ(this)"><span>How to apply discount?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Use code <strong>PARTH20</strong> or mention during booking.</div></div>
+        <div class="faq-item"><div class="faq-question" onclick="toggleFAQ(this)"><span>How to apply discount?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Use code <strong>PARTH20</strong>. Valid once per mobile number.</div></div>
     </section>
 
     <section class="info-section">
@@ -321,17 +327,17 @@
     <footer>
         <div class="footer-content">
             <div class="footer-col"><h4>📍 Contact</h4><p>Indira Nagar, Lucknow</p><p>+91 92356 01645</p><p>parthdrycleaning@gmail.com</p></div>
-            <div class="footer-col"><h4>🔗 Links</h4><a href="#" onclick="openBooking()">Book Now</a><a href="#pricing">Pricing</a><a href="#track-section">Track Order</a></div>
+            <div class="footer-col"><h4>🔗 Links</h4><a href="#" onclick="openBooking()">Book Now</a><a href="#pricing">Pricing</a><a href="#track-section">Track Order</a><a href="#" onclick="openHistory()">My Orders</a></div>
             <div class="footer-col"><h4>💬 Connect</h4><a href="https://wa.me/919235601645"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="tel:+919235601645"><i class="fas fa-phone"></i> Call</a></div>
         </div>
         <div class="footer-bottom">© 2024 Parth Dry Clean – Lucknow</div>
     </footer>
 
-    <a href="https://wa.me/919235601645" target="_blank" class="floating-wa"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://wa.me/919235601645?text=Hello%20Parth%20Dry%20Clean%2C%20I%27m%20interested%20in%20your%20laundry%20services.%20Please%20share%20details." target="_blank" class="floating-wa"><i class="fab fa-whatsapp"></i></a>
 
-    <!-- ============ BOOKING POPUP ============ -->
+    <!-- Booking Popup -->
     <div class="booking-overlay" id="bookingOverlay">
-        <div class="booking-popup" id="bookingPopup">
+        <div class="booking-popup">
             <div class="popup-header">
                 <div class="popup-header-left">
                     <div class="popup-header-icon"><i class="fas fa-calendar-check"></i></div>
@@ -339,51 +345,37 @@
                 </div>
                 <button class="close-popup" onclick="closeBooking()"><i class="fas fa-times"></i></button>
             </div>
-
             <div class="popup-body">
-                <!-- Step 1: Select Service Category -->
                 <div id="step1">
-                    <label style="color:#cbd5e1;font-size:13px;font-weight:500;margin-bottom:10px;display:block;">
-                        <i class="fas fa-tshirt" style="color:var(--brand-light-blue);"></i> Select Service Category
-                    </label>
-                    <div class="service-categories" id="serviceCategories">
-                        <!-- Generated by JS -->
-                    </div>
+                    <label style="color:#cbd5e1;font-size:13px;font-weight:500;margin-bottom:10px;display:block;"><i class="fas fa-tshirt" style="color:var(--brand-light-blue);"></i> Select Service Category</label>
+                    <div class="service-categories" id="serviceCategories"></div>
                     <div class="items-container" id="itemsContainer"></div>
                 </div>
-
-                <!-- Price Summary -->
                 <div class="price-summary-box" id="priceSummary">
                     <div class="price-row"><span>Subtotal</span><span id="subtotalAmount">₹0</span></div>
-                    <div class="price-row discount"><span>🎁 First Order Discount (20%)</span><span id="discountAmount">-₹0</span></div>
+                    <div class="price-row discount" id="discountRow"><span>🎁 First Order Discount (20%)</span><span id="discountAmount">-₹0</span></div>
                     <div class="price-row total"><span>Total</span><span id="totalAmount">₹0</span></div>
                 </div>
-
-                <!-- Customer Details -->
                 <div class="form-row">
-                    <div class="form-group"><label><i class="fas fa-user"></i> Full Name <span class="required-star">*</span></label><input type="text" class="form-input" id="custName" placeholder="Your name" required></div>
-                    <div class="form-group"><label><i class="fas fa-phone"></i> Mobile <span class="required-star">*</span></label><input type="tel" class="form-input" id="custPhone" placeholder="10-digit number" pattern="[0-9]{10}" maxlength="10" required></div>
+                    <div class="form-group"><label><i class="fas fa-user"></i> Full Name <span class="required-star">*</span></label><input type="text" class="form-input" id="custName" required></div>
+                    <div class="form-group"><label><i class="fas fa-phone"></i> Mobile <span class="required-star">*</span></label><input type="tel" class="form-input" id="custPhone" pattern="[0-9]{10}" maxlength="10" required oninput="autoFillCustomer()"></div>
                 </div>
-                <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Pickup Address <span class="required-star">*</span></label><textarea class="form-textarea" id="custAddress" placeholder="House/Flat, Street, Area, Landmark" rows="2" required></textarea></div>
+                <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Pickup Address <span class="required-star">*</span></label><textarea class="form-textarea" id="custAddress" rows="2" required></textarea></div>
                 <div class="form-row">
                     <div class="form-group"><label><i class="fas fa-calendar"></i> Pickup Date <span class="required-star">*</span></label><input type="date" class="form-input" id="custPickupDate" required></div>
                     <div class="form-group"><label><i class="fas fa-clock"></i> Pickup Time <span class="required-star">*</span></label><select class="form-select" id="custPickupTime" required>
                         <option value="">Select</option>
-                        <option value="9-10 AM">9-10 AM</option><option value="10-11 AM">10-11 AM</option><option value="11AM-12PM">11AM-12PM</option>
-                        <option value="12-1 PM">12-1 PM</option><option value="1-2 PM">1-2 PM</option><option value="2-3 PM">2-3 PM</option>
-                        <option value="3-4 PM">3-4 PM</option><option value="4-5 PM">4-5 PM</option><option value="5-6 PM">5-6 PM</option>
-                        <option value="6-7 PM">6-7 PM</option><option value="7-8 PM">7-8 PM</option><option value="8-9 PM">8-9 PM</option>
+                        <option>9-10 AM</option><option>10-11 AM</option><option>11AM-12PM</option><option>12-1 PM</option><option>1-2 PM</option><option>2-3 PM</option><option>3-4 PM</option><option>4-5 PM</option><option>5-6 PM</option><option>6-7 PM</option><option>7-8 PM</option><option>8-9 PM</option>
                     </select></div>
                 </div>
-                <div class="form-group"><label><i class="fas fa-sticky-note"></i> Notes (Optional)</label><textarea class="form-textarea" id="custNotes" placeholder="Special instructions or coupon code..." rows="1"></textarea></div>
-
+                <div class="form-group"><label><i class="fas fa-sticky-note"></i> Notes (Optional)</label><textarea class="form-textarea" id="custNotes" rows="1"></textarea></div>
                 <button class="submit-btn" id="submitBtn" onclick="submitBooking()"><i class="fas fa-paper-plane"></i> Confirm Booking</button>
                 <div class="booking-loading" id="bookingLoading"><div class="spinner"></div><p>Creating booking...</p></div>
             </div>
         </div>
     </div>
 
-    <!-- ============ SUCCESS POPUP ============ -->
+    <!-- Success Popup -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-popup">
             <button class="close-success" onclick="closeSuccess()"><i class="fas fa-times"></i></button>
@@ -392,13 +384,13 @@
             <p style="color:var(--text-muted);">Your order has been created</p>
             <div class="order-id-box"><div class="label">Order ID</div><div class="id" id="successOrderId">PDC0001</div></div>
             <div class="success-btns">
-                <button class="btn-success btn-track-order" onclick="trackFromSuccess()"><i class="fas fa-search"></i> Track Order</button>
-                <a href="#" class="btn-success btn-wa-share" id="whatsappShare" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <button class="btn btn-track-order" onclick="trackFromSuccess()"><i class="fas fa-search"></i> Track Order</button>
+                <a href="#" class="btn btn-wa-share" id="whatsappShare" target="_blank"><i class="fab fa-whatsapp"></i> Share Full Details</a>
             </div>
         </div>
     </div>
 
-    <!-- ============ TRACKING POPUP ============ -->
+    <!-- Tracking Popup -->
     <div class="tracking-overlay" id="trackingOverlay">
         <div class="tracking-popup">
             <div class="popup-header">
@@ -428,63 +420,70 @@
         </div>
     </div>
 
+    <!-- Order History Popup -->
+    <div class="history-overlay" id="historyOverlay">
+        <div class="tracking-popup" style="max-width:600px;">
+            <div class="popup-header">
+                <div class="popup-header-left"><div class="popup-header-icon"><i class="fas fa-history"></i></div><div><h2>My Orders</h2></div></div>
+                <button class="close-popup" onclick="closeHistory()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="popup-body">
+                <div class="track-input-group"><input type="tel" id="historyPhone" placeholder="Your 10-digit mobile number" pattern="[0-9]{10}" maxlength="10"><button class="submit-btn" style="width:auto;padding:12px 20px;" onclick="loadOrderHistory()"><i class="fas fa-search"></i> View Orders</button></div>
+                <div id="historyList" class="history-list" style="display:none;"></div>
+                <div id="historyEmpty" style="display:none; text-align:center; color:var(--text-muted); padding:20px;">No orders found for this number.</div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
+            authDomain: "parth-dry-clean.firebaseapp.com",
+            databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "parth-dry-clean",
+            storageBucket: "parth-dry-clean.firebasestorage.app",
+            messagingSenderId: "673481985335",
+            appId: "1:673481985335:web:eb4194b4860cf979b21eb2",
+            measurementId: "G-9WK1RP5GWV"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyC6RFJSnT8Kql96c4YDCRfNh7zFg_-HiOyuPmA8HhWAkzjOWLCZNcRX5OH6krcHbkchw/exec';
 
-        // ============ SERVICE DATA ============
         const serviceData = [
-            {
-                id: 'wash-fold',
-                name: 'Wash & Fold',
-                icon: 'fa-jug-detergent',
-                desc: 'Daily wear washing',
+            { id: 'wash-fold', name: 'Wash & Fold', icon: 'fa-jug-detergent', desc: 'Daily wear washing',
                 items: [
                     { id: 'shirt', name: 'Shirt / T-Shirt', price: 49, icon: 'fa-shirt' },
                     { id: 'trouser', name: 'Trousers / Jeans', price: 59, icon: 'fa-vest' },
                     { id: 'innerwear', name: 'Innerwear Set', price: 29, icon: 'fa-tshirt' }
-                ]
-            },
-            {
-                id: 'dry-clean',
-                name: 'Dry Cleaning',
-                icon: 'fa-user-tie',
-                desc: 'Premium garment care',
+                ] },
+            { id: 'dry-clean', name: 'Dry Cleaning', icon: 'fa-user-tie', desc: 'Premium garment care',
                 items: [
                     { id: 'suit', name: '2-Piece Suit', price: 299, icon: 'fa-user-tie' },
                     { id: 'saree', name: 'Saree', price: 199, icon: 'fa-person-dress' },
                     { id: 'jacket', name: 'Jacket / Coat', price: 179, icon: 'fa-coat' },
                     { id: 'sweater', name: 'Sweater / Cardigan', price: 149, icon: 'fa-vest' }
-                ]
-            },
-            {
-                id: 'heavy',
-                name: 'Heavy Items',
-                icon: 'fa-bed',
-                desc: 'Blankets & curtains',
+                ] },
+            { id: 'heavy', name: 'Heavy Items', icon: 'fa-bed', desc: 'Blankets & curtains',
                 items: [
                     { id: 'blanket-double', name: 'Double Blanket', price: 349, icon: 'fa-bed' },
                     { id: 'blanket-single', name: 'Single Blanket', price: 249, icon: 'fa-blanket' },
                     { id: 'curtains', name: 'Curtains (Pair)', price: 249, icon: 'fa-grip-lines' }
-                ]
-            },
-            {
-                id: 'special',
-                name: 'Special Items',
-                icon: 'fa-gem',
-                desc: 'Lehenga & heavy dresses',
+                ] },
+            { id: 'special', name: 'Special Items', icon: 'fa-gem', desc: 'Lehenga & heavy dresses',
                 items: [
                     { id: 'lehenga', name: 'Lehenga', price: 499, icon: 'fa-dress' },
                     { id: 'sherwani', name: 'Sherwani', price: 399, icon: 'fa-user-tie' },
                     { id: 'gown', name: 'Evening Gown', price: 349, icon: 'fa-person-dress' }
-                ]
-            }
+                ] }
         ];
 
         let selectedCategory = null;
-        let selectedItems = {}; // { 'itemId': quantity }
+        let selectedItems = {};
         let currentOrderId = null;
+        let promoUsed = false;
 
-        // ============ RENDER CATEGORIES ============
         function renderCategories() {
             const container = document.getElementById('serviceCategories');
             container.innerHTML = serviceData.map(cat => `
@@ -510,31 +509,23 @@
         function renderItems(catId) {
             const cat = serviceData.find(c => c.id === catId);
             if (!cat) return;
-            
             const container = document.getElementById('itemsContainer');
             container.innerHTML = `
                 <div class="items-list active">
-                    <label style="color:#cbd5e1;font-size:12px;margin-bottom:8px;display:block;">
-                        <i class="fas fa-list"></i> Select quantity for ${cat.name}
-                    </label>
+                    <label style="color:#cbd5e1;font-size:12px;margin-bottom:8px;display:block;"><i class="fas fa-list"></i> ${cat.name}</label>
                     ${cat.items.map(item => {
                         const qty = selectedItems[item.id] || 0;
                         return `
                         <div class="item-row">
-                            <div class="item-info">
-                                <i class="fas ${item.icon}"></i>
-                                <span class="item-name">${item.name}</span>
-                                <span class="item-price">₹${item.price}/pc</span>
-                            </div>
+                            <div class="item-info"><i class="fas ${item.icon}"></i><span class="item-name">${item.name}</span><span class="item-price">₹${item.price}/pc</span></div>
                             <div class="qty-control">
                                 <button class="qty-btn" onclick="updateItemQty('${item.id}', -1)">−</button>
-                                <span class="qty-display ${qty > 0 ? 'active-qty' : ''}">${qty}</span>
+                                <span class="qty-display ${qty>0?'active-qty':''}">${qty}</span>
                                 <button class="qty-btn" onclick="updateItemQty('${item.id}', 1)">+</button>
                             </div>
                         </div>`;
                     }).join('')}
-                </div>
-            `;
+                </div>`;
         }
 
         function updateItemQty(itemId, change) {
@@ -542,41 +533,57 @@
             selectedItems[itemId] += change;
             if (selectedItems[itemId] < 0) selectedItems[itemId] = 0;
             if (selectedItems[itemId] === 0) delete selectedItems[itemId];
-            
             if (selectedCategory) renderItems(selectedCategory);
             updatePriceSummary();
         }
 
         function updatePriceSummary() {
-            let subtotal = 0;
-            let itemCount = 0;
-            
+            let subtotal = 0, itemCount = 0;
             for (let [itemId, qty] of Object.entries(selectedItems)) {
                 if (qty > 0) {
-                    // Find item price
                     for (let cat of serviceData) {
                         const item = cat.items.find(i => i.id === itemId);
-                        if (item) {
-                            subtotal += item.price * qty;
-                            itemCount += qty;
-                            break;
-                        }
+                        if (item) { subtotal += item.price * qty; itemCount += qty; break; }
                     }
                 }
             }
-            
-            const discount = Math.round(subtotal * 0.2);
-            const total = subtotal - discount;
-            
+            const discountRow = document.getElementById('discountRow');
+            const discountAmt = Math.round(subtotal * 0.2);
+            let total = subtotal;
+            if (promoUsed) {
+                discountRow.classList.add('used');
+                discountRow.querySelector('span:first-child').textContent = '❌ Promo already used';
+                document.getElementById('discountAmount').textContent = '₹0';
+                total = subtotal;
+            } else {
+                discountRow.classList.remove('used');
+                discountRow.querySelector('span:first-child').textContent = '🎁 First Order Discount (20%)';
+                document.getElementById('discountAmount').textContent = '-₹' + discountAmt;
+                total = subtotal - discountAmt;
+            }
             document.getElementById('subtotalAmount').textContent = '₹' + subtotal;
-            document.getElementById('discountAmount').textContent = '-₹' + discount;
             document.getElementById('totalAmount').textContent = '₹' + total;
-            
-            // Enable/disable submit based on selection
             document.getElementById('submitBtn').disabled = (itemCount === 0);
         }
 
-        // ============ OPEN/CLOSE BOOKING ============
+        async function autoFillCustomer() {
+            const phone = document.getElementById('custPhone').value.trim();
+            if (phone.length === 10) {
+                const promoSnap = await database.ref('promoUsage/' + phone).once('value');
+                promoUsed = promoSnap.exists();
+                updatePriceSummary();
+                const custSnap = await database.ref('customers/' + phone).once('value');
+                if (custSnap.exists()) {
+                    const data = custSnap.val();
+                    if (!document.getElementById('custName').value) document.getElementById('custName').value = data.name || '';
+                    if (!document.getElementById('custAddress').value) document.getElementById('custAddress').value = data.address || '';
+                }
+            } else {
+                promoUsed = false;
+                updatePriceSummary();
+            }
+        }
+
         function openBooking() {
             document.getElementById('bookingOverlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -600,6 +607,7 @@
             document.getElementById('custNotes').value = '';
             selectedCategory = null;
             selectedItems = {};
+            promoUsed = false;
             document.getElementById('itemsContainer').innerHTML = '';
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('bookingLoading').style.display = 'none';
@@ -608,13 +616,9 @@
             document.getElementById('priceSummary').style.display = 'block';
         }
 
-        document.getElementById('bookingOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeBooking();
-        });
+        document.getElementById('bookingOverlay').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
 
-        // ============ SUBMIT BOOKING ============
         async function submitBooking() {
-            // Validate
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
             const address = document.getElementById('custAddress').value.trim();
@@ -622,176 +626,113 @@
             const pickupTime = document.getElementById('custPickupTime').value;
             const notes = document.getElementById('custNotes').value.trim() || 'N/A';
             
-            if (!name || !phone || !address || !pickupDate || !pickupTime) {
-                alert('Please fill all required fields!');
-                return;
-            }
-            
-            if (phone.length !== 10) {
-                alert('Please enter a valid 10-digit mobile number!');
-                return;
-            }
-            
-            // Build selected items string
+            if (!name || !phone || !address || !pickupDate || !pickupTime) { alert('Fill all required fields!'); return; }
+            if (phone.length !== 10) { alert('Valid 10-digit mobile'); return; }
+
             let itemsList = [];
             for (let [itemId, qty] of Object.entries(selectedItems)) {
                 if (qty > 0) {
                     for (let cat of serviceData) {
                         const item = cat.items.find(i => i.id === itemId);
-                        if (item) {
-                            itemsList.push(`${qty}x ${item.name}`);
-                            break;
-                        }
+                        if (item) { itemsList.push(`${qty}x ${item.name} (₹${item.price} each)`); break; }
                     }
                 }
             }
-            
-            if (itemsList.length === 0) {
-                alert('Please select at least one item!');
-                return;
-            }
-            
+            if (itemsList.length === 0) { alert('Select at least one item'); return; }
+
+            const subtotal = parseInt(document.getElementById('subtotalAmount').textContent.replace('₹',''));
+            const total = parseInt(document.getElementById('totalAmount').textContent.replace('₹',''));
+            const discount = promoUsed ? 0 : subtotal - total;
             const serviceStr = itemsList.join(', ');
-            const subtotal = parseInt(document.getElementById('subtotalAmount').textContent.replace('₹', ''));
-            const total = parseInt(document.getElementById('totalAmount').textContent.replace('₹', ''));
-            
-            // Show loading
+
+            currentOrderId = 'PDC' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
+
             document.getElementById('submitBtn').style.display = 'none';
             document.getElementById('step1').style.display = 'none';
             document.getElementById('priceSummary').style.display = 'none';
             document.getElementById('bookingLoading').style.display = 'block';
-            
-            const bookingData = {
-                name: name,
-                phone: phone,
-                address: address,
+
+            const orderData = {
+                orderId: currentOrderId,
+                name, phone, address,
                 service: serviceStr,
-                pickupDate: pickupDate,
-                pickupTime: pickupTime,
-                notes: notes,
-                totalAmount: total,
-                subtotal: subtotal
+                pickupDate, pickupTime, notes,
+                subtotal, discount, total,
+                status: 'Pending',
+                timestamp: new Date().toISOString()
             };
-            
+
             try {
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bookingData)
-                });
-                
-                currentOrderId = 'PDC' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
-                
-                const savedOrder = { ...bookingData, orderId: currentOrderId, timestamp: new Date().toISOString() };
-                localStorage.setItem('lastBooking', JSON.stringify(savedOrder));
-                localStorage.setItem(`order_${currentOrderId}`, JSON.stringify(savedOrder));
-                localStorage.setItem(`status_${currentOrderId}`, 'Pending');
-                
-                document.getElementById('bookingOverlay').style.display = 'none';
-                showSuccessPopup();
-                
-            } catch (error) {
-                alert('Something went wrong. Please try again.');
-                document.getElementById('submitBtn').style.display = 'flex';
-                document.getElementById('step1').style.display = 'block';
-                document.getElementById('priceSummary').style.display = 'block';
-                document.getElementById('bookingLoading').style.display = 'none';
-            }
-            
+                await database.ref('orders/' + currentOrderId).set(orderData);
+                await database.ref('customers/' + phone).set({ name, address });
+                if (!promoUsed && discount > 0) {
+                    await database.ref('promoUsage/' + phone).set(true);
+                }
+                await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) });
+            } catch (e) {}
+
+            localStorage.setItem('lastBooking', JSON.stringify(orderData));
+            localStorage.setItem(`order_${currentOrderId}`, JSON.stringify(orderData));
+            localStorage.setItem(`status_${currentOrderId}`, 'Pending');
+
+            document.getElementById('bookingOverlay').style.display = 'none';
+            showSuccessPopup();
             document.body.style.overflow = 'auto';
         }
 
-        // ============ SUCCESS POPUP ============
         function showSuccessPopup() {
             const booking = JSON.parse(localStorage.getItem('lastBooking'));
             if (booking) {
                 document.getElementById('successOrderId').textContent = booking.orderId;
-                const waMsg = encodeURIComponent(
-                    `Hello Parth Dry Clean,%0A%0A` +
-                    `My booking created.%0AOrder ID: ${booking.orderId}%0AName: ${booking.name}%0A` +
-                    `Services: ${booking.service}%0APickup: ${booking.pickupDate} at ${booking.pickupTime}%0A` +
-                    `Total: ₹${booking.totalAmount}%0A%0APlease confirm.`
-                );
-                document.getElementById('whatsappShare').href = `https://wa.me/919235601645?text=${waMsg}`;
+                let waText = `🧺 *Parth Dry Clean - Booking Confirmation*\n\n📋 *Order ID:* ${booking.orderId}\n👤 *Name:* ${booking.name}\n📞 *Phone:* ${booking.phone}\n📍 *Address:* ${booking.address}\n📅 *Pickup:* ${booking.pickupDate} at ${booking.pickupTime}\n\n📦 *Items:*\n${booking.service.split(', ').map(i => '• '+i).join('\n')}\n\n💰 Subtotal: ₹${booking.subtotal}\n🎁 Discount: -₹${booking.discount}\n✅ Total: ₹${booking.total}\n\nThank you!`;
+                document.getElementById('whatsappShare').href = `https://wa.me/919235601645?text=${encodeURIComponent(waText)}`;
             }
             document.getElementById('successOverlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
-        function closeSuccess() {
-            document.getElementById('successOverlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
+        function closeSuccess() { document.getElementById('successOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
         function trackFromSuccess() {
             const booking = JSON.parse(localStorage.getItem('lastBooking'));
             closeSuccess();
             openTracking();
-            if (booking) {
-                document.getElementById('trackOrderIdPopup').value = booking.orderId;
-                trackOrderById();
-            }
+            if (booking) { document.getElementById('trackOrderIdPopup').value = booking.orderId; trackOrderById(); }
         }
+        document.getElementById('successOverlay').addEventListener('click', function(e) { if (e.target === this) closeSuccess(); });
 
-        document.getElementById('successOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeSuccess();
-        });
-
-        // ============ TRACKING ============
-        function openTracking() {
-            document.getElementById('trackingOverlay').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            document.getElementById('trackingDetails').style.display = 'none';
-        }
-
-        function closeTracking() {
-            document.getElementById('trackingOverlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
+        function openTracking() { document.getElementById('trackingOverlay').style.display = 'flex'; document.body.style.overflow = 'hidden'; document.getElementById('trackingDetails').style.display = 'none'; }
+        function closeTracking() { document.getElementById('trackingOverlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
         function openTrackingFromInput() {
             const val = document.getElementById('trackInput').value.trim().toUpperCase();
             openTracking();
-            if (val) {
-                document.getElementById('trackOrderIdPopup').value = val;
-                trackOrderById();
-            }
+            if (val) { document.getElementById('trackOrderIdPopup').value = val; trackOrderById(); }
         }
-
-        document.getElementById('trackingOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeTracking();
-        });
+        document.getElementById('trackingOverlay').addEventListener('click', function(e) { if (e.target === this) closeTracking(); });
 
         function trackOrderById() {
             const orderId = document.getElementById('trackOrderIdPopup').value.trim().toUpperCase();
             if (!orderId) { alert('Enter Order ID'); return; }
-            
+            database.ref('orders/' + orderId).once('value').then(snapshot => {
+                if (snapshot.exists()) displayTrackingData(snapshot.val());
+                else { alert('Not found'); document.getElementById('trackingDetails').style.display = 'none'; }
+            });
+        }
+
+        function displayTrackingData(order) {
             document.getElementById('trackingDetails').style.display = 'block';
-            const localOrder = localStorage.getItem(`order_${orderId}`);
-            
-            if (localOrder) {
-                const order = JSON.parse(localOrder);
-                document.getElementById('trackId').textContent = orderId;
-                document.getElementById('trackName').textContent = order.name;
-                document.getElementById('trackService').textContent = order.service;
-                document.getElementById('trackDate').textContent = order.pickupDate;
-                updateTrackingSteps(localStorage.getItem(`status_${orderId}`) || 'Pending');
-            } else {
-                document.getElementById('trackId').textContent = orderId;
-                document.getElementById('trackName').textContent = 'Not found';
-                document.getElementById('trackService').textContent = '-';
-                document.getElementById('trackDate').textContent = '-';
-                updateTrackingSteps('Pending');
-            }
+            document.getElementById('trackId').textContent = order.orderId;
+            document.getElementById('trackName').textContent = order.name;
+            document.getElementById('trackService').textContent = order.service;
+            document.getElementById('trackDate').textContent = order.pickupDate;
+            updateTrackingSteps(order.status || 'Pending');
         }
 
         function updateTrackingSteps(status) {
             const steps = ['Pending', 'Picked Up', 'Washing', 'Ironing', 'Ready', 'Delivered'];
             const ids = ['sPending', 'sPicked', 'sWashing', 'sIroning', 'sReady', 'sDelivered'];
-            ids.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active', 'completed'); });
+            ids.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active','completed'); });
             const idx = steps.indexOf(status);
-            ids.forEach((id, i) => {
+            ids.forEach((id,i) => {
                 const el = document.getElementById(id);
                 if (el) {
                     if (i < idx) el.classList.add('completed');
@@ -801,7 +742,69 @@
             document.getElementById('currentStatus').textContent = status;
         }
 
-        // ============ UTILS ============
+        // Order History
+        function openHistory() {
+            document.getElementById('historyOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('historyPhone').value = '';
+            document.getElementById('historyList').style.display = 'none';
+            document.getElementById('historyEmpty').style.display = 'none';
+        }
+
+        function closeHistory() {
+            document.getElementById('historyOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        document.getElementById('historyOverlay').addEventListener('click', function(e) { if (e.target === this) closeHistory(); });
+
+        async function loadOrderHistory() {
+            const phone = document.getElementById('historyPhone').value.trim();
+            if (phone.length !== 10) { alert('Enter valid 10-digit number'); return; }
+            const snapshot = await database.ref('orders').orderByChild('phone').equalTo(phone).once('value');
+            const listDiv = document.getElementById('historyList');
+            const emptyDiv = document.getElementById('historyEmpty');
+            if (!snapshot.exists()) {
+                listDiv.style.display = 'none';
+                emptyDiv.style.display = 'block';
+                return;
+            }
+            let html = '';
+            snapshot.forEach(child => {
+                const o = child.val();
+                html += `<div class="history-item">
+                    <div><span class="hist-order-id">${o.orderId}</span> - <small>${o.pickupDate}</small></div>
+                    <div>${o.service}</div>
+                    <div class="hist-date">Status: ${o.status || 'Pending'}</div>
+                </div>`;
+            });
+            listDiv.innerHTML = html;
+            listDiv.style.display = 'block';
+            emptyDiv.style.display = 'none';
+        }
+
+        // Live order banner
+        (function initLiveBanner() {
+            const lastBooking = JSON.parse(localStorage.getItem('lastBooking'));
+            if (lastBooking && lastBooking.orderId) {
+                const banner = document.getElementById('liveOrderBanner');
+                banner.style.display = 'flex';
+                document.getElementById('liveOrderId').textContent = lastBooking.orderId;
+                database.ref('orders/' + lastBooking.orderId + '/status').on('value', (snapshot) => {
+                    const status = snapshot.val() || 'Pending';
+                    document.getElementById('liveOrderStatus').textContent = status;
+                });
+            }
+        })();
+
+        function trackLiveOrder() {
+            const booking = JSON.parse(localStorage.getItem('lastBooking'));
+            if (booking) {
+                openTracking();
+                document.getElementById('trackOrderIdPopup').value = booking.orderId;
+                trackOrderById();
+            }
+        }
+
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         function toggleFAQ(el) {
             const item = el.parentElement;
@@ -819,7 +822,6 @@
             setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
             handleScroll();
         });
-
         document.querySelectorAll('a[href^="#"]').forEach(a => {
             a.addEventListener('click', function(e) {
                 const t = document.querySelector(this.getAttribute('href'));
@@ -827,10 +829,8 @@
             });
         });
 
-        // Initialize
         renderCategories();
         updatePriceSummary();
-        console.log('✅ Parth Dry Clean Ready!');
     </script>
 </body>
 </html>
