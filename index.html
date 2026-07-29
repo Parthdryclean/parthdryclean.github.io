@@ -235,7 +235,6 @@
         .btn-panel-action.hidden {
             display: none;
         }
-        /* Jab sirf ek button bache, toh center me */
         .active-order-actions .btn-panel-action:only-child {
             margin: 0 auto;
         }
@@ -1813,7 +1812,7 @@
                 <button class="close-popup" id="closeBookingPopup">&times;</button>
             </div>
             <div class="popup-body">
-                <!-- Categories (shortened for brevity, full in actual code) -->
+                <!-- Categories -->
                 <div class="service-categories" id="categoryGrid">
                     <div class="category-card" data-category="regular"><i class="fas fa-tshirt"></i><div class="cat-name">Regular Wear</div><div class="cat-desc">Pant, Shirt</div></div>
                     <div class="category-card" data-category="winter"><i class="fas fa-snowflake"></i><div class="cat-name">Winter Wear</div><div class="cat-desc">Sweater, Shawl</div></div>
@@ -1826,7 +1825,7 @@
                     <div class="category-card" data-category="additional"><i class="fas fa-star"></i><div class="cat-name">Additional</div><div class="cat-desc">Starch</div></div>
                 </div>
 
-                <!-- Items (shortened) -->
+                <!-- Items (abbreviated, same as original) -->
                 <div class="items-list" id="items-regular">
                     <div class="item-row" data-item="reg-pant" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Pant</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                     <div class="item-row" data-item="reg-shirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
@@ -2043,6 +2042,7 @@
         let currentOrderData = null;
         let currentPin = '0000';
         let ordersListener = null;
+        let adminAuthenticated = false;
 
         // ======================== UTILITY ========================
         function openOverlay(el) {
@@ -2058,8 +2058,7 @@
 
         // ======================== BANNER ========================
         if (localStorage.getItem(FIRST_ORDER_KEY)) document.getElementById('topBanner').style.display = 'none';
-        document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display =
-            'none');
+        document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
 
         // ======================== MOBILE MENU ========================
         document.getElementById('mobileMenuBtn').addEventListener('click', () => {
@@ -2115,6 +2114,8 @@
             document.getElementById('adminDashboardOverlay').style.display = 'none';
             document.getElementById('adminPassInputOverlay').value = '';
             document.getElementById('adminLoginErrorOverlay').style.display = 'none';
+            detachOrdersListener();
+            adminAuthenticated = false;
         }
 
         // ======================== BOOKING POPUP ========================
@@ -2135,14 +2136,12 @@
             const isVariableSelected = variableCard && variableCard.classList.contains('selected');
             const nonVariableCards = document.querySelectorAll('.category-card:not([data-category="variable"])');
             if (isVariableSelected) {
-                nonVariableCards.forEach(c => { c.classList.add('disabled');
-                    c.classList.remove('selected'); });
+                nonVariableCards.forEach(c => { c.classList.add('disabled'); c.classList.remove('selected'); });
                 if (variableCard) variableCard.classList.remove('disabled');
             } else {
                 const anySelected = Array.from(nonVariableCards).some(c => c.classList.contains('selected'));
                 if (anySelected) {
-                    if (variableCard) { variableCard.classList.add('disabled');
-                        variableCard.classList.remove('selected'); }
+                    if (variableCard) { variableCard.classList.add('disabled'); variableCard.classList.remove('selected'); }
                 } else {
                     document.querySelectorAll('.category-card').forEach(c => c.classList.remove('disabled'));
                 }
@@ -2163,8 +2162,7 @@
                 if (!wasSelected) card.classList.add('selected');
                 const variableCard = document.querySelector('[data-category="variable"]');
                 if (cat === 'variable' && card.classList.contains('selected')) {
-                    document.querySelectorAll('.category-card:not([data-category="variable"])').forEach(c => c
-                        .classList.remove('selected'));
+                    document.querySelectorAll('.category-card:not([data-category="variable"])').forEach(c => c.classList.remove('selected'));
                 }
                 updateCategoriesUI();
                 updateOrderItems();
@@ -2234,10 +2232,9 @@
             document.getElementById('totalAmount').textContent = '₹' + total;
 
             const discountRow = document.getElementById('discountRow');
-            if (discountApplied && subtotal > 0) { discountRow.style.display = 'flex';
-                discountRow.classList.remove('used'); } else if (!discountApplied && subtotal > 0) { discountRow.style.display =
-                    'flex';
-                discountRow.classList.add('used'); } else discountRow.style.display = 'none';
+            if (discountApplied && subtotal > 0) { discountRow.style.display = 'flex'; discountRow.classList.remove('used'); } 
+            else if (!discountApplied && subtotal > 0) { discountRow.style.display = 'flex'; discountRow.classList.add('used'); } 
+            else discountRow.style.display = 'none';
 
             document.getElementById('expressRow').style.display = express ? 'flex' : 'none';
 
@@ -2275,15 +2272,10 @@
             const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
             const msgEl = document.getElementById('promoMsg');
             const { subtotal } = calculateTotal();
-            if (subtotal === 0) { msgEl.textContent = '⚠️ Add items first.';
-                msgEl.className = 'promo-msg error'; return; }
-            if (code === 'PARTH20') { appliedPromoDiscount = Math.round(subtotal * 0.20);
-                msgEl.textContent = '🎉 20% off applied!';
-                msgEl.className = 'promo-msg success'; } else if (code === 'SAVE50') { appliedPromoDiscount = 50;
-                msgEl.textContent = '🎉 ₹50 off applied!';
-                msgEl.className = 'promo-msg success'; } else { appliedPromoDiscount = 0;
-                msgEl.textContent = '❌ Invalid code.';
-                msgEl.className = 'promo-msg error'; }
+            if (subtotal === 0) { msgEl.textContent = '⚠️ Add items first.'; msgEl.className = 'promo-msg error'; return; }
+            if (code === 'PARTH20') { appliedPromoDiscount = Math.round(subtotal * 0.20); msgEl.textContent = '🎉 20% off applied!'; msgEl.className = 'promo-msg success'; } 
+            else if (code === 'SAVE50') { appliedPromoDiscount = 50; msgEl.textContent = '🎉 ₹50 off applied!'; msgEl.className = 'promo-msg success'; } 
+            else { appliedPromoDiscount = 0; msgEl.textContent = '❌ Invalid code.'; msgEl.className = 'promo-msg error'; }
             updatePriceSummary();
         });
 
@@ -2389,10 +2381,8 @@
 
             try {
                 await db.ref('orders/' + orderId).set(orderData);
-                const scriptURL =
-                    'https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec';
-                fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(sheetData) }).catch(() => {});
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec';
+                fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sheetData) }).catch(() => {});
 
                 if (discountApplied) localStorage.setItem(FIRST_ORDER_KEY, 'true');
                 localStorage.setItem(ACTIVE_ORDER_ID_KEY, orderId);
@@ -2419,8 +2409,7 @@
 
         // ======================== RESET ========================
         function resetBookingForm() {
-            document.querySelectorAll('.qty-display').forEach(d => { d.textContent = '0';
-                d.classList.remove('active-qty'); });
+            document.querySelectorAll('.qty-display').forEach(d => { d.textContent = '0'; d.classList.remove('active-qty'); });
             updateOrderItems();
             document.getElementById('expressCheckbox').checked = false;
             appliedPromoDiscount = 0;
@@ -2461,7 +2450,6 @@
             if (id) fetchOrderStatus(id, 'heroTrackResult');
         });
 
-        // ======================== ORDER HISTORY (FIXED: Phone + PIN) ========================
         document.getElementById('heroHistorySubmit').addEventListener('click', async () => {
             const phone = document.getElementById('heroHistoryPhone').value.trim();
             const pin = document.getElementById('heroHistoryPin').value.trim();
@@ -2480,29 +2468,22 @@
 
             try {
                 const snap = await db.ref('orders').orderByChild('phone').equalTo(phone).once('value');
-
                 if (!snap.exists()) {
                     res.innerHTML = '<p style="color:var(--danger);">❌ No orders found for this phone number.</p>';
                     return;
                 }
-
                 const orders = [];
                 snap.forEach(child => {
                     const order = child.val();
-                    // PIN match (string comparison, both sides trimmed)
                     if (String(order.pin).trim() === pin) {
                         orders.push(order);
                     }
                 });
-
                 if (orders.length === 0) {
-                    res.innerHTML =
-                    '<p style="color:var(--danger);">❌ No orders found. Please check your Phone and PIN.</p>';
+                    res.innerHTML = '<p style="color:var(--danger);">❌ No orders found. Please check your Phone and PIN.</p>';
                     return;
                 }
-
                 orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
                 res.innerHTML = orders.map(o => `
                     <div style="background:var(--bg-body);padding:12px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border-color);">
                         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
@@ -2516,7 +2497,6 @@
                         </div>
                     </div>
                 `).join('');
-
             } catch (err) {
                 res.innerHTML = '<p style="color:var(--danger);">❌ Error fetching orders. Please try again.</p>';
                 console.error(err);
@@ -2533,7 +2513,6 @@
             });
         };
 
-        // ======================== FETCH ORDER STATUS ========================
         function fetchOrderStatus(orderId, outputId) {
             const el = document.getElementById(outputId);
             if (!el) return;
@@ -2594,7 +2573,6 @@
                         panel.style.display = 'block';
                         timelineDiv.innerHTML = renderTimeline(o);
                         activePanelOrder = o;
-                        // Check if WhatsApp was already shared
                         const waShared = localStorage.getItem('pdc_wa_shared_' + o.orderId);
                         const waBtn = document.getElementById('panelShareWhatsApp');
                         if (waShared === 'true') {
@@ -2629,7 +2607,6 @@
             if (currentOrderId) fetchOrderStatus(currentOrderId, 'heroTrackResult');
         });
 
-        // WhatsApp share from success popup - sets flag to hide from active panel
         document.getElementById('shareWhatsAppBtn').addEventListener('click', () => {
             if (currentOrderData) {
                 shareWhatsApp(currentOrderData);
@@ -2641,8 +2618,6 @@
 
         document.getElementById('downloadInvoice').addEventListener('click', () => generateInvoice(currentOrderData));
         document.getElementById('panelDownloadInvoice').addEventListener('click', () => generateInvoice(activePanelOrder));
-
-        // Panel WhatsApp share - if clicked, hide itself
         document.getElementById('panelShareWhatsApp').addEventListener('click', () => {
             if (activePanelOrder) {
                 shareWhatsApp(activePanelOrder);
@@ -2655,110 +2630,35 @@
             if (!order) return;
             const variableNote = hasVariableItems(order.items) ?
                 '<p style="color:#d4af37;"><strong>Note:</strong> We will contact you for final price.</p>' : '';
-            const html =
-                `<html><head><title>Invoice ${order.orderId}</title><style>body{font-family:Arial;padding:20px;}</style></head><body><h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr><p><strong>Order:</strong> ${order.orderId}</p><p><strong>Name:</strong> ${order.name}</p><p><strong>Phone:</strong> ${order.phone}</p><p><strong>Address:</strong> ${order.address}</p><p><strong>Pickup:</strong> ${order.pickupDate} (${order.timeSlot})</p><p><strong>Express:</strong> ${order.express ? 'Yes (+₹'+order.expressCharge+')' : 'No'}</p><hr><h3>Items</h3><ul>${Object.entries(order.items).map(([k,v]) => `<li>${getItemDisplayName(k)} x ${v}</li>`).join('')}</ul><p>Subtotal: ₹${order.subtotal}</p><p>Discount: -₹${order.discount}</p>${order.express ? '<p>Express: ₹'+order.expressCharge+'</p>' : ''}<p><strong>Total: ₹${order.total}</strong></p>${variableNote}<hr><p>Thank you!</p></body></html>`;
+            const html = `<html><head><title>Invoice ${order.orderId}</title><style>body{font-family:Arial;padding:20px;}</style></head><body><h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr><p><strong>Order:</strong> ${order.orderId}</p><p><strong>Name:</strong> ${order.name}</p><p><strong>Phone:</strong> ${order.phone}</p><p><strong>Address:</strong> ${order.address}</p><p><strong>Pickup:</strong> ${order.pickupDate} (${order.timeSlot})</p><p><strong>Express:</strong> ${order.express ? 'Yes (+₹'+order.expressCharge+')' : 'No'}</p><hr><h3>Items</h3><ul>${Object.entries(order.items).map(([k,v]) => `<li>${getItemDisplayName(k)} x ${v}</li>`).join('')}</ul><p>Subtotal: ₹${order.subtotal}</p><p>Discount: -₹${order.discount}</p>${order.express ? '<p>Express: ₹'+order.expressCharge+'</p>' : ''}<p><strong>Total: ₹${order.total}</strong></p>${variableNote}<hr><p>Thank you!</p></body></html>`;
             const win = window.open('', '_blank');
-            if (win) { win.document.write(html);
-                win.document.close(); }
+            if (win) { win.document.write(html); win.document.close(); }
         }
 
         function shareWhatsApp(order) {
             if (!order) return;
             const cleanAddress = order.address.replace(/[\r\n]+/g, ', ').replace(/\s+/g, ' ').trim();
             const itemsList = Object.entries(order.items).map(([k, v]) => `${getItemDisplayName(k)} x${v}`).join(', ');
-            let msg =
-                `Order Confirmed! 🧺\n\nOrder: ${order.orderId}\nName: ${order.name}\nTotal: ₹${order.total}\n${order.express ? '🚀 Express (+₹'+order.expressCharge+')\n' : ''}Items: ${itemsList}\nAddress: ${cleanAddress}\nPickup: ${order.pickupDate} (${order.timeSlot})\n🔐 Your PIN: ${order.pin}`;
+            let msg = `Order Confirmed! 🧺\n\nOrder: ${order.orderId}\nName: ${order.name}\nTotal: ₹${order.total}\n${order.express ? '🚀 Express (+₹'+order.expressCharge+')\n' : ''}Items: ${itemsList}\nAddress: ${cleanAddress}\nPickup: ${order.pickupDate} (${order.timeSlot})\n🔐 Your PIN: ${order.pin}`;
             if (hasVariableItems(order.items)) msg += `\n\nNote: We will contact you for final price.`;
             window.open(`https://wa.me/919235601645?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // ======================== ADMIN OVERLAY ========================
-        // ======================== ADMIN OVERLAY ========================
-        document.getElementById('adminLoginBtnOverlay').addEventListener('click', () => {
-            const pass = document.getElementById('adminPassInputOverlay').value.trim();
-            if (pass === ADMIN_PASSWORD) {
-                document.getElementById('adminLoginPromptOverlay').style.display = 'none';
-                document.getElementById('adminDashboardOverlay').style.display = 'block';
-                loadAdminData();
-                loadDeliveryBoys();
-                loadPriceEditor();
-                loadReports();
-            } else {
-                document.getElementById('adminLoginErrorOverlay').style.display = 'block';
-            }
-        });
-        document.getElementById('adminPassInputOverlay').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') document.getElementById('adminLoginBtnOverlay').click();
-        });
-
+        // ======================== ADMIN OVERLAY (PERMANENT FIX) ========================
         const adminGear = document.getElementById('adminGear');
         const adminOverlay = document.getElementById('adminOverlay');
-        document.getElementById('closeAdminBtn').addEventListener('click', () => {
-            closeOverlay(adminOverlay);
-            resetAdminLogin();
-            detachOrdersListener();
-        });
-        adminOverlay.addEventListener('click', (e) => {
-            if (e.target === adminOverlay) {
-                closeOverlay(adminOverlay);
-                resetAdminLogin();
-                detachOrdersListener();
-            }
-        });
 
-        adminGear.addEventListener('click', () => {
-            openOverlay(adminOverlay);
-            document.getElementById('adminPassInputOverlay').value = '';
-            document.getElementById('adminLoginErrorOverlay').style.display = 'none';
-            if (document.getElementById('adminDashboardOverlay').style.display === 'block') {
-                loadAdminData();
-                loadDeliveryBoys();
-                loadPriceEditor();
-                loadReports();
-            }
-        });
+        function startOrdersListener() {
+            if (ordersListener) return;
+            ordersListener = db.ref('orders').on('value', (snap) => {
+                if (!adminAuthenticated) return;
+                const tbody = document.getElementById('adminOrderBodyOverlay');
+                const statsDiv = document.getElementById('adminStatsOverlay');
+                if (!tbody || !statsDiv) return;
 
-        // Double-tap logo to open admin (alternate)
-        document.getElementById('logoClick').addEventListener('dblclick', function(e) {
-            e.preventDefault();
-            adminGear.click();
-        });
-
-        // Admin Tabs
-        document.querySelectorAll('.admin-tabs button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-                const tabId = 'tab-' + btn.dataset.tab;
-                document.getElementById(tabId).classList.add('active');
-                if (btn.dataset.tab === 'reports') loadReports();
-                if (btn.dataset.tab === 'services') loadPriceEditor();
-                // When switching to orders tab, reattach listener
-                if (btn.dataset.tab === 'orders') {
-                    attachOrdersListener();
-                } else {
-                    detachOrdersListener();
-                }
-            });
-        });
-
-        // ======================== ADMIN - LIVE ORDERS (FIXED) ========================
-        function attachOrdersListener() {
-            // Remove old listener if exists
-            if (ordersListener) {
-                db.ref('orders').off('value', ordersListener);
-                ordersListener = null;
-            }
-
-            // Create named function
-            ordersListener = function(snap) {
                 db.ref('delivery_boys').once('value').then(dbSnap => {
                     let boys = [];
                     if (dbSnap.exists()) { dbSnap.forEach(c => boys.push({ id: c.key, ...c.val() })); }
-
-                    const tbody = document.getElementById('adminOrderBodyOverlay');
-                    const statsDiv = document.getElementById('adminStatsOverlay');
 
                     if (!snap.exists()) {
                         tbody.innerHTML = '<tr><td colspan="7">No orders.</td></tr>';
@@ -2810,10 +2710,7 @@
                         </tr>`;
                     }).join('');
                 });
-            };
-
-            // Attach listener
-            db.ref('orders').on('value', ordersListener);
+            });
         }
 
         function detachOrdersListener() {
@@ -2823,58 +2720,71 @@
             }
         }
 
-        function loadAdminData() {
-            // If dashboard is visible, attach listener
-            if (document.getElementById('adminDashboardOverlay').style.display === 'block') {
-                attachOrdersListener();
+        document.getElementById('adminLoginBtnOverlay').addEventListener('click', () => {
+            const pass = document.getElementById('adminPassInputOverlay').value.trim();
+            if (pass === ADMIN_PASSWORD) {
+                adminAuthenticated = true;
+                document.getElementById('adminLoginPromptOverlay').style.display = 'none';
+                document.getElementById('adminDashboardOverlay').style.display = 'block';
+                startOrdersListener();
+                loadDeliveryBoys();
+                loadPriceEditor();
+                loadReports();
+            } else {
+                document.getElementById('adminLoginErrorOverlay').style.display = 'block';
             }
-        }
+        });
+        document.getElementById('adminPassInputOverlay').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('adminLoginBtnOverlay').click();
+        });
 
-        window.assignOrder = function(orderId) {
-            const select = document.getElementById('assign_' + orderId);
-            if (!select) return;
-            const assignedTo = select.value;
-            db.ref('orders/' + orderId).update({ assigned_to: assignedTo }).then(() => {
-                alert('✅ Order assigned to ' + (assignedTo || 'None'));
-            });
-        };
+        document.getElementById('closeAdminBtn').addEventListener('click', () => {
+            closeOverlay(adminOverlay);
+            resetAdminLogin();
+        });
 
-        window.updateOrderStatus = function(orderId, status) {
-            db.ref('orders/' + orderId).update({ status }).then(() => {
-                alert('✅ Status updated!');
-                updateActiveOrderPanel();
-            });
-        };
+        adminOverlay.addEventListener('click', (e) => {
+            if (e.target === adminOverlay) {
+                closeOverlay(adminOverlay);
+                resetAdminLogin();
+            }
+        });
 
-        // Tomorrow Reminder
-        document.getElementById('checkReminderBtnOverlay').addEventListener('click', () => {
-            const box = document.getElementById('reminderBoxOverlay');
-            const list = document.getElementById('reminderListOverlay');
-            list.innerHTML = 'Checking...';
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const dateStr = tomorrow.toISOString().split('T')[0];
-            db.ref('orders').once('value').then(snap => {
-                if (!snap.exists()) { list.innerHTML = '<li>No orders.</li>';
-                    box.classList.add('active'); return; }
-                const orders = [];
-                snap.forEach(c => orders.push(c.val()));
-                const filtered = orders.filter(o => o.pickupDate === dateStr && o.status !== 'delivered' && o.status !==
-                    'cancelled');
-                if (filtered.length === 0) list.innerHTML = '<li>✅ No deliveries scheduled for tomorrow.</li>';
-                else list.innerHTML = filtered.map(o =>
-                    `<li>🔔 ${o.orderId} - ${o.name} (${o.phone}) | Status: ${o.status}</li>`).join('');
-                box.classList.add('active');
+        adminGear.addEventListener('click', () => {
+            openOverlay(adminOverlay);
+            document.getElementById('adminPassInputOverlay').value = '';
+            document.getElementById('adminLoginErrorOverlay').style.display = 'none';
+            if (adminAuthenticated) {
+                document.getElementById('adminLoginPromptOverlay').style.display = 'none';
+                document.getElementById('adminDashboardOverlay').style.display = 'block';
+                loadDeliveryBoys();
+                loadPriceEditor();
+                loadReports();
+            }
+        });
+
+        document.getElementById('logoClick').addEventListener('dblclick', function(e) {
+            e.preventDefault();
+            adminGear.click();
+        });
+
+        document.querySelectorAll('.admin-tabs button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                const tabId = 'tab-' + btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+                if (btn.dataset.tab === 'reports') loadReports();
+                if (btn.dataset.tab === 'services') loadPriceEditor();
             });
         });
 
-        // ======================== DELIVERY BOYS MANAGEMENT ========================
         function loadDeliveryBoys() {
             const container = document.getElementById('deliveryBoyList');
             container.innerHTML = 'Loading...';
             db.ref('delivery_boys').once('value').then(snap => {
-                if (!snap.exists()) { container.innerHTML =
-                        '<p style="color:var(--text-muted);">No delivery boys added yet.</p>'; return; }
+                if (!snap.exists()) { container.innerHTML = '<p style="color:var(--text-muted);">No delivery boys added yet.</p>'; return; }
                 let html = '';
                 snap.forEach(c => {
                     const b = c.val();
@@ -2914,7 +2824,6 @@
             });
         });
 
-        // ======================== PRICE EDITOR ========================
         function loadPriceEditor() {
             const editor = document.getElementById('priceEditor');
             editor.value = 'Loading prices...';
@@ -2924,20 +2833,13 @@
                 } else {
                     const defaultPrices = {
                         "Regular Wear": { "Pant": 60, "Shirt": 60, "Kurta": 60, "T-Shirt": 60, "Dhoti": 80 },
-                        "Winter Wear": { "Sweater (Half)": 120, "Sweater (Full)": 150, "T-Shirt (Woollen)": 140,
-                            "Shawl": 180, "Cardigan": 180 },
-                        "Suits & Formal": { "Coat": 250, "Coat Pant": 350, "Coat Long": 300, "Safari Suit": 180,
-                            "Safari Coat": 150, "Suit (2 Piece)": 120, "Suit (3 Piece)": 180,
-                            "Suit (2 Pc + Blazer)": 200, "Suit (3 Pc + Blazer)": 300 },
+                        "Winter Wear": { "Sweater (Half)": 120, "Sweater (Full)": 150, "T-Shirt (Woollen)": 140, "Shawl": 180, "Cardigan": 180 },
+                        "Suits & Formal": { "Coat": 250, "Coat Pant": 350, "Coat Long": 300, "Safari Suit": 180, "Safari Coat": 150, "Suit (2 Piece)": 120, "Suit (3 Piece)": 180, "Suit (2 Pc + Blazer)": 200, "Suit (3 Pc + Blazer)": 300 },
                         "Ethnic Wear": { "Kurta Pajama (Set)": 300, "Sherwani": 350 },
                         "Jackets": { "Jacket (Half)": 200, "Jacket (Full)": 250 },
-                        "Home & Travel": { "Blanket (Single)": 300, "Blanket (Double)": 350, "Helmet": 175,
-                            "Ladies Bag": 150 },
-                        "Variable Price": { "Saree Dry Clean": "200-400", "Trolley Bag": "300-400",
-                            "Lehenga (3 Piece)": "400-2000", "Gagra": "250-400", "Gown": "250-500",
-                            "Jents Wear": "200-300" },
-                        "Steam Press": { "Saree + Blouse": 80, "Coat": 80, "Coat Pant": 80, "Lehenga": 400,
-                            "Dupatta": 40, "Ladies Suit (3 Piece)": 60 },
+                        "Home & Travel": { "Blanket (Single)": 300, "Blanket (Double)": 350, "Helmet": 175, "Ladies Bag": 150 },
+                        "Variable Price": { "Saree Dry Clean": "200-400", "Trolley Bag": "300-400", "Lehenga (3 Piece)": "400-2000", "Gagra": "250-400", "Gown": "250-500", "Jents Wear": "200-300" },
+                        "Steam Press": { "Saree + Blouse": 80, "Coat": 80, "Coat Pant": 80, "Lehenga": 400, "Dupatta": 40, "Ladies Suit (3 Piece)": 60 },
                         "Additional": { "Saree Starch": 50, "Blouse": "Free" }
                     };
                     editor.value = JSON.stringify(defaultPrices, null, 2);
@@ -2960,7 +2862,6 @@
             }
         });
 
-        // ======================== REPORTS ========================
         function loadReports() {
             const container = document.getElementById('reportContent');
             container.innerHTML = 'Loading...';
@@ -2986,50 +2887,51 @@
             });
         }
 
+        window.assignOrder = function(orderId) {
+            const select = document.getElementById('assign_' + orderId);
+            if (!select) return;
+            const assignedTo = select.value;
+            db.ref('orders/' + orderId).update({ assigned_to: assignedTo }).then(() => {
+                // Listener auto-updates
+            });
+        };
+
+        window.updateOrderStatus = function(orderId, status) {
+            db.ref('orders/' + orderId).update({ status }).then(() => {
+                updateActiveOrderPanel();
+            });
+        };
+
+        document.getElementById('checkReminderBtnOverlay').addEventListener('click', () => {
+            const box = document.getElementById('reminderBoxOverlay');
+            const list = document.getElementById('reminderListOverlay');
+            list.innerHTML = 'Checking...';
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateStr = tomorrow.toISOString().split('T')[0];
+            db.ref('orders').once('value').then(snap => {
+                if (!snap.exists()) { list.innerHTML = '<li>No orders.</li>'; box.classList.add('active'); return; }
+                const orders = [];
+                snap.forEach(c => orders.push(c.val()));
+                const filtered = orders.filter(o => o.pickupDate === dateStr && o.status !== 'delivered' && o.status !== 'cancelled');
+                if (filtered.length === 0) list.innerHTML = '<li>✅ No deliveries scheduled for tomorrow.</li>';
+                else list.innerHTML = filtered.map(o => `<li>🔔 ${o.orderId} - ${o.name} (${o.phone}) | Status: ${o.status}</li>`).join('');
+                box.classList.add('active');
+            });
+        });
+
         // ======================== HELPER FUNCTIONS ========================
         function getItemDisplayName(key) {
             const map = {
-                'reg-pant': 'Pant',
-                'reg-shirt': 'Shirt',
-                'reg-kurta': 'Kurta',
-                'reg-tshirt': 'T-Shirt',
-                'reg-dhoti': 'Dhoti',
-                'win-sweater-half': 'Sweater (Half)',
-                'win-sweater-full': 'Sweater (Full)',
-                'win-tshirt-wool': 'T-Shirt (Woollen)',
-                'win-shawl': 'Shawl',
-                'win-cardigan': 'Cardigan',
-                'sui-coat': 'Coat',
-                'sui-coat-pant': 'Coat Pant',
-                'sui-coat-long': 'Coat Long',
-                'sui-safari-suit': 'Safari Suit',
-                'sui-safari-coat': 'Safari Coat',
-                'sui-suit2': 'Suit (2 Piece)',
-                'sui-suit3': 'Suit (3 Piece)',
-                'sui-suit2-blazer': 'Suit (2 Pc + Blazer)',
-                'sui-suit3-blazer': 'Suit (3 Pc + Blazer)',
-                'eth-kurta-pajama': 'Kurta Pajama (Set)',
-                'eth-sherwani': 'Sherwani',
-                'jac-half': 'Jacket (Half)',
-                'jac-full': 'Jacket (Full)',
-                'hom-blanket-single': 'Blanket (Single)',
-                'hom-blanket-double': 'Blanket (Double)',
-                'hom-helmet': 'Helmet',
-                'hom-bag': 'Ladies Bag',
-                'var-saree': 'Saree Dry Clean',
-                'var-trolley': 'Trolley Bag',
-                'var-lehenga': 'Lehenga (3 Piece)',
-                'var-gagra': 'Gagra',
-                'var-gown': 'Gown',
-                'var-jents': 'Jents Wear',
-                'stm-saree-blouse': 'Saree + Blouse',
-                'stm-coat': 'Coat',
-                'stm-coat-pant': 'Coat Pant',
-                'stm-lehenga': 'Lehenga',
-                'stm-dupatta': 'Dupatta',
-                'stm-ladies-suit': 'Ladies Suit (3 Piece)',
-                'add-starch': 'Saree Starch',
-                'add-blouse': 'Blouse'
+                'reg-pant': 'Pant', 'reg-shirt': 'Shirt', 'reg-kurta': 'Kurta', 'reg-tshirt': 'T-Shirt', 'reg-dhoti': 'Dhoti',
+                'win-sweater-half': 'Sweater (Half)', 'win-sweater-full': 'Sweater (Full)', 'win-tshirt-wool': 'T-Shirt (Woollen)', 'win-shawl': 'Shawl', 'win-cardigan': 'Cardigan',
+                'sui-coat': 'Coat', 'sui-coat-pant': 'Coat Pant', 'sui-coat-long': 'Coat Long', 'sui-safari-suit': 'Safari Suit', 'sui-safari-coat': 'Safari Coat', 'sui-suit2': 'Suit (2 Piece)', 'sui-suit3': 'Suit (3 Piece)', 'sui-suit2-blazer': 'Suit (2 Pc + Blazer)', 'sui-suit3-blazer': 'Suit (3 Pc + Blazer)',
+                'eth-kurta-pajama': 'Kurta Pajama (Set)', 'eth-sherwani': 'Sherwani',
+                'jac-half': 'Jacket (Half)', 'jac-full': 'Jacket (Full)',
+                'hom-blanket-single': 'Blanket (Single)', 'hom-blanket-double': 'Blanket (Double)', 'hom-helmet': 'Helmet', 'hom-bag': 'Ladies Bag',
+                'var-saree': 'Saree Dry Clean', 'var-trolley': 'Trolley Bag', 'var-lehenga': 'Lehenga (3 Piece)', 'var-gagra': 'Gagra', 'var-gown': 'Gown', 'var-jents': 'Jents Wear',
+                'stm-saree-blouse': 'Saree + Blouse', 'stm-coat': 'Coat', 'stm-coat-pant': 'Coat Pant', 'stm-lehenga': 'Lehenga', 'stm-dupatta': 'Dupatta', 'stm-ladies-suit': 'Ladies Suit (3 Piece)',
+                'add-starch': 'Saree Starch', 'add-blouse': 'Blouse'
             };
             return map[key] || key;
         }
@@ -3044,12 +2946,7 @@
         updateSelectedItemsSummary();
         console.log('✅ Parth Dry Clean Website Loaded Successfully!');
         console.log('🔐 Admin Password: Parth@clean');
-        console.log('📱 Delivery Boy: Owner phone only (' + OWNER_PHONE + ')');
-        console.log('🔄 Orders update LIVE in admin panel!');
-        console.log('📦 Max pending orders per customer: ' + MAX_PENDING_ORDERS);
-        console.log('🔙 Back button works for all popups and admin overlay.');
-        console.log('🖱️ Double-tap on logo to open Admin (alternate)');
-        console.log('📋 Order history: Phone + PIN required (privacy protected)');
+        console.log('🔄 Admin orders listener now stays live after login.');
     </script>
 </body>
 </html>
