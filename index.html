@@ -1,3 +1,4 @@
+<!-- PASTE THIS ENTIRE CODE IN CODEPEN HTML PANEL -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,7 @@
     </script>
 
     <style>
-        /* ===== LIGHT THEME ===== */
+        /* ===== LIGHT THEME (same as before) ===== */
         :root {
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
@@ -128,6 +129,9 @@
             font-size: 24px;
             color: var(--text-main);
             cursor: pointer;
+            z-index: 1001;
+            position: relative;
+            margin-left: auto;
         }
 
         /* Trust Bar */
@@ -1414,6 +1418,10 @@
             font-family: 'Outfit', sans-serif;
             font-size: 12px;
         }
+        .admin-panel .order-table select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .admin-panel .order-table .status-badge {
             padding: 4px 10px;
             border-radius: 20px;
@@ -1537,6 +1545,49 @@
             background: var(--bg-body);
         }
 
+        /* ===== ADMIN LOGIN FIX (Mobile) ===== */
+        #adminLoginPromptOverlay,
+        #adminLoginPrompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 10px;
+        }
+        #adminLoginPromptOverlay input,
+        #adminLoginPrompt input,
+        #adminLoginPromptOverlay button,
+        #adminLoginPrompt button {
+            width: 80%;
+            max-width: 280px;
+            font-family: 'Outfit', sans-serif;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border-color);
+            font-size: 14px;
+        }
+        #adminLoginPromptOverlay button,
+        #adminLoginPrompt button {
+            background: var(--brand-primary);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        #adminLoginPromptOverlay button:hover,
+        #adminLoginPrompt button:hover {
+            opacity: 0.9;
+        }
+        @media (max-width: 480px) {
+            #adminLoginPromptOverlay input,
+            #adminLoginPrompt input,
+            #adminLoginPromptOverlay button,
+            #adminLoginPrompt button {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             nav ul {
@@ -1585,6 +1636,10 @@
             .admin-panel .order-table th,
             .admin-panel .order-table td {
                 padding: 6px 4px;
+            }
+            .admin-panel .order-table td select {
+                width: 80px;
+                font-size: 10px;
             }
         }
     </style>
@@ -1672,7 +1727,7 @@
             </div>
         </div>
 
-        <!-- HISTORY POPUP (Now with PIN) -->
+        <!-- HISTORY POPUP (with PIN) -->
         <div class="hero-history-popup" id="heroHistoryPopup">
             <div class="popup-box">
                 <button class="close-hero-popup" id="closeHeroHistoryPopup">&times;</button>
@@ -1774,7 +1829,7 @@
                     <div class="category-card" data-category="additional"><i class="fas fa-star"></i><div class="cat-name">Additional</div><div class="cat-desc">Starch</div></div>
                 </div>
 
-                <!-- Items Lists -->
+                <!-- Items Lists (same as before) -->
                 <div class="items-list" id="items-regular">
                     <div class="item-row" data-item="reg-pant" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Pant</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                     <div class="item-row" data-item="reg-shirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
@@ -1918,9 +1973,9 @@
         <div class="admin-panel" id="adminPanel">
             <h2>🧺 Admin Dashboard <button id="closeAdminBtn">Close</button></h2>
             <div id="adminContentOverlay">
-                <div id="adminLoginPromptOverlay" style="text-align:center; padding:40px 0;">
-                    <input type="password" id="adminPassInputOverlay" placeholder="Enter Admin Password" style="padding:14px 20px; border-radius:12px; border:1px solid var(--border-color); width:250px; font-family:'Outfit';" />
-                    <button id="adminLoginBtnOverlay" style="padding:14px 30px; background:var(--brand-primary); color:#fff; border:none; border-radius:12px; font-weight:700; cursor:pointer; margin-left:10px;">Unlock</button>
+                <div id="adminLoginPromptOverlay">
+                    <input type="password" id="adminPassInputOverlay" placeholder="Enter Admin Password" />
+                    <button id="adminLoginBtnOverlay">Unlock</button>
                     <p id="adminLoginErrorOverlay" style="color:var(--danger); display:none; margin-top:8px;">❌ Wrong password!</p>
                 </div>
                 <div id="adminDashboardOverlay" style="display:none;">
@@ -1992,67 +2047,26 @@
         const ACTIVE_ORDER_ID_KEY = 'pdc_active_order_id';
         const ADMIN_PASSWORD = 'Parth@clean';
         const OWNER_PHONE = '919235601645';
+
         let appliedPromoDiscount = 0;
         let activePanelOrder = null;
         let currentOrderId = null;
         let currentOrderData = null;
         let currentPin = '0000';
-
-        const itemNameMap = {
-            'reg-pant': 'Pant',
-            'reg-shirt': 'Shirt',
-            'reg-kurta': 'Kurta',
-            'reg-tshirt': 'T-Shirt',
-            'reg-dhoti': 'Dhoti',
-            'win-sweater-half': 'Sweater (Half)',
-            'win-sweater-full': 'Sweater (Full)',
-            'win-tshirt-wool': 'T-Shirt (Woollen)',
-            'win-shawl': 'Shawl',
-            'win-cardigan': 'Cardigan',
-            'sui-coat': 'Coat',
-            'sui-coat-pant': 'Coat Pant',
-            'sui-coat-long': 'Coat Long',
-            'sui-safari-suit': 'Safari Suit',
-            'sui-safari-coat': 'Safari Coat',
-            'sui-suit2': 'Suit (2 Piece)',
-            'sui-suit3': 'Suit (3 Piece)',
-            'sui-suit2-blazer': 'Suit (2 Pc + Blazer)',
-            'sui-suit3-blazer': 'Suit (3 Pc + Blazer)',
-            'eth-kurta-pajama': 'Kurta Pajama (Set)',
-            'eth-sherwani': 'Sherwani',
-            'jac-half': 'Jacket (Half)',
-            'jac-full': 'Jacket (Full)',
-            'hom-blanket-single': 'Blanket (Single)',
-            'hom-blanket-double': 'Blanket (Double)',
-            'hom-helmet': 'Helmet',
-            'hom-bag': 'Ladies Bag',
-            'var-saree': 'Saree Dry Clean',
-            'var-trolley': 'Trolley Bag',
-            'var-lehenga': 'Lehenga (3 Piece)',
-            'var-gagra': 'Gagra',
-            'var-gown': 'Gown',
-            'var-jents': 'Jents Wear',
-            'stm-saree-blouse': 'Saree + Blouse',
-            'stm-coat': 'Coat',
-            'stm-coat-pant': 'Coat Pant',
-            'stm-lehenga': 'Lehenga',
-            'stm-dupatta': 'Dupatta',
-            'stm-ladies-suit': 'Ladies Suit (3 Piece)',
-            'add-starch': 'Saree Starch',
-            'add-blouse': 'Blouse'
-        };
-
-        function getItemDisplayName(key) { return itemNameMap[key] || key; }
-
-        function hasVariableItems(items) {
-            if (!items) return false;
-            return Object.keys(items).some(k => k.startsWith('var-'));
-        }
+        let ordersListener = null;
 
         // ======================== UTILITY ========================
-        function openOverlay(el) { if (el) el.classList.add('active'); }
+        function openOverlay(el) {
+            if (!el) return;
+            el.classList.add('active');
+            // Push state so back button works
+            history.pushState({ overlay: el.id }, '');
+        }
 
-        function closeOverlay(el) { if (el) el.classList.remove('active'); }
+        function closeOverlay(el) {
+            if (!el) return;
+            el.classList.remove('active');
+        }
 
         // ======================== BANNER ========================
         if (localStorage.getItem(FIRST_ORDER_KEY)) document.getElementById('topBanner').style.display = 'none';
@@ -2069,6 +2083,54 @@
             q.addEventListener('click', () => q.parentElement.classList.toggle('active'));
         });
 
+        // ======================== POPSTATE HANDLER (FIX FOR ALL OVERLAYS) ========================
+        window.addEventListener('popstate', function(event) {
+            // Check which overlay is open and close it
+            const overlays = [
+                'bookingOverlay',
+                'successOverlay',
+                'heroTrackPopup',
+                'heroHistoryPopup',
+                'adminOverlay'
+            ];
+            let closed = false;
+            for (let id of overlays) {
+                const el = document.getElementById(id);
+                if (el && el.classList.contains('active')) {
+                    closeOverlay(el);
+                    closed = true;
+                    break;
+                }
+            }
+            // If no overlay was open, but we are on admin or delivery page, go home
+            if (!closed) {
+                const adminPage = document.getElementById('page-admin');
+                const deliveryPage = document.getElementById('page-delivery');
+                if (adminPage && adminPage.classList.contains('active')) {
+                    navigate('home');
+                } else if (deliveryPage && deliveryPage.classList.contains('active')) {
+                    navigate('home');
+                }
+            }
+        });
+
+        // ======================== NAVIGATION ========================
+        function navigate(page) {
+            const pages = {
+                home: document.getElementById('page-home'),
+                admin: document.getElementById('page-admin'),
+                delivery: document.getElementById('page-delivery')
+            };
+            Object.keys(pages).forEach(key => pages[key].classList.remove('active'));
+            pages[page].classList.add('active');
+            // Update URL hash
+            history.pushState({ page: page }, '', '#' + page);
+            // Close overlays
+            closeOverlay(document.getElementById('bookingOverlay'));
+            closeOverlay(document.getElementById('successOverlay'));
+            closeOverlay(document.getElementById('adminOverlay'));
+        }
+
         // ======================== BOOKING POPUP LOGIC ========================
         const bookingOverlay = document.getElementById('bookingOverlay');
         const successOverlay = document.getElementById('successOverlay');
@@ -2082,6 +2144,7 @@
         document.getElementById('closeBookingPopup').addEventListener('click', () => closeOverlay(bookingOverlay));
 
         // ======================== CATEGORIES & ITEMS ========================
+        // (same as before - omitted for brevity, but included in final code)
         function updateCategoriesUI() {
             const variableCard = document.querySelector('[data-category="variable"]');
             const isVariableSelected = variableCard && variableCard.classList.contains('selected');
@@ -2139,6 +2202,8 @@
                 updateSelectedItemsSummary();
             });
         });
+
+        let orderItems = {};
 
         function updateOrderItems() {
             orderItems = {};
@@ -2237,7 +2302,7 @@
             updatePriceSummary();
         });
 
-        // ======================== BOOKING FORM SUBMIT ========================
+        // ======================== BOOKING FORM SUBMIT (FIXED) ========================
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             updateOrderItems();
@@ -2328,6 +2393,7 @@
                 alert('Booking failed. Please try again.');
                 console.error(err);
             } finally {
+                // Ensure loading hides and button shows
                 document.getElementById('bookingLoading').style.display = 'none';
                 document.getElementById('submitBooking').style.display = 'inline-flex';
             }
@@ -2364,7 +2430,7 @@
             }
         }
 
-        // ======================== TRACK & HISTORY (with PIN) ========================
+        // ======================== TRACK & HISTORY ========================
         const heroTrackPopup = document.getElementById('heroTrackPopup');
         const heroHistoryPopup = document.getElementById('heroHistoryPopup');
         document.getElementById('heroTrackBtn').addEventListener('click', () => openOverlay(heroTrackPopup));
@@ -2391,11 +2457,10 @@
                 if (snap.exists()) {
                     const orders = [];
                     snap.forEach(c => orders.push(c.val()));
-                    // Filter by PIN
                     const matchedOrders = orders.filter(o => o.pin === pin);
                     if (matchedOrders.length === 0) {
                         res.innerHTML =
-                        '<p style="color:var(--danger);">❌ No orders found for this Phone & PIN combination.</p>';
+                            '<p style="color:var(--danger);">❌ No orders found for this Phone & PIN combination.</p>';
                         return;
                     }
                     matchedOrders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -2586,25 +2651,33 @@
             });
         });
 
-        // Load Admin Data
+        // ======================== ADMIN - LIVE ORDERS (FIXED) ========================
         function loadAdminData() {
             const tbody = document.getElementById('adminOrderBodyOverlay');
             const statsDiv = document.getElementById('adminStatsOverlay');
-            tbody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
-            // Load delivery boys for dropdown
-            db.ref('delivery_boys').once('value').then(dbSnap => {
-                let boys = [];
-                if (dbSnap.exists()) { dbSnap.forEach(c => boys.push(c.val())); }
-                db.ref('orders').once('value').then(snap => {
-                    if (!snap.exists()) { tbody.innerHTML = '<tr><td colspan="7">No orders.</td></tr>';
-                        statsDiv.innerHTML = ''; return; }
+
+            // Remove old listener
+            if (ordersListener) {
+                db.ref('orders').off('value', ordersListener);
+                ordersListener = null;
+            }
+
+            ordersListener = db.ref('orders').on('value', (snap) => {
+                db.ref('delivery_boys').once('value').then(dbSnap => {
+                    let boys = [];
+                    if (dbSnap.exists()) { dbSnap.forEach(c => boys.push({ id: c.key, ...c.val() })); }
+
+                    if (!snap.exists()) {
+                        tbody.innerHTML = '<tr><td colspan="7">No orders.</td></tr>';
+                        statsDiv.innerHTML = '';
+                        return;
+                    }
                     const orders = [];
                     snap.forEach(c => orders.push({ id: c.key, ...c.val() }));
                     orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                     const total = orders.length;
-                    const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending')
-                        .length;
+                    const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending').length;
                     const processing = orders.filter(o => o.status === 'processing').length;
                     const delivered = orders.filter(o => o.status === 'delivered').length;
                     statsDiv.innerHTML = `
@@ -2616,6 +2689,7 @@
 
                     tbody.innerHTML = orders.map(o => {
                         const assigned = o.assigned_to || '';
+                        const isAssigned = assigned !== '';
                         return `<tr>
                             <td><strong>${o.orderId}</strong></td>
                             <td>${o.name}</td>
@@ -2623,11 +2697,13 @@
                             <td>₹${o.total}</td>
                             <td><span class="status-badge status-${o.status ? o.status.replace('express-','') : 'pending'}">${o.status || 'pending'}</span></td>
                             <td>
-                                <select id="assign_${o.orderId}" style="width:100px;">
+                                <select id="assign_${o.orderId}" style="width:100px;" ${isAssigned ? 'disabled' : ''}>
                                     <option value="">-- None --</option>
                                     ${boys.map(b => `<option value="${b.phone}" ${assigned === b.phone ? 'selected' : ''}>${b.name}</option>`).join('')}
                                 </select>
-                                <button onclick="assignOrder('${o.orderId}')" style="margin-top:4px;padding:2px 8px;border-radius:4px;border:1px solid var(--border-color);background:#fff;cursor:pointer;font-size:11px;">Assign</button>
+                                <button onclick="assignOrder('${o.orderId}')" ${isAssigned ? 'disabled' : ''} style="margin-top:4px;padding:2px 8px;border-radius:4px;border:1px solid var(--border-color);background:#fff;cursor:pointer;font-size:11px;">
+                                    ${isAssigned ? '✅ Assigned' : 'Assign'}
+                                </button>
                             </td>
                             <td>
                                 <select onchange="updateOrderStatus('${o.orderId}', this.value)">
@@ -2650,14 +2726,12 @@
             const assignedTo = select.value;
             db.ref('orders/' + orderId).update({ assigned_to: assignedTo }).then(() => {
                 alert('✅ Order assigned to ' + (assignedTo || 'None'));
-                loadAdminData();
             });
         };
 
         window.updateOrderStatus = function(orderId, status) {
             db.ref('orders/' + orderId).update({ status }).then(() => {
                 alert('✅ Status updated!');
-                loadAdminData();
                 updateActiveOrderPanel();
             });
         };
@@ -2689,7 +2763,8 @@
             const container = document.getElementById('deliveryBoyList');
             container.innerHTML = 'Loading...';
             db.ref('delivery_boys').once('value').then(snap => {
-                if (!snap.exists()) { container.innerHTML = '<p style="color:var(--text-muted);">No delivery boys added yet.</p>'; return; }
+                if (!snap.exists()) { container.innerHTML =
+                        '<p style="color:var(--text-muted);">No delivery boys added yet.</p>'; return; }
                 let html = '';
                 snap.forEach(c => {
                     const b = c.val();
@@ -2712,7 +2787,6 @@
             db.ref('delivery_boys/' + id).remove().then(() => {
                 alert('Deleted!');
                 loadDeliveryBoys();
-                loadAdminData();
             });
         };
 
@@ -2727,7 +2801,6 @@
                 document.getElementById('dbNameInput').value = '';
                 document.getElementById('dbPhoneInput').value = '';
                 loadDeliveryBoys();
-                loadAdminData();
             });
         });
 
@@ -2739,7 +2812,6 @@
                 if (snap.exists()) {
                     editor.value = JSON.stringify(snap.val(), null, 2);
                 } else {
-                    // Default prices
                     const defaultPrices = {
                         "Regular Wear": { "Pant": 60, "Shirt": 60, "Kurta": 60, "T-Shirt": 60, "Dhoti": 80 },
                         "Winter Wear": { "Sweater (Half)": 120, "Sweater (Full)": 150, "T-Shirt (Woollen)": 140,
@@ -2804,12 +2876,67 @@
             });
         }
 
+        // ======================== HELPER FUNCTIONS ========================
+        function getItemDisplayName(key) {
+            const map = {
+                'reg-pant': 'Pant',
+                'reg-shirt': 'Shirt',
+                'reg-kurta': 'Kurta',
+                'reg-tshirt': 'T-Shirt',
+                'reg-dhoti': 'Dhoti',
+                'win-sweater-half': 'Sweater (Half)',
+                'win-sweater-full': 'Sweater (Full)',
+                'win-tshirt-wool': 'T-Shirt (Woollen)',
+                'win-shawl': 'Shawl',
+                'win-cardigan': 'Cardigan',
+                'sui-coat': 'Coat',
+                'sui-coat-pant': 'Coat Pant',
+                'sui-coat-long': 'Coat Long',
+                'sui-safari-suit': 'Safari Suit',
+                'sui-safari-coat': 'Safari Coat',
+                'sui-suit2': 'Suit (2 Piece)',
+                'sui-suit3': 'Suit (3 Piece)',
+                'sui-suit2-blazer': 'Suit (2 Pc + Blazer)',
+                'sui-suit3-blazer': 'Suit (3 Pc + Blazer)',
+                'eth-kurta-pajama': 'Kurta Pajama (Set)',
+                'eth-sherwani': 'Sherwani',
+                'jac-half': 'Jacket (Half)',
+                'jac-full': 'Jacket (Full)',
+                'hom-blanket-single': 'Blanket (Single)',
+                'hom-blanket-double': 'Blanket (Double)',
+                'hom-helmet': 'Helmet',
+                'hom-bag': 'Ladies Bag',
+                'var-saree': 'Saree Dry Clean',
+                'var-trolley': 'Trolley Bag',
+                'var-lehenga': 'Lehenga (3 Piece)',
+                'var-gagra': 'Gagra',
+                'var-gown': 'Gown',
+                'var-jents': 'Jents Wear',
+                'stm-saree-blouse': 'Saree + Blouse',
+                'stm-coat': 'Coat',
+                'stm-coat-pant': 'Coat Pant',
+                'stm-lehenga': 'Lehenga',
+                'stm-dupatta': 'Dupatta',
+                'stm-ladies-suit': 'Ladies Suit (3 Piece)',
+                'add-starch': 'Saree Starch',
+                'add-blouse': 'Blouse'
+            };
+            return map[key] || key;
+        }
+
+        function hasVariableItems(items) {
+            if (!items) return false;
+            return Object.keys(items).some(k => k.startsWith('var-'));
+        }
+
         // ======================== INIT ========================
         updatePriceSummary();
         updateSelectedItemsSummary();
         console.log('✅ Parth Dry Clean Website Loaded Successfully!');
         console.log('🔐 Admin Password: Parth@clean');
         console.log('📱 Delivery Boy: Owner phone only (' + OWNER_PHONE + ')');
+        console.log('🔄 Orders now update LIVE in admin panel!');
+        console.log('🔙 Back button now works properly for all popups and admin overlay.');
     </script>
 </body>
 </html>
