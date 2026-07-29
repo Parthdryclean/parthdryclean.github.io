@@ -41,7 +41,6 @@
             padding-bottom: 30px;
         }
 
-        /* Top Banner */
         .top-banner {
             background: linear-gradient(135deg, #0d9488, #0ea5e9);
             color: #fff;
@@ -71,7 +70,7 @@
             opacity: 0.8;
         }
 
-        /* ===== HEADER - FIXED POSITION ===== */
+        /* ===== HEADER - FIXED ===== */
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
@@ -149,7 +148,6 @@
             padding: 4px 8px;
         }
 
-        /* Trust Bar */
         .trust-bar {
             display: flex;
             flex-wrap: wrap;
@@ -172,7 +170,6 @@
             font-size: 18px;
         }
 
-        /* ===== PAGE SYSTEM ===== */
         .page {
             display: none;
             animation: fadeUp 0.3s ease;
@@ -191,7 +188,7 @@
             }
         }
 
-        /* Active Order Panel */
+        /* ===== ACTIVE ORDER PANEL ===== */
         .active-order-panel {
             background: #ffffff;
             border: 1px solid var(--border-color);
@@ -209,10 +206,11 @@
             margin-bottom: 15px;
         }
         .active-order-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            justify-content: center;
             gap: 12px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
         .btn-panel-action {
             padding: 10px 16px;
@@ -237,8 +235,12 @@
         .btn-panel-action.hidden {
             display: none;
         }
+        /* Jab sirf ek button bache, toh center me */
+        .active-order-actions .btn-panel-action:only-child {
+            margin: 0 auto;
+        }
 
-        /* Hero Section */
+        /* ===== HERO ===== */
         .hero {
             display: flex;
             align-items: center;
@@ -382,7 +384,6 @@
             transform: translateY(20px);
         }
 
-        /* Section Headers */
         .section-header {
             text-align: center;
             margin-bottom: 40px;
@@ -397,7 +398,6 @@
             font-size: 15px;
         }
 
-        /* Pricing */
         .pricing {
             padding: 60px 5%;
         }
@@ -408,7 +408,6 @@
             border-radius: 16px;
             border: 1px solid var(--border-color);
             overflow: hidden;
-            transition: 0.3s;
             box-shadow: var(--shadow-card);
         }
         .price-menu .accordion-header {
@@ -431,21 +430,8 @@
             font-weight: 600;
             margin: 0;
         }
-        .price-menu .accordion-header h3 i {
-            font-size: 20px;
-            width: 24px;
-            text-align: center;
-        }
         .price-menu .accordion-header i.fa-chevron-down {
-            color: var(--text-muted);
-            font-size: 16px;
             transition: transform 0.3s;
-        }
-        .price-menu.open {
-            border-color: var(--brand-primary);
-        }
-        .price-menu.open .accordion-header {
-            border-bottom: 1px solid var(--border-color);
         }
         .price-menu.open .accordion-header i.fa-chevron-down {
             transform: rotate(180deg);
@@ -481,7 +467,6 @@
             border-radius: 30px;
         }
 
-        /* Services (Why Choose Us) */
         .services-section {
             padding: 60px 5%;
             background: #ffffff;
@@ -524,7 +509,6 @@
             font-size: 14px;
         }
 
-        /* Reviews */
         .reviews {
             padding: 60px 5%;
             overflow: hidden;
@@ -577,7 +561,6 @@
             margin-left: 8px;
         }
 
-        /* FAQ */
         .faq-section {
             padding: 60px 5%;
             max-width: 800px;
@@ -618,7 +601,6 @@
             color: var(--brand-primary);
         }
 
-        /* Contact */
         .info-section {
             padding: 60px 5%;
             display: grid;
@@ -673,7 +655,7 @@
             margin-bottom: 8px;
         }
 
-        /* Popups */
+        /* POPUPS */
         .hero-track-popup,
         .hero-history-popup {
             position: fixed;
@@ -732,7 +714,6 @@
             cursor: pointer;
         }
 
-        /* Booking Overlay */
         .booking-overlay,
         .success-overlay {
             position: fixed;
@@ -831,6 +812,7 @@
         .popup-body {
             padding: 24px;
         }
+
         .service-categories {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -873,6 +855,7 @@
             font-size: 9px;
             color: var(--text-muted);
         }
+
         .items-list {
             display: none;
         }
@@ -1220,7 +1203,6 @@
             }
         }
 
-        /* Success */
         .success-popup {
             background: #ffffff;
             border-radius: 24px;
@@ -1319,7 +1301,7 @@
             border-radius: 8px;
         }
 
-        /* ===== ADMIN PANEL (Overlay) ===== */
+        /* ===== ADMIN PANEL ===== */
         .admin-gear {
             position: fixed;
             bottom: 20px;
@@ -1505,24 +1487,7 @@
         .btn-reminder:hover {
             background: #b45309;
         }
-        .admin-delivery-link {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 18px;
-            background: var(--brand-secondary);
-            color: #fff;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            font-size: 14px;
-        }
-        .admin-delivery-link:hover {
-            opacity: 0.9;
-        }
 
-        /* Admin section tabs */
         .admin-tabs {
             display: flex;
             gap: 8px;
@@ -1551,7 +1516,6 @@
             display: block;
         }
 
-        /* Delivery Boys list */
         .delivery-boy-item {
             display: flex;
             justify-content: space-between;
@@ -1563,7 +1527,6 @@
             background: var(--bg-body);
         }
 
-        /* ===== ADMIN LOGIN FIX ===== */
         #adminLoginPromptOverlay,
         #adminLoginPrompt {
             display: flex;
@@ -1606,7 +1569,6 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             nav ul {
                 display: none;
@@ -1685,7 +1647,7 @@
         <button class="close-banner" id="closeBanner">&times;</button>
     </div>
 
-    <!-- HEADER (FIXED) -->
+    <!-- HEADER -->
     <header>
         <a href="#" class="logo" id="logoClick">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo" />
@@ -1786,7 +1748,7 @@
             <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-star" style="color:#0ea5e9;"></i> Additional</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Saree Starch</span><span class="price-tag">₹50</span></div><div class="price-item"><span class="price-name">Blouse</span><span class="price-tag">Free</span></div></div></div>
         </section>
 
-        <!-- SERVICES (Why Choose Us) – WITH BULK BOOKING CARD -->
+        <!-- SERVICES (Why Choose Us) – WITH BULK BOOKING -->
         <section class="services-section" id="services">
             <div class="section-header"><h2>Why <span class="text-gradient">Choose Us?</span></h2><p>We treat your garments like our own</p></div>
             <div class="services-grid">
@@ -1795,7 +1757,7 @@
                 <div class="service-card"><div class="icon-box"><i class="fas fa-clock"></i></div><h3>48-72 Hr Service</h3><p>Reliable turnaround, careful handling.</p></div>
                 <div class="service-card"><div class="icon-box"><i class="fas fa-hand-sparkles"></i></div><h3>Premium Finishing</h3><p>Expert pressing & folding, ready to wear.</p></div>
                 <div class="service-card"><div class="icon-box"><i class="fas fa-bolt"></i></div><h3>Express Delivery</h3><p>We offer premium quality at 10% less than other laundries in Lucknow. No compromise on quality.</p></div>
-                <!-- NEW: Bulk Booking Card -->
+                <!-- BULK BOOKING CARD -->
                 <div class="service-card"><div class="icon-box"><i class="fas fa-users"></i></div><h3>Bulk Booking</h3><p>Special discounts for bulk orders. Perfect for hotels, restaurants, and offices. Contact us for custom pricing.</p></div>
             </div>
         </section>
@@ -1851,7 +1813,7 @@
                 <button class="close-popup" id="closeBookingPopup">&times;</button>
             </div>
             <div class="popup-body">
-                <!-- Categories (truncated for brevity, but full in actual code) -->
+                <!-- Categories (shortened for brevity, full in actual code) -->
                 <div class="service-categories" id="categoryGrid">
                     <div class="category-card" data-category="regular"><i class="fas fa-tshirt"></i><div class="cat-name">Regular Wear</div><div class="cat-desc">Pant, Shirt</div></div>
                     <div class="category-card" data-category="winter"><i class="fas fa-snowflake"></i><div class="cat-name">Winter Wear</div><div class="cat-desc">Sweater, Shawl</div></div>
@@ -1863,7 +1825,8 @@
                     <div class="category-card" data-category="steam"><i class="fas fa-fire"></i><div class="cat-name">Steam Press</div><div class="cat-desc">Iron only</div></div>
                     <div class="category-card" data-category="additional"><i class="fas fa-star"></i><div class="cat-name">Additional</div><div class="cat-desc">Starch</div></div>
                 </div>
-                <!-- Items Lists (keeping it short in display but full in final code) -->
+
+                <!-- Items (shortened) -->
                 <div class="items-list" id="items-regular">
                     <div class="item-row" data-item="reg-pant" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Pant</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                     <div class="item-row" data-item="reg-shirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
@@ -1917,17 +1880,14 @@
                     <div class="item-row" data-item="add-blouse" data-price="0"><div class="item-info"><i class="fas fa-star"></i> <span class="item-name">Blouse</span><span class="item-price">Free</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
 
-                <!-- Summary -->
                 <div id="selectedItemsSummary"><h4>Your Selection</h4><div id="summaryList"></div></div>
 
-                <!-- Promo -->
                 <div class="promo-box">
                     <input type="text" id="promoCodeInput" class="promo-input" placeholder="Enter Promo Code (e.g. PARTH20)" />
                     <button type="button" id="applyPromoBtn" class="promo-btn">Apply</button>
                 </div>
                 <div id="promoMsg" class="promo-msg"></div>
 
-                <!-- Price -->
                 <div class="price-summary-box" id="priceSummary">
                     <div class="price-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
                     <div class="price-row discount" id="discountRow"><span>First Order Discount (20%)</span><span id="discountAmount">-₹0</span></div>
@@ -1937,13 +1897,11 @@
                 </div>
                 <div class="min-order-warning" id="minOrderWarning">⚠️ Minimum order is ₹300. Please add more items.</div>
 
-                <!-- Express Checkbox -->
                 <div class="checkbox-group">
                     <input type="checkbox" id="expressCheckbox" />
                     <label for="expressCheckbox"><i class="fas fa-rocket" style="color:var(--brand-primary);"></i> Express Delivery (90% extra on subtotal)</label>
                 </div>
 
-                <!-- Form -->
                 <form id="bookingForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -2020,7 +1978,6 @@
                         <button data-tab="reports">📊 Reports</button>
                     </div>
 
-                    <!-- TAB: Orders -->
                     <div class="admin-tab-content active" id="tab-orders">
                         <div class="admin-stats" id="adminStatsOverlay"></div>
                         <div class="reminder-box" id="reminderBoxOverlay"><h4>📅 Tomorrow's Deliveries</h4><ul id="reminderListOverlay"></ul></div>
@@ -2029,7 +1986,6 @@
                         <div style="overflow-x:auto;"><table class="order-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Assign To</th><th>Action</th></tr></thead><tbody id="adminOrderBodyOverlay"></tbody></table></div>
                     </div>
 
-                    <!-- TAB: Delivery Boys -->
                     <div class="admin-tab-content" id="tab-deliveryboys">
                         <h3 style="margin-bottom:12px;">Add Delivery Boy</h3>
                         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
@@ -2041,7 +1997,6 @@
                         <div id="deliveryBoyList"></div>
                     </div>
 
-                    <!-- TAB: Services -->
                     <div class="admin-tab-content" id="tab-services">
                         <h3 style="margin-bottom:12px;">Manage Prices (JSON format)</h3>
                         <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Edit the price list below. Format: { "category": { "item": price } }</p>
@@ -2050,7 +2005,6 @@
                         <p id="priceSaveMsg" style="margin-top:8px; font-size:13px;"></p>
                     </div>
 
-                    <!-- TAB: Reports -->
                     <div class="admin-tab-content" id="tab-reports">
                         <h3 style="margin-bottom:12px;">📊 Revenue Report</h3>
                         <div id="reportContent"><p>Loading...</p></div>
@@ -2126,7 +2080,6 @@
                 if (el && el.classList.contains('active')) {
                     closeOverlay(el);
                     closed = true;
-                    // If admin overlay closed, reset password prompt
                     if (id === 'adminOverlay') {
                         resetAdminLogin();
                     }
@@ -2164,7 +2117,7 @@
             document.getElementById('adminLoginErrorOverlay').style.display = 'none';
         }
 
-        // ======================== BOOKING POPUP LOGIC ========================
+        // ======================== BOOKING POPUP ========================
         const bookingOverlay = document.getElementById('bookingOverlay');
         const successOverlay = document.getElementById('successOverlay');
 
@@ -2334,12 +2287,12 @@
             updatePriceSummary();
         });
 
-        // ======================== CHECK PENDING ORDERS LIMIT (Point 3) ========================
+        // ======================== CHECK PENDING ORDERS LIMIT ========================
         function checkPendingOrdersLimit(phone) {
             return new Promise((resolve, reject) => {
                 db.ref('orders').orderByChild('phone').equalTo(phone).once('value', (snap) => {
                     if (!snap.exists()) {
-                        resolve(true); // No orders, allowed
+                        resolve(true);
                         return;
                     }
                     let pendingCount = 0;
@@ -2383,7 +2336,6 @@
             if (!name || !phone || !address) { alert('Please fill all required fields.'); return; }
             if (!/^[0-9]{10}$/.test(phone)) { alert('Enter a valid 10-digit phone.'); return; }
 
-            // --- CHECK PENDING ORDERS LIMIT ---
             try {
                 await checkPendingOrdersLimit(phone);
             } catch (errMsg) {
@@ -2509,44 +2461,66 @@
             if (id) fetchOrderStatus(id, 'heroTrackResult');
         });
 
+        // ======================== ORDER HISTORY (FIXED: Phone + PIN) ========================
         document.getElementById('heroHistorySubmit').addEventListener('click', async () => {
             const phone = document.getElementById('heroHistoryPhone').value.trim();
             const pin = document.getElementById('heroHistoryPin').value.trim();
             const res = document.getElementById('heroHistoryResult');
 
-            if (!/^[0-9]{10}$/.test(phone)) { alert('Enter valid 10-digit number'); return; }
-            if (!/^[0-9]{4}$/.test(pin)) { alert('Enter 4-digit PIN'); return; }
+            if (!/^[0-9]{10}$/.test(phone)) {
+                res.innerHTML = '<p style="color:var(--danger);">❌ Enter valid 10-digit phone number.</p>';
+                return;
+            }
+            if (!/^[0-9]{4}$/.test(pin)) {
+                res.innerHTML = '<p style="color:var(--danger);">❌ Enter 4-digit PIN.</p>';
+                return;
+            }
 
-            res.innerHTML = 'Loading...';
+            res.innerHTML = '🔍 Searching...';
+
             try {
                 const snap = await db.ref('orders').orderByChild('phone').equalTo(phone).once('value');
-                if (snap.exists()) {
-                    const orders = [];
-                    snap.forEach(c => orders.push(c.val()));
-                    const matchedOrders = orders.filter(o => o.pin === pin);
-                    if (matchedOrders.length === 0) {
-                        res.innerHTML =
-                            '<p style="color:var(--danger);">❌ No orders found for this Phone & PIN combination.</p>';
-                        return;
-                    }
-                    matchedOrders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                    res.innerHTML = matchedOrders.map(o => `
-                        <div style="background:var(--bg-body);padding:10px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border-color);">
-                            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-                                <div>
-                                    <strong>${o.orderId}</strong> | ₹${o.total}<br>
-                                    <small>${o.pickupDate} | ${o.status}</small>
-                                </div>
-                                <button onclick="generateInvoiceFromHistory('${o.orderId}')" style="padding:4px 12px;border-radius:30px;border:1px solid var(--border-color);background:#fff;cursor:pointer;font-size:12px;">
-                                    📄 Invoice
-                                </button>
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    res.innerHTML = '<p style="color:var(--danger);">❌ No orders found for this Phone & PIN combination.</p>';
+
+                if (!snap.exists()) {
+                    res.innerHTML = '<p style="color:var(--danger);">❌ No orders found for this phone number.</p>';
+                    return;
                 }
-            } catch (e) { res.innerHTML = '<p style="color:#ef4444;">Error.</p>'; }
+
+                const orders = [];
+                snap.forEach(child => {
+                    const order = child.val();
+                    // PIN match (string comparison, both sides trimmed)
+                    if (String(order.pin).trim() === pin) {
+                        orders.push(order);
+                    }
+                });
+
+                if (orders.length === 0) {
+                    res.innerHTML =
+                    '<p style="color:var(--danger);">❌ No orders found. Please check your Phone and PIN.</p>';
+                    return;
+                }
+
+                orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                res.innerHTML = orders.map(o => `
+                    <div style="background:var(--bg-body);padding:12px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border-color);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+                            <div>
+                                <strong>${o.orderId}</strong> | ₹${o.total}<br>
+                                <small>${o.pickupDate || 'N/A'} | ${o.status || 'pending'}</small>
+                            </div>
+                            <button onclick="generateInvoiceFromHistory('${o.orderId}')" style="padding:4px 12px;border-radius:30px;border:1px solid var(--border-color);background:#fff;cursor:pointer;font-size:12px;">
+                                📄 Invoice
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                res.innerHTML = '<p style="color:var(--danger);">❌ Error fetching orders. Please try again.</p>';
+                console.error(err);
+            }
         });
 
         window.generateInvoiceFromHistory = function(orderId) {
@@ -2631,7 +2605,6 @@
                     } else {
                         panel.style.display = 'none';
                         localStorage.removeItem(ACTIVE_ORDER_ID_KEY);
-                        // Clear any WA share flag
                         if (o && o.orderId) {
                             localStorage.removeItem('pdc_wa_shared_' + o.orderId);
                         }
@@ -2660,9 +2633,7 @@
         document.getElementById('shareWhatsAppBtn').addEventListener('click', () => {
             if (currentOrderData) {
                 shareWhatsApp(currentOrderData);
-                // Set flag for this order
                 localStorage.setItem('pdc_wa_shared_' + currentOrderData.orderId, 'true');
-                // Hide in active panel
                 const waBtn = document.getElementById('panelShareWhatsApp');
                 if (waBtn) waBtn.classList.add('hidden');
             }
@@ -2675,7 +2646,6 @@
         document.getElementById('panelShareWhatsApp').addEventListener('click', () => {
             if (activePanelOrder) {
                 shareWhatsApp(activePanelOrder);
-                // Set flag for this order
                 localStorage.setItem('pdc_wa_shared_' + activePanelOrder.orderId, 'true');
                 document.getElementById('panelShareWhatsApp').classList.add('hidden');
             }
@@ -2703,6 +2673,7 @@
         }
 
         // ======================== ADMIN OVERLAY ========================
+        // ======================== ADMIN OVERLAY ========================
         document.getElementById('adminLoginBtnOverlay').addEventListener('click', () => {
             const pass = document.getElementById('adminPassInputOverlay').value.trim();
             if (pass === ADMIN_PASSWORD) {
@@ -2725,11 +2696,13 @@
         document.getElementById('closeAdminBtn').addEventListener('click', () => {
             closeOverlay(adminOverlay);
             resetAdminLogin();
+            detachOrdersListener();
         });
         adminOverlay.addEventListener('click', (e) => {
             if (e.target === adminOverlay) {
                 closeOverlay(adminOverlay);
                 resetAdminLogin();
+                detachOrdersListener();
             }
         });
 
@@ -2737,7 +2710,6 @@
             openOverlay(adminOverlay);
             document.getElementById('adminPassInputOverlay').value = '';
             document.getElementById('adminLoginErrorOverlay').style.display = 'none';
-            // If already logged in, just refresh data
             if (document.getElementById('adminDashboardOverlay').style.display === 'block') {
                 loadAdminData();
                 loadDeliveryBoys();
@@ -2746,10 +2718,10 @@
             }
         });
 
-        // Optional: Double-tap logo to open admin (alternate hide/show method)
+        // Double-tap logo to open admin (alternate)
         document.getElementById('logoClick').addEventListener('dblclick', function(e) {
             e.preventDefault();
-            adminGear.click(); // Trigger admin gear click
+            adminGear.click();
         });
 
         // Admin Tabs
@@ -2758,26 +2730,35 @@
                 document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                const tabId = 'tab-' + btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
                 if (btn.dataset.tab === 'reports') loadReports();
                 if (btn.dataset.tab === 'services') loadPriceEditor();
+                // When switching to orders tab, reattach listener
+                if (btn.dataset.tab === 'orders') {
+                    attachOrdersListener();
+                } else {
+                    detachOrdersListener();
+                }
             });
         });
 
-        // ======================== ADMIN - LIVE ORDERS ========================
-        function loadAdminData() {
-            const tbody = document.getElementById('adminOrderBodyOverlay');
-            const statsDiv = document.getElementById('adminStatsOverlay');
-
+        // ======================== ADMIN - LIVE ORDERS (FIXED) ========================
+        function attachOrdersListener() {
+            // Remove old listener if exists
             if (ordersListener) {
                 db.ref('orders').off('value', ordersListener);
                 ordersListener = null;
             }
 
-            ordersListener = db.ref('orders').on('value', (snap) => {
+            // Create named function
+            ordersListener = function(snap) {
                 db.ref('delivery_boys').once('value').then(dbSnap => {
                     let boys = [];
                     if (dbSnap.exists()) { dbSnap.forEach(c => boys.push({ id: c.key, ...c.val() })); }
+
+                    const tbody = document.getElementById('adminOrderBodyOverlay');
+                    const statsDiv = document.getElementById('adminStatsOverlay');
 
                     if (!snap.exists()) {
                         tbody.innerHTML = '<tr><td colspan="7">No orders.</td></tr>';
@@ -2829,7 +2810,24 @@
                         </tr>`;
                     }).join('');
                 });
-            });
+            };
+
+            // Attach listener
+            db.ref('orders').on('value', ordersListener);
+        }
+
+        function detachOrdersListener() {
+            if (ordersListener) {
+                db.ref('orders').off('value', ordersListener);
+                ordersListener = null;
+            }
+        }
+
+        function loadAdminData() {
+            // If dashboard is visible, attach listener
+            if (document.getElementById('adminDashboardOverlay').style.display === 'block') {
+                attachOrdersListener();
+            }
         }
 
         window.assignOrder = function(orderId) {
@@ -3051,6 +3049,7 @@
         console.log('📦 Max pending orders per customer: ' + MAX_PENDING_ORDERS);
         console.log('🔙 Back button works for all popups and admin overlay.');
         console.log('🖱️ Double-tap on logo to open Admin (alternate)');
+        console.log('📋 Order history: Phone + PIN required (privacy protected)');
     </script>
 </body>
 </html>
