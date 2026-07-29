@@ -81,6 +81,7 @@
         .trust-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #e2e8f0; }
         .trust-item i { color: var(--brand-light-blue); font-size: 18px; }
 
+        /* IMPROVED ACTIVE ORDER PANEL */
         .active-order-panel { background: rgba(255,255,255,0.02); border: 1px solid rgba(56,189,248,0.2); border-radius: 16px; margin: 20px 5%; padding: 20px; display: none; }
         .active-order-panel h4 { margin-bottom: 15px; color: var(--brand-light-blue); display: flex; align-items: center; gap: 8px;}
         
@@ -634,6 +635,8 @@
         let activePanelOrder = null;
         const FIRST_ORDER_KEY = 'pdc_first_order_used';
         const CUSTOMER_DATA_KEY = 'pdc_customer_data';
+        // Naya key memory ke liye: Sirf is device ka active order yaad rakhega
+        const ACTIVE_ORDER_ID_KEY = 'pdc_active_order_id';
 
         const itemNameMap = {
             'reg-pant': 'Pant', 'reg-shirt': 'Shirt', 'reg-kurta': 'Kurta', 'reg-tshirt': 'T-Shirt', 'reg-dhoti': 'Dhoti',
@@ -938,6 +941,10 @@
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sheetData) }).catch(err => console.error('Sheet Error:', err)); 
 
                 if (discountApplied) { localStorage.setItem(FIRST_ORDER_KEY, 'true'); document.getElementById('topBanner').style.display = 'none'; }
+                
+                // SAVE THIS SPECIFIC ORDER TO THIS BROWSER SO OTHERS DON'T SEE IT
+                localStorage.setItem(ACTIVE_ORDER_ID_KEY, orderId);
+
                 currentOrderId = orderId; currentOrderData = orderData;
                 activePanelOrder = orderData;
                 
@@ -946,6 +953,9 @@
                 document.getElementById('variableNote').style.display = hasVariableItems(orderItems) ? 'block' : 'none';
                 
                 openOverlay(successOverlay); resetBookingForm();
+                
+                // Force UI update immediately for this new local order
+                updateActiveOrderPanel();
             } catch (error) {
                 alert('Booking failed. Please try again.'); console.error(error);
             } finally {
@@ -1018,7 +1028,6 @@
         }
 
         function renderTimeline(order) {
-            // Very smart status checker: removes express, converts to small letters, changes space to underscore
             let rawStatus = order.status ? order.status.toLowerCase().replace('express-', '').replace(' ', '_').trim() : '';
             let step = 0;
 
@@ -1027,7 +1036,6 @@
             else if (rawStatus === 'processing') step = 2; 
             else if (rawStatus === 'completed') step = 3; 
             else if (rawStatus === 'cancelled') return `<p style="color:#ef4444; margin-bottom: 10px;">Order Cancelled</p>`;
-            // If unknown status entered manually, show it nicely
             else return `<p style="margin-bottom: 15px; color: var(--text-muted);">Status: <strong style="color:#fff;">${order.status}</strong></p>`;
 
             const steps = [
@@ -1051,29 +1059,39 @@
                 </div><p style="text-align:center; color:var(--brand-light-blue); margin-top:15px; font-size: 14px;"><strong>${order.orderId}</strong> — ${order.name} | ₹${order.total} ${order.express ? '🚀' : ''}</p>`;
         }
 
+        // IMPROVED PRIVACY: Only shows the order placed from the user's specific browser
         function updateActiveOrderPanel() {
             const panel = document.getElementById('activeOrderPanel'); 
             const timelineDiv = document.getElementById('activeOrderTimeline');
             
-            db.ref('orders').limitToLast(10).once('value', snap => {
-                let latest = null;
-                snap.forEach(c => {
-                    const o = c.val();
-                    const rawStatus = o.status ? o.status.toLowerCase().replace('express-', '').replace(' ', '_').trim() : '';
-                    // panel is visible unless status is completed or cancelled
-                    if (rawStatus !== 'completed' && rawStatus !== 'cancelled') {
-                        if (!latest || o.createdAt > latest.createdAt) {
-                            latest = o;
-                        }
-                    }
-                });
+            // Local memory me dekho ki is device ne koi order place kiya tha kya?
+            const localOrderId = localStorage.getItem(ACTIVE_ORDER_ID_KEY);
 
-                if (latest) { 
-                    panel.style.display = 'block'; 
-                    timelineDiv.innerHTML = renderTimeline(latest); 
-                    activePanelOrder = latest;
+            // Agar is device me koi order history nahi hai, to panel hide kar do (dusro ko order na dikhe)
+            if (!localOrderId) {
+                panel.style.display = 'none';
+                return;
+            }
+
+            // Agar order id hai, to firebase se check karo
+            db.ref('orders/' + localOrderId).once('value').then(snap => {
+                if (snap.exists()) {
+                    const o = snap.val();
+                    const rawStatus = o.status ? o.status.toLowerCase().replace('express-', '').replace(' ', '_').trim() : '';
+                    
+                    // Agar completed ya cancelled nahi hai to live dikhate raho
+                    if (rawStatus !== 'completed' && rawStatus !== 'cancelled') {
+                        panel.style.display = 'block'; 
+                        timelineDiv.innerHTML = renderTimeline(o); 
+                        activePanelOrder = o;
+                    } else { 
+                        // Complete/Cancel ho gaya to panel hata do aur local memory saaf kar do
+                        panel.style.display = 'none'; 
+                        localStorage.removeItem(ACTIVE_ORDER_ID_KEY);
+                    }
                 } else { 
                     panel.style.display = 'none'; 
+                    localStorage.removeItem(ACTIVE_ORDER_ID_KEY);
                 }
             });
         }
