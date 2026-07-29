@@ -65,7 +65,6 @@
         .top-banner span { background: #000; color: #fff; padding: 3px 10px; border-radius: 20px; margin-left: 5px; font-weight: 700; }
         .close-banner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; background: none; border: none; color: #000; }
 
-        /* ORIGINAL CODE HEADER DESIGN RESTORED */
         header { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: rgba(5,11,20,0.92); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
         .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; background: linear-gradient(135deg, var(--brand-light-blue), var(--brand-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
         .logo img { height: 45px; object-fit: contain; }
@@ -84,6 +83,13 @@
 
         .active-order-panel { background: rgba(255,255,255,0.02); border: 1px solid rgba(56,189,248,0.2); border-radius: 16px; margin: 20px 5%; padding: 20px; display: none; }
         .active-order-panel h4 { margin-bottom: 15px; color: var(--brand-light-blue); display: flex; align-items: center; gap: 8px;}
+        
+        .active-order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .btn-panel-action { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; text-decoration: none; font-family: 'Outfit', sans-serif; }
+        .btn-panel-invoice { background: rgba(56, 189, 248, 0.08); color: var(--brand-light-blue); border: 1px solid rgba(56, 189, 248, 0.3); }
+        .btn-panel-invoice:hover { background: rgba(56, 189, 248, 0.15); transform: translateY(-2px); }
+        .btn-panel-whatsapp { background: rgba(34, 197, 94, 0.08); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .btn-panel-whatsapp:hover { background: rgba(34, 197, 94, 0.15); transform: translateY(-2px); }
 
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 5% 30px; gap: 40px; flex-wrap: wrap; }
         .hero-content { max-width: 550px; }
@@ -95,11 +101,11 @@
         .action-buttons { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: flex-start; margin-bottom: 20px;}
         .btn { padding: 14px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s; cursor: pointer; border: none; font-family: 'Outfit', sans-serif; }
         
-        .btn-book-now { background: var(--gold); color: #000; font-weight: 700; box-shadow: 0 4px 25px rgba(250, 204, 21, 0.4); }
-        .btn-book-now:hover { transform: translateY(-3px); box-shadow: 0 6px 30px rgba(250, 204, 21, 0.6); }
+        .btn-book-now { background: var(--gold); color: #000; font-weight: 700; box-shadow: 0 4px 30px rgba(250, 204, 21, 0.5); transform: scale(1.03); }
+        .btn-book-now:hover { transform: scale(1.06) translateY(-3px); box-shadow: 0 6px 35px rgba(250, 204, 21, 0.7); }
         
-        .btn-whatsapp-sm { background: var(--success); color: white; font-weight: 600; box-shadow: 0 4px 25px rgba(34, 197, 94, 0.3); }
-        .btn-whatsapp-sm:hover { transform: translateY(-3px); box-shadow: 0 6px 30px rgba(34, 197, 94, 0.5); }
+        .btn-whatsapp-sm { background: transparent; color: #4ade80; border: 1.5px solid rgba(34, 197, 94, 0.5); font-weight: 500; }
+        .btn-whatsapp-sm:hover { background: rgba(34, 197, 94, 0.08); transform: translateY(-3px); border-color: rgba(34, 197, 94, 0.8); }
         
         .btn-call { background: transparent; color: var(--brand-light-blue); border: 1.5px solid rgba(56, 189, 248, 0.5); font-weight: 500; }
         .btn-call:hover { background: rgba(56, 189, 248, 0.05); transform: translateY(-3px); }
@@ -221,52 +227,19 @@
         .price-row.discount.used { color: var(--danger); text-decoration: line-through; }
         .min-order-warning { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 8px;}
         
-        /* PROMO CODE SECTION */
         .promo-box { display: flex; gap: 8px; margin: 12px 0 4px; }
         .promo-input { flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); color: #fff; font-family: 'Outfit'; font-size: 13px; outline: none; text-transform: uppercase; }
         .promo-input:focus { border-color: var(--brand-light-blue); }
         .promo-btn { padding: 10px 18px; border-radius: 10px; background: var(--brand-light-blue); color: #000; font-weight: 700; border: none; cursor: pointer; font-size: 13px; transition: 0.2s; }
         .promo-btn:hover { background: #60a5fa; }
         
-        .promo-msg { 
-            font-size: 12px; 
-            margin-bottom: 12px; 
-            font-weight: 600; 
-            display: none; 
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
+        .promo-msg { font-size: 12px; margin-bottom: 12px; font-weight: 600; display: none; padding: 6px 10px; border-radius: 6px; }
         .promo-msg.success { color: #22c55e !important; background: rgba(34, 197, 94, 0.1); display: block !important; }
         .promo-msg.error { color: #ef4444 !important; background: rgba(239, 68, 68, 0.1); display: block !important; }
 
-        /* LIVE SUMMARY BOX */
-        #selectedItemsSummary {
-            background: rgba(56, 189, 248, 0.12) !important;
-            border: 1px solid rgba(56, 189, 248, 0.4) !important;
-            border-radius: 14px !important;
-            padding: 14px 16px !important;
-            margin-bottom: 15px !important;
-            display: none;
-        }
-        #selectedItemsSummary h4 {
-            font-size: 11px !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
-            color: var(--brand-light-blue) !important;
-            margin-bottom: 8px !important;
-            border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
-            padding-bottom: 5px !important;
-            font-weight: 700 !important;
-        }
-        .summary-item-row {
-            display: flex !important;
-            justify-content: space-between !important;
-            font-size: 14px !important;
-            color: #ffffff !important;
-            padding: 5px 0 !important;
-            font-weight: 500 !important;
-            border-bottom: 1px dashed rgba(255,255,255,0.08) !important;
-        }
+        #selectedItemsSummary { background: rgba(56, 189, 248, 0.12) !important; border: 1px solid rgba(56, 189, 248, 0.4) !important; border-radius: 14px !important; padding: 14px 16px !important; margin-bottom: 15px !important; display: none; }
+        #selectedItemsSummary h4 { font-size: 11px !important; text-transform: uppercase !important; letter-spacing: 1px !important; color: var(--brand-light-blue) !important; margin-bottom: 8px !important; border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important; padding-bottom: 5px !important; font-weight: 700 !important; }
+        .summary-item-row { display: flex !important; justify-content: space-between !important; font-size: 14px !important; color: #ffffff !important; padding: 5px 0 !important; font-weight: 500 !important; border-bottom: 1px dashed rgba(255,255,255,0.08) !important; }
         .summary-item-row:last-child { border-bottom: none !important; }
         
         .form-group { margin-bottom: 16px; }
@@ -279,59 +252,12 @@
         .form-select option { background: #0d1f3c; color: #fff; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
-        /* MODERN STYLISH CHECKBOX DESIGN */
-        .checkbox-group { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            margin: 16px 0; 
-            background: rgba(56, 189, 248, 0.05); 
-            padding: 14px 16px; 
-            border-radius: 14px; 
-            border: 1.5px solid rgba(56, 189, 248, 0.2); 
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .checkbox-group:hover {
-            border-color: rgba(56, 189, 248, 0.4);
-            background: rgba(56, 189, 248, 0.08);
-        }
-        .checkbox-group input[type="checkbox"] { 
-            appearance: none;
-            -webkit-appearance: none;
-            width: 22px; 
-            height: 22px; 
-            border: 2px solid var(--brand-light-blue);
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.3);
-            cursor: pointer; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-        .checkbox-group input[type="checkbox"]:checked {
-            background: var(--brand-light-blue);
-            border-color: var(--brand-light-blue);
-        }
-        .checkbox-group input[type="checkbox"]:checked::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 12px;
-            color: #050b14;
-        }
-        .checkbox-group label { 
-            color: #ffffff; 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            flex: 1;
-        }
+        .checkbox-group { display: flex; align-items: center; gap: 12px; margin: 16px 0; background: rgba(56, 189, 248, 0.05); padding: 14px 16px; border-radius: 14px; border: 1.5px solid rgba(56, 189, 248, 0.2); cursor: pointer; transition: all 0.3s ease; }
+        .checkbox-group:hover { border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.08); }
+        .checkbox-group input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border: 2px solid var(--brand-light-blue); border-radius: 6px; background: rgba(0, 0, 0, 0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; position: relative; }
+        .checkbox-group input[type="checkbox"]:checked { background: var(--brand-light-blue); border-color: var(--brand-light-blue); }
+        .checkbox-group input[type="checkbox"]:checked::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 12px; color: #050b14; }
+        .checkbox-group label { color: #ffffff; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; flex: 1; }
         
         .submit-btn { width: 100%; padding: 15px; border-radius: 14px; border: none; background: var(--brand-light-blue); color: #000; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;}
         .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4); }
@@ -375,7 +301,6 @@
         <button class="close-banner" id="closeBanner">&times;</button>
     </div>
     
-    <!-- ORIGINAL CODE HEADER RESTORED -->
     <header>
         <a href="#" class="logo">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo">
@@ -407,6 +332,10 @@
     <div class="active-order-panel" id="activeOrderPanel">
         <h4><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block; box-shadow: 0 0 10px #22c55e;"></span> Active Order Tracking</h4>
         <div id="activeOrderTimeline" style="color:var(--text-muted);"></div>
+        <div class="active-order-actions">
+            <button class="btn-panel-action btn-panel-invoice" id="panelDownloadInvoice"><i class="fas fa-download"></i> Download Invoice</button>
+            <button class="btn-panel-action btn-panel-whatsapp" id="panelShareWhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp Share</button>
+        </div>
     </div>
 
     <section class="hero" id="home">
@@ -616,7 +545,7 @@
                     <input type="text" id="promoCodeInput" class="promo-input" placeholder="Enter Promo Code (e.g. PARTH20)">
                     <button type="button" id="applyPromoBtn" class="promo-btn">Apply</button>
                 </div>
-                <div id="promoMsg" class="promo-msg"></div>
+                <div id="promoMsg" class="promo-msg" style="display:none;"></div>
 
                 <div class="price-summary-box" id="priceSummary">
                     <div class="price-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
@@ -701,6 +630,7 @@
 
         let orderItems = {};
         let appliedPromoDiscount = 0;
+        let activePanelOrder = null;
         const FIRST_ORDER_KEY = 'pdc_first_order_used';
         const CUSTOMER_DATA_KEY = 'pdc_customer_data';
 
@@ -923,7 +853,12 @@
             document.getElementById('expressCheckbox').checked = false;
             appliedPromoDiscount = 0;
             document.getElementById('promoCodeInput').value = '';
-            document.getElementById('promoMsg').style.display = 'none';
+            
+            const promoMsgEl = document.getElementById('promoMsg');
+            promoMsgEl.textContent = '';
+            promoMsgEl.style.display = 'none';
+            promoMsgEl.className = 'promo-msg';
+
             document.getElementById('bookingForm').reset();
             
             document.querySelectorAll('.category-card').forEach(c => {
@@ -983,7 +918,7 @@
 
             const orderData = {
                 orderId, name, phone, address, pickupDate: pickupDate || 'Not specified', timeSlot,
-                items: orderItems, discount: firstOrderDiscount + appliedPromoDiscount, express, expressCharge, total,
+                items: orderItems, subtotal, discount: firstOrderDiscount + appliedPromoDiscount, express, expressCharge, total,
                 status: express ? 'express-pending' : 'pending',
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
@@ -998,11 +933,13 @@
             try {
                 await db.ref('orders/' + orderId).set(orderData);
                 
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbzotBHnkUDAH2G2X_pQOLqSaC5WZ727e1ev8uTe-VbsRy6_QwgTUp17HAiEFpIc0L-G/exec'; 
+                // UPDATED GOOGLE APPS SCRIPT URL
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbxIU5qdtK3cHfrTHT05r3LnVTCTNRNcq3Ju5UrRE2l4AWgnFvh0wUiJdYXXWyN_9FdK/exec'; 
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sheetData) }).catch(err => console.error('Sheet Error:', err)); 
 
                 if (discountApplied) { localStorage.setItem(FIRST_ORDER_KEY, 'true'); document.getElementById('topBanner').style.display = 'none'; }
                 currentOrderId = orderId; currentOrderData = orderData;
+                activePanelOrder = orderData;
                 
                 closeOverlay(bookingOverlay);
                 document.getElementById('successOrderId').textContent = orderId;
@@ -1019,21 +956,27 @@
         document.getElementById('closeSuccess').addEventListener('click', () => closeOverlay(successOverlay));
         document.getElementById('trackFromSuccess').addEventListener('click', () => { closeOverlay(successOverlay); document.getElementById('heroTrackInput').value = currentOrderId || ''; openOverlay(document.getElementById('heroTrackPopup')); fetchOrderStatus(currentOrderId, 'heroTrackResult'); });
 
-        document.getElementById('shareWhatsAppBtn').addEventListener('click', () => {
-            if (!currentOrderData) return;
-            const cleanAddress = currentOrderData.address.replace(/[\r\n]+/g, ', ').replace(/\s+/g, ' ').trim();
-            const itemsList = Object.entries(currentOrderData.items).map(([key, qty]) => `${getItemDisplayName(key)} x${qty}`).join(', ');
-            let msg = `Order Confirmed! 🧺\n\nOrder ID: ${currentOrderData.orderId}\nName: ${currentOrderData.name}\nTotal: ₹${currentOrderData.total}\n${currentOrderData.express ? `🚀 Express Delivery (+₹100)\n` : ''}Items: ${itemsList}\nAddress: ${cleanAddress}\nPickup: ${currentOrderData.pickupDate} (${currentOrderData.timeSlot})`;
-            if (hasVariableItems(currentOrderData.items)) msg += `\n\nNote: We will contact you shortly for the final price confirmation.`;
-            window.open(`https://wa.me/919235601645?text=${encodeURIComponent(msg)}`, '_blank');
-        });
-
-        document.getElementById('downloadInvoice').addEventListener('click', () => {
-            if (!currentOrderData) return;
-            const variableNote = hasVariableItems(currentOrderData.items) ? '<p style="color: #d4af37;"><strong>Note:</strong> We will contact you shortly for the final price confirmation.</p>' : '';
-            const invoiceHTML = `<html><head><title>Invoice ${currentOrderData.orderId}</title><style>body { font-family: Arial; padding: 20px; } h2 { color: #333; } .line { border-bottom:1px solid #ccc; }</style></head><body><h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr><p><strong>Order ID:</strong> ${currentOrderData.orderId}</p><p><strong>Name:</strong> ${currentOrderData.name}</p><p><strong>Phone:</strong> ${currentOrderData.phone}</p><p><strong>Address:</strong> ${currentOrderData.address}</p><p><strong>Pickup:</strong> ${currentOrderData.pickupDate} (${currentOrderData.timeSlot})</p><p><strong>Express:</strong> ${currentOrderData.express ? 'Yes (+₹100)' : 'No'}</p><hr><h3>Items</h3><ul>${Object.entries(currentOrderData.items).map(([k,v]) => `<li>${getItemDisplayName(k)} x ${v}</li>`).join('')}</ul><p>Subtotal: ₹${currentOrderData.subtotal}</p><p>Discount: -₹${currentOrderData.discount}</p>${currentOrderData.express ? '<p>Express Charge: ₹100</p>' : ''}<p><strong>Total: ₹${currentOrderData.total}</strong></p>${variableNote}<hr><p>Thank you!</p></body></html>`;
+        function generateInvoice(ord) {
+            if (!ord) return;
+            const variableNote = hasVariableItems(ord.items) ? '<p style="color: #d4af37;"><strong>Note:</strong> We will contact you shortly for the final price confirmation.</p>' : '';
+            const invoiceHTML = `<html><head><title>Invoice ${ord.orderId}</title><style>body { font-family: Arial; padding: 20px; } h2 { color: #333; }</style></head><body><h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr><p><strong>Order ID:</strong> ${ord.orderId}</p><p><strong>Name:</strong> ${ord.name}</p><p><strong>Phone:</strong> ${ord.phone}</p><p><strong>Address:</strong> ${ord.address}</p><p><strong>Pickup:</strong> ${ord.pickupDate} (${ord.timeSlot})</p><p><strong>Express:</strong> ${ord.express ? 'Yes (+₹100)' : 'No'}</p><hr><h3>Items</h3><ul>${Object.entries(ord.items).map(([k,v]) => `<li>${getItemDisplayName(k)} x ${v}</li>`).join('')}</ul><p>Subtotal: ₹${ord.subtotal}</p><p>Discount: -₹${ord.discount}</p>${ord.express ? '<p>Express Charge: ₹100</p>' : ''}<p><strong>Total: ₹${ord.total}</strong></p>${variableNote}<hr><p>Thank you for choosing Parth Dry Clean!</p></body></html>`;
             const win = window.open('', '_blank'); win.document.write(invoiceHTML); win.document.close();
-        });
+        }
+
+        document.getElementById('downloadInvoice').addEventListener('click', () => generateInvoice(currentOrderData));
+        document.getElementById('panelDownloadInvoice').addEventListener('click', () => generateInvoice(activePanelOrder));
+
+        document.getElementById('shareWhatsAppBtn').addEventListener('click', () => shareWhatsApp(currentOrderData));
+        document.getElementById('panelShareWhatsApp').addEventListener('click', () => shareWhatsApp(activePanelOrder));
+
+        function shareWhatsApp(ord) {
+            if (!ord) return;
+            const cleanAddress = ord.address.replace(/[\r\n]+/g, ', ').replace(/\s+/g, ' ').trim();
+            const itemsList = Object.entries(ord.items).map(([key, qty]) => `${getItemDisplayName(key)} x${qty}`).join(', ');
+            let msg = `Order Confirmed! 🧺\n\nOrder ID: ${ord.orderId}\nName: ${ord.name}\nTotal: ₹${ord.total}\n${ord.express ? `🚀 Express Delivery (+₹100)\n` : ''}Items: ${itemsList}\nAddress: ${cleanAddress}\nPickup: ${ord.pickupDate} (${ord.timeSlot})`;
+            if (hasVariableItems(ord.items)) msg += `\n\nNote: We will contact you shortly for the final price confirmation.`;
+            window.open(`https://wa.me/919235601645?text=${encodeURIComponent(msg)}`, '_blank');
+        }
 
         const heroTrackPopup = document.getElementById('heroTrackPopup');
         const heroHistoryPopup = document.getElementById('heroHistoryPopup');
@@ -1119,7 +1062,13 @@
                 let latest = null; snap.forEach(c => { const o = c.val(); if (!latest || o.createdAt > latest.createdAt) latest = o; });
                 db.ref('orders').orderByChild('status').equalTo('express-pending').once('value', snap2 => {
                     snap2.forEach(c => { const o = c.val(); if (!latest || o.createdAt > latest.createdAt) latest = o; });
-                    if (latest) { panel.style.display = 'block'; timelineDiv.innerHTML = renderTimeline(latest); } else { panel.style.display = 'none'; }
+                    if (latest) { 
+                        panel.style.display = 'block'; 
+                        timelineDiv.innerHTML = renderTimeline(latest); 
+                        activePanelOrder = latest;
+                    } else { 
+                        panel.style.display = 'none'; 
+                    }
                 });
             });
         }
