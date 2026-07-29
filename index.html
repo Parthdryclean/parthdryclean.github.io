@@ -10,16 +10,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
-        /* ===== YOUR EXACT ORIGINAL CSS + NEW .disabled AND .selected-items-summary ===== */
         :root {
             --bg-dark: #050b14;
             --bg-card: rgba(255, 255, 255, 0.03);
             --text-main: #ffffff;
             --text-muted: #94a3b8;
             --brand-blue: #0077ff;
-            --brand-light-blue: #00bfff;
-            --gold: #d4af37;
-            --success: #10b981;
+            --brand-light-blue: #38bdf8;
+            --gold: #facc15;
+            --success: #22c55e;
             --danger: #ef4444;
             --border-color: rgba(255, 255, 255, 0.08);
         }
@@ -66,12 +65,13 @@
         .top-banner span { background: #000; color: #fff; padding: 3px 10px; border-radius: 20px; margin-left: 5px; font-weight: 700; }
         .close-banner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; background: none; border: none; color: #000; }
 
+        /* ORIGINAL CODE HEADER DESIGN RESTORED */
         header { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding: 12px 5%; background: rgba(5,11,20,0.92); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
         .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; background: linear-gradient(135deg, var(--brand-light-blue), var(--brand-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
         .logo img { height: 45px; object-fit: contain; }
         .logo-text { display: flex; flex-direction: column; }
-        .logo-text .brand-name { font-size: 22px; font-weight: 800; }
-        .logo-text .brand-tagline { font-size: 10px; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); }
+        .logo-text .brand-name { font-size: 22px; font-weight: 800; color: var(--brand-light-blue); -webkit-text-fill-color: var(--brand-light-blue); }
+        .logo-text .brand-tagline { font-size: 10px; color: var(--text-muted); -webkit-text-fill-color: var(--text-muted); letter-spacing: 0.5px; }
 
         nav ul { list-style: none; display: flex; gap: 25px; }
         nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 15px; transition: 0.3s; }
@@ -82,200 +82,300 @@
         .trust-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #e2e8f0; }
         .trust-item i { color: var(--brand-light-blue); font-size: 18px; }
 
-        .active-order-panel {
-            background: linear-gradient(135deg, rgba(0,191,255,0.08), rgba(0,119,255,0.04));
-            border: 1px solid rgba(0,191,255,0.25);
-            border-radius: 16px;
-            margin: 20px 5%;
-            padding: 20px;
-            display: none;
-        }
-        .active-order-panel h4 { margin-bottom: 15px; color: var(--brand-light-blue); }
+        .active-order-panel { background: rgba(255,255,255,0.02); border: 1px solid rgba(56,189,248,0.2); border-radius: 16px; margin: 20px 5%; padding: 20px; display: none; }
+        .active-order-panel h4 { margin-bottom: 15px; color: var(--brand-light-blue); display: flex; align-items: center; gap: 8px;}
 
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 5% 30px; gap: 40px; flex-wrap: wrap; }
         .hero-content { max-width: 550px; }
-        .premium-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(212,175,55,0.12); color: var(--gold); padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; border: 1px solid rgba(212,175,55,0.3); margin-bottom: 18px; }
+        .premium-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(212,175,55,0.12); color: #facc15; padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; border: 1px solid rgba(212,175,55,0.3); margin-bottom: 18px; }
         .hero-content h1 { font-size: clamp(34px, 5vw, 48px); font-weight: 700; line-height: 1.1; margin-bottom: 15px; }
-        .text-gradient { background: linear-gradient(to right, var(--brand-light-blue), #5ea3ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .text-gradient { background: linear-gradient(to right, var(--brand-light-blue), #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero-content p { font-size: 16px; color: var(--text-muted); margin-bottom: 25px; }
-        .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; }
-        .btn { padding: 13px 26px; border-radius: 50px; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; cursor: pointer; border: none; font-family: 'Outfit', sans-serif; }
-        .btn-whatsapp-sm { padding: 10px 18px; font-size: 13px; background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
-        .btn-call { background: var(--bg-card); color: var(--brand-light-blue); border: 1px solid rgba(0,191,255,0.3); }
-        .btn-book-now { background: linear-gradient(135deg, #d4af37, #fbbf24); color: #000; font-weight: 700; box-shadow: 0 0 20px rgba(212,175,55,0.4); }
-        .btn:hover { transform: translateY(-3px); }
+        
+        .action-buttons { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: flex-start; margin-bottom: 20px;}
+        .btn { padding: 14px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s; cursor: pointer; border: none; font-family: 'Outfit', sans-serif; }
+        
+        .btn-book-now { background: var(--gold); color: #000; font-weight: 700; box-shadow: 0 4px 25px rgba(250, 204, 21, 0.4); }
+        .btn-book-now:hover { transform: translateY(-3px); box-shadow: 0 6px 30px rgba(250, 204, 21, 0.6); }
+        
+        .btn-whatsapp-sm { background: var(--success); color: white; font-weight: 600; box-shadow: 0 4px 25px rgba(34, 197, 94, 0.3); }
+        .btn-whatsapp-sm:hover { transform: translateY(-3px); box-shadow: 0 6px 30px rgba(34, 197, 94, 0.5); }
+        
+        .btn-call { background: transparent; color: var(--brand-light-blue); border: 1.5px solid rgba(56, 189, 248, 0.5); font-weight: 500; }
+        .btn-call:hover { background: rgba(56, 189, 248, 0.05); transform: translateY(-3px); }
+
         .hero-images-container { width: 100%; max-width: 400px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; margin-bottom: 20px; }
         .hero-img-box { border-radius: 18px; overflow: hidden; box-shadow: 0 20px 35px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12); }
         .hero-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .img-1 { aspect-ratio: 3/4; }
         .img-2 { aspect-ratio: 3/4; transform: translateY(20px); }
-        .hero-extra-btns { display: flex; gap: 10px; justify-content: center; width: 100%; max-width: 400px; margin: 0 auto; }
-        .btn-hero-track, .btn-hero-history { padding: 10px 18px; font-size: 13px; border-radius: 50px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: var(--brand-light-blue); cursor: pointer; transition: 0.3s; }
-        .btn-hero-track:hover, .btn-hero-history:hover { background: rgba(0,191,255,0.1); border-color: var(--brand-light-blue); }
+        
+        .hero-extra-btns { display: flex; gap: 12px; justify-content: flex-start; width: 100%; max-width: 550px; }
+        .btn-hero-track, .btn-hero-history { padding: 12px 24px; font-size: 14px; font-weight: 500; border-radius: 50px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--brand-light-blue); cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-hero-track:hover, .btn-hero-history:hover { border-color: rgba(56, 189, 248, 0.5); background: rgba(56, 189, 248, 0.05); }
 
         .hero-track-popup, .hero-history-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
         .hero-track-popup.active, .hero-history-popup.active { display: flex; }
-        .popup-box { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(0,191,255,0.2); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; position: relative; }
-        .popup-box h3 { margin-bottom: 16px; }
-        .popup-box input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; outline: none; margin-bottom: 10px; }
-        .popup-box .btn { margin-top: 8px; width: 100%; }
-        .close-hero-popup { position: absolute; top: 10px; right: 14px; background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+        .popup-box { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; position: relative; }
+        .popup-box h3 { margin-bottom: 16px; color: #fff;}
+        .popup-box input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; outline: none; margin-bottom: 12px; font-family: 'Outfit';}
+        .popup-box .btn { margin-top: 8px; width: 100%; border: 1.5px solid var(--brand-light-blue);}
+        .close-hero-popup { position: absolute; top: 12px; right: 16px; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
 
         .section-header { text-align: center; margin-bottom: 40px; }
         .section-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
         .section-header p { color: var(--text-muted); font-size: 15px; }
         .pricing { padding: 70px 5%; }
 
-        .price-menu { max-width: 700px; margin: 0 auto 20px; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); overflow: hidden; }
-        .price-menu .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; cursor: pointer; transition: background 0.2s; }
-        .price-menu .accordion-header:hover { background: rgba(0,191,255,0.05); }
-        .price-menu .accordion-header h3 { color: var(--brand-light-blue); font-size: 20px; margin: 0; }
-        .price-menu .accordion-header i { color: var(--brand-light-blue); font-size: 18px; transition: transform 0.3s; }
-        .price-menu.open .accordion-header i { transform: rotate(180deg); }
-        .price-menu .accordion-body { display: none; padding: 0 30px 20px; }
+        .price-menu { max-width: 700px; margin: 0 auto 12px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: 0.3s;}
+        .price-menu .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; cursor: pointer; transition: background 0.2s; border-radius: 16px;}
+        .price-menu .accordion-header:hover { background: rgba(255,255,255,0.04); }
+        .price-menu .accordion-header h3 { display: flex; align-items: center; gap: 12px; color: var(--brand-light-blue); font-size: 17px; font-weight: 600; margin: 0; }
+        .price-menu .accordion-header h3 i { font-size: 20px; width: 24px; text-align: center;}
+        .price-menu .accordion-header i.fa-chevron-down { color: var(--brand-light-blue); font-size: 16px; transition: transform 0.3s; }
+        
+        .price-menu.open { border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.02); }
+        .price-menu.open .accordion-header { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .price-menu.open .accordion-header i.fa-chevron-down { transform: rotate(180deg); }
+        .price-menu .accordion-body { display: none; padding: 10px 24px 20px; }
         .price-menu.open .accordion-body { display: block; }
-        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        
+        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); }
         .price-item:last-child { border-bottom: none; }
-        .price-name { font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 12px; }
-        .price-tag { font-size: 18px; font-weight: 700; color: var(--brand-light-blue); background: rgba(0,191,255,0.08); padding: 5px 14px; border-radius: 30px; }
+        .price-name { font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 12px; color: #e2e8f0;}
+        .price-tag { font-size: 16px; font-weight: 700; color: var(--brand-light-blue); background: rgba(56, 189, 248, 0.1); padding: 6px 14px; border-radius: 30px; }
 
         .services-section { padding: 70px 5%; background: rgba(255,255,255,0.012); }
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
         .service-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 28px 22px; border-radius: 18px; transition: all 0.3s; }
-        .service-card:hover { transform: translateY(-5px); border-color: rgba(0,191,255,0.3); }
-        .icon-box { width: 50px; height: 50px; background: rgba(0,119,255,0.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--brand-light-blue); margin-bottom: 18px; }
-        .service-card h3 { font-size: 19px; margin-bottom: 8px; }
+        .service-card:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, 0.3); }
+        .icon-box { width: 50px; height: 50px; background: rgba(56, 189, 248, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--brand-light-blue); margin-bottom: 18px; }
+        .service-card h3 { font-size: 19px; margin-bottom: 8px; color: #fff;}
         .service-card p { color: var(--text-muted); font-size: 14px; }
 
-        /* ========== REVIEWS SLIDER ========== */
         .reviews { padding: 70px 5%; overflow: hidden; }
-        .reviews-slider {
-            display: flex;
-            gap: 20px;
-            animation: slideLeft 30s linear infinite;
-            width: max-content;
-        }
+        .reviews-slider { display: flex; gap: 20px; animation: slideLeft 30s linear infinite; width: max-content; }
         .reviews-slider:hover { animation-play-state: paused; }
-        @keyframes slideLeft {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .review-card {
-            min-width: 300px;
-            max-width: 350px;
-            background: var(--bg-card);
-            padding: 24px;
-            border-radius: 18px;
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
+        @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .review-card { min-width: 300px; max-width: 350px; background: var(--bg-card); padding: 24px; border-radius: 18px; border: 1px solid var(--border-color); flex-shrink: 0; }
         .stars { color: var(--gold); font-size: 13px; margin-bottom: 14px; }
         .review-text { font-size: 14px; color: #e2e8f0; font-style: italic; margin-bottom: 14px; }
         .customer-name { font-weight: 700; color: var(--brand-light-blue); }
-        .customer-loc { font-size: 12px; color: var(--text-muted); }
+        .customer-loc { font-size: 12px; color: var(--text-muted); margin-left: 8px;}
 
         .faq-section { padding: 70px 5%; max-width: 800px; margin: 0 auto; }
         .faq-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .faq-question { padding: 16px 22px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .faq-question { padding: 16px 22px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; color: #fff;}
         .faq-question:hover { color: var(--brand-light-blue); }
         .faq-answer { padding: 0 22px 16px; color: var(--text-muted); font-size: 14px; display: none; }
         .faq-item.active .faq-answer { display: block; }
-        .faq-item.active .faq-question i { transform: rotate(180deg); }
+        .faq-item.active .faq-question i { transform: rotate(180deg); color: var(--brand-light-blue);}
+
         .info-section { padding: 70px 5%; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1000px; margin: 0 auto; }
         .info-box { background: var(--bg-card); padding: 30px; border-radius: 18px; border: 1px solid var(--border-color); }
-        .info-box h3 { font-size: 19px; margin-bottom: 14px; color: var(--brand-light-blue); }
-        .info-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; }
-        .map-direct-card { display: flex; flex-direction: column; align-items: center; background: rgba(0,119,255,0.06); border: 1px solid rgba(0,191,255,0.25); border-radius: 14px; padding: 22px; text-align: center; margin-top: 12px; text-decoration: none; color: #fff; transition: all 0.3s; }
-        .map-direct-card:hover { background: rgba(0,119,255,0.15); }
-        .map-direct-card i { font-size: 32px; color: #ff4757; margin-bottom: 10px; }
+        .info-box h3 { font-size: 19px; margin-bottom: 14px; color: var(--brand-light-blue); display: flex; align-items: center; gap: 10px;}
+        .info-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
+        .map-direct-card { display: flex; flex-direction: column; align-items: center; background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 14px; padding: 22px; text-align: center; margin-top: 15px; text-decoration: none; color: #fff; transition: all 0.3s; }
+        .map-direct-card:hover { background: rgba(56, 189, 248, 0.1); }
+        .map-direct-card i { font-size: 32px; color: #ef4444; margin-bottom: 10px; }
 
         .booking-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .booking-overlay.active, .success-overlay.active { display: flex; }
-        .booking-popup { background: linear-gradient(160deg, #0a1628 0%, #0d1f3c 50%, #0a1a30 100%); border: 1px solid rgba(0,191,255,0.2); border-radius: 24px; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: 0 30px 70px rgba(0,0,0,0.6); animation: slideUp 0.4s ease; will-change: transform, opacity; }
+        .booking-popup { background: linear-gradient(160deg, #0a1628 0%, #0d1f3c 50%, #0a1a30 100%); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 24px; width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: 0 30px 70px rgba(0,0,0,0.6); animation: slideUp 0.4s ease; will-change: transform, opacity; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .popup-header { background: linear-gradient(135deg, rgba(0,119,255,0.15), rgba(0,191,255,0.08)); padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; border-radius: 24px 24px 0 0; position: sticky; top: 0; z-index: 2; }
+        .popup-header { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(0,119,255,0.05)); padding: 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; border-radius: 24px 24px 0 0; position: sticky; top: 0; z-index: 2; }
         .popup-header-left { display: flex; align-items: center; gap: 12px; }
-        .popup-header-icon { width: 44px; height: 44px; background: rgba(0,191,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--brand-light-blue); }
-        .popup-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
+        .popup-header-icon { width: 44px; height: 44px; background: rgba(56, 189, 248, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--brand-light-blue); }
+        .popup-header h2 { font-size: 20px; font-weight: 700; margin: 0; color: #fff;}
         .popup-header .subtitle { font-size: 12px; color: var(--text-muted); }
         .close-popup { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
         .close-popup:hover { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); transform: rotate(90deg); }
         .popup-body { padding: 24px 28px; }
+        
         .service-categories { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
         .category-card { padding: 14px; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02); text-align: center; }
-        .category-card:hover { border-color: rgba(0,191,255,0.3); background: rgba(0,191,255,0.04); }
-        .category-card.selected { border-color: var(--brand-light-blue); background: rgba(0,191,255,0.1); box-shadow: 0 0 20px rgba(0,119,255,0.1); }
-        .category-card.disabled { opacity: 0.4; pointer-events: none; }
+        .category-card:hover { border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.04); }
+        .category-card.selected { border-color: var(--brand-light-blue); background: rgba(56, 189, 248, 0.1); box-shadow: 0 0 20px rgba(56, 189, 248, 0.1); }
+        .category-card.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         .category-card i { font-size: 22px; color: var(--brand-light-blue); display: block; margin-bottom: 6px; }
         .category-card .cat-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
         .category-card .cat-desc { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+        
         .items-list { display: none; }
         .items-list.active { display: block; }
         .item-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.01); }
-        .item-info { display: flex; align-items: center; gap: 10px; }
+        .item-info { display: flex; align-items: center; gap: 10px; color:#fff;}
         .item-info i { color: var(--brand-light-blue); font-size: 16px; width: 20px; }
         .item-info .item-name { font-size: 13px; font-weight: 500; }
         .item-info .item-price { font-size: 12px; color: var(--brand-light-blue); font-weight: 600; margin-left: 8px; }
         .qty-control { display: flex; align-items: center; gap: 8px; }
-        .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
-        .qty-btn:hover { background: var(--brand-blue); border-color: var(--brand-blue); }
-        .qty-display { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .qty-btn:hover { background: var(--brand-light-blue); border-color: var(--brand-light-blue); color: #000;}
+        .qty-display { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; color:#fff;}
         .qty-display.active-qty { color: var(--brand-light-blue); }
-        .price-summary-box { background: linear-gradient(135deg, rgba(0,191,255,0.08), rgba(0,119,255,0.04)); border: 1px solid rgba(0,191,255,0.2); border-radius: 16px; padding: 18px; margin: 20px 0; }
+        
+        .price-summary-box { background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(0,119,255,0.04)); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 16px; padding: 18px; margin: 20px 0; }
         .price-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 13px; color: var(--text-muted); }
         .price-row.total { font-size: 18px; font-weight: 800; color: var(--brand-light-blue); margin-top: 5px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); }
         .price-row.discount { color: var(--success); font-size: 12px; }
         .price-row.discount.used { color: var(--danger); text-decoration: line-through; }
-        .min-order-warning { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; }
-        .selected-items-summary { background: rgba(0,191,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px; display: none; }
-        .selected-items-summary h4 { font-size: 14px; color: var(--brand-light-blue); margin-bottom: 8px; }
-        .selected-items-summary .summary-item { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); padding: 3px 0; }
+        .min-order-warning { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 8px;}
+        
+        /* PROMO CODE SECTION */
+        .promo-box { display: flex; gap: 8px; margin: 12px 0 4px; }
+        .promo-input { flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); color: #fff; font-family: 'Outfit'; font-size: 13px; outline: none; text-transform: uppercase; }
+        .promo-input:focus { border-color: var(--brand-light-blue); }
+        .promo-btn { padding: 10px 18px; border-radius: 10px; background: var(--brand-light-blue); color: #000; font-weight: 700; border: none; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .promo-btn:hover { background: #60a5fa; }
+        
+        .promo-msg { 
+            font-size: 12px; 
+            margin-bottom: 12px; 
+            font-weight: 600; 
+            display: none; 
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .promo-msg.success { color: #22c55e !important; background: rgba(34, 197, 94, 0.1); display: block !important; }
+        .promo-msg.error { color: #ef4444 !important; background: rgba(239, 68, 68, 0.1); display: block !important; }
+
+        /* LIVE SUMMARY BOX */
+        #selectedItemsSummary {
+            background: rgba(56, 189, 248, 0.12) !important;
+            border: 1px solid rgba(56, 189, 248, 0.4) !important;
+            border-radius: 14px !important;
+            padding: 14px 16px !important;
+            margin-bottom: 15px !important;
+            display: none;
+        }
+        #selectedItemsSummary h4 {
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            color: var(--brand-light-blue) !important;
+            margin-bottom: 8px !important;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+            padding-bottom: 5px !important;
+            font-weight: 700 !important;
+        }
+        .summary-item-row {
+            display: flex !important;
+            justify-content: space-between !important;
+            font-size: 14px !important;
+            color: #ffffff !important;
+            padding: 5px 0 !important;
+            font-weight: 500 !important;
+            border-bottom: 1px dashed rgba(255,255,255,0.08) !important;
+        }
+        .summary-item-row:last-child { border-bottom: none !important; }
+        
         .form-group { margin-bottom: 16px; }
         .form-group label { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
         .form-group label i { color: var(--brand-light-blue); font-size: 14px; width: 16px; }
         .required-star { color: var(--danger); }
-        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; }
-        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--brand-light-blue); box-shadow: 0 0 0 4px rgba(0,191,255,0.06); }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: 0.3s;}
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--brand-light-blue); box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1); background: rgba(0,0,0,0.2);}
         .form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
         .form-select option { background: #0d1f3c; color: #fff; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .checkbox-group { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
-        .checkbox-group input { width: 18px; height: 18px; accent-color: var(--brand-blue); }
-        .checkbox-group label { color: var(--text-muted); font-size: 13px; cursor: pointer; }
-        .submit-btn { width: 100%; padding: 15px; border-radius: 14px; border: none; background: linear-gradient(135deg, #0077ff, #00bfff); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,119,255,0.35); }
+        
+        /* MODERN STYLISH CHECKBOX DESIGN */
+        .checkbox-group { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin: 16px 0; 
+            background: rgba(56, 189, 248, 0.05); 
+            padding: 14px 16px; 
+            border-radius: 14px; 
+            border: 1.5px solid rgba(56, 189, 248, 0.2); 
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .checkbox-group:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(56, 189, 248, 0.08);
+        }
+        .checkbox-group input[type="checkbox"] { 
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px; 
+            height: 22px; 
+            border: 2px solid var(--brand-light-blue);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .checkbox-group input[type="checkbox"]:checked {
+            background: var(--brand-light-blue);
+            border-color: var(--brand-light-blue);
+        }
+        .checkbox-group input[type="checkbox"]:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 12px;
+            color: #050b14;
+        }
+        .checkbox-group label { 
+            color: #ffffff; 
+            font-size: 14px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            flex: 1;
+        }
+        
+        .submit-btn { width: 100%; padding: 15px; border-radius: 14px; border: none; background: var(--brand-light-blue); color: #000; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;}
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4); }
         .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .booking-loading { text-align: center; padding: 40px; display: none; }
-        .booking-loading .spinner { width: 44px; height: 44px; border: 3px solid rgba(255,255,255,0.08); border-top-color: var(--brand-blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 16px; }
+        
+        .booking-loading { text-align: center; padding: 40px; display: none; color: #fff;}
+        .booking-loading .spinner { width: 44px; height: 44px; border: 3px solid rgba(255,255,255,0.08); border-top-color: var(--brand-light-blue); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 16px; }
 
-        .success-popup { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(16,185,129,0.3); border-radius: 24px; padding: 40px 30px; max-width: 440px; text-align: center; animation: slideUp 0.4s ease; position: relative; }
-        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(16,185,129,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 42px; color: var(--success); border: 2px solid rgba(16,185,129,0.3); }
-        .order-id-box { background: rgba(0,191,255,0.08); border: 1px dashed rgba(0,191,255,0.3); border-radius: 14px; padding: 16px; margin: 20px 0; }
+        .success-popup { background: linear-gradient(160deg, #0a1628, #0d1f3c); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 24px; padding: 40px 30px; max-width: 440px; text-align: center; animation: slideUp 0.4s ease; position: relative; }
+        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(34, 197, 94, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 42px; color: var(--success); border: 2px solid rgba(34, 197, 94, 0.3); }
+        .success-popup h2 { color: #fff; margin-bottom: 10px;}
+        .success-popup p { color: var(--text-muted); font-size: 14px;}
+        
+        .order-id-box { background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.3); border-radius: 14px; padding: 16px; margin: 20px 0; }
         .order-id-box .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         .order-id-box .id { font-size: 26px; font-weight: 800; color: var(--brand-light-blue); letter-spacing: 2px; }
+        
         .success-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         .btn-track-order { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
-        .btn-wa-share { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; border: none; }
-        .close-success { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .variable-note { color: var(--gold); margin-top: 15px; font-size: 14px; display: none; }
+        .btn-wa-share { background: var(--success); color: #fff; border: none; box-shadow: 0 4px 15px rgba(34,197,94,0.3);}
+        .close-success { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;}
+        .close-success:hover { background: rgba(239,68,68,0.2); border-color: var(--danger); color: var(--danger); transform: rotate(90deg);}
+        .variable-note { color: var(--gold) !important; margin-top: 15px; font-size: 13px !important; display: none; background: rgba(250, 204, 21, 0.1); padding: 8px; border-radius: 8px;}
 
         @media (max-width: 768px) {
             nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(5,11,20,0.98); backdrop-filter: blur(20px); padding: 20px 5%; border-bottom: 1px solid var(--border-color); }
             nav ul.active { display: flex; }
             .mobile-menu-btn { display: block; }
             .hero { flex-direction: column; text-align: center; }
+            .action-buttons { justify-content: center; }
+            .hero-extra-btns { justify-content: center;}
             .hero-images-container { max-width: 300px; }
             .info-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- ========== EXACT ORIGINAL BODY (HERO, TRACK/HISTORY POPUPS, PRICING, SERVICES, REVIEWS, FAQ, CONTACT) ========== -->
     <div class="loader"><div class="loader-circle"></div></div>
     <div class="top-banner" id="topBanner">
         🎉 First order? Get <span>20% OFF</span> automatically! 
         <button class="close-banner" id="closeBanner">&times;</button>
     </div>
+    
+    <!-- ORIGINAL CODE HEADER RESTORED -->
     <header>
         <a href="#" class="logo">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo">
@@ -296,6 +396,7 @@
         </nav>
         <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     </header>
+    
     <div class="trust-bar">
         <div class="trust-item"><i class="fas fa-truck"></i> Free Pickup & Delivery</div>
         <div class="trust-item"><i class="fas fa-clock"></i> 48-72hr Turnaround</div>
@@ -304,7 +405,7 @@
     </div>
 
     <div class="active-order-panel" id="activeOrderPanel">
-        <h4><span style="width:10px;height:10px;background:#10b981;border-radius:50%;display:inline-block;margin-right:5px;"></span> Active Order Tracking</h4>
+        <h4><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block; box-shadow: 0 0 10px #22c55e;"></span> Active Order Tracking</h4>
         <div id="activeOrderTimeline" style="color:var(--text-muted);"></div>
     </div>
 
@@ -313,19 +414,21 @@
             <div class="premium-tag"><i class="fas fa-crown"></i> Premium Care in Lucknow</div>
             <h1>Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
             <p>Experience 5-star dry cleaning & laundry with free doorstep pickup & delivery across various locations in Lucknow.</p>
+            
             <div class="action-buttons">
                 <button class="btn btn-book-now" id="openBookingBtn"><i class="fas fa-calendar-check"></i> Book Now</button>
                 <a href="https://wa.me/message/SD5ILPGDVQQEM1?src=qr" target="_blank" class="btn btn-whatsapp-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 <a href="tel:+919235601645" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
             </div>
+            
+            <div class="hero-extra-btns">
+                <button class="btn-hero-track" id="heroTrackBtn"><i class="fas fa-search-location"></i> Track Order</button>
+                <button class="btn-hero-history" id="heroHistoryBtn"><i class="fas fa-history"></i> Order History</button>
+            </div>
         </div>
         <div class="hero-images-container">
             <div class="hero-img-box img-1"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80" alt="Professional laundry service"></div>
             <div class="hero-img-box img-2"><img src="https://images.unsplash.com/photo-1567113463300-102a7eb3cb26?w=400&q=80" alt="Clean folded clothes"></div>
-        </div>
-        <div class="hero-extra-btns">
-            <button class="btn-hero-track" id="heroTrackBtn"><i class="fas fa-search-location"></i> Track Order</button>
-            <button class="btn-hero-history" id="heroHistoryBtn"><i class="fas fa-history"></i> Order History</button>
         </div>
     </section>
 
@@ -333,46 +436,54 @@
         <div class="popup-box">
             <button class="close-hero-popup" id="closeHeroTrackPopup">&times;</button>
             <h3>Track Order</h3>
-            <input type="text" id="heroTrackInput" placeholder="Order ID">
-            <button class="btn btn-call" id="heroTrackSubmit">Search</button>
+            <input type="text" id="heroTrackInput" placeholder="Enter Order ID (e.g. PDC-XXXX)">
+            <button class="btn btn-call" id="heroTrackSubmit" style="color:#fff; background:var(--brand-light-blue); border:none;"><i class="fas fa-search"></i> Search</button>
             <div id="heroTrackResult" style="margin-top:12px; font-size:14px; color:var(--text-muted);"></div>
         </div>
     </div>
+    
     <div class="hero-history-popup" id="heroHistoryPopup">
         <div class="popup-box">
             <button class="close-hero-popup" id="closeHeroHistoryPopup">&times;</button>
             <h3>Order History</h3>
-            <input type="tel" id="heroHistoryPhone" placeholder="10-digit mobile number" pattern="[0-9]{10}">
-            <button class="btn btn-call" id="heroHistorySubmit">Show Orders</button>
-            <div id="heroHistoryResult" style="margin-top:12px; font-size:14px; color:var(--text-muted); max-height:300px; overflow-y:auto;"></div>
+            <input type="tel" id="heroHistoryPhone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}">
+            <button class="btn btn-call" id="heroHistorySubmit" style="color:#fff; background:var(--brand-light-blue); border:none;"><i class="fas fa-history"></i> Show Orders</button>
+            <div id="heroHistoryResult" style="margin-top:16px; font-size:14px; color:var(--text-muted); max-height:300px; overflow-y:auto;"></div>
         </div>
     </div>
 
-    <!-- Pricing Accordion (unchanged) -->
     <section class="pricing" id="pricing">
         <div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>No hidden charges, premium quality guaranteed</p></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>👔 Regular Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-tshirt"></i> Pant</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name"><i class="fas fa-tshirt"></i> Shirt</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name"><i class="fas fa-tshirt"></i> Kurta</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name"><i class="fas fa-tshirt"></i> T-Shirt</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name"><i class="fas fa-tshirt"></i> Dhoti</span><span class="price-tag">₹80</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>🧣 Winter Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Sweater (Half)</span><span class="price-tag">₹120</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Sweater (Full)</span><span class="price-tag">₹150</span></div><div class="price-item"><span class="price-name"><i class="fas fa-tshirt"></i> T-Shirt (Woollen)</span><span class="price-tag">₹140</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Shawl</span><span class="price-tag">₹180</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Cardigan</span><span class="price-tag">₹180</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>🤵 Suits & Formal Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Coat</span><span class="price-tag">₹250</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Coat Pant</span><span class="price-tag">₹350</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Coat Long</span><span class="price-tag">₹300</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Safari Suit</span><span class="price-tag">₹180</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Safari Coat</span><span class="price-tag">₹150</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Suit (2 Piece)</span><span class="price-tag">₹120</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Suit (3 Piece)</span><span class="price-tag">₹180</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Suit (2 Pc + Blazer)</span><span class="price-tag">₹200</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Suit (3 Pc + Blazer)</span><span class="price-tag">₹300</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>🪷 Ethnic Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Kurta Pajama (Set)</span><span class="price-tag">₹300</span></div><div class="price-item"><span class="price-name"><i class="fas fa-gem"></i> Sherwani</span><span class="price-tag">₹350</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>🧥 Jackets</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Jacket (Half)</span><span class="price-tag">₹200</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Jacket (Full)</span><span class="price-tag">₹250</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>🏠 Home & Travel Items</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-blanket"></i> Blanket (Single)</span><span class="price-tag">₹300</span></div><div class="price-item"><span class="price-name"><i class="fas fa-blanket"></i> Blanket (Double)</span><span class="price-tag">₹350</span></div><div class="price-item"><span class="price-name"><i class="fas fa-helmet"></i> Helmet</span><span class="price-tag">₹150–200</span></div><div class="price-item"><span class="price-name"><i class="fas fa-bag"></i> Ladies Bag</span><span class="price-tag">₹150</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>📐 Variable Price (Inspection Required)</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-gem"></i> Saree Dry Clean</span><span class="price-tag">₹200–400</span></div><div class="price-item"><span class="price-name"><i class="fas fa-suitcase"></i> Trolley Bag</span><span class="price-tag">₹300–400</span></div><div class="price-item"><span class="price-name"><i class="fas fa-female"></i> Lehenga (3 Piece)</span><span class="price-tag">₹400–2000</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Gagra</span><span class="price-tag">₹250–400</span></div><div class="price-item"><span class="price-name"><i class="fas fa-female"></i> Gown</span><span class="price-tag">₹250–500</span></div><div class="price-item"><span class="price-name"><i class="fas fa-user-tie"></i> Jents Wear</span><span class="price-tag">₹200–300</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>🔥 Steam Press (Iron Only)</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-iron"></i> Saree + Blouse</span><span class="price-tag">₹80</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Coat</span><span class="price-tag">₹80</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Coat Pant</span><span class="price-tag">₹80</span></div><div class="price-item"><span class="price-name"><i class="fas fa-female"></i> Lehenga</span><span class="price-tag">₹400</span></div><div class="price-item"><span class="price-name"><i class="fas fa-ribbon"></i> Dupatta</span><span class="price-tag">₹40</span></div><div class="price-item"><span class="price-name"><i class="fas fa-female"></i> Ladies Suit (3 Piece)</span><span class="price-tag">₹60</span></div></div></div>
-        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3>✨ Additional Services</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name"><i class="fas fa-sticky-note"></i> Saree Starch</span><span class="price-tag">₹50</span></div><div class="price-item"><span class="price-name"><i class="fas fa-vest"></i> Blouse</span><span class="price-tag">Free</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-tshirt" style="color:#60a5fa;"></i> Regular Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Pant</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name">Shirt</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name">Kurta</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name">T-Shirt</span><span class="price-tag">₹60</span></div><div class="price-item"><span class="price-name">Dhoti</span><span class="price-tag">₹80</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-snowflake" style="color:#f87171;"></i> Winter Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Sweater (Half)</span><span class="price-tag">₹120</span></div><div class="price-item"><span class="price-name">Sweater (Full)</span><span class="price-tag">₹150</span></div><div class="price-item"><span class="price-name">T-Shirt (Woollen)</span><span class="price-tag">₹140</span></div><div class="price-item"><span class="price-name">Shawl</span><span class="price-tag">₹180</span></div><div class="price-item"><span class="price-name">Cardigan</span><span class="price-tag">₹180</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-user-tie" style="color:#fbbf24;"></i> Suits & Formal Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Coat</span><span class="price-tag">₹250</span></div><div class="price-item"><span class="price-name">Coat Pant</span><span class="price-tag">₹350</span></div><div class="price-item"><span class="price-name">Coat Long</span><span class="price-tag">₹300</span></div><div class="price-item"><span class="price-name">Safari Suit</span><span class="price-tag">₹180</span></div><div class="price-item"><span class="price-name">Safari Coat</span><span class="price-tag">₹150</span></div><div class="price-item"><span class="price-name">Suit (2 Piece)</span><span class="price-tag">₹120</span></div><div class="price-item"><span class="price-name">Suit (3 Piece)</span><span class="price-tag">₹180</span></div><div class="price-item"><span class="price-name">Suit (2 Pc + Blazer)</span><span class="price-tag">₹200</span></div><div class="price-item"><span class="price-name">Suit (3 Pc + Blazer)</span><span class="price-tag">₹300</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-tshirt" style="color:#f472b6;"></i> Ethnic Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Kurta Pajama (Set)</span><span class="price-tag">₹300</span></div><div class="price-item"><span class="price-name">Sherwani</span><span class="price-tag">₹350</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-vest" style="color:#38bdf8;"></i> Jackets</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Jacket (Half)</span><span class="price-tag">₹200</span></div><div class="price-item"><span class="price-name">Jacket (Full)</span><span class="price-tag">₹250</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-home" style="color:#34d399;"></i> Home & Travel Items</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Blanket (Single)</span><span class="price-tag">₹300</span></div><div class="price-item"><span class="price-name">Blanket (Double)</span><span class="price-tag">₹350</span></div><div class="price-item"><span class="price-name">Helmet</span><span class="price-tag">₹150–200</span></div><div class="price-item"><span class="price-name">Ladies Bag</span><span class="price-tag">₹150</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-ruler-combined" style="color:#fbbf24;"></i> Variable Price (Inspection Required)</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Saree Dry Clean</span><span class="price-tag">₹200–400</span></div><div class="price-item"><span class="price-name">Trolley Bag</span><span class="price-tag">₹300–400</span></div><div class="price-item"><span class="price-name">Lehenga (3 Piece)</span><span class="price-tag">₹400–2000</span></div><div class="price-item"><span class="price-name">Gagra</span><span class="price-tag">₹250–400</span></div><div class="price-item"><span class="price-name">Gown</span><span class="price-tag">₹250–500</span></div><div class="price-item"><span class="price-name">Jents Wear</span><span class="price-tag">₹200–300</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-fire" style="color:#fb923c;"></i> Steam Press (Iron Only)</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Saree + Blouse</span><span class="price-tag">₹80</span></div><div class="price-item"><span class="price-name">Coat</span><span class="price-tag">₹80</span></div><div class="price-item"><span class="price-name">Coat Pant</span><span class="price-tag">₹80</span></div><div class="price-item"><span class="price-name">Lehenga</span><span class="price-tag">₹400</span></div><div class="price-item"><span class="price-name">Dupatta</span><span class="price-tag">₹40</span></div><div class="price-item"><span class="price-name">Ladies Suit (3 Piece)</span><span class="price-tag">₹60</span></div></div></div>
+        
+        <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-star" style="color:#facc15;"></i> Additional Services</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><div class="price-item"><span class="price-name">Saree Starch</span><span class="price-tag">₹50</span></div><div class="price-item"><span class="price-name">Blouse</span><span class="price-tag">Free</span></div></div></div>
     </section>
 
     <section class="services-section" id="services">
         <div class="section-header"><h2>Why <span class="text-gradient">Choose Us?</span></h2><p>We treat your garments like our own</p></div>
         <div class="services-grid">
-            <div class="service-card"><div class="icon-box"><i class="fas fa-tint-slash"></i></div><h3>Eco-Friendly Chemicals</h3><p>Gentle on clothes & skin, no harsh toxins used.</p></div>
+            <div class="service-card"><div class="icon-box"><i class="fas fa-leaf"></i></div><h3>Eco-Friendly Chemicals</h3><p>Gentle on clothes & skin, no harsh toxins used.</p></div>
             <div class="service-card"><div class="icon-box"><i class="fas fa-truck-fast"></i></div><h3>Free Pickup & Delivery</h3><p>We come to your doorstep at your convenience.</p></div>
             <div class="service-card"><div class="icon-box"><i class="fas fa-clock"></i></div><h3>48-72hr Service</h3><p>Reliable turnaround, careful handling.</p></div>
             <div class="service-card"><div class="icon-box"><i class="fas fa-hand-sparkles"></i></div><h3>Premium Finishing</h3><p>Expert pressing & folding, ready to wear.</p></div>
         </div>
     </section>
 
-    <!-- Reviews Slider (unchanged) -->
     <section class="reviews" id="reviews">
         <div class="section-header"><h2>Loved by <span class="text-gradient">Customers</span></h2><p>Real feedback from Indira Nagar residents</p></div>
         <div class="reviews-slider">
@@ -398,7 +509,7 @@
         <div class="info-box">
             <h3><i class="fas fa-map-marker-alt"></i> Our Location</h3>
             <p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p>
-            <a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card"><i class="fas fa-map-marked-alt"></i> Open in Google Maps</a>
+            <a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card"><i class="fas fa-location-arrow"></i> Open in Google Maps</a>
         </div>
         <div class="info-box">
             <h3><i class="fas fa-clock"></i> Working Hours</h3>
@@ -408,7 +519,7 @@
         </div>
     </section>
 
-    <!-- ===== BOOKING POPUP (MULTI‑CATEGORY + SUMMARY + VARIABLE EXCLUSIVITY) ===== -->
+    <!-- ===== BOOKING POPUP ===== -->
     <div class="booking-overlay" id="bookingOverlay">
         <div class="booking-popup">
             <div class="popup-header">
@@ -419,96 +530,106 @@
                 <button class="close-popup" id="closeBookingPopup">&times;</button>
             </div>
             <div class="popup-body">
+                <!-- Categories -->
                 <div class="service-categories" id="categoryGrid">
-                    <div class="category-card selected" data-category="regular"><i class="fas fa-tshirt"></i><div class="cat-name">Regular Wear</div><div class="cat-desc">Pant, Shirt, Kurta</div></div>
-                    <div class="category-card" data-category="winter"><i class="fas fa-snowman"></i><div class="cat-name">Winter Wear</div><div class="cat-desc">Sweater, Shawl</div></div>
-                    <div class="category-card" data-category="suits"><i class="fas fa-vest"></i><div class="cat-name">Suits & Formal</div><div class="cat-desc">Coat, Suit</div></div>
-                    <div class="category-card" data-category="ethnic"><i class="fas fa-gem"></i><div class="cat-name">Ethnic Wear</div><div class="cat-desc">Kurta Pajama, Sherwani</div></div>
+                    <div class="category-card" data-category="regular"><i class="fas fa-tshirt"></i><div class="cat-name">Regular Wear</div><div class="cat-desc">Pant, Shirt, Kurta</div></div>
+                    <div class="category-card" data-category="winter"><i class="fas fa-snowflake"></i><div class="cat-name">Winter Wear</div><div class="cat-desc">Sweater, Shawl</div></div>
+                    <div class="category-card" data-category="suits"><i class="fas fa-user-tie"></i><div class="cat-name">Suits & Formal</div><div class="cat-desc">Coat, Suit</div></div>
+                    <div class="category-card" data-category="ethnic"><i class="fas fa-tshirt"></i><div class="cat-name">Ethnic Wear</div><div class="cat-desc">Kurta Pajama, Sherwani</div></div>
                     <div class="category-card" data-category="jackets"><i class="fas fa-vest"></i><div class="cat-name">Jackets</div><div class="cat-desc">Half, Full</div></div>
                     <div class="category-card" data-category="home"><i class="fas fa-home"></i><div class="cat-name">Home & Travel</div><div class="cat-desc">Blanket, Bag</div></div>
                     <div class="category-card" data-category="variable"><i class="fas fa-ruler-combined"></i><div class="cat-name">Variable Price</div><div class="cat-desc">Inspection required</div></div>
-                    <div class="category-card" data-category="steam"><i class="fas fa-wind"></i><div class="cat-name">Steam Press</div><div class="cat-desc">Iron only</div></div>
+                    <div class="category-card" data-category="steam"><i class="fas fa-fire"></i><div class="cat-name">Steam Press</div><div class="cat-desc">Iron only</div></div>
                     <div class="category-card" data-category="additional"><i class="fas fa-star"></i><div class="cat-name">Additional</div><div class="cat-desc">Starch, Blouse</div></div>
                 </div>
 
-                <!-- Complete items lists for all categories -->
-                <div class="items-list active" id="items-regular">
-                    <div class="item-row" data-item="reg-pant" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> Pant<span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="reg-shirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> Shirt<span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="reg-kurta" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> Kurta<span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="reg-tshirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> T-Shirt<span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="reg-dhoti" data-price="80"><div class="item-info"><i class="fas fa-tshirt"></i> Dhoti<span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                <!-- Complete Item Lists -->
+                <div class="items-list" id="items-regular">
+                    <div class="item-row" data-item="reg-pant" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Pant</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="reg-shirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="reg-kurta" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Kurta</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="reg-tshirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">T-Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="reg-dhoti" data-price="80"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Dhoti</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-winter">
-                    <div class="item-row" data-item="win-sweater-half" data-price="120"><div class="item-info"><i class="fas fa-vest"></i> Sweater (Half)<span class="item-price">₹120</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="win-sweater-full" data-price="150"><div class="item-info"><i class="fas fa-vest"></i> Sweater (Full)<span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="win-tshirt-wool" data-price="140"><div class="item-info"><i class="fas fa-tshirt"></i> T-Shirt (Woollen)<span class="item-price">₹140</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="win-shawl" data-price="180"><div class="item-info"><i class="fas fa-vest"></i> Shawl<span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="win-cardigan" data-price="180"><div class="item-info"><i class="fas fa-vest"></i> Cardigan<span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="win-sweater-half" data-price="120"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Sweater (Half)</span><span class="item-price">₹120</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="win-sweater-full" data-price="150"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Sweater (Full)</span><span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="win-tshirt-wool" data-price="140"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">T-Shirt (Woollen)</span><span class="item-price">₹140</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="win-shawl" data-price="180"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Shawl</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="win-cardigan" data-price="180"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Cardigan</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-suits">
-                    <div class="item-row" data-item="sui-coat" data-price="250"><div class="item-info"><i class="fas fa-vest"></i> Coat<span class="item-price">₹250</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-coat-pant" data-price="350"><div class="item-info"><i class="fas fa-vest"></i> Coat Pant<span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-coat-long" data-price="300"><div class="item-info"><i class="fas fa-vest"></i> Coat Long<span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-safari-suit" data-price="180"><div class="item-info"><i class="fas fa-vest"></i> Safari Suit<span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-safari-coat" data-price="150"><div class="item-info"><i class="fas fa-vest"></i> Safari Coat<span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-suit2" data-price="120"><div class="item-info"><i class="fas fa-vest"></i> Suit (2 Piece)<span class="item-price">₹120</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-suit3" data-price="180"><div class="item-info"><i class="fas fa-vest"></i> Suit (3 Piece)<span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-suit2-blazer" data-price="200"><div class="item-info"><i class="fas fa-vest"></i> Suit (2 Pc + Blazer)<span class="item-price">₹200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="sui-suit3-blazer" data-price="300"><div class="item-info"><i class="fas fa-vest"></i> Suit (3 Pc + Blazer)<span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-coat" data-price="250"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Coat</span><span class="item-price">₹250</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-coat-pant" data-price="350"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Coat Pant</span><span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-coat-long" data-price="300"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Coat Long</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-safari-suit" data-price="180"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Safari Suit</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-safari-coat" data-price="150"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Safari Coat</span><span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-suit2" data-price="120"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (2 Piece)</span><span class="item-price">₹120</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-suit3" data-price="180"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (3 Piece)</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-suit2-blazer" data-price="200"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (2 Pc + Blazer)</span><span class="item-price">₹200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="sui-suit3-blazer" data-price="300"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (3 Pc + Blazer)</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-ethnic">
-                    <div class="item-row" data-item="eth-kurta-pajama" data-price="300"><div class="item-info"><i class="fas fa-vest"></i> Kurta Pajama (Set)<span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="eth-sherwani" data-price="350"><div class="item-info"><i class="fas fa-gem"></i> Sherwani<span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="eth-kurta-pajama" data-price="300"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Kurta Pajama (Set)</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="eth-sherwani" data-price="350"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Sherwani</span><span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-jackets">
-                    <div class="item-row" data-item="jac-half" data-price="200"><div class="item-info"><i class="fas fa-vest"></i> Jacket (Half)<span class="item-price">₹200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="jac-full" data-price="250"><div class="item-info"><i class="fas fa-vest"></i> Jacket (Full)<span class="item-price">₹250</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="jac-half" data-price="200"><div class="item-info"><i class="fas fa-vest"></i> <span class="item-name">Jacket (Half)</span><span class="item-price">₹200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="jac-full" data-price="250"><div class="item-info"><i class="fas fa-vest"></i> <span class="item-name">Jacket (Full)</span><span class="item-price">₹250</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-home">
-                    <div class="item-row" data-item="hom-blanket-single" data-price="300"><div class="item-info"><i class="fas fa-blanket"></i> Blanket (Single)<span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="hom-blanket-double" data-price="350"><div class="item-info"><i class="fas fa-blanket"></i> Blanket (Double)<span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="hom-helmet" data-price="175"><div class="item-info"><i class="fas fa-hard-hat"></i> Helmet<span class="item-price">₹150–200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="hom-bag" data-price="150"><div class="item-info"><i class="fas fa-shopping-bag"></i> Ladies Bag<span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="hom-blanket-single" data-price="300"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Blanket (Single)</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="hom-blanket-double" data-price="350"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Blanket (Double)</span><span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="hom-helmet" data-price="175"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Helmet</span><span class="item-price">₹150–200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="hom-bag" data-price="150"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Ladies Bag</span><span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-variable">
-                    <p style="color:var(--text-muted); font-size:13px; margin-bottom:10px;">💰 Final price after inspection (ranges below)</p>
-                    <div class="item-row" data-item="var-saree" data-price="0"><div class="item-info"><i class="fas fa-gem"></i> Saree Dry Clean<span class="item-price">₹200–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="var-trolley" data-price="0"><div class="item-info"><i class="fas fa-suitcase"></i> Trolley Bag<span class="item-price">₹300–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="var-lehenga" data-price="0"><div class="item-info"><i class="fas fa-female"></i> Lehenga (3 Piece)<span class="item-price">₹400–2000</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="var-gagra" data-price="0"><div class="item-info"><i class="fas fa-vest"></i> Gagra<span class="item-price">₹250–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="var-gown" data-price="0"><div class="item-info"><i class="fas fa-female"></i> Gown<span class="item-price">₹250–500</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="var-jents" data-price="0"><div class="item-info"><i class="fas fa-user-tie"></i> Jents Wear<span class="item-price">₹200–300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <p style="color:var(--text-muted); font-size:13px; margin-bottom:10px;"><i class="fas fa-coins" style="color:var(--gold); margin-right:5px;"></i> Final price after inspection</p>
+                    <div class="item-row" data-item="var-saree" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Saree Dry Clean</span><span class="item-price">₹200–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="var-trolley" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Trolley Bag</span><span class="item-price">₹300–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="var-lehenga" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Lehenga (3 Piece)</span><span class="item-price">₹400–2000</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="var-gagra" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Gagra</span><span class="item-price">₹250–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="var-gown" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Gown</span><span class="item-price">₹250–500</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="var-jents" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Jents Wear</span><span class="item-price">₹200–300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-steam">
-                    <div class="item-row" data-item="stm-saree-blouse" data-price="80"><div class="item-info"><i class="fas fa-iron"></i> Saree + Blouse<span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="stm-coat" data-price="80"><div class="item-info"><i class="fas fa-vest"></i> Coat<span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="stm-coat-pant" data-price="80"><div class="item-info"><i class="fas fa-vest"></i> Coat Pant<span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="stm-lehenga" data-price="400"><div class="item-info"><i class="fas fa-female"></i> Lehenga<span class="item-price">₹400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="stm-dupatta" data-price="40"><div class="item-info"><i class="fas fa-ribbon"></i> Dupatta<span class="item-price">₹40</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="stm-ladies-suit" data-price="60"><div class="item-info"><i class="fas fa-female"></i> Ladies Suit (3 Piece)<span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="stm-saree-blouse" data-price="80"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Saree + Blouse</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="stm-coat" data-price="80"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Coat</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="stm-coat-pant" data-price="80"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Coat Pant</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="stm-lehenga" data-price="400"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Lehenga</span><span class="item-price">₹400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="stm-dupatta" data-price="40"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Dupatta</span><span class="item-price">₹40</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="stm-ladies-suit" data-price="60"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Ladies Suit (3 Piece)</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
                 <div class="items-list" id="items-additional">
-                    <div class="item-row" data-item="add-starch" data-price="50"><div class="item-info"><i class="fas fa-sticky-note"></i> Saree Starch<span class="item-price">₹50</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
-                    <div class="item-row" data-item="add-blouse" data-price="0"><div class="item-info"><i class="fas fa-vest"></i> Blouse<span class="item-price">Free</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="add-starch" data-price="50"><div class="item-info"><i class="fas fa-star"></i> <span class="item-name">Saree Starch</span><span class="item-price">₹50</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                    <div class="item-row" data-item="add-blouse" data-price="0"><div class="item-info"><i class="fas fa-star"></i> <span class="item-name">Blouse</span><span class="item-price">Free</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
                 </div>
 
-                <!-- Selected Items Summary -->
-                <div class="selected-items-summary" id="selectedItemsSummary">
+                <!-- Live Selected Items Summary Box -->
+                <div id="selectedItemsSummary">
                     <h4>Your Selection</h4>
                     <div id="summaryList"></div>
                 </div>
 
+                <!-- PROMO CODE INPUT SECTION -->
+                <div class="promo-box">
+                    <input type="text" id="promoCodeInput" class="promo-input" placeholder="Enter Promo Code (e.g. PARTH20)">
+                    <button type="button" id="applyPromoBtn" class="promo-btn">Apply</button>
+                </div>
+                <div id="promoMsg" class="promo-msg"></div>
+
                 <div class="price-summary-box" id="priceSummary">
                     <div class="price-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
                     <div class="price-row discount" id="discountRow"><span>First Order Discount (20%)</span><span id="discountAmount">-₹0</span></div>
+                    <div class="price-row discount" id="promoDiscountRow" style="display:none;"><span>Promo Code Discount</span><span id="promoDiscountAmount">-₹0</span></div>
                     <div class="price-row" id="expressRow" style="display:none;"><span>Express Delivery</span><span id="expressCharge">₹0</span></div>
                     <div class="price-row total"><span>Total</span><span id="totalAmount">₹0</span></div>
                 </div>
                 <div class="min-order-warning" id="minOrderWarning">⚠️ Minimum order is ₹300. Please add more items.</div>
+                
                 <div class="checkbox-group">
                     <input type="checkbox" id="expressCheckbox">
-                    <label for="expressCheckbox">🚀 Express Delivery (ready in 24hr, +₹100)</label>
+                    <label for="expressCheckbox"><i class="fas fa-rocket" style="color:var(--brand-light-blue);"></i> Express Delivery (ready in 24hr, +₹100)</label>
                 </div>
 
                 <form id="bookingForm">
@@ -540,33 +661,31 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="submit-btn" id="submitBooking"><i class="fas fa-paper-plane"></i> Confirm Booking</button>
+                    <button type="submit" class="submit-btn" id="submitBooking">Confirm Booking <i class="fas fa-arrow-right"></i></button>
                 </form>
                 <div class="booking-loading" id="bookingLoading"><div class="spinner"></div><p>Placing your order...</p></div>
             </div>
         </div>
     </div>
 
-    <!-- SUCCESS POPUP (unchanged) -->
+    <!-- SUCCESS POPUP -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-popup">
             <button class="close-success" id="closeSuccess">&times;</button>
-            <div class="success-icon">✓</div>
+            <div class="success-icon"><i class="fas fa-check"></i></div>
             <h2>Booking Confirmed!</h2>
             <p>Your order has been placed successfully. Our team will contact you shortly.</p>
             <div class="order-id-box"><div class="label">Your Order ID</div><div class="id" id="successOrderId">PDC-XXXX</div></div>
-            <p class="variable-note" id="variableNote">We will contact you shortly for the final price confirmation.</p>
+            <p class="variable-note" id="variableNote"><i class="fas fa-info-circle"></i> We will contact you shortly for final price confirmation of your variable items.</p>
             <div class="success-btns">
-                <button class="btn btn-track-order" id="trackFromSuccess"><i class="fas fa-search"></i> Track Order</button>
-                <button class="btn btn-wa-share" id="shareWhatsAppBtn"><i class="fab fa-whatsapp"></i> Share via WhatsApp</button>
+                <button class="btn btn-track-order" id="trackFromSuccess"><i class="fas fa-search-location"></i> Track Order</button>
+                <button class="btn btn-wa-share" id="shareWhatsAppBtn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                 <button class="btn btn-call" id="downloadInvoice"><i class="fas fa-download"></i> Invoice</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== COMPLETE JAVASCRIPT (UPDATED) ===== -->
     <script>
-        // Firebase config (unchanged)
         const firebaseConfig = {
             apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
             authDomain: "parth-dry-clean.firebaseapp.com",
@@ -581,6 +700,7 @@
         const db = firebase.database();
 
         let orderItems = {};
+        let appliedPromoDiscount = 0;
         const FIRST_ORDER_KEY = 'pdc_first_order_used';
         const CUSTOMER_DATA_KEY = 'pdc_customer_data';
 
@@ -606,7 +726,6 @@
         function getItemDisplayName(key) { return itemNameMap[key] || key; }
         function hasVariableItems(items) { return Object.keys(items).some(key => key.startsWith('var-')); }
 
-        // ---------- ORIGINAL UTILITY FUNCTIONS ----------
         function hideLoader() { document.querySelector('.loader').classList.add('hidden'); }
         window.addEventListener('load', hideLoader);
         if (localStorage.getItem(FIRST_ORDER_KEY)) document.getElementById('topBanner').style.display = 'none';
@@ -617,45 +736,29 @@
 
         function openOverlay(overlay) { overlay.classList.add('active'); history.pushState({ overlayId: overlay.id }, ''); }
         function closeOverlay(overlay) { overlay.classList.remove('active'); }
-        window.addEventListener('popstate', () => {
-            document.querySelectorAll('.booking-overlay.active, .success-overlay.active, .hero-track-popup.active, .hero-history-popup.active').forEach(o => o.classList.remove('active'));
-        });
+        window.addEventListener('popstate', () => { document.querySelectorAll('.booking-overlay.active, .success-overlay.active, .hero-track-popup.active, .hero-history-popup.active').forEach(o => o.classList.remove('active')); });
 
         const bookingOverlay = document.getElementById('bookingOverlay');
         const successOverlay = document.getElementById('successOverlay');
         let currentOrderId = null, currentOrderData = null;
 
-        document.getElementById('openBookingBtn').addEventListener('click', () => {
-            resetBookingForm();
-            prefillCustomerData();
-            openOverlay(bookingOverlay);
-        });
+        document.getElementById('openBookingBtn').addEventListener('click', () => { resetBookingForm(); prefillCustomerData(); openOverlay(bookingOverlay); updateSelectedItemsSummary(); });
         document.getElementById('closeBookingPopup').addEventListener('click', () => closeOverlay(bookingOverlay));
-        window.addEventListener('click', (e) => {
-            if (e.target === bookingOverlay) closeOverlay(bookingOverlay);
-            if (e.target === successOverlay) closeOverlay(successOverlay);
-        });
+        window.addEventListener('click', (e) => { if (e.target === successOverlay) closeOverlay(successOverlay); });
 
-        // ---------- NEW MULTI‑CATEGORY HANDLING ----------
+        // ---------- ACCORDION CATEGORY LOGIC ----------
         function updateCategoriesUI() {
             const variableCard = document.querySelector('[data-category="variable"]');
             const isVariableSelected = variableCard.classList.contains('selected');
             const nonVariableCards = document.querySelectorAll('.category-card:not([data-category="variable"])');
 
             if (isVariableSelected) {
-                nonVariableCards.forEach(c => {
-                    c.classList.add('disabled');
-                    c.classList.remove('selected');
-                });
+                nonVariableCards.forEach(c => { c.classList.add('disabled'); c.classList.remove('selected'); });
                 variableCard.classList.remove('disabled');
             } else {
                 const anyNonVarSelected = Array.from(nonVariableCards).some(c => c.classList.contains('selected'));
-                if (anyNonVarSelected) {
-                    variableCard.classList.add('disabled');
-                    variableCard.classList.remove('selected');
-                } else {
-                    document.querySelectorAll('.category-card').forEach(c => c.classList.remove('disabled'));
-                }
+                if (anyNonVarSelected) { variableCard.classList.add('disabled'); variableCard.classList.remove('selected'); } 
+                else { document.querySelectorAll('.category-card').forEach(c => c.classList.remove('disabled')); }
             }
 
             document.querySelectorAll('.items-list').forEach(list => list.classList.remove('active'));
@@ -669,26 +772,23 @@
             card.addEventListener('click', () => {
                 if (card.classList.contains('disabled')) return;
                 const cat = card.dataset.category;
-                card.classList.toggle('selected');
+                const wasSelected = card.classList.contains('selected');
+
+                document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+                if (!wasSelected) { card.classList.add('selected'); }
 
                 const variableCard = document.querySelector('[data-category="variable"]');
-                if (cat === 'variable') {
-                    if (card.classList.contains('selected')) {
-                        document.querySelectorAll('.category-card:not([data-category="variable"])').forEach(c => c.classList.remove('selected'));
-                    }
-                } else {
-                    if (variableCard.classList.contains('selected')) {
-                        variableCard.classList.remove('selected');
-                    }
+                if (cat === 'variable' && card.classList.contains('selected')) {
+                    document.querySelectorAll('.category-card:not([data-category="variable"])').forEach(c => c.classList.remove('selected'));
                 }
-                updateCategoriesUI();
-                updateOrderItems();
-                updatePriceSummary();
+
+                updateCategoriesUI(); 
+                updateOrderItems(); 
+                updatePriceSummary(); 
                 updateSelectedItemsSummary();
             });
         });
 
-        // Quantity controls
         document.querySelectorAll('.qty-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const row = btn.closest('.item-row');
@@ -698,13 +798,13 @@
                 else if (btn.classList.contains('minus') && qty > 0) qty--;
                 display.textContent = qty;
                 display.classList.toggle('active-qty', qty > 0);
-                updateOrderItems();
-                updatePriceSummary();
+                
+                updateOrderItems(); 
+                updatePriceSummary(); 
                 updateSelectedItemsSummary();
             });
         });
 
-        // === FIXED FUNCTIONS START HERE ===
         function updateOrderItems() {
             orderItems = {};
             document.querySelectorAll('.item-row').forEach(row => {
@@ -722,37 +822,84 @@
             return { subtotal, express };
         }
 
+        // ---------- PROMO CODE LOGIC ----------
+        document.getElementById('applyPromoBtn').addEventListener('click', () => {
+            const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+            const msgEl = document.getElementById('promoMsg');
+            const { subtotal } = calculateTotal();
+
+            if (subtotal === 0) {
+                msgEl.textContent = '⚠️ Please select items first.';
+                msgEl.className = 'promo-msg error';
+                return;
+            }
+
+            if (code === 'PARTH20') {
+                appliedPromoDiscount = Math.round(subtotal * 0.20);
+                msgEl.textContent = '🎉 Coupon applied successfully! (20% Off)';
+                msgEl.className = 'promo-msg success';
+            } else if (code === 'SAVE50') {
+                appliedPromoDiscount = 50;
+                msgEl.textContent = '🎉 Flat ₹50 discount applied!';
+                msgEl.className = 'promo-msg success';
+            } else {
+                appliedPromoDiscount = 0;
+                msgEl.textContent = '❌ Invalid or expired promo code.';
+                msgEl.className = 'promo-msg error';
+            }
+            updatePriceSummary();
+        });
+
+        // ---------- LIVE SUMMARY RENDERER ----------
         function updateSelectedItemsSummary() {
             const summaryDiv = document.getElementById('selectedItemsSummary');
             const listDiv = document.getElementById('summaryList');
-            const items = [];
+            let itemsHTML = '';
+
             document.querySelectorAll('.item-row').forEach(row => {
                 const qty = parseInt(row.querySelector('.qty-display').textContent);
                 if (qty > 0) {
                     const name = row.querySelector('.item-name').textContent;
-                    items.push(`${name} x${qty}`);
+                    const priceAttr = parseFloat(row.dataset.price) || 0;
+                    const itemTotal = priceAttr * qty;
+                    const priceText = priceAttr > 0 ? `₹${itemTotal}` : 'Inspection Required';
+                    itemsHTML += `<div class="summary-item-row"><span>${name} &times; ${qty}</span><span>${priceText}</span></div>`;
                 }
             });
-            if (items.length > 0) {
-                listDiv.innerHTML = items.map(item => `<div class="summary-item"><span>${item}</span></div>`).join('');
-                summaryDiv.style.display = 'block';
-            } else {
-                summaryDiv.style.display = 'none';
+
+            if (summaryDiv && listDiv) {
+                if (itemsHTML !== '') {
+                    listDiv.innerHTML = itemsHTML;
+                    summaryDiv.style.setProperty('display', 'block', 'important');
+                } else {
+                    listDiv.innerHTML = '';
+                    summaryDiv.style.setProperty('display', 'none', 'important');
+                }
             }
         }
-        // === FIXED FUNCTIONS END HERE ===
 
         function hasFirstOrderDiscount() { return !localStorage.getItem(FIRST_ORDER_KEY); }
 
         function updatePriceSummary() {
             const { subtotal, express } = calculateTotal();
             const discountApplied = hasFirstOrderDiscount();
-            const discount = discountApplied ? Math.min(Math.round(subtotal * 0.20), 200) : 0;
+            const firstOrderDiscount = discountApplied ? Math.min(Math.round(subtotal * 0.20), 200) : 0;
             const expressCharge = express ? 100 : 0;
-            const total = subtotal - discount + expressCharge;
+            
+            const totalDiscount = firstOrderDiscount + appliedPromoDiscount;
+            const total = Math.max(0, subtotal - totalDiscount + expressCharge);
 
             document.getElementById('subtotal').textContent = '₹' + subtotal;
-            document.getElementById('discountAmount').textContent = '-₹' + discount;
+            document.getElementById('discountAmount').textContent = '-₹' + firstOrderDiscount;
+            
+            const promoRow = document.getElementById('promoDiscountRow');
+            if (appliedPromoDiscount > 0) {
+                promoRow.style.display = 'flex';
+                document.getElementById('promoDiscountAmount').textContent = '-₹' + appliedPromoDiscount;
+            } else {
+                promoRow.style.display = 'none';
+            }
+
             document.getElementById('expressCharge').textContent = '₹' + expressCharge;
             document.getElementById('totalAmount').textContent = '₹' + total;
 
@@ -774,15 +921,19 @@
             document.querySelectorAll('.qty-display').forEach(d => { d.textContent = '0'; d.classList.remove('active-qty'); });
             updateOrderItems();
             document.getElementById('expressCheckbox').checked = false;
+            appliedPromoDiscount = 0;
+            document.getElementById('promoCodeInput').value = '';
+            document.getElementById('promoMsg').style.display = 'none';
             document.getElementById('bookingForm').reset();
+            
             document.querySelectorAll('.category-card').forEach(c => {
                 c.classList.remove('selected', 'disabled');
-                if (c.dataset.category === 'regular') c.classList.add('selected');
             });
             updateCategoriesUI();
+            
             document.getElementById('bookingLoading').style.display = 'none';
             document.getElementById('submitBooking').style.display = 'inline-flex';
-            updatePriceSummary();
+            updatePriceSummary(); 
             updateSelectedItemsSummary();
         }
 
@@ -798,26 +949,20 @@
             }
         }
 
-        // ---------- BOOKING SUBMISSION ----------
+        // ---------- SUBMIT FORM LOGIC (FIREBASE + GOOGLE SHEETS) ----------
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             updateOrderItems();
 
-            if (Object.keys(orderItems).length === 0) {
-                alert('Please add at least one item.');
-                return;
-            }
+            if (Object.keys(orderItems).length === 0) { alert('Please add at least one item.'); return; }
 
             const { subtotal, express } = calculateTotal();
             const discountApplied = hasFirstOrderDiscount();
-            const discount = discountApplied ? Math.min(Math.round(subtotal * 0.20), 200) : 0;
+            const firstOrderDiscount = discountApplied ? Math.min(Math.round(subtotal * 0.20), 200) : 0;
             const expressCharge = express ? 100 : 0;
-            const total = subtotal - discount + expressCharge;
+            const total = Math.max(0, subtotal - firstOrderDiscount - appliedPromoDiscount + expressCharge);
 
-            if (total > 0 && total < 300) {
-                alert(`Minimum order amount is ₹300. Your current total is ₹${total}. Please add more items or choose express delivery.`);
-                return;
-            }
+            if (total > 0 && total < 300) { alert(`Minimum order amount is ₹300. Your current total is ₹${total}. Please add more items or choose express delivery.`); return; }
 
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
@@ -834,136 +979,62 @@
             document.getElementById('submitBooking').style.display = 'none';
 
             const orderId = 'PDC-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            
-            // Sheet ke liye Items ko clean text (jaise: Pant x2, Shirt x1) mein convert karna
-            const formattedItems = Object.entries(orderItems)
-                .map(([key, qty]) => `${getItemDisplayName(key)} x${qty}`)
-                .join(', ');
+            const formattedItems = Object.entries(orderItems).map(([key, qty]) => `${getItemDisplayName(key)} x${qty}`).join(', ');
 
-            // Firebase ka data
             const orderData = {
-                orderId, name, phone, address,
-                pickupDate: pickupDate || 'Not specified', timeSlot,
-                items: orderItems,
-                subtotal, discount, express, expressCharge,
-                total,
+                orderId, name, phone, address, pickupDate: pickupDate || 'Not specified', timeSlot,
+                items: orderItems, discount: firstOrderDiscount + appliedPromoDiscount, express, expressCharge, total,
                 status: express ? 'express-pending' : 'pending',
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
 
-            // Sheet ka data
             const sheetData = {
-                orderId: orderId,
-                name: name,
-                phone: phone,
-                address: address,
-                pickupDate: pickupDate || 'Not specified',
-                timeSlot: timeSlot,
-                itemsList: formattedItems,
-                subtotal: subtotal,
-                discount: discount,
-                express: express ? "Yes" : "No",
-                total: total,
-                status: orderData.status
+                orderId: orderId, name: name, phone: phone, address: address,
+                pickupDate: pickupDate || 'Not specified', timeSlot: timeSlot,
+                itemsList: formattedItems, subtotal: subtotal, discount: firstOrderDiscount + appliedPromoDiscount,
+                express: express ? "Yes" : "No", total: total, status: orderData.status
             };
 
             try {
-                // 1. Firebase me order save karna
                 await db.ref('orders/' + orderId).set(orderData);
                 
-                // 2. Google Sheets me order bhejna
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbzNu4pEBvICNRjBYyUIonNb4-9Agxj1Q5CPmWTu6AKd2NjXMVQjyXt6bzp-eVKmTTi2/exec'; 
-                
-                fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Ye CORS error ko completely rok dega
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(sheetData)
-                }).catch(err => console.error('Sheet Error:', err)); 
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbzotBHnkUDAH2G2X_pQOLqSaC5WZ727e1ev8uTe-VbsRy6_QwgTUp17HAiEFpIc0L-G/exec'; 
+                fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sheetData) }).catch(err => console.error('Sheet Error:', err)); 
 
-                // 3. User ko Success Popup dikhana
                 if (discountApplied) { localStorage.setItem(FIRST_ORDER_KEY, 'true'); document.getElementById('topBanner').style.display = 'none'; }
-
-                currentOrderId = orderId;
-                currentOrderData = orderData;
+                currentOrderId = orderId; currentOrderData = orderData;
+                
                 closeOverlay(bookingOverlay);
                 document.getElementById('successOrderId').textContent = orderId;
-
-                if (hasVariableItems(orderItems)) {
-                    document.getElementById('variableNote').style.display = 'block';
-                } else {
-                    document.getElementById('variableNote').style.display = 'none';
-                }
-
-                openOverlay(successOverlay);
-                resetBookingForm();
+                document.getElementById('variableNote').style.display = hasVariableItems(orderItems) ? 'block' : 'none';
+                
+                openOverlay(successOverlay); resetBookingForm();
             } catch (error) {
-                alert('Booking failed. Please try again.');
-                console.error(error);
+                alert('Booking failed. Please try again.'); console.error(error);
             } finally {
-                document.getElementById('bookingLoading').style.display = 'none';
-                document.getElementById('submitBooking').style.display = 'inline-flex';
+                document.getElementById('bookingLoading').style.display = 'none'; document.getElementById('submitBooking').style.display = 'inline-flex';
             }
         });
 
-        // ---------- SUCCESS POPUP ACTIONS ----------
         document.getElementById('closeSuccess').addEventListener('click', () => closeOverlay(successOverlay));
-        document.getElementById('trackFromSuccess').addEventListener('click', () => {
-            closeOverlay(successOverlay);
-            document.getElementById('heroTrackInput').value = currentOrderId || '';
-            openOverlay(document.getElementById('heroTrackPopup'));
-            fetchOrderStatus(currentOrderId, 'heroTrackResult');
-        });
+        document.getElementById('trackFromSuccess').addEventListener('click', () => { closeOverlay(successOverlay); document.getElementById('heroTrackInput').value = currentOrderId || ''; openOverlay(document.getElementById('heroTrackPopup')); fetchOrderStatus(currentOrderId, 'heroTrackResult'); });
 
         document.getElementById('shareWhatsAppBtn').addEventListener('click', () => {
             if (!currentOrderData) return;
             const cleanAddress = currentOrderData.address.replace(/[\r\n]+/g, ', ').replace(/\s+/g, ' ').trim();
-            const itemsList = Object.entries(currentOrderData.items)
-                .map(([key, qty]) => `${getItemDisplayName(key)} x${qty}`)
-                .join(', ');
-            let msg = `Order Confirmed! 🧺\n\n` +
-                `Order ID: ${currentOrderData.orderId}\n` +
-                `Name: ${currentOrderData.name}\n` +
-                `Total: ₹${currentOrderData.total}\n` +
-                (currentOrderData.express ? `🚀 Express Delivery (+₹100)\n` : '') +
-                `Items: ${itemsList}\n` +
-                `Address: ${cleanAddress}\n` +
-                `Pickup: ${currentOrderData.pickupDate} (${currentOrderData.timeSlot})`;
-
-            if (hasVariableItems(currentOrderData.items)) {
-                msg += `\n\nNote: We will contact you shortly for the final price confirmation.`;
-            }
-
+            const itemsList = Object.entries(currentOrderData.items).map(([key, qty]) => `${getItemDisplayName(key)} x${qty}`).join(', ');
+            let msg = `Order Confirmed! 🧺\n\nOrder ID: ${currentOrderData.orderId}\nName: ${currentOrderData.name}\nTotal: ₹${currentOrderData.total}\n${currentOrderData.express ? `🚀 Express Delivery (+₹100)\n` : ''}Items: ${itemsList}\nAddress: ${cleanAddress}\nPickup: ${currentOrderData.pickupDate} (${currentOrderData.timeSlot})`;
+            if (hasVariableItems(currentOrderData.items)) msg += `\n\nNote: We will contact you shortly for the final price confirmation.`;
             window.open(`https://wa.me/919235601645?text=${encodeURIComponent(msg)}`, '_blank');
         });
 
         document.getElementById('downloadInvoice').addEventListener('click', () => {
             if (!currentOrderData) return;
-            const variableNote = hasVariableItems(currentOrderData.items) 
-                ? '<p style="color: #d4af37;"><strong>Note:</strong> We will contact you shortly for the final price confirmation.</p>' 
-                : '';
-            const invoiceHTML = `
-                <html><head><title>Invoice ${currentOrderData.orderId}</title>
-                <style>body { font-family: Arial; padding: 20px; } h2 { color: #333; } .line { border-bottom:1px solid #ccc; }</style></head><body>
-                <h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr>
-                <p><strong>Order ID:</strong> ${currentOrderData.orderId}</p>
-                <p><strong>Name:</strong> ${currentOrderData.name}</p><p><strong>Phone:</strong> ${currentOrderData.phone}</p>
-                <p><strong>Address:</strong> ${currentOrderData.address}</p>
-                <p><strong>Pickup:</strong> ${currentOrderData.pickupDate} (${currentOrderData.timeSlot})</p>
-                <p><strong>Express:</strong> ${currentOrderData.express ? 'Yes (+₹100)' : 'No'}</p>
-                <hr><h3>Items</h3><ul>${Object.entries(currentOrderData.items).map(([k,v]) => `${getItemDisplayName(k)} x ${v}`).map(item => `<li>${item}</li>`).join('')}</ul>
-                <p>Subtotal: ₹${currentOrderData.subtotal}</p>
-                <p>Discount: -₹${currentOrderData.discount}</p>
-                ${currentOrderData.express ? '<p>Express Charge: ₹100</p>' : ''}
-                <p><strong>Total: ₹${currentOrderData.total}</strong></p>
-                ${variableNote}
-                <hr><p>Thank you!</p></body></html>`;
-            const win = window.open('', '_blank');
-            win.document.write(invoiceHTML);
-            win.document.close();
+            const variableNote = hasVariableItems(currentOrderData.items) ? '<p style="color: #d4af37;"><strong>Note:</strong> We will contact you shortly for the final price confirmation.</p>' : '';
+            const invoiceHTML = `<html><head><title>Invoice ${currentOrderData.orderId}</title><style>body { font-family: Arial; padding: 20px; } h2 { color: #333; } .line { border-bottom:1px solid #ccc; }</style></head><body><h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr><p><strong>Order ID:</strong> ${currentOrderData.orderId}</p><p><strong>Name:</strong> ${currentOrderData.name}</p><p><strong>Phone:</strong> ${currentOrderData.phone}</p><p><strong>Address:</strong> ${currentOrderData.address}</p><p><strong>Pickup:</strong> ${currentOrderData.pickupDate} (${currentOrderData.timeSlot})</p><p><strong>Express:</strong> ${currentOrderData.express ? 'Yes (+₹100)' : 'No'}</p><hr><h3>Items</h3><ul>${Object.entries(currentOrderData.items).map(([k,v]) => `<li>${getItemDisplayName(k)} x ${v}</li>`).join('')}</ul><p>Subtotal: ₹${currentOrderData.subtotal}</p><p>Discount: -₹${currentOrderData.discount}</p>${currentOrderData.express ? '<p>Express Charge: ₹100</p>' : ''}<p><strong>Total: ₹${currentOrderData.total}</strong></p>${variableNote}<hr><p>Thank you!</p></body></html>`;
+            const win = window.open('', '_blank'); win.document.write(invoiceHTML); win.document.close();
         });
 
-        // ---------- HERO TRACK/HISTORY POPUPS ----------
         const heroTrackPopup = document.getElementById('heroTrackPopup');
         const heroHistoryPopup = document.getElementById('heroHistoryPopup');
         document.getElementById('heroTrackBtn').addEventListener('click', () => openOverlay(heroTrackPopup));
@@ -971,140 +1042,90 @@
         document.getElementById('closeHeroTrackPopup').addEventListener('click', () => closeOverlay(heroTrackPopup));
         document.getElementById('closeHeroHistoryPopup').addEventListener('click', () => closeOverlay(heroHistoryPopup));
 
-        document.getElementById('heroTrackSubmit').addEventListener('click', () => {
-            const id = document.getElementById('heroTrackInput').value.trim();
-            if (id) fetchOrderStatus(id, 'heroTrackResult');
-        });
+        document.getElementById('heroTrackSubmit').addEventListener('click', () => { const id = document.getElementById('heroTrackInput').value.trim(); if (id) fetchOrderStatus(id, 'heroTrackResult'); });
 
         document.getElementById('heroHistorySubmit').addEventListener('click', async () => {
             const phone = document.getElementById('heroHistoryPhone').value.trim();
             if (!/^[0-9]{10}$/.test(phone)) { alert('Enter valid 10-digit number'); return; }
-            const res = document.getElementById('heroHistoryResult');
-            res.innerHTML = 'Loading...';
+            const res = document.getElementById('heroHistoryResult'); res.innerHTML = 'Loading...';
             try {
                 const snap = await db.ref('orders').orderByChild('phone').equalTo(phone).once('value');
                 if (snap.exists()) {
-                    const orders = [];
-                    snap.forEach(c => orders.push(c.val()));
-                    orders.sort((a,b) => b.createdAt - a.createdAt);
+                    const orders = []; snap.forEach(c => orders.push(c.val())); orders.sort((a,b) => b.createdAt - a.createdAt);
                     res.innerHTML = orders.map(o => `<div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:8px; margin-bottom:8px;"><strong>${o.orderId}</strong> | ₹${o.total}<br><small>${new Date(o.createdAt).toLocaleDateString()} | ${o.status}</small></div>`).join('');
                 } else res.innerHTML = '<p>No orders found.</p>';
             } catch(e) { res.innerHTML = '<p style="color:#ef4444;">Error.</p>'; }
         });
 
-        // ---------- FETCH ORDER STATUS (TIMELINE) ----------
         async function fetchOrderStatus(orderId, outputId) {
-            const el = document.getElementById(outputId);
-            if (!el) return;
-            el.innerHTML = 'Loading...';
+            const el = document.getElementById(outputId); if (!el) return; el.innerHTML = 'Loading...';
             try {
                 const snap = await db.ref('orders/' + orderId).once('value');
                 if (snap.exists()) {
-                    const o = snap.val();
-                    const rawStatus = o.status.replace('express-', '');
-                    let step = 0;
-                    if (rawStatus === 'pending') step = 0;
-                    else if (rawStatus === 'picked_up') step = 1;
-                    else if (rawStatus === 'processing') step = 2;
-                    else if (rawStatus === 'completed') step = 3;
-                    else if (rawStatus === 'cancelled') { el.innerHTML = '<p style="color:#ef4444;">Order Cancelled</p>'; return; }
+                    const o = snap.val(); const rawStatus = o.status.replace('express-', ''); let step = 0;
+                    if (rawStatus === 'pending') step = 0; else if (rawStatus === 'picked_up') step = 1; else if (rawStatus === 'processing') step = 2; else if (rawStatus === 'completed') step = 3; else if (rawStatus === 'cancelled') { el.innerHTML = '<p style="color:#ef4444;">Order Cancelled</p>'; return; }
 
                     const steps = [
-                        { label: 'Order Placed', icon: '📦', active: step >= 0, completed: step > 0 },
-                        { label: 'Picked Up', icon: '🚚', active: step >= 1, completed: step > 1 },
-                        { label: 'Processing', icon: '⚙️', active: step >= 2, completed: step > 2 },
-                        { label: 'Completed', icon: '✅', active: step >= 3, completed: step > 3 }
+                        { label: 'Order Placed', icon: 'fa-box', active: step >= 0, completed: step > 0 },
+                        { label: 'Picked Up', icon: 'fa-truck', active: step >= 1, completed: step > 1 },
+                        { label: 'Processing', icon: 'fa-cog', active: step >= 2, completed: step > 2 },
+                        { label: 'Completed', icon: 'fa-check', active: step >= 3, completed: step > 3 }
                     ];
 
-                    el.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; position:relative; margin:20px 0 30px;">
-                            <div style="position:absolute; top:18px; left:10%; right:10%; height:2px; background:rgba(255,255,255,0.1);"></div>
-                            ${steps.map((s, i) => `
-                                <div style="display:flex; flex-direction:column; align-items:center; flex:1; z-index:1; text-align:center;">
-                                    <div style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; ${
-                                        s.completed ? 'background:var(--success); border:2px solid var(--success); color:#fff;' :
-                                        s.active ? 'background:var(--brand-blue); border:2px solid var(--brand-blue); color:#fff;' :
-                                        'background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.4);'
-                                    }">${s.completed ? '✓' : s.icon}</div>
-                                    <div style="margin-top:8px; font-size:11px; color:${s.active||s.completed?'#fff':'rgba(255,255,255,0.5)'}">${s.label}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <p style="text-align:center; color:var(--text-muted);"><strong>${o.orderId}</strong> | ₹${o.total} ${o.express ? '🚀' : ''}</p>`;
-                } else {
-                    el.innerHTML = '<p style="color:#ef4444;">Order not found.</p>';
-                }
+                    el.innerHTML = `<div style="display:flex; justify-content:space-between; position:relative; margin:30px 0;">
+                        <div style="position:absolute; top:20px; left:10%; right:10%; height:2px; background:rgba(255,255,255,0.1);"></div>
+                        ${steps.map(s => `
+                            <div style="display:flex; flex-direction:column; align-items:center; flex:1; z-index:1; text-align:center;">
+                                <div style="width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; transition: 0.3s; ${
+                                    s.completed ? 'background:#22c55e; color:#fff; box-shadow: 0 0 15px rgba(34,197,94,0.4); border: none;' :
+                                    s.active ? 'background:#38bdf8; color:#fff; box-shadow: 0 0 15px rgba(56,189,248,0.4); border: none;' :
+                                    'background:#0f172a; color:rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.1);'
+                                }"><i class="fas ${s.icon}"></i></div>
+                                <div style="margin-top:10px; font-size:12px; font-weight:500; color:${s.active||s.completed?'#fff':'rgba(255,255,255,0.4)'}">${s.label}</div>
+                            </div>`).join('')}
+                        </div><p style="text-align:center; color:var(--text-muted); padding:10px; background:rgba(255,255,255,0.02); border-radius:10px;"><strong>${o.orderId}</strong> | ₹${o.total} ${o.express ? '🚀' : ''}</p>`;
+                } else { el.innerHTML = '<p style="color:#ef4444;">Order not found.</p>'; }
             } catch (e) { el.innerHTML = '<p style="color:#ef4444;">Error fetching order.</p>'; }
         }
 
         function renderTimeline(order) {
-            const rawStatus = order.status.replace('express-', '');
-            let step = 0;
-            if (rawStatus === 'pending') step = 0;
-            else if (rawStatus === 'picked_up') step = 1;
-            else if (rawStatus === 'processing') step = 2;
-            else if (rawStatus === 'completed') step = 3;
-            else return '<p>Status: ' + order.status + '</p>';
+            const rawStatus = order.status.replace('express-', ''); let step = 0;
+            if (rawStatus === 'pending') step = 0; else if (rawStatus === 'picked_up') step = 1; else if (rawStatus === 'processing') step = 2; else if (rawStatus === 'completed') step = 3; else return '<p>Status: ' + order.status + '</p>';
 
             const steps = [
-                { label: 'Order Placed', icon: '📦', active: step >= 0, completed: step > 0 },
-                { label: 'Picked Up', icon: '🚚', active: step >= 1, completed: step > 1 },
-                { label: 'Processing', icon: '⚙️', active: step >= 2, completed: step > 2 },
-                { label: 'Completed', icon: '✅', active: step >= 3, completed: step > 3 }
+                { label: 'Order Placed', icon: 'fa-box', active: step >= 0, completed: step > 0 },
+                { label: 'Picked Up', icon: 'fa-truck', active: step >= 1, completed: step > 1 },
+                { label: 'Processing', icon: 'fa-cog', active: step >= 2, completed: step > 2 },
+                { label: 'Completed', icon: 'fa-check', active: step >= 3, completed: step > 3 }
             ];
 
-            return `
-                <div style="display:flex; justify-content:space-between; position:relative; margin:15px 0 10px;">
-                    <div style="position:absolute; top:18px; left:5%; right:5%; height:2px; background:rgba(255,255,255,0.1);"></div>
-                    ${steps.map((s, i) => `
-                        <div style="display:flex; flex-direction:column; align-items:center; flex:1; z-index:1;">
-                            <div style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; ${
-                                s.completed ? 'background:var(--success); border:2px solid var(--success); color:#fff;' :
-                                s.active ? 'background:var(--brand-blue); border:2px solid var(--brand-blue); color:#fff;' :
-                                'background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.3); color:rgba(255,255,255,0.4);'
-                            }">${s.completed ? '✓' : s.icon}</div>
-                            <div style="margin-top:8px; font-size:11px; color:${s.active||s.completed?'#fff':'rgba(255,255,255,0.5)'}">${s.label}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <p style="text-align:center; color:var(--text-muted); margin-top:5px;">
-                    <strong>${order.orderId}</strong> — ${order.name} | ₹${order.total} ${order.express ? '🚀' : ''}
-                </p>
-            `;
+            return `<div style="display:flex; justify-content:space-between; position:relative; margin:25px 0 15px;">
+                <div style="position:absolute; top:20px; left:10%; right:10%; height:2px; background:rgba(255,255,255,0.1);"></div>
+                ${steps.map(s => `
+                    <div style="display:flex; flex-direction:column; align-items:center; flex:1; z-index:1;">
+                        <div style="width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; transition: 0.3s; ${
+                            s.completed ? 'background:#22c55e; color:#fff; box-shadow: 0 0 15px rgba(34,197,94,0.4); border: none;' :
+                            s.active ? 'background:#38bdf8; color:#fff; box-shadow: 0 0 15px rgba(56,189,248,0.4); border: none;' :
+                            'background:#0f172a; color:rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.1);'
+                        }"><i class="fas ${s.icon}"></i></div>
+                        <div style="margin-top:10px; font-size:12px; font-weight:500; color:${s.active||s.completed?'#fff':'rgba(255,255,255,0.4)'}">${s.label}</div>
+                    </div>`).join('')}
+                </div><p style="text-align:center; color:var(--brand-light-blue); margin-top:15px; font-size: 14px;"><strong>${order.orderId}</strong> — ${order.name} | ₹${order.total} ${order.express ? '🚀' : ''}</p>`;
         }
 
         function updateActiveOrderPanel() {
-            const panel = document.getElementById('activeOrderPanel');
-            const timelineDiv = document.getElementById('activeOrderTimeline');
+            const panel = document.getElementById('activeOrderPanel'); const timelineDiv = document.getElementById('activeOrderTimeline');
             db.ref('orders').orderByChild('status').equalTo('pending').once('value', snap => {
-                let latest = null;
-                snap.forEach(c => {
-                    const o = c.val();
-                    if (!latest || o.createdAt > latest.createdAt) latest = o;
-                });
+                let latest = null; snap.forEach(c => { const o = c.val(); if (!latest || o.createdAt > latest.createdAt) latest = o; });
                 db.ref('orders').orderByChild('status').equalTo('express-pending').once('value', snap2 => {
-                    snap2.forEach(c => {
-                        const o = c.val();
-                        if (!latest || o.createdAt > latest.createdAt) latest = o;
-                    });
-                    if (latest) {
-                        panel.style.display = 'block';
-                        timelineDiv.innerHTML = renderTimeline(latest);
-                    } else {
-                        panel.style.display = 'none';
-                    }
+                    snap2.forEach(c => { const o = c.val(); if (!latest || o.createdAt > latest.createdAt) latest = o; });
+                    if (latest) { panel.style.display = 'block'; timelineDiv.innerHTML = renderTimeline(latest); } else { panel.style.display = 'none'; }
                 });
             });
         }
 
-        db.ref('orders').on('child_added', snap => {
-            const o = snap.val();
-            if (o.status === 'pending' || o.status === 'express-pending') {
-                updateActiveOrderPanel();
-            }
-        });
-        updateActiveOrderPanel();
-        updatePriceSummary();
+        db.ref('orders').on('child_added', snap => { const o = snap.val(); if (o.status === 'pending' || o.status === 'express-pending') { updateActiveOrderPanel(); } });
+        updateActiveOrderPanel(); updatePriceSummary(); updateSelectedItemsSummary();
     </script>
 </body>
 </html>
