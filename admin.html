@@ -34,7 +34,6 @@
             flex-direction: column;
         }
 
-        /* HEADER */
         .admin-header {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
@@ -67,7 +66,6 @@
         }
         .btn-close-admin:hover { border-color:var(--text-main); color:var(--text-main); }
 
-        /* LOGIN */
         .login-screen {
             flex:1; display:flex; justify-content:center; align-items:center;
             padding:30px 20px; background:linear-gradient(135deg,#f0f9ff 0%,#e6f7f5 100%);
@@ -100,11 +98,9 @@
         }
         .login-box .btn-login:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(14,165,233,0.35); }
 
-        /* DASHBOARD */
         .dashboard { flex:1; display:none; padding:24px 5% 40px; max-width:1400px; margin:0 auto; width:100%; }
         .dashboard.active { display:block; }
 
-        /* STATS */
         .stats-grid {
             display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
             gap:16px; margin-bottom:28px;
@@ -118,7 +114,6 @@
         .stat-card .num { font-size:32px; font-weight:800; color:var(--brand-primary); line-height:1.2; }
         .stat-card .label { font-size:13px; color:var(--text-muted); font-weight:500; margin-top:2px; }
 
-        /* TABS */
         .admin-tabs {
             display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;
             background:var(--bg-card); padding:6px 12px; border-radius:16px;
@@ -131,12 +126,10 @@
         }
         .admin-tabs button:hover { background:var(--bg-body); color:var(--text-main); }
         .admin-tabs button.active { background:var(--brand-primary); color:#fff; box-shadow:0 4px 12px rgba(14,165,233,0.30); }
-
         .tab-content { display:none; animation:fadeUp 0.25s ease; }
         .tab-content.active { display:block; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-        /* TABLE */
         .table-wrapper {
             overflow-x:auto; background:var(--bg-card); border-radius:16px;
             border:1px solid var(--border-color); box-shadow:var(--shadow-card); padding:4px 0;
@@ -177,7 +170,6 @@
         .btn-assign:disabled { opacity:0.5; cursor:not-allowed; }
         .btn-assign.assigned { background:var(--success); color:#fff; border-color:var(--success); }
 
-        /* REMINDER */
         .reminder-box {
             background:#fef3c7; border:1px solid var(--warning); border-radius:14px;
             padding:18px 22px; margin-bottom:24px; display:none;
@@ -199,14 +191,13 @@
             background:var(--brand-primary); color:#fff; border:none; padding:10px 24px;
             border-radius:12px; cursor:pointer; font-weight:700; font-size:14px;
             font-family:'Outfit',sans-serif; box-shadow:0 4px 12px rgba(14,165,233,0.25);
-            transition:0.3s; display:inline-flex; align-items:center; gap:8px; margin-left:12px;
+            transition:0.3s; display:inline-flex; align-items:center; gap:8px;
         }
         .refresh-orders-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(14,165,233,0.35); }
 
         .toolbar-row { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
         .toolbar-row .spacer { flex:1; }
 
-        /* DELIVERY BOYS */
         .db-form {
             display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;
             background:var(--bg-card); padding:16px 20px; border-radius:16px;
@@ -243,7 +234,6 @@
         }
         .db-item .actions .btn-del:hover { background:var(--danger); color:#fff; }
 
-        /* PRICE EDITOR */
         .price-editor-box {
             background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color);
             box-shadow:var(--shadow-card); padding:20px;
@@ -263,7 +253,6 @@
         .price-editor-box .btn-save-price:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(14,165,233,0.30); }
         .price-editor-box .price-msg { margin-top:10px; font-size:13px; font-weight:600; }
 
-        /* REPORTS */
         .report-grid {
             display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
             gap:16px; margin-bottom:20px;
@@ -278,7 +267,6 @@
         }
         @keyframes spin { to { transform:rotate(360deg); } }
 
-        /* RESPONSIVE */
         @media (max-width:768px) {
             .admin-header { padding:10px 4%; }
             .admin-header .logo-area .brand { font-size:16px; }
@@ -291,7 +279,7 @@
             .db-form { flex-direction:column; align-items:stretch; }
             .db-form .form-group { min-width:auto; }
             .toolbar-row { flex-direction:column; align-items:stretch; }
-            .refresh-orders-btn { margin-left:0; justify-content:center; }
+            .refresh-orders-btn { justify-content:center; margin-left:0; }
             .login-box { padding:30px 20px; }
             .table-wrapper table { font-size:12px; min-width:600px; }
             .table-wrapper th, .table-wrapper td { padding:8px 10px; }
@@ -312,7 +300,6 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="admin-header">
         <div class="logo-area">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo" />
@@ -328,7 +315,6 @@
         </div>
     </header>
 
-    <!-- LOGIN SCREEN -->
     <section class="login-screen" id="loginScreen">
         <div class="login-box">
             <div class="lock-icon"><i class="fas fa-lock"></i></div>
@@ -347,7 +333,6 @@
         </div>
     </section>
 
-    <!-- DASHBOARD -->
     <section class="dashboard" id="dashboard">
         <div class="stats-grid" id="statsGrid">
             <div class="stat-card"><div class="num" id="statTotal">0</div><div class="label">Total Orders</div></div>
@@ -364,7 +349,6 @@
             <button data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</button>
         </div>
 
-        <!-- ORDERS TAB -->
         <div class="tab-content active" id="tab-orders">
             <div class="reminder-box" id="reminderBox"><h4><i class="fas fa-bell"></i> Tomorrow's Deliveries</h4><ul id="reminderList"></ul></div>
             <div class="toolbar-row">
@@ -380,7 +364,6 @@
             </div>
         </div>
 
-        <!-- DELIVERY BOYS TAB -->
         <div class="tab-content" id="tab-deliveryboys">
             <div class="db-form">
                 <div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="dbNameInput" placeholder="e.g. Rahul Singh" /></div>
@@ -390,7 +373,6 @@
             <div class="db-list" id="deliveryBoyList"><p style="color:var(--text-muted);text-align:center;padding:20px 0;">Loading delivery boys...</p></div>
         </div>
 
-        <!-- SERVICES TAB -->
         <div class="tab-content" id="tab-services">
             <div class="price-editor-box">
                 <h3 style="margin-bottom:8px;font-size:18px;"><i class="fas fa-edit" style="color:var(--brand-primary);"></i> Manage Service Prices</h3>
@@ -401,7 +383,6 @@
             </div>
         </div>
 
-        <!-- REPORTS TAB -->
         <div class="tab-content" id="tab-reports">
             <div class="report-grid" id="reportGrid">
                 <div class="stat-card"><div class="num" id="repTotalOrders">0</div><div class="label">Total Orders</div></div>
@@ -414,6 +395,7 @@
     </section>
 
     <script>
+        // ======================== FIREBASE CONFIG ========================
         const firebaseConfig = {
             apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
             authDomain: "parth-dry-clean.firebaseapp.com",
@@ -427,6 +409,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // ======================== DOM REFS ========================
         const loginScreen = document.getElementById('loginScreen');
         const dashboard = document.getElementById('dashboard');
         const loginBtn = document.getElementById('loginBtn');
@@ -442,15 +425,18 @@
         let cachedBoys = [];
         let isOrdersTabActive = true;
 
+        // ======================== AUTH ========================
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 loginScreen.style.display = 'none';
                 dashboard.classList.add('active');
                 adminEmailDisplay.textContent = user.email || 'admin';
+                console.log('✅ User logged in:', user.email);
                 loadAdminDashboard();
             } else {
                 loginScreen.style.display = 'flex';
                 dashboard.classList.remove('active');
+                console.log('🔒 User logged out');
                 detachOrdersListener();
                 resetLoginForm();
             }
@@ -460,8 +446,13 @@
             const email = adminEmailInput.value.trim();
             const pass = adminPassInput.value.trim();
             loginError.style.display = 'none';
+            console.log('🔑 Attempting login for:', email);
             firebase.auth().signInWithEmailAndPassword(email, pass)
-                .catch(() => { loginError.style.display = 'block'; });
+                .then(() => console.log('✅ Login successful'))
+                .catch((err) => {
+                    console.error('❌ Login error:', err);
+                    loginError.style.display = 'block';
+                });
         });
 
         adminPassInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
@@ -469,6 +460,7 @@
 
         function resetLoginForm() { loginError.style.display = 'none'; adminPassInput.value = ''; }
 
+        // ======================== TABS ========================
         document.querySelectorAll('.admin-tabs button').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
@@ -491,7 +483,9 @@
             });
         });
 
+        // ======================== ADMIN DASHBOARD ========================
         function loadAdminDashboard() {
+            console.log('📊 Loading admin dashboard...');
             loadStats();
             loadDeliveryBoys();
             loadPriceEditor();
@@ -500,6 +494,7 @@
             if (isOrdersTabActive) attachOrdersListener();
         }
 
+        // ======================== STATS ========================
         function loadStats() {
             db.ref('orders').once('value').then(snap => {
                 if (!snap.exists()) { setStats(0,0,0,0,0); return; }
@@ -510,7 +505,11 @@
                 const delivered = orders.filter(o => o.status === 'delivered').length;
                 const revenue = orders.filter(o => o.status === 'delivered').reduce((s,o) => s + (o.total || 0), 0);
                 setStats(total, pending, processing, delivered, revenue);
-            }).catch(() => setStats(0,0,0,0,0));
+                console.log('📈 Stats loaded:', { total, pending, processing, delivered, revenue });
+            }).catch(err => {
+                console.error('❌ Error loading stats:', err);
+                setStats(0,0,0,0,0);
+            });
         }
 
         function setStats(total, pending, processing, delivered, revenue) {
@@ -521,19 +520,34 @@
             document.getElementById('statRevenue').textContent = '₹' + revenue;
         }
 
+        // ======================== ORDERS LISTENER (LIVE) ========================
         function attachOrdersListener() {
-            if (ordersListener) { db.ref('orders').off('value', ordersListener); ordersListener = null; }
-            ordersListener = (snapshot) => { renderOrdersTable(snapshot); updateAdminStats(snapshot); };
+            if (ordersListener) {
+                console.log('🔄 Removing old orders listener...');
+                db.ref('orders').off('value', ordersListener);
+                ordersListener = null;
+            }
+            console.log('📡 Attaching live orders listener...');
+            ordersListener = (snapshot) => {
+                console.log('🔄 Orders updated (live)');
+                renderOrdersTable(snapshot);
+                updateAdminStats(snapshot);
+            };
             db.ref('orders').on('value', ordersListener, (error) => {
-                console.error('Live orders error:', error);
+                console.error('❌ Live orders error:', error);
                 ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:20px 0;">⚠️ Connection error. Click Refresh.</td></tr>`;
             });
         }
 
         function detachOrdersListener() {
-            if (ordersListener) { db.ref('orders').off('value', ordersListener); ordersListener = null; }
+            if (ordersListener) {
+                console.log('🔌 Detaching orders listener...');
+                db.ref('orders').off('value', ordersListener);
+                ordersListener = null;
+            }
         }
 
+        // ======================== RENDER ORDERS ========================
         function renderOrdersTable(snapshot) {
             if (!snapshot.exists()) {
                 ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px 0;">📭 No orders yet.</td></tr>';
@@ -573,6 +587,7 @@
                     </td>
                 </tr>`;
             }).join('');
+            console.log(`✅ Rendered ${orders.length} orders`);
         }
 
         function updateAdminStats(snapshot) {
@@ -586,23 +601,46 @@
             setStats(total, pending, processing, delivered, revenue);
         }
 
+        // ======================== GLOBAL FUNCTIONS ========================
         window.assignOrder = function(orderId) {
             const select = document.getElementById('assign_' + orderId);
             if (!select) return;
             const assignedTo = select.value;
-            db.ref('orders/' + orderId).update({ assigned_to: assignedTo });
+            db.ref('orders/' + orderId).update({ assigned_to: assignedTo })
+                .then(() => console.log(`✅ Order ${orderId} assigned to ${assignedTo || 'None'}`))
+                .catch(err => console.error('❌ Assign error:', err));
         };
 
         window.updateOrderStatus = function(orderId, status) {
-            db.ref('orders/' + orderId).update({ status });
+            db.ref('orders/' + orderId).update({ status })
+                .then(() => console.log(`✅ Order ${orderId} status updated to ${status}`))
+                .catch(err => console.error('❌ Status update error:', err));
         };
 
-        document.getElementById('refreshOrdersBtn').addEventListener('click', () => {
-            ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px 0;"><span class="spinner-sm"></span> Refreshing...</td></tr>';
-            db.ref('orders').once('value').then(snap => { renderOrdersTable(snap); updateAdminStats(snap); })
-                .catch(err => { ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:20px 0;">❌ Error: ${err.message}</td></tr>`; });
-        });
+        // ======================== REFRESH BUTTON ========================
+        // Ensure the refresh button works even if listener fails
+        const refreshBtn = document.getElementById('refreshOrdersBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function() {
+                console.log('🔄 Manual refresh clicked');
+                ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px 0;"><span class="spinner-sm"></span> Refreshing...</td></tr>';
+                db.ref('orders').once('value')
+                    .then(snap => {
+                        renderOrdersTable(snap);
+                        updateAdminStats(snap);
+                        console.log('✅ Refresh complete');
+                    })
+                    .catch(err => {
+                        console.error('❌ Refresh error:', err);
+                        ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:20px 0;">❌ Error: ${err.message}</td></tr>`;
+                    });
+            });
+            console.log('✅ Refresh button listener attached');
+        } else {
+            console.error('❌ Refresh button not found!');
+        }
 
+        // ======================== REMINDER ========================
         document.getElementById('checkReminderBtn').addEventListener('click', () => {
             const box = document.getElementById('reminderBox');
             const list = document.getElementById('reminderList');
@@ -619,10 +657,12 @@
             });
         });
 
+        // ======================== DELIVERY BOYS ========================
         function loadDeliveryBoysCache() {
             db.ref('delivery_boys').once('value').then(snap => {
                 cachedBoys = [];
                 if (snap.exists()) snap.forEach(c => cachedBoys.push({ id: c.key, ...c.val() }));
+                console.log('👥 Delivery boys cached:', cachedBoys.length);
             }).catch(() => { cachedBoys = []; });
         }
 
@@ -659,6 +699,7 @@
             });
         });
 
+        // ======================== PRICE EDITOR ========================
         function loadPriceEditor() {
             const editor = document.getElementById('priceEditor');
             editor.value = 'Loading prices...';
@@ -693,6 +734,7 @@
             } catch (e) { msg.textContent = '❌ Invalid JSON format. Please fix and try again.'; msg.style.color = 'var(--danger)'; }
         });
 
+        // ======================== REPORTS ========================
         function loadReports() {
             db.ref('orders').once('value').then(snap => {
                 if (!snap.exists()) { setReport(0,0,0,0); return; }
@@ -713,11 +755,12 @@
             document.getElementById('repDiscount').textContent = '₹' + discount;
         }
 
+        // ======================== ENTER KEY ========================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && loginScreen.style.display !== 'none') loginBtn.click();
         });
 
-        console.log('🧺 Parth Dry Clean Admin Panel Loaded');
+        console.log('🧺 Parth Dry Clean Admin Panel Loaded (fixed)');
     </script>
 </body>
 </html>
