@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel · Parth Dry Clean</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --brand-primary: #0ea5e9;
+            --border-color: #e2e8f0;
+            --shadow-card: 0 8px 30px rgba(0,0,0,0.06);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.10);
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .admin-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .admin-header .logo-area { display:flex; align-items:center; gap:12px; }
+        .admin-header .logo-area img { height:38px; width:auto; object-fit:contain; }
+        .admin-header .logo-area .brand { font-size:20px; font-weight:800; color:var(--brand-primary); }
+        .admin-header .logo-area .sub { font-size:11px; color:var(--text-muted); display:block; margin-top:-2px; }
+        .admin-header .user-info { display:flex; align-items:center; gap:16px; }
+        .admin-header .user-info .email { font-size:13px; color:var(--text-muted); font-weight:500; }
+        .btn-logout {
+            padding:8px 20px; border-radius:30px; border:1px solid var(--danger);
+            background:transparent; color:var(--danger); font-weight:600; font-size:13px;
+            cursor:pointer; transition:0.3s; font-family:'Outfit',sans-serif;
+        }
+        .btn-logout:hover { background:var(--danger); color:#fff; }
+        .btn-close-admin {
+            padding:8px 18px; border-radius:30px; border:1px solid var(--border-color);
+            background:transparent; color:var(--text-muted); font-weight:600; font-size:13px;
+            cursor:pointer; transition:0.3s; font-family:'Outfit',sans-serif; text-decoration:none;
+        }
+        .btn-close-admin:hover { border-color:var(--text-main); color:var(--text-main); }
+
+        /* LOGIN */
+        .login-screen {
+            flex:1; display:flex; justify-content:center; align-items:center;
+            padding:30px 20px; background:linear-gradient(135deg,#f0f9ff 0%,#e6f7f5 100%);
+        }
+        .login-box {
+            background:var(--bg-card); border-radius:24px; padding:40px 32px;
+            max-width:400px; width:100%; box-shadow:var(--shadow-hover);
+            border:1px solid var(--border-color); text-align:center;
+        }
+        .login-box .lock-icon {
+            width:64px; height:64px; border-radius:50%;
+            background:rgba(14,165,233,0.08); display:flex; align-items:center; justify-content:center;
+            margin:0 auto 16px; font-size:28px; color:var(--brand-primary);
+        }
+        .login-box h2 { font-size:24px; font-weight:700; margin-bottom:6px; }
+        .login-box p { color:var(--text-muted); font-size:14px; margin-bottom:24px; }
+        .login-box .form-group { margin-bottom:16px; text-align:left; }
+        .login-box .form-group label { display:block; font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:4px; }
+        .login-box .form-group input {
+            width:100%; padding:12px 16px; border-radius:12px; border:1.5px solid var(--border-color);
+            background:var(--bg-body); color:var(--text-main); font-family:'Outfit',sans-serif;
+            font-size:14px; outline:none; transition:0.3s;
+        }
+        .login-box .form-group input:focus { border-color:var(--brand-primary); box-shadow:0 0 0 4px rgba(14,165,233,0.10); }
+        .login-box .login-error { color:var(--danger); font-size:13px; margin-top:8px; display:none; }
+        .login-box .btn-login {
+            width:100%; padding:14px; border-radius:14px; border:none;
+            background:var(--brand-primary); color:#fff; font-size:16px; font-weight:700;
+            cursor:pointer; transition:0.3s; font-family:'Outfit',sans-serif; margin-top:8px;
+        }
+        .login-box .btn-login:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(14,165,233,0.35); }
+
+        /* DASHBOARD */
+        .dashboard { flex:1; display:none; padding:24px 5% 40px; max-width:1400px; margin:0 auto; width:100%; }
+        .dashboard.active { display:block; }
+
+        /* STATS */
+        .stats-grid {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+            gap:16px; margin-bottom:28px;
+        }
+        .stat-card {
+            background:var(--bg-card); border-radius:16px; padding:18px 20px;
+            border:1px solid var(--border-color); box-shadow:var(--shadow-card);
+            text-align:center; transition:0.3s;
+        }
+        .stat-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-hover); }
+        .stat-card .num { font-size:32px; font-weight:800; color:var(--brand-primary); line-height:1.2; }
+        .stat-card .label { font-size:13px; color:var(--text-muted); font-weight:500; margin-top:2px; }
+
+        /* TABS */
+        .admin-tabs {
+            display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;
+            background:var(--bg-card); padding:6px 12px; border-radius:16px;
+            border:1px solid var(--border-color); box-shadow:var(--shadow-card);
+        }
+        .admin-tabs button {
+            padding:10px 20px; border-radius:30px; border:none; background:transparent;
+            cursor:pointer; font-weight:600; font-family:'Outfit',sans-serif; font-size:14px;
+            color:var(--text-muted); transition:0.3s; display:flex; align-items:center; gap:8px;
+        }
+        .admin-tabs button:hover { background:var(--bg-body); color:var(--text-main); }
+        .admin-tabs button.active { background:var(--brand-primary); color:#fff; box-shadow:0 4px 12px rgba(14,165,233,0.30); }
+
+        .tab-content { display:none; animation:fadeUp 0.25s ease; }
+        .tab-content.active { display:block; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+        /* TABLE */
+        .table-wrapper {
+            overflow-x:auto; background:var(--bg-card); border-radius:16px;
+            border:1px solid var(--border-color); box-shadow:var(--shadow-card); padding:4px 0;
+        }
+        .table-wrapper table { width:100%; border-collapse:collapse; font-size:13px; min-width:700px; }
+        .table-wrapper th {
+            text-align:left; padding:14px 16px; border-bottom:2px solid var(--border-color);
+            color:var(--text-muted); font-weight:600; font-size:12px; text-transform:uppercase;
+            letter-spacing:0.3px; background:var(--bg-body);
+        }
+        .table-wrapper td { padding:12px 16px; border-bottom:1px solid var(--border-color); vertical-align:middle; }
+        .table-wrapper tr:last-child td { border-bottom:none; }
+        .table-wrapper tr:hover td { background:rgba(14,165,233,0.02); }
+
+        .status-badge {
+            display:inline-block; padding:4px 12px; border-radius:20px;
+            font-size:11px; font-weight:600; text-transform:capitalize;
+        }
+        .status-pending { background:#fef3c7; color:#d97706; }
+        .status-picked_up { background:#dbeafe; color:#2563eb; }
+        .status-processing { background:#fce4ec; color:#dc2626; }
+        .status-delivered { background:#d1fae5; color:#059669; }
+        .status-cancelled { background:#f1f5f9; color:#64748b; }
+
+        .table-wrapper select {
+            padding:5px 10px; border-radius:8px; border:1px solid var(--border-color);
+            background:#fff; font-family:'Outfit',sans-serif; font-size:12px; cursor:pointer; outline:none;
+        }
+        .table-wrapper select:focus { border-color:var(--brand-primary); }
+        .table-wrapper select:disabled { opacity:0.6; cursor:not-allowed; }
+
+        .btn-assign {
+            padding:4px 12px; border-radius:6px; border:1px solid var(--border-color);
+            background:#fff; cursor:pointer; font-size:11px; font-weight:600;
+            transition:0.2s; font-family:'Outfit',sans-serif; color:var(--text-main);
+        }
+        .btn-assign:hover:not(:disabled) { background:var(--brand-primary); color:#fff; border-color:var(--brand-primary); }
+        .btn-assign:disabled { opacity:0.5; cursor:not-allowed; }
+        .btn-assign.assigned { background:var(--success); color:#fff; border-color:var(--success); }
+
+        /* REMINDER */
+        .reminder-box {
+            background:#fef3c7; border:1px solid var(--warning); border-radius:14px;
+            padding:18px 22px; margin-bottom:24px; display:none;
+        }
+        .reminder-box.active { display:block; }
+        .reminder-box h4 { color:#d97706; margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+        .reminder-box ul { list-style:none; padding:0; }
+        .reminder-box li { padding:4px 0; font-size:13px; border-bottom:1px dashed #fcd34d; }
+        .reminder-box li:last-child { border-bottom:none; }
+
+        .btn-reminder {
+            background:var(--warning); color:#fff; border:none; padding:8px 20px;
+            border-radius:10px; cursor:pointer; font-weight:600; margin-bottom:16px;
+            transition:0.3s; font-family:'Outfit',sans-serif; font-size:13px;
+        }
+        .btn-reminder:hover { background:#b45309; }
+
+        .refresh-orders-btn {
+            background:var(--brand-primary); color:#fff; border:none; padding:10px 24px;
+            border-radius:12px; cursor:pointer; font-weight:700; font-size:14px;
+            font-family:'Outfit',sans-serif; box-shadow:0 4px 12px rgba(14,165,233,0.25);
+            transition:0.3s; display:inline-flex; align-items:center; gap:8px; margin-left:12px;
+        }
+        .refresh-orders-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(14,165,233,0.35); }
+
+        .toolbar-row { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+        .toolbar-row .spacer { flex:1; }
+
+        /* DELIVERY BOYS */
+        .db-form {
+            display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;
+            background:var(--bg-card); padding:16px 20px; border-radius:16px;
+            border:1px solid var(--border-color); box-shadow:var(--shadow-card); align-items:flex-end;
+        }
+        .db-form .form-group { flex:1; min-width:140px; }
+        .db-form .form-group label { display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:4px; }
+        .db-form .form-group input {
+            width:100%; padding:10px 14px; border-radius:10px; border:1.5px solid var(--border-color);
+            background:var(--bg-body); font-family:'Outfit',sans-serif; font-size:13px; outline:none; transition:0.3s;
+        }
+        .db-form .form-group input:focus { border-color:var(--brand-primary); }
+        .db-form .btn-add-db {
+            padding:10px 28px; border-radius:10px; border:none; background:var(--brand-primary);
+            color:#fff; font-weight:700; cursor:pointer; transition:0.3s;
+            font-family:'Outfit',sans-serif; font-size:14px; flex-shrink:0;
+        }
+        .db-form .btn-add-db:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(14,165,233,0.30); }
+
+        .db-list { display:flex; flex-direction:column; gap:8px; }
+        .db-item {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:12px 18px; background:var(--bg-card); border:1px solid var(--border-color);
+            border-radius:12px; box-shadow:var(--shadow-card); flex-wrap:wrap; gap:8px;
+        }
+        .db-item .info { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+        .db-item .info .name { font-weight:600; font-size:15px; }
+        .db-item .info .phone { color:var(--text-muted); font-size:13px; }
+        .db-item .info .deliveries { font-size:12px; color:var(--text-muted); background:var(--bg-body); padding:2px 12px; border-radius:20px; }
+        .db-item .actions .btn-del {
+            padding:4px 16px; border-radius:30px; border:1px solid var(--danger);
+            background:transparent; color:var(--danger); cursor:pointer; font-size:12px;
+            font-weight:600; transition:0.3s; font-family:'Outfit',sans-serif;
+        }
+        .db-item .actions .btn-del:hover { background:var(--danger); color:#fff; }
+
+        /* PRICE EDITOR */
+        .price-editor-box {
+            background:var(--bg-card); border-radius:16px; border:1px solid var(--border-color);
+            box-shadow:var(--shadow-card); padding:20px;
+        }
+        .price-editor-box textarea {
+            width:100%; padding:16px; border-radius:12px; border:1.5px solid var(--border-color);
+            font-family:'Menlo','Consolas',monospace; font-size:13px; background:var(--bg-body);
+            color:var(--text-main); resize:vertical; min-height:320px; outline:none;
+            transition:0.3s; line-height:1.6;
+        }
+        .price-editor-box textarea:focus { border-color:var(--brand-primary); box-shadow:0 0 0 4px rgba(14,165,233,0.08); }
+        .price-editor-box .btn-save-price {
+            margin-top:16px; padding:10px 28px; border-radius:12px; border:none;
+            background:var(--brand-primary); color:#fff; font-weight:700; cursor:pointer;
+            transition:0.3s; font-family:'Outfit',sans-serif; font-size:14px;
+        }
+        .price-editor-box .btn-save-price:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(14,165,233,0.30); }
+        .price-editor-box .price-msg { margin-top:10px; font-size:13px; font-weight:600; }
+
+        /* REPORTS */
+        .report-grid {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:16px; margin-bottom:20px;
+        }
+        .report-grid .stat-card .num { font-size:28px; }
+        .report-note { color:var(--text-muted); font-size:13px; margin-top:8px; }
+
+        .spinner-sm {
+            display:inline-block; width:18px; height:18px;
+            border:2px solid var(--border-color); border-top-color:var(--brand-primary);
+            border-radius:50%; animation:spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* RESPONSIVE */
+        @media (max-width:768px) {
+            .admin-header { padding:10px 4%; }
+            .admin-header .logo-area .brand { font-size:16px; }
+            .admin-header .user-info .email { font-size:12px; }
+            .dashboard { padding:16px 4% 30px; }
+            .stats-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+            .stat-card .num { font-size:24px; }
+            .admin-tabs { padding:4px 8px; gap:4px; overflow-x:auto; flex-wrap:nowrap; }
+            .admin-tabs button { padding:8px 14px; font-size:12px; white-space:nowrap; }
+            .db-form { flex-direction:column; align-items:stretch; }
+            .db-form .form-group { min-width:auto; }
+            .toolbar-row { flex-direction:column; align-items:stretch; }
+            .refresh-orders-btn { margin-left:0; justify-content:center; }
+            .login-box { padding:30px 20px; }
+            .table-wrapper table { font-size:12px; min-width:600px; }
+            .table-wrapper th, .table-wrapper td { padding:8px 10px; }
+            .db-item { flex-direction:column; align-items:flex-start; }
+            .db-item .actions { width:100%; justify-content:flex-end; }
+        }
+        @media (max-width:480px) {
+            .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
+            .stat-card { padding:12px 10px; }
+            .stat-card .num { font-size:20px; }
+            .admin-tabs button { font-size:11px; padding:6px 12px; }
+        }
+        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:10px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--brand-primary); }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="admin-header">
+        <div class="logo-area">
+            <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo" />
+            <div>
+                <span class="brand">Parth Dry Clean</span>
+                <span class="sub">Admin Panel</span>
+            </div>
+        </div>
+        <div class="user-info">
+            <span class="email" id="adminEmailDisplay">admin@parthdryclean.com</span>
+            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <a href="index.html" class="btn-close-admin"><i class="fas fa-times"></i> Close</a>
+        </div>
+    </header>
+
+    <!-- LOGIN SCREEN -->
+    <section class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="lock-icon"><i class="fas fa-lock"></i></div>
+            <h2>Admin Access</h2>
+            <p>Enter your credentials to manage orders, delivery boys, and services.</p>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="adminEmailInput" value="admin@parthdryclean.com" placeholder="admin@parthdryclean.com" />
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-key"></i> Password</label>
+                <input type="password" id="adminPassInput" placeholder="Enter your password" />
+            </div>
+            <div class="login-error" id="loginError">❌ Invalid email or password. Please try again.</div>
+            <button class="btn-login" id="loginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Unlock Dashboard</button>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="dashboard" id="dashboard">
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><div class="num" id="statTotal">0</div><div class="label">Total Orders</div></div>
+            <div class="stat-card"><div class="num" id="statPending">0</div><div class="label">Pending</div></div>
+            <div class="stat-card"><div class="num" id="statProcessing">0</div><div class="label">Processing</div></div>
+            <div class="stat-card"><div class="num" id="statDelivered">0</div><div class="label">Delivered</div></div>
+            <div class="stat-card"><div class="num" id="statRevenue">₹0</div><div class="label">Revenue</div></div>
+        </div>
+
+        <div class="admin-tabs" id="adminTabs">
+            <button class="active" data-tab="orders"><i class="fas fa-box"></i> Orders</button>
+            <button data-tab="deliveryboys"><i class="fas fa-truck"></i> Delivery Boys</button>
+            <button data-tab="services"><i class="fas fa-tags"></i> Services</button>
+            <button data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</button>
+        </div>
+
+        <!-- ORDERS TAB -->
+        <div class="tab-content active" id="tab-orders">
+            <div class="reminder-box" id="reminderBox"><h4><i class="fas fa-bell"></i> Tomorrow's Deliveries</h4><ul id="reminderList"></ul></div>
+            <div class="toolbar-row">
+                <button class="btn-reminder" id="checkReminderBtn"><i class="fas fa-calendar-day"></i> Check Tomorrow's Deliveries</button>
+                <span class="spacer"></span>
+                <button class="refresh-orders-btn" id="refreshOrdersBtn"><i class="fas fa-sync-alt"></i> Refresh Orders</button>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Assign To</th><th>Action</th></tr></thead>
+                    <tbody id="ordersTableBody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px 0;">Loading orders...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DELIVERY BOYS TAB -->
+        <div class="tab-content" id="tab-deliveryboys">
+            <div class="db-form">
+                <div class="form-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="dbNameInput" placeholder="e.g. Rahul Singh" /></div>
+                <div class="form-group"><label><i class="fas fa-phone-alt"></i> Phone (10-digit)</label><input type="tel" id="dbPhoneInput" placeholder="9876543210" pattern="[0-9]{10}" /></div>
+                <button class="btn-add-db" id="addDbBtn"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div class="db-list" id="deliveryBoyList"><p style="color:var(--text-muted);text-align:center;padding:20px 0;">Loading delivery boys...</p></div>
+        </div>
+
+        <!-- SERVICES TAB -->
+        <div class="tab-content" id="tab-services">
+            <div class="price-editor-box">
+                <h3 style="margin-bottom:8px;font-size:18px;"><i class="fas fa-edit" style="color:var(--brand-primary);"></i> Manage Service Prices</h3>
+                <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Edit the JSON below to update prices. Format: { "category": { "item": price } }</p>
+                <textarea id="priceEditor" spellcheck="false"></textarea>
+                <button class="btn-save-price" id="savePriceBtn"><i class="fas fa-save"></i> Save Prices</button>
+                <div class="price-msg" id="priceSaveMsg"></div>
+            </div>
+        </div>
+
+        <!-- REPORTS TAB -->
+        <div class="tab-content" id="tab-reports">
+            <div class="report-grid" id="reportGrid">
+                <div class="stat-card"><div class="num" id="repTotalOrders">0</div><div class="label">Total Orders</div></div>
+                <div class="stat-card"><div class="num" id="repPending">0</div><div class="label">Pending</div></div>
+                <div class="stat-card"><div class="num" id="repRevenue">₹0</div><div class="label">Revenue (Delivered)</div></div>
+                <div class="stat-card"><div class="num" id="repDiscount">₹0</div><div class="label">Total Discount</div></div>
+            </div>
+            <p class="report-note"><i class="fas fa-info-circle"></i> Revenue is calculated from orders with status <strong>Delivered</strong>.</p>
+        </div>
+    </section>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
+            authDomain: "parth-dry-clean.firebaseapp.com",
+            databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "parth-dry-clean",
+            storageBucket: "parth-dry-clean.firebasestorage.app",
+            messagingSenderId: "673481985335",
+            appId: "1:673481985335:web:eb4194b4860cf979b21eb2",
+            measurementId: "G-9WK1RP5GWV"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminEmailInput = document.getElementById('adminEmailInput');
+        const adminPassInput = document.getElementById('adminPassInput');
+        const loginError = document.getElementById('loginError');
+        const adminEmailDisplay = document.getElementById('adminEmailDisplay');
+        const ordersTableBody = document.getElementById('ordersTableBody');
+        const deliveryBoyList = document.getElementById('deliveryBoyList');
+
+        let ordersListener = null;
+        let cachedBoys = [];
+        let isOrdersTabActive = true;
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                loginScreen.style.display = 'none';
+                dashboard.classList.add('active');
+                adminEmailDisplay.textContent = user.email || 'admin';
+                loadAdminDashboard();
+            } else {
+                loginScreen.style.display = 'flex';
+                dashboard.classList.remove('active');
+                detachOrdersListener();
+                resetLoginForm();
+            }
+        });
+
+        loginBtn.addEventListener('click', () => {
+            const email = adminEmailInput.value.trim();
+            const pass = adminPassInput.value.trim();
+            loginError.style.display = 'none';
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .catch(() => { loginError.style.display = 'block'; });
+        });
+
+        adminPassInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+        logoutBtn.addEventListener('click', () => { firebase.auth().signOut(); });
+
+        function resetLoginForm() { loginError.style.display = 'none'; adminPassInput.value = ''; }
+
+        document.querySelectorAll('.admin-tabs button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                const tabId = 'tab-' + btn.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+
+                if (btn.dataset.tab === 'orders') {
+                    isOrdersTabActive = true;
+                    attachOrdersListener();
+                    loadDeliveryBoysCache();
+                } else {
+                    isOrdersTabActive = false;
+                    detachOrdersListener();
+                }
+                if (btn.dataset.tab === 'reports') loadReports();
+                if (btn.dataset.tab === 'services') loadPriceEditor();
+                if (btn.dataset.tab === 'deliveryboys') loadDeliveryBoys();
+            });
+        });
+
+        function loadAdminDashboard() {
+            loadStats();
+            loadDeliveryBoys();
+            loadPriceEditor();
+            loadReports();
+            loadDeliveryBoysCache();
+            if (isOrdersTabActive) attachOrdersListener();
+        }
+
+        function loadStats() {
+            db.ref('orders').once('value').then(snap => {
+                if (!snap.exists()) { setStats(0,0,0,0,0); return; }
+                const orders = []; snap.forEach(c => orders.push(c.val()));
+                const total = orders.length;
+                const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending').length;
+                const processing = orders.filter(o => o.status === 'processing').length;
+                const delivered = orders.filter(o => o.status === 'delivered').length;
+                const revenue = orders.filter(o => o.status === 'delivered').reduce((s,o) => s + (o.total || 0), 0);
+                setStats(total, pending, processing, delivered, revenue);
+            }).catch(() => setStats(0,0,0,0,0));
+        }
+
+        function setStats(total, pending, processing, delivered, revenue) {
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statProcessing').textContent = processing;
+            document.getElementById('statDelivered').textContent = delivered;
+            document.getElementById('statRevenue').textContent = '₹' + revenue;
+        }
+
+        function attachOrdersListener() {
+            if (ordersListener) { db.ref('orders').off('value', ordersListener); ordersListener = null; }
+            ordersListener = (snapshot) => { renderOrdersTable(snapshot); updateAdminStats(snapshot); };
+            db.ref('orders').on('value', ordersListener, (error) => {
+                console.error('Live orders error:', error);
+                ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:20px 0;">⚠️ Connection error. Click Refresh.</td></tr>`;
+            });
+        }
+
+        function detachOrdersListener() {
+            if (ordersListener) { db.ref('orders').off('value', ordersListener); ordersListener = null; }
+        }
+
+        function renderOrdersTable(snapshot) {
+            if (!snapshot.exists()) {
+                ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px 0;">📭 No orders yet.</td></tr>';
+                return;
+            }
+            const orders = []; snapshot.forEach(c => orders.push({ id: c.key, ...c.val() }));
+            orders.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+            const boys = cachedBoys;
+
+            ordersTableBody.innerHTML = orders.map(o => {
+                const assigned = o.assigned_to || '';
+                const isAssigned = assigned !== '';
+                const statusClass = (o.status || 'pending').replace('express-', '');
+                return `<tr>
+                    <td><strong>${o.orderId}</strong></td>
+                    <td>${o.name}</td>
+                    <td>${o.phone}</td>
+                    <td>₹${o.total}</td>
+                    <td><span class="status-badge status-${statusClass}">${o.status || 'pending'}</span></td>
+                    <td>
+                        <select id="assign_${o.orderId}" style="width:100px;" ${isAssigned ? 'disabled' : ''}>
+                            <option value="">-- None --</option>
+                            ${boys.map(b => `<option value="${b.phone}" ${assigned === b.phone ? 'selected' : ''}>${b.name}</option>`).join('')}
+                        </select>
+                        <button class="btn-assign ${isAssigned ? 'assigned' : ''}" onclick="assignOrder('${o.orderId}')" ${isAssigned ? 'disabled' : ''}>
+                            ${isAssigned ? '✅ Assigned' : 'Assign'}
+                        </button>
+                    </td>
+                    <td>
+                        <select onchange="updateOrderStatus('${o.orderId}', this.value)">
+                            <option value="pending" ${o.status === 'pending' || o.status === 'express-pending' ? 'selected' : ''}>Pending</option>
+                            <option value="picked_up" ${o.status === 'picked_up' ? 'selected' : ''}>Picked Up</option>
+                            <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Processing</option>
+                            <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                            <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
+                        </select>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function updateAdminStats(snapshot) {
+            if (!snapshot.exists()) return;
+            const orders = []; snapshot.forEach(c => orders.push(c.val()));
+            const total = orders.length;
+            const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending').length;
+            const processing = orders.filter(o => o.status === 'processing').length;
+            const delivered = orders.filter(o => o.status === 'delivered').length;
+            const revenue = orders.filter(o => o.status === 'delivered').reduce((s,o) => s + (o.total || 0), 0);
+            setStats(total, pending, processing, delivered, revenue);
+        }
+
+        window.assignOrder = function(orderId) {
+            const select = document.getElementById('assign_' + orderId);
+            if (!select) return;
+            const assignedTo = select.value;
+            db.ref('orders/' + orderId).update({ assigned_to: assignedTo });
+        };
+
+        window.updateOrderStatus = function(orderId, status) {
+            db.ref('orders/' + orderId).update({ status });
+        };
+
+        document.getElementById('refreshOrdersBtn').addEventListener('click', () => {
+            ordersTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px 0;"><span class="spinner-sm"></span> Refreshing...</td></tr>';
+            db.ref('orders').once('value').then(snap => { renderOrdersTable(snap); updateAdminStats(snap); })
+                .catch(err => { ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--danger);padding:20px 0;">❌ Error: ${err.message}</td></tr>`; });
+        });
+
+        document.getElementById('checkReminderBtn').addEventListener('click', () => {
+            const box = document.getElementById('reminderBox');
+            const list = document.getElementById('reminderList');
+            list.innerHTML = '<li><span class="spinner-sm"></span> Checking...</li>';
+            const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateStr = tomorrow.toISOString().split('T')[0];
+            db.ref('orders').once('value').then(snap => {
+                if (!snap.exists()) { list.innerHTML = '<li>📭 No orders.</li>'; box.classList.add('active'); return; }
+                const orders = []; snap.forEach(c => orders.push(c.val()));
+                const filtered = orders.filter(o => o.pickupDate === dateStr && o.status !== 'delivered' && o.status !== 'cancelled');
+                if (filtered.length === 0) list.innerHTML = '<li>✅ No deliveries scheduled for tomorrow.</li>';
+                else list.innerHTML = filtered.map(o => `<li>🔔 ${o.orderId} — ${o.name} (${o.phone}) | Status: ${o.status}</li>`).join('');
+                box.classList.add('active');
+            });
+        });
+
+        function loadDeliveryBoysCache() {
+            db.ref('delivery_boys').once('value').then(snap => {
+                cachedBoys = [];
+                if (snap.exists()) snap.forEach(c => cachedBoys.push({ id: c.key, ...c.val() }));
+            }).catch(() => { cachedBoys = []; });
+        }
+
+        function loadDeliveryBoys() {
+            deliveryBoyList.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px 0;">Loading...</p>';
+            db.ref('delivery_boys').once('value').then(snap => {
+                if (!snap.exists()) { deliveryBoyList.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:20px 0;">No delivery boys added yet.</p>'; return; }
+                let html = '';
+                snap.forEach(c => {
+                    const b = c.val();
+                    html += `<div class="db-item"><div class="info"><span class="name"><i class="fas fa-user-circle" style="color:var(--brand-primary);"></i> ${b.name}</span><span class="phone"><i class="fas fa-phone-alt"></i> ${b.phone}</span><span class="deliveries"><i class="fas fa-box"></i> ${b.total_deliveries || 0} deliveries</span></div><div class="actions"><button class="btn-del" onclick="deleteDeliveryBoy('${c.key}')"><i class="fas fa-trash-alt"></i> Delete</button></div></div>`;
+                });
+                deliveryBoyList.innerHTML = html;
+                loadDeliveryBoysCache();
+            });
+        }
+
+        window.deleteDeliveryBoy = function(id) {
+            if (!confirm('Delete this delivery boy?')) return;
+            db.ref('delivery_boys/' + id).remove().then(() => { loadDeliveryBoys(); loadDeliveryBoysCache(); });
+        };
+
+        document.getElementById('addDbBtn').addEventListener('click', () => {
+            const name = document.getElementById('dbNameInput').value.trim();
+            const phone = document.getElementById('dbPhoneInput').value.trim();
+            if (!name || !phone) { alert('Please fill both fields.'); return; }
+            if (!/^[0-9]{10}$/.test(phone)) { alert('Enter a valid 10-digit phone number.'); return; }
+            const newBoy = { name, phone, total_deliveries: 0 };
+            db.ref('delivery_boys').push(newBoy).then(() => {
+                document.getElementById('dbNameInput').value = '';
+                document.getElementById('dbPhoneInput').value = '';
+                loadDeliveryBoys();
+                loadDeliveryBoysCache();
+            });
+        });
+
+        function loadPriceEditor() {
+            const editor = document.getElementById('priceEditor');
+            editor.value = 'Loading prices...';
+            db.ref('services/price_list').once('value').then(snap => {
+                if (snap.exists()) { editor.value = JSON.stringify(snap.val(), null, 2); }
+                else {
+                    const defaultPrices = {
+                        "Regular Wear": { "Pant": 60, "Shirt": 60, "Kurta": 60, "T-Shirt": 60, "Dhoti": 80 },
+                        "Winter Wear": { "Sweater (Half)": 120, "Sweater (Full)": 150, "T-Shirt (Woollen)": 140, "Shawl": 180, "Cardigan": 180 },
+                        "Suits & Formal": { "Coat": 250, "Coat Pant": 350, "Coat Long": 300, "Safari Suit": 180, "Safari Coat": 150, "Suit (2 Piece)": 120, "Suit (3 Piece)": 180, "Suit (2 Pc + Blazer)": 200, "Suit (3 Pc + Blazer)": 300 },
+                        "Ethnic Wear": { "Kurta Pajama (Set)": 300, "Sherwani": 350 },
+                        "Jackets": { "Jacket (Half)": 200, "Jacket (Full)": 250 },
+                        "Home & Travel": { "Blanket (Single)": 300, "Blanket (Double)": 350, "Helmet": 175, "Ladies Bag": 150 },
+                        "Variable Price": { "Saree Dry Clean": "200-400", "Trolley Bag": "300-400", "Lehenga (3 Piece)": "400-2000", "Gagra": "250-400", "Gown": "250-500", "Jents Wear": "200-300" },
+                        "Steam Press": { "Saree + Blouse": 80, "Coat": 80, "Coat Pant": 80, "Lehenga": 400, "Dupatta": 40, "Ladies Suit (3 Piece)": 60 },
+                        "Additional": { "Saree Starch": 50, "Blouse": "Free" }
+                    };
+                    editor.value = JSON.stringify(defaultPrices, null, 2);
+                }
+            });
+        }
+
+        document.getElementById('savePriceBtn').addEventListener('click', () => {
+            const editor = document.getElementById('priceEditor');
+            const msg = document.getElementById('priceSaveMsg');
+            try {
+                const data = JSON.parse(editor.value);
+                db.ref('services/price_list').set(data).then(() => {
+                    msg.textContent = '✅ Prices saved successfully!';
+                    msg.style.color = 'var(--success)';
+                }).catch(err => { msg.textContent = '❌ Firebase error: ' + err.message; msg.style.color = 'var(--danger)'; });
+            } catch (e) { msg.textContent = '❌ Invalid JSON format. Please fix and try again.'; msg.style.color = 'var(--danger)'; }
+        });
+
+        function loadReports() {
+            db.ref('orders').once('value').then(snap => {
+                if (!snap.exists()) { setReport(0,0,0,0); return; }
+                const orders = []; snap.forEach(c => orders.push(c.val()));
+                const total = orders.length;
+                const pending = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
+                const delivered = orders.filter(o => o.status === 'delivered');
+                const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
+                const discount = orders.reduce((s,o) => s + (o.discount || 0), 0);
+                setReport(total, pending, revenue, discount);
+            }).catch(() => setReport(0,0,0,0));
+        }
+
+        function setReport(total, pending, revenue, discount) {
+            document.getElementById('repTotalOrders').textContent = total;
+            document.getElementById('repPending').textContent = pending;
+            document.getElementById('repRevenue').textContent = '₹' + revenue;
+            document.getElementById('repDiscount').textContent = '₹' + discount;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && loginScreen.style.display !== 'none') loginBtn.click();
+        });
+
+        console.log('🧺 Parth Dry Clean Admin Panel Loaded');
+    </script>
+</body>
+</html>
