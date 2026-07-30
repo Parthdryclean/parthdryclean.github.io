@@ -2083,9 +2083,27 @@
             };
 
             try {
+                // ===== SAVE ORDER =====
                 await db.ref('orders/' + orderId).set(orderData);
-                const scriptURL =
-                    'https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec';
+                console.log('✅ Order saved:', orderId);
+
+                // ===== SAVE CUSTOMER DATA (NEW!) =====
+                const customerData = {
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    orderId: orderId,
+                    totalAmount: total,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    lastOrderDate: firebase.database.ServerValue.TIMESTAMP
+                };
+                
+                // Customer ko phone number se save karein (unique key)
+                await db.ref('customers/' + phone).set(customerData);
+                console.log('✅ Customer data saved for:', phone);
+
+                // Google Sheets (optional)
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec';
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(sheetData) }).catch(() => {});
 
@@ -2105,7 +2123,7 @@
                 updateActiveOrderPanel();
             } catch (err) {
                 alert('Booking failed. Please try again.');
-                console.error(err);
+                console.error('❌ Booking error:', err);
             } finally {
                 document.getElementById('bookingLoading').style.display = 'none';
                 document.getElementById('submitBooking').style.display = 'inline-flex';
