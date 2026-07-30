@@ -7,10 +7,11 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
-    </script>
+    
+    <!-- Firebase Scripts (Auth added) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <style>
         /* ===== LIGHT THEME ===== */
@@ -1726,8 +1727,8 @@
             <div class="popup-box">
                 <button class="close-hero-popup" id="closeHeroHistoryPopup">&times;</button>
                 <h3>Order History</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Enter your phone number to check past orders.</p>
                 <input type="tel" id="heroHistoryPhone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" />
-                <input type="text" id="heroHistoryPin" placeholder="Enter 4-digit PIN (from booking)" maxlength="4" pattern="[0-9]{4}" />
                 <button class="btn btn-call" id="heroHistorySubmit" style="color:#fff; background:var(--brand-primary); border:none; width:100%;"><i class="fas fa-history"></i> Show Orders</button>
                 <div id="heroHistoryResult" style="margin-top:16px; font-size:14px; color:var(--text-muted); max-height:300px; overflow-y:auto;"></div>
             </div>
@@ -1941,7 +1942,7 @@
             <h2>Booking Confirmed!</h2>
             <p>Your order has been placed successfully. Our team will contact you shortly.</p>
             <div class="order-id-box"><div class="label">Your Order ID</div><div class="id" id="successOrderId">PDC-XXXX</div></div>
-            <div class="order-id-box" style="border-color:var(--brand-primary);"><div class="label">🔐 Your 4-digit PIN (for History)</div><div class="id" id="successPin" style="font-size:20px;">0000</div></div>
+            <div class="order-id-box" style="border-color:var(--brand-primary);"><div class="label">🔐 Your 4-digit PIN (for tracking)</div><div class="id" id="successPin" style="font-size:20px;">0000</div></div>
             <p class="variable-note" id="variableNote"><i class="fas fa-info-circle"></i> We will contact you shortly for final price confirmation.</p>
             <div class="success-btns">
                 <button class="btn btn-track-order" id="trackFromSuccess"><i class="fas fa-search-location"></i> Track</button>
@@ -1960,10 +1961,12 @@
         <div class="admin-panel" id="adminPanel">
             <h2>🧺 Admin Dashboard <button id="closeAdminBtn">Close</button></h2>
             <div id="adminContentOverlay">
+                <!-- UPDATED LOGIN UI -->
                 <div id="adminLoginPromptOverlay">
+                    <input type="email" id="adminEmailInputOverlay" placeholder="Admin Email" value="admin@parthdryclean.com" />
                     <input type="password" id="adminPassInputOverlay" placeholder="Enter Admin Password" />
                     <button id="adminLoginBtnOverlay">Unlock</button>
-                    <p id="adminLoginErrorOverlay" style="color:var(--danger); display:none; margin-top:8px;">❌ Wrong password!</p>
+                    <p id="adminLoginErrorOverlay" style="color:var(--danger); display:none; margin-top:8px;">❌ Login Failed!</p>
                 </div>
                 <div id="adminDashboardOverlay" style="display:none;">
                     <div class="admin-tabs">
@@ -2028,9 +2031,6 @@
         const FIRST_ORDER_KEY = 'pdc_first_order_used';
         const CUSTOMER_DATA_KEY = 'pdc_customer_data';
         const ACTIVE_ORDER_ID_KEY = 'pdc_active_order_id';
-        const ADMIN_PASSWORD = 'Parth@clean';
-        const OWNER_PHONE = '919235601645';
-        const MAX_PENDING_ORDERS = 10;
 
         let appliedPromoDiscount = 0;
         let activePanelOrder = null;
@@ -2073,12 +2073,15 @@
             for (let id of overlays) {
                 const el = document.getElementById(id);
                 if (el && el.classList.contains('active')) {
-                    closeOverlay(el);
-                    closed = true;
                     if (id === 'adminOverlay') {
+                        firebase.auth().signOut();
+                        closeOverlay(el);
                         resetAdminLogin();
                         detachOrdersListener();
+                    } else {
+                        closeOverlay(el);
                     }
+                    closed = true;
                     break;
                 }
             }
@@ -2102,16 +2105,23 @@
             history.pushState({ page: page }, '', '#' + page);
             closeOverlay(document.getElementById('bookingOverlay'));
             closeOverlay(document.getElementById('successOverlay'));
-            closeOverlay(document.getElementById('adminOverlay'));
+            
+            // Safely close admin overlay
+            if(document.getElementById('adminOverlay').classList.contains('active')) {
+                firebase.auth().signOut();
+                closeOverlay(document.getElementById('adminOverlay'));
+                resetAdminLogin();
+                detachOrdersListener();
+            }
         }
 
         // ======================== ADMIN LOGIN RESET ========================
         function resetAdminLogin() {
             document.getElementById('adminLoginPromptOverlay').style.display = 'flex';
             document.getElementById('adminDashboardOverlay').style.display = 'none';
+            document.getElementById('adminEmailInputOverlay').value = 'admin@parthdryclean.com';
             document.getElementById('adminPassInputOverlay').value = '';
             document.getElementById('adminLoginErrorOverlay').style.display = 'none';
-            // Reset active tabs to orders
             document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
             const ordersTabBtn = document.querySelector('.admin-tabs button[data-tab="orders"]');
             if (ordersTabBtn) ordersTabBtn.classList.add('active');
@@ -2291,35 +2301,6 @@
             updatePriceSummary();
         });
 
-        // ======================== CHECK PENDING ORDERS LIMIT ========================
-        function checkPendingOrdersLimit(phone) {
-            return new Promise((resolve, reject) => {
-                db.ref('orders').orderByChild('phone').equalTo(phone).once('value', (snap) => {
-                    if (!snap.exists()) {
-                        resolve(true);
-                        return;
-                    }
-                    let pendingCount = 0;
-                    snap.forEach(child => {
-                        const order = child.val();
-                        const status = order.status || '';
-                        if (status !== 'delivered' && status !== 'cancelled') {
-                            pendingCount++;
-                        }
-                    });
-                    if (pendingCount >= MAX_PENDING_ORDERS) {
-                        reject(
-                            `❌ You already have ${pendingCount} pending orders. Maximum ${MAX_PENDING_ORDERS} pending orders allowed. Please complete them before booking new.`
-                            );
-                    } else {
-                        resolve(true);
-                    }
-                }, (err) => {
-                    reject('Error checking pending orders. Please try again.');
-                });
-            });
-        }
-
         // ======================== BOOKING FORM SUBMIT ========================
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2342,13 +2323,7 @@
             if (!name || !phone || !address) { alert('Please fill all required fields.'); return; }
             if (!/^[0-9]{10}$/.test(phone)) { alert('Enter a valid 10-digit phone.'); return; }
 
-            try {
-                await checkPendingOrdersLimit(phone);
-            } catch (errMsg) {
-                alert(errMsg);
-                return;
-            }
-
+            // Save customer details locally for convenience
             localStorage.setItem(CUSTOMER_DATA_KEY, JSON.stringify({ name, phone, address }));
 
             document.getElementById('bookingLoading').style.display = 'block';
@@ -2394,7 +2369,10 @@
             };
 
             try {
+                // Save Order to Firebase
                 await db.ref('orders/' + orderId).set(orderData);
+                
+                // Silent push to Google Sheets
                 const scriptURL =
                     'https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec';
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -2467,65 +2445,10 @@
             if (id) fetchOrderStatus(id, 'heroTrackResult');
         });
 
-        // ======================== ORDER HISTORY (Phone + PIN) ========================
-        document.getElementById('heroHistorySubmit').addEventListener('click', async () => {
-            const phone = document.getElementById('heroHistoryPhone').value.trim();
-            const pin = document.getElementById('heroHistoryPin').value.trim();
-            const res = document.getElementById('heroHistoryResult');
-
-            if (!/^[0-9]{10}$/.test(phone)) {
-                res.innerHTML = '<p style="color:var(--danger);">❌ Enter valid 10-digit phone number.</p>';
-                return;
-            }
-            if (!/^[0-9]{4}$/.test(pin)) {
-                res.innerHTML = '<p style="color:var(--danger);">❌ Enter 4-digit PIN.</p>';
-                return;
-            }
-
-            res.innerHTML = '🔍 Searching...';
-
-            try {
-                const snap = await db.ref('orders').orderByChild('phone').equalTo(phone).once('value');
-
-                if (!snap.exists()) {
-                    res.innerHTML = '<p style="color:var(--danger);">❌ No orders found for this phone number.</p>';
-                    return;
-                }
-
-                const orders = [];
-                snap.forEach(child => {
-                    const order = child.val();
-                    if (String(order.pin).trim() === pin) {
-                        orders.push(order);
-                    }
-                });
-
-                if (orders.length === 0) {
-                    res.innerHTML =
-                        '<p style="color:var(--danger);">❌ No orders found. Please check your Phone and PIN.</p>';
-                    return;
-                }
-
-                orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-                res.innerHTML = orders.map(o => `
-                    <div style="background:var(--bg-body);padding:12px;border-radius:8px;margin-bottom:8px;border:1px solid var(--border-color);">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-                            <div>
-                                <strong>${o.orderId}</strong> | ₹${o.total}<br>
-                                <small>${o.pickupDate || 'N/A'} | ${o.status || 'pending'}</small>
-                            </div>
-                            <button onclick="generateInvoiceFromHistory('${o.orderId}')" style="padding:4px 12px;border-radius:30px;border:1px solid var(--border-color);background:#fff;cursor:pointer;font-size:12px;">
-                                📄 Invoice
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-
-            } catch (err) {
-                res.innerHTML = '<p style="color:var(--danger);">❌ Error fetching orders. Please try again.</p>';
-                console.error(err);
-            }
+        // History Lookup Disabled For Privacy/Security
+        document.getElementById('heroHistorySubmit').addEventListener('click', () => {
+            alert('🔒 For security and privacy, public Order History lookup is disabled. Please check your WhatsApp for order updates, or contact our support.');
+            closeOverlay(document.getElementById('heroHistoryPopup'));
         });
 
         window.generateInvoiceFromHistory = function(orderId) {
@@ -2538,7 +2461,6 @@
             });
         };
 
-        // ======================== FETCH ORDER STATUS ========================
         function fetchOrderStatus(orderId, outputId) {
             const el = document.getElementById(outputId);
             if (!el) return;
@@ -2550,7 +2472,7 @@
                 } else {
                     el.innerHTML = '<p style="color:#ef4444;">Order not found.</p>';
                 }
-            }).catch(() => { el.innerHTML = '<p style="color:#ef4444;">Error.</p>'; });
+            }).catch(() => { el.innerHTML = '<p style="color:#ef4444;">Error finding order.</p>'; });
         }
 
         function renderTimeline(order) {
@@ -2675,33 +2597,56 @@
         }
 
         // ======================== ADMIN OVERLAY ========================
-        document.getElementById('adminLoginBtnOverlay').addEventListener('click', () => {
-            const pass = document.getElementById('adminPassInputOverlay').value.trim();
-            if (pass === ADMIN_PASSWORD) {
+        
+        // Listen to Auth State Changes - This keeps the admin panel live and persistent!
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
                 document.getElementById('adminLoginPromptOverlay').style.display = 'none';
                 document.getElementById('adminDashboardOverlay').style.display = 'block';
-                // Always attach the live orders listener when admin logs in
-                loadAdminData();
-                loadDeliveryBoys();
-                loadPriceEditor();
-                loadReports();
+                
+                // If overlay is open, fetch data immediately
+                if(document.getElementById('adminOverlay').classList.contains('active')) {
+                    loadAdminData();
+                    loadDeliveryBoys();
+                    loadPriceEditor();
+                    loadReports();
+                }
             } else {
-                document.getElementById('adminLoginErrorOverlay').style.display = 'block';
+                resetAdminLogin();
             }
         });
+
+        document.getElementById('adminLoginBtnOverlay').addEventListener('click', () => {
+            const email = document.getElementById('adminEmailInputOverlay').value.trim();
+            const pass = document.getElementById('adminPassInputOverlay').value.trim();
+            
+            // Firebase Login
+            firebase.auth().signInWithEmailAndPassword(email, pass)
+                .then(() => {
+                    // Success is handled by onAuthStateChanged above
+                })
+                .catch((error) => {
+                    document.getElementById('adminLoginErrorOverlay').style.display = 'block';
+                });
+        });
+        
         document.getElementById('adminPassInputOverlay').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') document.getElementById('adminLoginBtnOverlay').click();
         });
 
         const adminGear = document.getElementById('adminGear');
         const adminOverlay = document.getElementById('adminOverlay');
+        
         document.getElementById('closeAdminBtn').addEventListener('click', () => {
+            firebase.auth().signOut(); // SECURE LOGOUT
             closeOverlay(adminOverlay);
             resetAdminLogin();
             detachOrdersListener();
         });
+        
         adminOverlay.addEventListener('click', (e) => {
             if (e.target === adminOverlay) {
+                firebase.auth().signOut(); // SECURE LOGOUT
                 closeOverlay(adminOverlay);
                 resetAdminLogin();
                 detachOrdersListener();
@@ -2712,7 +2657,7 @@
             openOverlay(adminOverlay);
             document.getElementById('adminPassInputOverlay').value = '';
             document.getElementById('adminLoginErrorOverlay').style.display = 'none';
-            // If already logged in (dashboard visible), reload data
+            // If already authenticated via onAuthStateChanged, load data
             if (document.getElementById('adminDashboardOverlay').style.display === 'block') {
                 loadAdminData();
                 loadDeliveryBoys();
@@ -2721,13 +2666,11 @@
             }
         });
 
-        // Double-tap logo to open admin
         document.getElementById('logoClick').addEventListener('dblclick', function(e) {
             e.preventDefault();
             adminGear.click();
         });
 
-        // Admin Tabs
         document.querySelectorAll('.admin-tabs button').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
@@ -2737,7 +2680,6 @@
                 document.getElementById(tabId).classList.add('active');
                 if (btn.dataset.tab === 'reports') loadReports();
                 if (btn.dataset.tab === 'services') loadPriceEditor();
-                // Attach/detach listener based on active tab
                 if (btn.dataset.tab === 'orders') {
                     attachOrdersListener();
                 } else {
@@ -2746,36 +2688,32 @@
             });
         });
 
-        // ======================== ADMIN - LIVE ORDERS (FIXED) ========================
+        // ======================== FIXED LIVE ORDERS LISTENER ========================
         function attachOrdersListener() {
-            // Remove old listener if exists
             if (ordersListener) {
                 db.ref('orders').off('value', ordersListener);
                 ordersListener = null;
             }
 
-            // Create named function for the listener
-            ordersListener = function(snap) {
+            function renderOrders(snapshot) {
                 const tbody = document.getElementById('adminOrderBodyOverlay');
                 const statsDiv = document.getElementById('adminStatsOverlay');
-
-                // Safety check - elements might not be in DOM if tab switched
-                if (!tbody || !statsDiv) {
-                    console.warn('⚠️ Admin order table elements not found in DOM, skipping update.');
-                    return;
-                }
+                if (!tbody || !statsDiv) return;
 
                 db.ref('delivery_boys').once('value').then(dbSnap => {
                     let boys = [];
-                    if (dbSnap.exists()) { dbSnap.forEach(c => boys.push({ id: c.key, ...c.val() })); }
+                    if (dbSnap.exists()) {
+                        dbSnap.forEach(c => boys.push({ id: c.key, ...c.val() }));
+                    }
 
-                    if (!snap.exists()) {
+                    if (!snapshot.exists()) {
                         tbody.innerHTML = '<tr><td colspan="7">No orders yet.</td></tr>';
                         statsDiv.innerHTML = '';
                         return;
                     }
+
                     const orders = [];
-                    snap.forEach(c => orders.push({ id: c.key, ...c.val() }));
+                    snapshot.forEach(c => orders.push({ id: c.key, ...c.val() }));
                     orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                     const total = orders.length;
@@ -2820,26 +2758,26 @@
                         </tr>`;
                     }).join('');
                 }).catch(err => {
-                    console.error('❌ Error fetching delivery boys:', err);
+                    console.error('❌ Delivery boys fetch error:', err);
                 });
-            };
+            }
 
-            // Attach the live listener
-            db.ref('orders').on('value', ordersListener);
-            console.log('🔄 Live orders listener attached.');
+            ordersListener = renderOrders;
+            
+            // Listen for changes and catch any permission errors
+            db.ref('orders').on('value', ordersListener, (error) => {
+                console.error("Live Order Sync Error:", error);
+            });
         }
 
         function detachOrdersListener() {
             if (ordersListener) {
                 db.ref('orders').off('value', ordersListener);
                 ordersListener = null;
-                console.log('🛑 Live orders listener detached.');
             }
         }
 
         function loadAdminData() {
-            // Always attach the live listener when this function is called
-            // (only if dashboard is visible - avoid attaching when not needed)
             if (document.getElementById('adminDashboardOverlay').style.display === 'block') {
                 attachOrdersListener();
             }
@@ -2850,20 +2788,17 @@
             if (!select) return;
             const assignedTo = select.value;
             db.ref('orders/' + orderId).update({ assigned_to: assignedTo }).then(() => {
-                // No alert needed - the live listener will update the UI
                 console.log('✅ Order ' + orderId + ' assigned to ' + (assignedTo || 'None'));
             });
         };
 
         window.updateOrderStatus = function(orderId, status) {
             db.ref('orders/' + orderId).update({ status }).then(() => {
-                // No alert needed - the live listener will update the UI
                 console.log('✅ Status updated for ' + orderId + ' to ' + status);
                 updateActiveOrderPanel();
             });
         };
 
-        // Tomorrow Reminder
         document.getElementById('checkReminderBtnOverlay').addEventListener('click', () => {
             const box = document.getElementById('reminderBoxOverlay');
             const list = document.getElementById('reminderListOverlay');
@@ -3061,13 +2996,7 @@
         updatePriceSummary();
         updateSelectedItemsSummary();
         console.log('✅ Parth Dry Clean Website Loaded Successfully!');
-        console.log('🔐 Admin Password: Parth@clean');
-        console.log('📱 Delivery Boy: Owner phone only (' + OWNER_PHONE + ')');
-        console.log('🔄 Orders update LIVE in admin panel!');
-        console.log('📦 Max pending orders per customer: ' + MAX_PENDING_ORDERS);
-        console.log('🔙 Back button works for all popups and admin overlay.');
-        console.log('🖱️ Double-tap on logo to open Admin (alternate)');
-        console.log('📋 Order history: Phone + PIN required (privacy protected)');
+        console.log('🔒 Firebase Auth Integrated - Live Listener Fixed!');
     </script>
 </body>
 </html>
