@@ -109,7 +109,8 @@
         .bag-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; font-weight: 700; border-bottom: 1px solid rgba(2, 132, 199, 0.1); }
         .bag-row:last-child { border-bottom: none; }
 
-        .express-card { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.06)); border: 1.5px solid rgba(245,158,11,0.3); padding: 12px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; cursor: pointer; }
+        /* EXPRESS CARD FIX: Changed div to label for perfect checkbox toggling */
+        .express-card { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.06)); border: 1.5px solid rgba(245,158,11,0.3); padding: 12px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; cursor: pointer; width: 100%; box-sizing: border-box; }
         .express-info { display: flex; align-items: center; gap: 10px; }
         .express-info i { color: #f59e0b; font-size: 20px; }
         .express-info strong { font-size: 13px; color: #b45309; display: block; font-weight: 800; }
@@ -452,16 +453,17 @@
 
             <div id="bagItemsSummary"></div>
 
-            <div class="express-card" onclick="document.getElementById('expressToggle').click()">
+            <!-- FIXED EXPRESS CARD: Changed from div to label for native checkbox click -->
+            <label class="express-card" for="expressToggle">
                 <div class="express-info">
                     <i class="fas fa-bolt"></i>
                     <div>
                         <strong>Express 24-Hr Delivery</strong>
-                        <span>Priority cleaning (+₹50)</span>
+                        <span>Priority cleaning (+90% Extra)</span>
                     </div>
                 </div>
                 <input type="checkbox" id="expressToggle" class="express-checkbox" onchange="updatePriceSummary()">
-            </div>
+            </label>
 
             <!-- MINIMUM ORDER VALUE ALERT -->
             <div class="min-order-alert" id="minOrderAlert">
@@ -483,7 +485,7 @@
 
             <div class="bill-box">
                 <div class="bill-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
-                <div class="bill-row" id="expressFeeRow" style="display:none; color:#b45309;"><span>Express Fee</span><span id="expressFeeAmount">+₹50</span></div>
+                <div class="bill-row" id="expressFeeRow" style="display:none; color:#b45309;"><span>Express Fee</span><span id="expressFeeAmount">+₹0</span></div>
                 <div class="bill-row" id="discountRow" style="display:none; color:#16a34a;"><span>Discount</span><span id="discountAmount">-₹0</span></div>
                 <div class="bill-row total"><span>Total Payable</span><span id="totalAmount">₹0</span></div>
             </div>
@@ -786,6 +788,7 @@
             document.getElementById('estDeliveryBox').style.display = 'flex';
         }
 
+        // FIXED EXPRESS FEE PRICING LOGIC (Exact 90% of Subtotal)
         function updatePriceSummary() {
             let orderItems = {}; let subtotal = 0; let totalItems = 0; let html = '';
             document.querySelectorAll('.item-tile').forEach(tile => {
@@ -811,7 +814,7 @@
             }
 
             const isExpress = document.getElementById('expressToggle').checked;
-            const expressFee = isExpress ? 50 : 0;
+            const expressFee = isExpress ? Math.round(subtotal * 0.90) : 0; // Calculates exactly 90% of the subtotal
 
             let discount = 0;
             if (activeDiscountPct > 0) {
@@ -837,11 +840,10 @@
             } else { document.getElementById('mobileDock').classList.remove('visible'); }
         }
 
-        // BOOKING SUBMIT - STRICT LOGIN & ₹300 VALIDATION
+        // BOOKING SUBMIT
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // 1. Strict Login Check
             if(!auth.currentUser || !loggedInUid) { 
                 showToast("Please login or sign up first to confirm booking!", "warning");
                 openAuthModal(); 
@@ -862,7 +864,6 @@
                 return; 
             }
 
-            // 2. Minimum Order Value Check (₹300)
             if(subtotal < 300) {
                 showToast(`Minimum order amount is ₹300. Please add ₹${300 - subtotal} more items.`, "error");
                 return;
@@ -909,7 +910,7 @@
                 fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec', { method: 'POST', mode: 'no-cors', body: JSON.stringify(sheetData) }).catch(()=>{});
 
                 if(!localStorage.getItem(FIRST_ORDER_KEY)) localStorage.setItem(FIRST_ORDER_KEY, 'true');
-                localStorage.removeItem(CART_CACHE_KEY); // Clear cart cache on success
+                localStorage.removeItem(CART_CACHE_KEY); 
                 
                 document.getElementById('successOrderId').textContent = orderId; 
                 document.getElementById('successOverlay').classList.add('active');
