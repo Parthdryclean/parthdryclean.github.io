@@ -19,35 +19,34 @@
             --bg-body: #f4f7fa; --bg-card: #ffffff; --text-main: #0f172a; --text-muted: #64748b;
             --brand-primary: #0284c7; --brand-gradient: linear-gradient(135deg, #0284c7, #0d9488);
             --brand-secondary: #0d9488; --brand-gold: #f59e0b;
-            --border-color: #e2e8f0; --shadow-card: 0 12px 35px rgba(0, 0, 0, 0.05);
+            --border-color: #e2e8f0; --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.04);
             --shadow-float: 0 -8px 30px rgba(0, 0, 0, 0.1);
             --danger-color: #ef4444; --success-color: #10b981;
         }
         
-        /* 1. STRICT NO-OVERFLOW FIX */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        html, body { width: 100%; overflow-x: hidden; }
-        body { background: var(--bg-body); color: var(--text-main); line-height: 1.6; padding-bottom: 110px; }
+        /* STRICT NO-OVERFLOW FIX - FONT FAMILY FIXED FOR ICONS */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; max-width: 100vw; overflow-x: hidden; position: relative; }
+        body, input, textarea, select, button { font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg-body); color: var(--text-main); line-height: 1.5; padding-bottom: 110px; }
 
         /* HEADER */
-        header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .logo img { height: 36px; width: auto; }
-        .brand-name { font-size: 18px; font-weight: 800; color: var(--brand-primary); }
+        header { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(12px); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.02); width: 100%; }
+        .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 1; min-width: 0; }
+        .logo img { height: 34px; width: auto; flex-shrink: 0; }
+        .brand-name { font-size: 18px; font-weight: 800; color: var(--brand-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .header-actions { display: flex; align-items: center; gap: 10px; }
-        .back-btn { text-decoration: none; color: var(--brand-primary); font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; background: rgba(2, 132, 199, 0.08); padding: 8px 14px; border-radius: 12px; transition: 0.3s; }
-        .back-btn:hover { background: var(--brand-primary); color: #fff; }
-        .btn-login { background: rgba(2, 132, 199, 0.08); color: var(--brand-primary); padding: 8px 14px; border-radius: 12px; font-weight: 600; font-size: 13px; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
-        .btn-login:hover { background: var(--brand-primary); color: #fff; }
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .back-btn, .btn-login { text-decoration: none; color: var(--brand-primary); font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; background: rgba(2, 132, 199, 0.08); padding: 8px 14px; border-radius: 10px; transition: 0.3s; border: none; cursor: pointer; white-space: nowrap; }
+        .back-btn:hover, .btn-login:hover { background: var(--brand-primary); color: #fff; }
 
         /* CUSTOM TOAST NOTIFICATIONS */
-        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .custom-toast { pointer-events: auto; min-width: 280px; max-width: 380px; padding: 14px 18px; border-radius: 16px; background: #ffffff; color: var(--text-main); box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; border-left: 5px solid var(--brand-primary); animation: slideIn 0.3s ease forwards; font-size: 13px; font-weight: 600; }
+        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; max-width: calc(100vw - 40px); }
+        .custom-toast { pointer-events: auto; width: 340px; max-width: 100%; padding: 14px 18px; border-radius: 14px; background: #ffffff; color: var(--text-main); box-shadow: 0 12px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; border-left: 5px solid var(--brand-primary); animation: slideIn 0.3s ease forwards; font-size: 13px; font-weight: 600; }
         .custom-toast.success { border-left-color: var(--success-color); }
         .custom-toast.error { border-left-color: var(--danger-color); }
         .custom-toast.warning { border-left-color: var(--brand-gold); }
-        .custom-toast i { font-size: 18px; }
+        .custom-toast i { font-size: 18px; flex-shrink: 0; }
         .custom-toast.success i { color: var(--success-color); }
         .custom-toast.error i { color: var(--danger-color); }
         .custom-toast.warning i { color: var(--brand-gold); }
@@ -55,149 +54,137 @@
         @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
 
         /* MAIN APP LAYOUT */
-        .app-container { max-width: 1280px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 420px; gap: 24px; align-items: start; }
+        .app-container { width: 100%; max-width: 1200px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
+        .catalog-section { width: 100%; min-width: 0; }
 
-        /* CATALOG SECTION */
-        .banner-card { background: var(--brand-gradient); color: #fff; padding: 20px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15); position: relative; overflow: hidden; }
-        .banner-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
-        .banner-card p { font-size: 12px; opacity: 0.9; }
+        /* BANNER & CARDS */
+        .banner-card { background: var(--brand-gradient); color: #fff; padding: 20px; border-radius: 18px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15); position: relative; overflow: hidden; width: 100%; }
+        .banner-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; line-height: 1.2; }
+        .banner-card p { font-size: 13px; opacity: 0.9; }
         .banner-card i { position: absolute; right: -10px; bottom: -15px; font-size: 90px; opacity: 0.15; }
 
-        .repeat-order-card { background: #fff; border: 1.5px solid var(--brand-secondary); padding: 12px 16px; border-radius: 16px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; display: none; box-shadow: var(--shadow-card); }
-        .repeat-order-card p { font-size: 12px; font-weight: 700; color: var(--brand-secondary); margin: 0; display: flex; align-items: center; gap: 6px; }
-        .btn-repeat { background: var(--brand-secondary); color: #fff; border: none; padding: 7px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .repeat-order-card { background: #fff; border: 1.5px solid var(--brand-secondary); padding: 12px 16px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; display: none; box-shadow: var(--shadow-card); width: 100%; }
+        .repeat-order-card p { font-size: 13px; font-weight: 700; color: var(--brand-secondary); margin: 0; display: flex; align-items: center; gap: 8px; }
+        .btn-repeat { background: var(--brand-secondary); color: #fff; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
 
-        .category-pills-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 18px; scrollbar-width: none; }
-        .category-pills-scroll::-webkit-scrollbar { display: none; }
-        .pill-tab { padding: 8px 16px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 50px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-        .pill-tab.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25); }
-
-        .search-box { position: relative; margin-bottom: 18px; }
-        .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .search-input { width: 100%; padding: 12px 16px 12px 42px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 16px; font-size: 13px; outline: none; transition: 0.2s; box-shadow: var(--shadow-card); }
+        /* SEARCH & TABS */
+        .search-box { position: relative; margin-bottom: 20px; width: 100%; }
+        .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+        .search-input { width: 100%; padding: 14px 16px 14px 40px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 16px; font-size: 14px; outline: none; transition: 0.2s; box-shadow: var(--shadow-card); }
         .search-input:focus { border-color: var(--brand-primary); }
 
-        /* ITEM GRID TILES */
-        .items-grid-container { display: none; }
-        .items-grid-container.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; animation: fadeIn 0.3s ease; }
+        .category-pills-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
+        .category-pills-scroll::-webkit-scrollbar { display: none; }
+        .pill-tab { padding: 10px 18px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; flex-shrink: 0; box-shadow: var(--shadow-card); }
+        .pill-tab.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25); }
+
+        /* ITEM CARDS (LIST VIEW FIX) */
+        .items-grid-container { display: none; width: 100%; }
+        .items-grid-container.active { display: grid; grid-template-columns: 1fr; gap: 14px; animation: fadeIn 0.3s ease; width: 100%; }
+        @media (min-width: 768px) { .items-grid-container.active { grid-template-columns: repeat(2, 1fr); } }
         @keyframes fadeIn { from{opacity:0; transform: translateY(6px);} to{opacity:1; transform: translateY(0);} }
 
-        .item-tile { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; box-shadow: var(--shadow-card); }
-        .item-tile:hover { border-color: var(--brand-primary); }
+        .item-tile { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; box-shadow: var(--shadow-card); width: 100%; gap: 12px; }
+        .item-tile:hover { border-color: var(--brand-primary); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
         
-        .tile-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .tile-icon { width: 38px; height: 38px; background: rgba(2, 132, 199, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); font-size: 16px; }
-        .tile-price { font-size: 12px; font-weight: 800; color: var(--brand-primary); background: rgba(2, 132, 199, 0.06); padding: 3px 8px; border-radius: 6px; }
-        .tile-name { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; word-break: break-word; }
-        
-        .tile-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
-        .tile-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .item-left { display: flex; align-items: center; gap: 14px; flex-grow: 1; min-width: 0; }
+        .tile-icon { width: 44px; height: 44px; background: rgba(2, 132, 199, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); font-size: 18px; flex-shrink: 0; }
+        .item-details { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+        .tile-name { font-size: 15px; font-weight: 800; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tile-meta { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+        .tile-price { font-size: 13px; font-weight: 800; color: var(--brand-primary); background: rgba(2, 132, 199, 0.06); padding: 2px 8px; border-radius: 6px; }
 
-        .qty-pill { display: flex; align-items: center; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 50px; padding: 2px; }
-        .qty-btn { width: 26px; height: 26px; border-radius: 50%; border: none; background: #fff; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.06); transition: 0.2s; }
+        .item-right { flex-shrink: 0; }
+        .qty-pill { display: flex; align-items: center; background: #fff; border: 1.5px solid var(--border-color); border-radius: 10px; height: 38px; width: 95px; justify-content: space-between; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: 0.2s; }
+        .item-tile:hover .qty-pill { border-color: var(--brand-primary); }
+        .qty-btn { width: 32px; height: 100%; background: rgba(2, 132, 199, 0.05); border: none; color: var(--brand-primary); font-size: 14px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
         .qty-btn:hover { background: var(--brand-primary); color: #fff; }
-        .qty-display { font-size: 13px; font-weight: 800; min-width: 20px; text-align: center; }
+        .qty-display { font-size: 14px; font-weight: 800; color: var(--text-main); text-align: center; flex-grow: 1; }
 
         /* CHECKOUT COCKPIT */
-        .laundry-bag-cockpit { background: var(--bg-card); border-radius: 24px; padding: 20px; box-shadow: var(--shadow-card); border: 1.5px solid var(--border-color); position: sticky; top: 80px; }
+        .laundry-bag-cockpit { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-card); border: 1.5px solid var(--border-color); position: sticky; top: 80px; width: 100%; }
         .cockpit-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border-bottom: 1.5px solid var(--border-color); padding-bottom: 12px; }
 
-        #bagItemsSummary { background: rgba(2, 132, 199, 0.03); border: 1px solid rgba(2, 132, 199, 0.12); border-radius: 14px; padding: 12px; margin-bottom: 16px; max-height: 160px; overflow-y: auto; display: none; }
-        .bag-row { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; font-weight: 600; border-bottom: 1px dashed var(--border-color); }
+        #bagItemsSummary { background: rgba(2, 132, 199, 0.03); border: 1px dashed var(--brand-primary); border-radius: 12px; padding: 12px; margin-bottom: 16px; max-height: 160px; overflow-y: auto; display: none; }
+        .bag-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; font-weight: 700; border-bottom: 1px solid rgba(2, 132, 199, 0.1); }
         .bag-row:last-child { border-bottom: none; }
 
-        .express-card { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.06)); border: 1.5px solid rgba(245,158,11,0.3); padding: 12px 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; cursor: pointer; }
+        .express-card { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.06)); border: 1.5px solid rgba(245,158,11,0.3); padding: 12px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; cursor: pointer; }
         .express-info { display: flex; align-items: center; gap: 10px; }
         .express-info i { color: #f59e0b; font-size: 20px; }
-        .express-info strong { font-size: 12px; color: #b45309; display: block; font-weight: 800; }
-        .express-info span { font-size: 10px; color: var(--text-muted); }
+        .express-info strong { font-size: 13px; color: #b45309; display: block; font-weight: 800; }
+        .express-info span { font-size: 11px; color: var(--text-muted); }
         .express-checkbox { width: 18px; height: 18px; accent-color: #f59e0b; cursor: pointer; }
 
-        .min-order-alert { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 10px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-bottom: 14px; display: none; align-items: center; gap: 6px; }
+        .min-order-alert { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; margin-bottom: 16px; display: none; align-items: center; gap: 8px; }
 
-        .est-pill { display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 10px 14px; border-radius: 14px; margin-bottom: 16px; }
+        .est-pill { display: flex; align-items: center; gap: 10px; background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; }
         .est-pill i { font-size: 18px; color: #16a34a; }
         .est-pill strong { display: block; font-size: 13px; color: #166534; font-weight: 800; }
 
-        .promo-bag-card { background: linear-gradient(135deg, rgba(2,132,199,0.06), rgba(13,148,136,0.06)); border: 1.5px dashed var(--brand-primary); padding: 10px 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; display: none; }
-        .promo-bag-card strong { font-size: 12px; color: var(--brand-primary); }
-        .promo-bag-card span { font-size: 10px; color: var(--text-muted); display: block; }
-        .promo-bag-card button { background: var(--brand-primary); color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; }
+        .promo-bag-card { background: linear-gradient(135deg, rgba(2,132,199,0.06), rgba(13,148,136,0.06)); border: 1.5px dashed var(--brand-primary); padding: 12px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; display: none; }
+        .promo-bag-card strong { font-size: 13px; color: var(--brand-primary); }
+        .promo-bag-card span { font-size: 11px; color: var(--text-muted); display: block; }
+        .promo-bag-card button { background: var(--brand-primary); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; }
 
         .bill-box { background: var(--bg-body); border-radius: 14px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-color); }
-        .bill-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; font-weight: 600; color: var(--text-muted); }
-        .bill-row.total { font-size: 16px; font-weight: 800; color: var(--text-main); border-top: 1.5px dashed var(--border-color); margin-top: 6px; padding-top: 8px; }
+        .bill-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .bill-row.total { font-size: 17px; font-weight: 800; color: var(--text-main); border-top: 1.5px dashed var(--border-color); margin-top: 6px; padding-top: 8px; }
 
-        .f-group { margin-bottom: 12px; }
-        .f-group label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: var(--text-muted); text-transform: uppercase; }
-        .f-input, .f-select, .f-textarea { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-size: 12px; outline: none; transition: 0.2s; }
+        .f-group { margin-bottom: 14px; width: 100%; }
+        .f-group label { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; }
+        .f-input, .f-select, .f-textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-size: 13px; outline: none; transition: 0.2s; font-weight: 500; }
         .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--brand-primary); background: #fff; }
         
-        .btn-gps { background: none; border: none; color: var(--brand-primary); font-size: 10px; cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; gap: 3px; }
+        .f-row-responsive { display: flex; gap: 12px; width: 100%; }
 
-        .btn-submit-order { width: 100%; padding: 14px; border-radius: 14px; border: none; background: var(--brand-primary); color: #fff; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3); transition: 0.3s; }
+        .btn-gps { background: none; border: none; color: var(--brand-primary); font-size: 11px; cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+
+        .btn-submit-order { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--brand-primary); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3); transition: 0.3s; }
         .btn-submit-order:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
 
         /* MOBILE FLOATING DOCK */
-        .mobile-bag-dock { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; padding: 12px 16px; box-shadow: var(--shadow-float); z-index: 999; border-top: 1.5px solid var(--border-color); align-items: center; justify-content: space-between; }
+        .mobile-bag-dock { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; padding: 14px 20px; box-shadow: var(--shadow-float); z-index: 999; border-top: 1.5px solid var(--border-color); align-items: center; justify-content: space-between; }
         .mobile-bag-dock.visible { display: flex; }
         .dock-info { display: flex; flex-direction: column; }
-        .dock-total { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .dock-btn { background: var(--brand-primary); color: #fff; border: none; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; }
+        .dock-total { font-size: 18px; font-weight: 800; color: var(--text-main); }
+        .dock-btn { background: var(--brand-primary); color: #fff; border: none; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); }
 
-        /* POPUPS */
-        .auth-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 16px; }
+        /* POPUPS RESPONSIVE */
+        .auth-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 16px; }
         .auth-overlay.active, .success-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .auth-box, .success-popup { background: #ffffff; border-radius: 24px; padding: 28px 20px; max-width: 380px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .close-auth { position: absolute; top: 14px; right: 18px; font-size: 22px; color: var(--text-muted); cursor: pointer; }
-        .auth-box h2, .success-popup h2 { color: var(--brand-primary); margin-bottom: 6px; font-weight: 800; font-size: 20px; }
-        .auth-box p, .success-popup p { color: var(--text-muted); font-size: 12px; margin-bottom: 18px; }
+        .auth-box, .success-popup { background: #ffffff; border-radius: 20px; padding: 30px 20px; max-width: 380px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .close-auth { position: absolute; top: 16px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+        .auth-box h2, .success-popup h2 { color: var(--brand-primary); margin-bottom: 8px; font-weight: 800; font-size: 22px; }
+        .auth-box p, .success-popup p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
         
-        .btn-google { width: 100%; background: #ffffff; color: var(--text-main); border: 1.5px solid var(--border-color); padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
+        .btn-google { width: 100%; background: #ffffff; color: var(--text-main); border: 1.5px solid var(--border-color); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; transition: 0.3s; }
+        .btn-google:hover { border-color: var(--brand-primary); background: rgba(2, 132, 199, 0.05); }
         .btn-google img { width: 18px; height: 18px; }
         
-        .auth-divider { display: flex; align-items: center; text-align: center; margin: 14px 0; color: var(--text-muted); font-size: 11px; font-weight: 700; }
+        .auth-divider { display: flex; align-items: center; text-align: center; margin: 16px 0; color: var(--text-muted); font-size: 12px; font-weight: 700; }
         .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1.5px solid var(--border-color); }
         .auth-divider:not(:empty)::before { margin-right: .5em; } .auth-divider:not(:empty)::after { margin-left: .5em; }
 
-        .auth-input { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border-color); font-size: 13px; outline: none; margin-bottom: 12px; text-align: center; }
-        .btn-phone { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
-        #recaptcha-container { display: flex; justify-content: center; margin-bottom: 10px; }
+        .auth-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-size: 14px; outline: none; margin-bottom: 12px; text-align: center; }
+        .btn-phone { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        #recaptcha-container { display: flex; justify-content: center; margin-bottom: 12px; }
 
-        .success-icon { width: 65px; height: 65px; border-radius: 50%; background: #f0fdf4; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; color: #16a34a; border: 2px solid #bbf7d0; }
-        .order-id-display { background: var(--bg-body); border: 1.5px dashed var(--border-color); border-radius: 14px; padding: 12px; margin: 14px 0; }
-        .order-id-display .lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .order-id-display .val { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
+        .success-icon { width: 70px; height: 70px; border-radius: 50%; background: #f0fdf4; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; color: #16a34a; border: 2px solid #bbf7d0; }
+        .order-id-display { background: var(--bg-body); border: 1.5px dashed var(--border-color); border-radius: 14px; padding: 14px; margin: 16px 0; }
+        .order-id-display .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; }
+        .order-id-display .val { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
 
-        /* 2. THE REAL FIX: STACK BUTTONS ON MOBILE WITHOUT CHANGING FONT SIZES */
+        /* STRICT MOBILE BREAKPOINTS */
         @media (max-width: 1024px) { 
             .app-container { grid-template-columns: 1fr; gap: 20px; } 
             .laundry-bag-cockpit { position: static; } 
         }
         @media (max-width: 600px) {
-            /* Keep 2 columns, but guarantee they fit */
-            .items-grid-container.active { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-            .item-tile { padding: 12px; }
-            
-            /* Stack the "DRY CLEAN" label and "- 0 +" buttons vertically so they NEVER overlap */
-            .tile-bottom {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-                padding-top: 12px;
-            }
-            /* Make the + - button bar take full width cleanly */
-            .qty-pill {
-                width: 100%;
-                justify-content: space-between;
-                padding: 4px 8px;
-            }
-            
-            /* Make Input fields (Name/Mobile) stack automatically */
-            form div[style*="display: flex"] {
-                flex-direction: column;
-                gap: 12px !important;
-            }
+            .f-row-responsive { flex-direction: column; gap: 12px; }
+            header { padding: 10px 16px; }
+            .brand-name { font-size: 16px; }
+            .back-btn, .btn-login { padding: 6px 12px; font-size: 12px; }
         }
     </style>
 </head>
@@ -209,7 +196,7 @@
         <a href="index.html" class="logo"><img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Logo" /><span class="brand-name">Parth Dry Clean</span></a>
         <div class="header-actions">
             <button class="btn-login" id="loginBtn" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> <span>Login</span></button>
-            <a href="index.html" class="back-btn"><i class="fas fa-home"></i> Home</a>
+            <a href="index.html" class="back-btn"><i class="fas fa-home"></i> <span>Home</span></a>
         </div>
     </header>
 
@@ -245,84 +232,217 @@
             </div>
 
             <div id="catalogGridWrapper">
+                
+                <!-- REGULAR WEAR -->
                 <div class="items-grid-container active" id="grid-regular">
                     <div class="item-tile" data-item-id="reg-pant" data-item="Pant" data-price="60">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-tshirt"></i></div><span class="tile-price">₹60</span></div>
-                        <div class="tile-name">Pant</div>
-                        <div class="tile-bottom"><span class="tile-label">Dry Clean</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-tshirt"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Pant</div>
+                                <div class="tile-meta">Dry Clean <span class="tile-price">₹60</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
+                    
                     <div class="item-tile" data-item-id="reg-shirt" data-item="Shirt" data-price="60">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-tshirt"></i></div><span class="tile-price">₹60</span></div>
-                        <div class="tile-name">Shirt</div>
-                        <div class="tile-bottom"><span class="tile-label">Dry Clean</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-tshirt"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Shirt</div>
+                                <div class="tile-meta">Dry Clean <span class="tile-price">₹60</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="item-tile" data-item-id="reg-kurta" data-item="Kurta" data-price="60">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-tshirt"></i></div><span class="tile-price">₹60</span></div>
-                        <div class="tile-name">Kurta</div>
-                        <div class="tile-bottom"><span class="tile-label">Dry Clean</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-tshirt"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Kurta</div>
+                                <div class="tile-meta">Dry Clean <span class="tile-price">₹60</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- WINTER WEAR -->
                 <div class="items-grid-container" id="grid-winter">
                     <div class="item-tile" data-item-id="win-sweater-full" data-item="Sweater (Full)" data-price="150">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-snowflake"></i></div><span class="tile-price">₹150</span></div>
-                        <div class="tile-name">Sweater (Full)</div>
-                        <div class="tile-bottom"><span class="tile-label">Woollen Care</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-snowflake"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Sweater (Full)</div>
+                                <div class="tile-meta">Woollen Care <span class="tile-price">₹150</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- SUITS -->
                 <div class="items-grid-container" id="grid-suits">
                     <div class="item-tile" data-item-id="sui-coat-pant" data-item="Coat Pant" data-price="350">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-user-tie"></i></div><span class="tile-price">₹350</span></div>
-                        <div class="tile-name">Coat Pant</div>
-                        <div class="tile-bottom"><span class="tile-label">Formal Care</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-user-tie"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Coat Pant</div>
+                                <div class="tile-meta">Formal Care <span class="tile-price">₹350</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- ETHNIC -->
                 <div class="items-grid-container" id="grid-ethnic">
                     <div class="item-tile" data-item-id="eth-sherwani" data-item="Sherwani" data-price="350">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-crown"></i></div><span class="tile-price">₹350</span></div>
-                        <div class="tile-name">Sherwani</div>
-                        <div class="tile-bottom"><span class="tile-label">Special Care</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-crown"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Sherwani</div>
+                                <div class="tile-meta">Special Care <span class="tile-price">₹350</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- JACKETS -->
                 <div class="items-grid-container" id="grid-jackets">
                     <div class="item-tile" data-item-id="jac-full" data-item="Jacket (Full)" data-price="250">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-vest"></i></div><span class="tile-price">₹250</span></div>
-                        <div class="tile-name">Jacket (Full)</div>
-                        <div class="tile-bottom"><span class="tile-label">Heavy Care</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-vest"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Jacket (Full)</div>
+                                <div class="tile-meta">Heavy Care <span class="tile-price">₹250</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- HOME -->
                 <div class="items-grid-container" id="grid-home">
                     <div class="item-tile" data-item-id="hom-blanket-double" data-item="Blanket (Double)" data-price="350">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-home"></i></div><span class="tile-price">₹350</span></div>
-                        <div class="tile-name">Blanket (Double)</div>
-                        <div class="tile-bottom"><span class="tile-label">Deep Wash</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-home"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Blanket (Double)</div>
+                                <div class="tile-meta">Deep Wash <span class="tile-price">₹350</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- VARIABLE -->
                 <div class="items-grid-container" id="grid-variable">
                     <div class="item-tile" data-item-id="var-saree" data-item="Saree Dry Clean" data-price="200">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-ruler-combined"></i></div><span class="tile-price">₹200-400</span></div>
-                        <div class="tile-name">Saree Dry Clean</div>
-                        <div class="tile-bottom"><span class="tile-label">Delicate</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-ruler-combined"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Saree Dry Clean</div>
+                                <div class="tile-meta">Delicate <span class="tile-price">₹200+</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                     <div class="item-tile" data-item-id="var-lehenga" data-item="Lehenga (3 Pc)" data-price="400">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-ruler-combined"></i></div><span class="tile-price">₹400-2k</span></div>
-                        <div class="tile-name">Lehenga (3 Pc)</div>
-                        <div class="tile-bottom"><span class="tile-label">Bridal</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-ruler-combined"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Lehenga (3 Pc)</div>
+                                <div class="tile-meta">Bridal <span class="tile-price">₹400+</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- STEAM PRESS -->
                 <div class="items-grid-container" id="grid-steam">
                     <div class="item-tile" data-item-id="stm-saree-blouse" data-item="Saree + Blouse" data-price="80">
-                        <div class="tile-top"><div class="tile-icon"><i class="fas fa-fire"></i></div><span class="tile-price">₹80</span></div>
-                        <div class="tile-name">Saree + Blouse</div>
-                        <div class="tile-bottom"><span class="tile-label">Steam Press</span><div class="qty-pill"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+                        <div class="item-left">
+                            <div class="tile-icon"><i class="fas fa-fire"></i></div>
+                            <div class="item-details">
+                                <div class="tile-name">Saree + Blouse</div>
+                                <div class="tile-meta">Steam Press <span class="tile-price">₹80</span></div>
+                            </div>
+                        </div>
+                        <div class="item-right">
+                            <div class="qty-pill">
+                                <button class="qty-btn minus"><i class="fas fa-minus"></i></button>
+                                <span class="qty-display">0</span>
+                                <button class="qty-btn plus"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -372,7 +492,7 @@
                 <div class="f-group"><label>Pickup Date *</label><input type="date" class="f-input" id="pickupDate" required /></div>
                 <div class="f-group"><label>Time Slot *</label><select class="f-select" id="timeSlot" required><option value="">Select Date First</option></select></div>
 
-                <div style="display: flex; gap: 8px;">
+                <div class="f-row-responsive">
                     <div class="f-group" style="flex:1;"><label>Full Name *</label><input type="text" class="f-input" id="custName" required /></div>
                     <div class="f-group" style="flex:1;"><label>Mobile *</label><input type="tel" class="f-input" id="custPhone" pattern="[0-9]{10}" required /></div>
                 </div>
@@ -390,7 +510,7 @@
     </div>
 
     <div class="mobile-bag-dock" id="mobileDock">
-        <div class="dock-info"><span id="dockItemCount" style="font-size: 10px; color: var(--text-muted); font-weight:700;">0 ITEMS IN BAG</span><span class="dock-total" id="dockTotal">₹0</span></div>
+        <div class="dock-info"><span id="dockItemCount" style="font-size: 11px; color: var(--text-muted); font-weight:800;">0 ITEMS IN BAG</span><span class="dock-total" id="dockTotal">₹0</span></div>
         <button class="dock-btn" onclick="document.getElementById('cockpitSection').scrollIntoView({behavior: 'smooth'})">View & Checkout</button>
     </div>
 
