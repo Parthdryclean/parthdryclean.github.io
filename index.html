@@ -31,20 +31,35 @@
         .top-banner span { background: #fff; color: #0d9488; padding: 2px 12px; border-radius: 20px; margin: 0 4px; }
         .close-banner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8; }
 
-        /* HEADER */
+        /* HEADER FIX: Login button next to menu */
         header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); padding: 8px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; min-height: 64px; }
         .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; cursor: pointer; }
         .logo img { height: 40px; width: auto; object-fit: contain; }
         .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
         .logo-text .brand-name { font-size: 20px; font-weight: 800; color: var(--brand-primary); }
         .logo-text .brand-tagline { font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; }
+
+        .header-right-group { display: flex; align-items: center; gap: 14px; }
         nav ul { list-style: none; display: flex; gap: 18px; align-items: center; margin: 0; padding: 0; }
         nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 14px; transition: 0.3s; cursor: pointer; white-space: nowrap; }
         nav a:hover { color: var(--brand-primary); }
         
-        .btn-login { background: rgba(14, 165, 233, 0.1); color: var(--brand-primary); padding: 8px 18px; border-radius: 50px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: 'Outfit'; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-login { background: rgba(14, 165, 233, 0.1); color: var(--brand-primary); padding: 8px 18px; border-radius: 50px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: 'Outfit'; display: flex; align-items: center; gap: 8px; transition: 0.3s; white-space: nowrap; }
         .btn-login:hover { background: var(--brand-primary); color: #fff; }
         .mobile-menu-btn { display: none; background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; z-index: 1001; margin-left: auto; padding: 4px 8px; }
+
+        /* IN-BUILT CUSTOM TOAST SYSTEM */
+        #toastContainer { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .custom-toast { pointer-events: auto; min-width: 280px; max-width: 380px; padding: 14px 18px; border-radius: 16px; background: #ffffff; color: var(--text-main); box-shadow: 0 15px 35px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; border-left: 5px solid var(--brand-primary); animation: slideIn 0.3s ease forwards; font-size: 13px; font-weight: 600; }
+        .custom-toast.success { border-left-color: var(--success); }
+        .custom-toast.error { border-left-color: var(--danger); }
+        .custom-toast.warning { border-left-color: var(--brand-gold); }
+        .custom-toast i { font-size: 18px; }
+        .custom-toast.success i { color: var(--success); }
+        .custom-toast.error i { color: var(--danger); }
+        .custom-toast.warning i { color: var(--brand-gold); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
 
         /* TRUST BAR */
         .trust-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 14px 5%; background: #ffffff; border-bottom: 1px solid var(--border-color); }
@@ -59,7 +74,7 @@
         .active-order-panel { background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px; margin: 20px 5%; padding: 20px; box-shadow: var(--shadow-card); display: none; }
         .active-order-panel h4 { color: var(--brand-primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
 
-        /* HERO */
+        /* HERO SECTION */
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 40px 5%; gap: 40px; flex-wrap: wrap; }
         .hero-content { max-width: 550px; }
         .premium-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(14, 165, 233, 0.1); color: var(--brand-primary); padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; border: 1px solid rgba(14, 165, 233, 0.2); margin-bottom: 18px; }
@@ -107,41 +122,36 @@
         .fabric-content-card.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 
-        /* FLOATING LIVE WHATSAPP WIDGET */
-        .floating-whatsapp { position: fixed; bottom: 25px; right: 25px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s; }
-        .floating-whatsapp:hover { transform: scale(1.1); }
-        .whatsapp-tooltip { position: absolute; right: 70px; background: #fff; color: var(--text-main); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-card); white-space: nowrap; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
-        .whatsapp-tooltip span { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
-
+        /* HIGH-TECH PRICING UI/UX ENHANCEMENT */
+        .pricing { padding: 60px 5%; }
         .section-header { text-align: center; margin-bottom: 40px; }
         .section-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
         .section-header p { color: var(--text-muted); font-size: 15px; }
 
-        /* PRICING */
-        .pricing { padding: 60px 5%; }
-        .price-menu { max-width: 700px; margin: 0 auto 12px; background: #ffffff; border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-card); }
-        .price-menu .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; cursor: pointer; transition: background 0.2s; }
-        .price-menu .accordion-header:hover { background: var(--bg-body); }
-        .price-menu .accordion-header h3 { display: flex; align-items: center; gap: 12px; color: var(--brand-primary); font-size: 17px; font-weight: 600; margin: 0; }
-        .price-menu .accordion-header i.fa-chevron-down { transition: transform 0.3s; }
-        .price-menu.open .accordion-header i.fa-chevron-down { transform: rotate(180deg); }
-        .price-menu .accordion-body { display: none; padding: 10px 24px 20px; }
+        .price-menu { max-width: 750px; margin: 0 auto 14px; background: #ffffff; border-radius: 18px; border: 1.5px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-card); transition: all 0.25s ease; }
+        .price-menu:hover { border-color: var(--brand-primary); }
+        .price-menu .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; cursor: pointer; background: #ffffff; }
+        .price-menu .accordion-header h3 { display: flex; align-items: center; gap: 12px; color: var(--text-main); font-size: 16px; font-weight: 800; margin: 0; }
+        .price-menu .accordion-header h3 i { color: var(--brand-primary); background: rgba(14, 165, 233, 0.08); padding: 8px; border-radius: 10px; font-size: 16px; }
+        .price-menu .accordion-header i.fa-chevron-down { transition: transform 0.3s; color: var(--text-muted); }
+        .price-menu.open .accordion-header i.fa-chevron-down { transform: rotate(180deg); color: var(--brand-primary); }
+        .price-menu .accordion-body { display: none; padding: 10px 24px 20px; border-top: 1px dashed var(--border-color); background: rgba(248, 250, 252, 0.6); }
         .price-menu.open .accordion-body { display: block; }
-        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--border-color); }
+        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(226, 232, 240, 0.7); }
         .price-item:last-child { border-bottom: none; }
-        .price-name { font-size: 15px; font-weight: 500; color: var(--text-main); }
-        .price-tag { font-size: 15px; font-weight: 700; color: var(--brand-primary); background: rgba(14, 165, 233, 0.08); padding: 4px 14px; border-radius: 30px; }
+        .price-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .price-tag { font-size: 13px; font-weight: 800; color: var(--brand-primary); background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(13, 148, 136, 0.08)); padding: 4px 14px; border-radius: 30px; border: 1px solid rgba(14, 165, 233, 0.15); }
 
-        /* SERVICES */
-        .services-section { padding: 60px 5%; background: #ffffff; }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .service-card { background: var(--bg-body); padding: 28px 22px; border-radius: 18px; border: 1px solid var(--border-color); transition: all 0.3s; }
-        .service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--brand-primary); }
-        .icon-box { width: 50px; height: 50px; background: rgba(14, 165, 233, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--brand-primary); margin-bottom: 18px; }
-        .service-card h3 { font-size: 19px; margin-bottom: 8px; }
-        .service-card p { color: var(--text-muted); font-size: 14px; }
+        /* HIGH-TECH SERVICES (WHY CHOOSE US) UI/UX ENHANCEMENT */
+        .services-section { padding: 60px 5%; background: #ffffff; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+        .service-card { background: var(--bg-body); padding: 26px 22px; border-radius: 20px; border: 1.5px solid var(--border-color); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); border-color: var(--brand-primary); background: #ffffff; }
+        .icon-box { width: 48px; height: 48px; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #ffffff; margin-bottom: 16px; box-shadow: 0 6px 15px rgba(14, 165, 233, 0.25); }
+        .service-card h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+        .service-card p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
 
-        /* REVIEWS */
+        /* REVIEWS, FAQ & CONTACT */
         .reviews { padding: 60px 5%; overflow: hidden; }
         .reviews-slider { display: flex; gap: 20px; animation: slideLeft 30s linear infinite; width: max-content; }
         .reviews-slider:hover { animation-play-state: paused; }
@@ -152,7 +162,6 @@
         .customer-name { font-weight: 700; color: var(--brand-primary); }
         .customer-loc { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
 
-        /* FAQ */
         .faq-section { padding: 60px 5%; max-width: 800px; margin: 0 auto; }
         .faq-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow-card); }
         .faq-question { padding: 16px 22px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); }
@@ -161,7 +170,6 @@
         .faq-item.active .faq-answer { display: block; }
         .faq-item.active .faq-question i { transform: rotate(180deg); color: var(--brand-primary); }
 
-        /* CONTACT */
         .info-section { padding: 60px 5%; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1000px; margin: 0 auto; }
         .info-box { background: #ffffff; padding: 30px; border-radius: 18px; border: 1px solid var(--border-color); box-shadow: var(--shadow-card); }
         .info-box h3 { font-size: 19px; margin-bottom: 14px; color: var(--brand-primary); display: flex; align-items: center; gap: 10px; }
@@ -169,6 +177,11 @@
         .map-direct-card { display: flex; flex-direction: column; align-items: center; background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 14px; padding: 18px; text-align: center; margin-top: 15px; text-decoration: none; color: var(--text-main); transition: all 0.3s; }
         .map-direct-card:hover { background: rgba(14, 165, 233, 0.1); }
         .map-direct-card i { font-size: 28px; color: #ef4444; margin-bottom: 8px; }
+
+        .floating-whatsapp { position: fixed; bottom: 25px; right: 25px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s; }
+        .floating-whatsapp:hover { transform: scale(1.1); }
+        .whatsapp-tooltip { position: absolute; right: 70px; background: #fff; color: var(--text-main); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-card); white-space: nowrap; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
+        .whatsapp-tooltip span { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
 
         /* POPUPS */
         .hero-track-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
@@ -179,8 +192,8 @@
         .popup-box input:focus { border-color: var(--brand-primary); }
         .close-hero-popup { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
 
-        /* AUTH MODAL */
-        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
+        /* AUTH MODAL (Google + Phone OTP) */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
         .auth-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
         .auth-box { background: #ffffff; border-radius: 24px; padding: 35px; max-width: 400px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
         .close-auth { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
@@ -217,13 +230,15 @@
 </head>
 <body>
 
+    <div id="toastContainer"></div>
+
     <!-- TOP BANNER -->
     <div class="top-banner" id="topBanner">
         🎉 First order? Get <span>20% OFF</span> automatically!
         <button class="close-banner" id="closeBanner">&times;</button>
     </div>
 
-    <!-- HEADER -->
+    <!-- HEADER WITH LOGIN BUTTON PLACED IN THE RIGHT GROUP -->
     <header>
         <a href="#" class="logo" id="logoClick">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo" />
@@ -232,18 +247,21 @@
                 <span class="brand-tagline">Premium For Everyone</span>
             </div>
         </a>
-        <nav>
-            <ul id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#reviews">Reviews</a></li>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><button class="btn-login" id="loginBtn" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> Login / Sign Up</button></li>
-            </ul>
-        </nav>
-        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        
+        <div class="header-right-group">
+            <nav>
+                <ul id="navLinks">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="btn-login" id="loginBtn" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> Login / Sign Up</button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+        </div>
     </header>
 
     <!-- TRUST BAR -->
@@ -359,62 +377,27 @@
             </div>
         </section>
 
-        <!-- MANUAL TRACK POPUP -->
-        <div class="hero-track-popup" id="heroTrackPopup">
-            <div class="popup-box">
-                <button class="close-hero-popup" id="closeHeroTrackPopup">&times;</button>
-                <h3>Track Your Order</h3>
-                <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Enter your Order ID to check current status.</p>
-                <input type="text" id="heroTrackInput" placeholder="Enter Order ID (e.g. PDC-XXXX)" />
-                <button class="btn" id="heroTrackSubmit" style="color:#fff; background:var(--brand-primary); border:none; width:100%;"><i class="fas fa-search"></i> Search</button>
-                <div id="heroTrackResult" style="margin-top:16px; font-size:14px; color:var(--text-muted);"></div>
-            </div>
-        </div>
-
-        <!-- AUTHENTICATION MODAL -->
-        <div class="auth-overlay" id="authModal">
-            <div class="auth-box">
-                <span class="close-auth" onclick="document.getElementById('authModal').classList.remove('active')">&times;</span>
-                <h2>Welcome Back</h2>
-                <p>Login to book faster & track your orders securely.</p>
-                
-                <button class="btn-google" onclick="signInWithGoogle()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Continue with Google
-                </button>
-                
-                <div class="auth-divider">OR</div>
-                
-                <div id="phoneAuthSection">
-                    <div id="recaptcha-container"></div>
-                    <input type="tel" id="phoneInput" class="auth-input" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}">
-                    <button class="btn-phone" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
-                </div>
-
-                <div id="otpSection" style="display: none;">
-                    <input type="number" id="otpInput" class="auth-input" placeholder="Enter 6-digit OTP">
-                    <button class="btn-phone" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify OTP</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRICING -->
+        <!-- PRICING SECTION (HIGH-TECH UI REDESIGN) -->
         <section class="pricing" id="pricing">
             <div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>No hidden charges, premium quality guaranteed</p></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-tshirt" style="color:#0ea5e9;"></i> Regular Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+            
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-tshirt"></i> Regular Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Pant</span><span class="price-tag">₹60</span></div>
                 <div class="price-item"><span class="price-name">Shirt</span><span class="price-tag">₹60</span></div>
                 <div class="price-item"><span class="price-name">Kurta</span><span class="price-tag">₹60</span></div>
                 <div class="price-item"><span class="price-name">T-Shirt</span><span class="price-tag">₹60</span></div>
                 <div class="price-item"><span class="price-name">Dhoti</span><span class="price-tag">₹80</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-snowflake" style="color:#0ea5e9;"></i> Winter Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-snowflake"></i> Winter Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Sweater (Half)</span><span class="price-tag">₹120</span></div>
                 <div class="price-item"><span class="price-name">Sweater (Full)</span><span class="price-tag">₹150</span></div>
                 <div class="price-item"><span class="price-name">T-Shirt (Woollen)</span><span class="price-tag">₹140</span></div>
                 <div class="price-item"><span class="price-name">Shawl</span><span class="price-tag">₹180</span></div>
                 <div class="price-item"><span class="price-name">Cardigan</span><span class="price-tag">₹180</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-user-tie" style="color:#0ea5e9;"></i> Suits & Formal</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-user-tie"></i> Suits & Formal</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Coat</span><span class="price-tag">₹250</span></div>
                 <div class="price-item"><span class="price-name">Coat Pant</span><span class="price-tag">₹350</span></div>
                 <div class="price-item"><span class="price-name">Coat Long</span><span class="price-tag">₹300</span></div>
@@ -425,21 +408,25 @@
                 <div class="price-item"><span class="price-name">Suit (2 Pc + Blazer)</span><span class="price-tag">₹200</span></div>
                 <div class="price-item"><span class="price-name">Suit (3 Pc + Blazer)</span><span class="price-tag">₹300</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-tshirt" style="color:#0ea5e9;"></i> Ethnic Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-crown"></i> Ethnic Wear</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Kurta Pajama (Set)</span><span class="price-tag">₹300</span></div>
                 <div class="price-item"><span class="price-name">Sherwani</span><span class="price-tag">₹350</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-vest" style="color:#0ea5e9;"></i> Jackets</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-vest"></i> Jackets</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Jacket (Half)</span><span class="price-tag">₹200</span></div>
                 <div class="price-item"><span class="price-name">Jacket (Full)</span><span class="price-tag">₹250</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-home" style="color:#0ea5e9;"></i> Home & Travel</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-home"></i> Home & Travel</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Blanket (Single)</span><span class="price-tag">₹300</span></div>
                 <div class="price-item"><span class="price-name">Blanket (Double)</span><span class="price-tag">₹350</span></div>
                 <div class="price-item"><span class="price-name">Helmet</span><span class="price-tag">₹150–200</span></div>
                 <div class="price-item"><span class="price-name">Ladies Bag</span><span class="price-tag">₹150</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-ruler-combined" style="color:#0ea5e9;"></i> Variable Price</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-ruler-combined"></i> Variable Price</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Saree Dry Clean</span><span class="price-tag">₹200–400</span></div>
                 <div class="price-item"><span class="price-name">Trolley Bag</span><span class="price-tag">₹300–400</span></div>
                 <div class="price-item"><span class="price-name">Lehenga (3 Piece)</span><span class="price-tag">₹400–2000</span></div>
@@ -447,7 +434,8 @@
                 <div class="price-item"><span class="price-name">Gown</span><span class="price-tag">₹250–500</span></div>
                 <div class="price-item"><span class="price-name">Jents Wear</span><span class="price-tag">₹200–300</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-fire" style="color:#0ea5e9;"></i> Steam Press</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-fire"></i> Steam Press</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Saree + Blouse</span><span class="price-tag">₹80</span></div>
                 <div class="price-item"><span class="price-name">Coat</span><span class="price-tag">₹80</span></div>
                 <div class="price-item"><span class="price-name">Coat Pant</span><span class="price-tag">₹80</span></div>
@@ -455,13 +443,14 @@
                 <div class="price-item"><span class="price-name">Dupatta</span><span class="price-tag">₹40</span></div>
                 <div class="price-item"><span class="price-name">Ladies Suit (3 Piece)</span><span class="price-tag">₹60</span></div>
             </div></div>
-            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-star" style="color:#0ea5e9;"></i> Additional</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
+
+            <div class="price-menu"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><h3><i class="fas fa-star"></i> Additional</h3><i class="fas fa-chevron-down"></i></div><div class="accordion-body">
                 <div class="price-item"><span class="price-name">Saree Starch</span><span class="price-tag">₹50</span></div>
                 <div class="price-item"><span class="price-name">Blouse</span><span class="price-tag">Free</span></div>
             </div></div>
         </section>
 
-        <!-- SERVICES -->
+        <!-- SERVICES / WHY CHOOSE US (HIGH-TECH UI REDESIGN) -->
         <section class="services-section" id="services">
             <div class="section-header"><h2>Why <span class="text-gradient">Choose Us?</span></h2><p>We treat your garments like our own</p></div>
             <div class="services-grid">
@@ -510,8 +499,63 @@
         </section>
     </div>
 
+    <!-- MANUAL TRACK POPUP -->
+    <div class="hero-track-popup" id="heroTrackPopup">
+        <div class="popup-box">
+            <button class="close-hero-popup" id="closeHeroTrackPopup">&times;</button>
+            <h3>Track Your Order</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Enter your Order ID to check current status.</p>
+            <input type="text" id="heroTrackInput" placeholder="Enter Order ID (e.g. PDC-XXXX)" />
+            <button class="btn" id="heroTrackSubmit" style="color:#fff; background:var(--brand-primary); border:none; width:100%;"><i class="fas fa-search"></i> Search</button>
+            <div id="heroTrackResult" style="margin-top:16px; font-size:14px; color:var(--text-muted);"></div>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION MODAL (GOOGLE + PHONE OTP FIXED) -->
+    <div class="auth-overlay" id="authModal">
+        <div class="auth-box">
+            <span class="close-auth" onclick="document.getElementById('authModal').classList.remove('active')">&times;</span>
+            <h2>Welcome Back</h2>
+            <p>Login to book faster & track your orders securely.</p>
+            
+            <button class="btn-google" onclick="signInWithGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Continue with Google
+            </button>
+            
+            <div class="auth-divider">OR</div>
+            
+            <div id="phoneAuthSection">
+                <div id="recaptcha-container"></div>
+                <input type="tel" id="phoneInput" class="auth-input" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}">
+                <button class="btn-phone" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+            </div>
+
+            <div id="otpSection" style="display: none;">
+                <input type="number" id="otpInput" class="auth-input" placeholder="Enter 6-digit OTP">
+                <button class="btn-phone" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify OTP</button>
+            </div>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT -->
     <script>
+        // CUSTOM TOAST SYSTEM (NO NATIVE ALERTS)
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
         // PWA SETUP
         const manifestContent = {
             "name": "Parth Dry Clean", "short_name": "Parth Dry", "start_url": ".", "display": "standalone",
@@ -584,7 +628,7 @@
 
         function openAuthModal() {
             if(auth.currentUser) {
-                if(confirm("Do you want to log out?")) { auth.signOut(); }
+                auth.signOut().then(() => showToast("Logged out successfully", "info"));
             } else {
                 document.getElementById('authModal').classList.add('active');
                 if(!window.recaptchaVerifier) {
@@ -608,19 +652,21 @@
                 loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login / Sign Up`;
                 loginBtn.style.background = "rgba(14, 165, 233, 0.1)";
                 loginBtn.style.color = "var(--brand-primary)";
-                activePanel.style.display = 'none';
+                if(activePanel) activePanel.style.display = 'none';
                 if(window.activeOrderUnsubscribe) { window.activeOrderUnsubscribe(); }
             }
         });
 
         function signInWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch((error) => { alert("Google Login Failed: " + error.message); });
+            auth.signInWithPopup(provider).then(() => {
+                showToast("Logged in with Google!", "success");
+            }).catch((error) => { showToast("Google Login Failed: " + error.message, "error"); });
         }
 
         function sendOTP() {
             const number = document.getElementById('phoneInput').value;
-            if(number.length !== 10) { alert("Enter a valid 10-digit number"); return; }
+            if(number.length !== 10) { showToast("Enter a valid 10-digit number", "warning"); return; }
             
             const phoneNumber = "+91" + number;
             const appVerifier = window.recaptchaVerifier;
@@ -631,19 +677,22 @@
                     confirmationResult = result;
                     document.getElementById('phoneAuthSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
+                    showToast("OTP sent to your mobile number!", "success");
                 }).catch((error) => {
-                    alert("Error sending OTP. Please try again.");
+                    showToast("Error sending OTP. Please try again.", "error");
                     document.getElementById('sendOtpBtn').innerText = "Send OTP";
                 });
         }
 
         function verifyOTP() {
             const code = document.getElementById('otpInput').value;
-            if(code.length !== 6) { alert("Enter 6-digit OTP"); return; }
+            if(code.length !== 6) { showToast("Enter 6-digit OTP", "warning"); return; }
             document.getElementById('verifyOtpBtn').innerText = "Verifying...";
             
-            confirmationResult.confirm(code).catch((error) => {
-                alert("Invalid OTP");
+            confirmationResult.confirm(code).then(() => {
+                showToast("Phone verified successfully!", "success");
+            }).catch((error) => {
+                showToast("Invalid OTP entered", "error");
                 document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-check-circle"></i> Verify OTP`;
             });
         }
