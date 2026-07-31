@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <title>Book Service | Parth Dry Clean</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #f1f5f9; --bg-card: #ffffff; --text-main: #0f172a; --text-muted: #475569;
+            --brand-primary: #0ea5e9; --brand-secondary: #0d9488; --brand-gold: #eab308;
+            --border-color: #e2e8f0; --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; line-height: 1.6; padding-bottom: 30px; }
+
+        /* HEADER */
+        header { background: #ffffff; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo img { height: 35px; }
+        .brand-name { font-size: 18px; font-weight: 800; color: var(--brand-primary); }
+        .back-btn { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; background: var(--bg-body); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); transition: 0.3s; }
+        .back-btn:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
+
+        /* MAIN BOOKING CONTAINER */
+        .booking-container { max-width: 680px; margin: 30px auto; background: #ffffff; border-radius: 20px; padding: 25px; box-shadow: var(--shadow-card); border: 1px solid var(--border-color); }
+        .page-title { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .page-title i { font-size: 24px; color: var(--brand-primary); background: rgba(14, 165, 233, 0.1); padding: 10px; border-radius: 12px; }
+        .page-title h2 { font-size: 22px; font-weight: 700; margin: 0; }
+        .page-title p { font-size: 13px; color: var(--text-muted); }
+
+        /* ALL ORIGINAL CSS FOR ITEMS & FORM */
+        .service-categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
+        .category-card { padding: 12px 8px; border: 1.5px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.3s; background: var(--bg-body); text-align: center; }
+        .category-card:hover { border-color: var(--brand-primary); }
+        .category-card.selected { border-color: var(--brand-primary); background: rgba(14, 165, 233, 0.08); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+        .category-card.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
+        .category-card i { font-size: 20px; color: var(--brand-primary); display: block; margin-bottom: 4px; }
+        .category-card .cat-name { font-size: 12px; font-weight: 600; }
+        .category-card .cat-desc { font-size: 9px; color: var(--text-muted); }
+
+        .items-list { display: none; }
+        .items-list.active { display: block; margin-bottom: 20px; }
+        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 8px; background: var(--bg-body); }
+        .item-info { display: flex; align-items: center; gap: 10px; }
+        .item-info i { color: var(--brand-primary); font-size: 16px; width: 20px; }
+        .item-info .item-name { font-size: 13px; font-weight: 500; }
+        .item-info .item-price { font-size: 12px; color: var(--brand-primary); font-weight: 600; margin-left: 8px; }
+        .qty-control { display: flex; align-items: center; gap: 8px; }
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; color: var(--text-main); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .qty-btn:hover { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
+        .qty-display { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+        .qty-display.active-qty { color: var(--brand-primary); }
+
+        #selectedItemsSummary { background: rgba(14, 165, 233, 0.05); border: 1px solid var(--brand-primary); border-radius: 14px; padding: 14px 16px; margin-bottom: 15px; display: none; }
+        #selectedItemsSummary h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--brand-primary); margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; font-weight: 700; }
+        .summary-item-row { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; font-weight: 500; border-bottom: 1px dashed var(--border-color); }
+        .summary-item-row:last-child { border-bottom: none; }
+
+        .promo-box { display: flex; gap: 8px; margin: 12px 0 4px; }
+        .promo-input { flex: 1; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; font-size: 13px; outline: none; text-transform: uppercase; }
+        .promo-input:focus { border-color: var(--brand-primary); }
+        .promo-btn { padding: 10px 18px; border-radius: 10px; background: var(--brand-primary); color: #fff; font-weight: 700; border: none; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .promo-msg { font-size: 12px; margin-bottom: 12px; font-weight: 600; display: none; padding: 6px 10px; border-radius: 6px; }
+        .promo-msg.success { color: #0d9488; background: rgba(13, 148, 136, 0.1); display: block !important; }
+        .promo-msg.error { color: #ef4444; background: rgba(239, 68, 68, 0.1); display: block !important; }
+
+        .price-summary-box { background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; margin: 20px 0; }
+        .price-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; color: var(--text-muted); }
+        .price-row.total { font-size: 18px; font-weight: 800; color: var(--brand-primary); margin-top: 5px; padding-top: 8px; border-top: 1px dashed var(--border-color); }
+        .price-row.discount { color: #0d9488; font-size: 12px; }
+        .price-row.discount.used { color: #94a3b8; text-decoration: line-through; }
+        .min-order-warning { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; background: rgba(239, 68, 68, 0.06); padding: 8px; border-radius: 8px; }
+
+        .checkbox-group { display: flex; align-items: center; gap: 12px; margin: 16px 0; background: rgba(14, 165, 233, 0.04); padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--border-color); cursor: pointer; transition: all 0.3s; }
+        .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; border: 2px solid var(--brand-primary); border-radius: 6px; cursor: pointer; }
+        .checkbox-group label { font-size: 14px; font-weight: 500; cursor: pointer; flex: 1; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
+        .submit-btn { width: 100%; padding: 15px; border-radius: 14px; border: none; background: var(--brand-primary); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4); }
+        
+        .booking-loading { text-align: center; padding: 30px; display: none; }
+        .booking-loading .spinner { width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--brand-primary); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* SUCCESS POPUP */
+        .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
+        .success-overlay.active { display: flex; }
+        .success-popup { background: #ffffff; border-radius: 24px; padding: 40px 30px; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2); }
+        .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(13, 148, 136, 0.08); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 42px; color: #0d9488; border: 2px solid rgba(13, 148, 136, 0.2); }
+        .order-id-box { background: var(--bg-body); border: 1px dashed var(--border-color); border-radius: 14px; padding: 16px; margin: 20px 0; }
+        .order-id-box .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .order-id-box .id { font-size: 26px; font-weight: 800; color: var(--brand-primary); letter-spacing: 2px; }
+        .btn-track-order { background: var(--brand-primary); color: #fff; padding: 12px 24px; border-radius: 50px; font-weight: 600; text-decoration: none; display: inline-block; width: 100%; margin-top: 10px; }
+        .variable-note { color: var(--brand-gold); margin-top: 15px; font-size: 13px; display: none; background: rgba(234, 179, 8, 0.08); padding: 8px; border-radius: 8px; }
+
+        @media (max-width: 768px) {
+            .booking-container { margin: 15px; padding: 15px; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo" />
+            <span class="brand-name">Parth Dry Clean</span>
+        </a>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </header>
+
+    <div class="booking-container">
+        <div class="page-title">
+            <i class="fas fa-calendar-check"></i>
+            <div>
+                <h2>Book Your Service</h2>
+                <p>Free pickup & delivery included for orders above ₹300</p>
+            </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="service-categories" id="categoryGrid">
+            <div class="category-card" data-category="regular"><i class="fas fa-tshirt"></i><div class="cat-name">Regular Wear</div><div class="cat-desc">Pant, Shirt</div></div>
+            <div class="category-card" data-category="winter"><i class="fas fa-snowflake"></i><div class="cat-name">Winter Wear</div><div class="cat-desc">Sweater, Shawl</div></div>
+            <div class="category-card" data-category="suits"><i class="fas fa-user-tie"></i><div class="cat-name">Suits & Formal</div><div class="cat-desc">Coat, Suit</div></div>
+            <div class="category-card" data-category="ethnic"><i class="fas fa-tshirt"></i><div class="cat-name">Ethnic Wear</div><div class="cat-desc">Sherwani</div></div>
+            <div class="category-card" data-category="jackets"><i class="fas fa-vest"></i><div class="cat-name">Jackets</div><div class="cat-desc">Half, Full</div></div>
+            <div class="category-card" data-category="home"><i class="fas fa-home"></i><div class="cat-name">Home & Travel</div><div class="cat-desc">Blanket, Bag</div></div>
+            <div class="category-card" data-category="variable"><i class="fas fa-ruler-combined"></i><div class="cat-name">Variable Price</div><div class="cat-desc">Inspection</div></div>
+            <div class="category-card" data-category="steam"><i class="fas fa-fire"></i><div class="cat-name">Steam Press</div><div class="cat-desc">Iron only</div></div>
+            <div class="category-card" data-category="additional"><i class="fas fa-star"></i><div class="cat-name">Additional</div><div class="cat-desc">Starch</div></div>
+        </div>
+
+        <!-- ITEMS LISTS (Original code completely intact) -->
+        <div class="items-list" id="items-regular">
+            <div class="item-row" data-item="reg-pant" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Pant</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="reg-shirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="reg-kurta" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Kurta</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="reg-tshirt" data-price="60"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">T-Shirt</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="reg-dhoti" data-price="80"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Dhoti</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-winter">
+            <div class="item-row" data-item="win-sweater-half" data-price="120"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Sweater (Half)</span><span class="item-price">₹120</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="win-sweater-full" data-price="150"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Sweater (Full)</span><span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="win-tshirt-wool" data-price="140"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">T-Shirt (Woollen)</span><span class="item-price">₹140</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="win-shawl" data-price="180"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Shawl</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="win-cardigan" data-price="180"><div class="item-info"><i class="fas fa-snowflake"></i> <span class="item-name">Cardigan</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-suits">
+            <div class="item-row" data-item="sui-coat" data-price="250"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Coat</span><span class="item-price">₹250</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-coat-pant" data-price="350"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Coat Pant</span><span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-coat-long" data-price="300"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Coat Long</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-safari-suit" data-price="180"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Safari Suit</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-safari-coat" data-price="150"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Safari Coat</span><span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-suit2" data-price="120"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (2 Piece)</span><span class="item-price">₹120</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-suit3" data-price="180"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (3 Piece)</span><span class="item-price">₹180</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-suit2-blazer" data-price="200"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (2 Pc + Blazer)</span><span class="item-price">₹200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="sui-suit3-blazer" data-price="300"><div class="item-info"><i class="fas fa-user-tie"></i> <span class="item-name">Suit (3 Pc + Blazer)</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-ethnic">
+            <div class="item-row" data-item="eth-kurta-pajama" data-price="300"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Kurta Pajama (Set)</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="eth-sherwani" data-price="350"><div class="item-info"><i class="fas fa-tshirt"></i> <span class="item-name">Sherwani</span><span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-jackets">
+            <div class="item-row" data-item="jac-half" data-price="200"><div class="item-info"><i class="fas fa-vest"></i> <span class="item-name">Jacket (Half)</span><span class="item-price">₹200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="jac-full" data-price="250"><div class="item-info"><i class="fas fa-vest"></i> <span class="item-name">Jacket (Full)</span><span class="item-price">₹250</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-home">
+            <div class="item-row" data-item="hom-blanket-single" data-price="300"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Blanket (Single)</span><span class="item-price">₹300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="hom-blanket-double" data-price="350"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Blanket (Double)</span><span class="item-price">₹350</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="hom-helmet" data-price="175"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Helmet</span><span class="item-price">₹150–200</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="hom-bag" data-price="150"><div class="item-info"><i class="fas fa-home"></i> <span class="item-name">Ladies Bag</span><span class="item-price">₹150</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-variable">
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:10px;"><i class="fas fa-coins" style="color:var(--brand-gold); margin-right:5px;"></i> Final price after inspection</p>
+            <div class="item-row" data-item="var-saree" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Saree Dry Clean</span><span class="item-price">₹200–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="var-trolley" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Trolley Bag</span><span class="item-price">₹300–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="var-lehenga" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Lehenga (3 Piece)</span><span class="item-price">₹400–2000</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="var-gagra" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Gagra</span><span class="item-price">₹250–400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="var-gown" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Gown</span><span class="item-price">₹250–500</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="var-jents" data-price="0"><div class="item-info"><i class="fas fa-ruler-combined"></i> <span class="item-name">Jents Wear</span><span class="item-price">₹200–300</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-steam">
+            <div class="item-row" data-item="stm-saree-blouse" data-price="80"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Saree + Blouse</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="stm-coat" data-price="80"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Coat</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="stm-coat-pant" data-price="80"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Coat Pant</span><span class="item-price">₹80</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="stm-lehenga" data-price="400"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Lehenga</span><span class="item-price">₹400</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="stm-dupatta" data-price="40"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Dupatta</span><span class="item-price">₹40</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="stm-ladies-suit" data-price="60"><div class="item-info"><i class="fas fa-fire"></i> <span class="item-name">Ladies Suit (3 Piece)</span><span class="item-price">₹60</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+        <div class="items-list" id="items-additional">
+            <div class="item-row" data-item="add-starch" data-price="50"><div class="item-info"><i class="fas fa-star"></i> <span class="item-name">Saree Starch</span><span class="item-price">₹50</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+            <div class="item-row" data-item="add-blouse" data-price="0"><div class="item-info"><i class="fas fa-star"></i> <span class="item-name">Blouse</span><span class="item-price">Free</span></div><div class="qty-control"><button class="qty-btn minus">-</button><span class="qty-display">0</span><button class="qty-btn plus">+</button></div></div>
+        </div>
+
+        <div id="selectedItemsSummary">
+            <h4>Your Selection</h4>
+            <div id="summaryList"></div>
+        </div>
+
+        <div class="promo-box">
+            <input type="text" id="promoCodeInput" class="promo-input" placeholder="Enter Promo Code" />
+            <button type="button" id="applyPromoBtn" class="promo-btn">Apply</button>
+        </div>
+        <div id="promoMsg" class="promo-msg"></div>
+
+        <div class="price-summary-box" id="priceSummary">
+            <div class="price-row"><span>Subtotal (Fixed-price items)</span><span id="subtotal">₹0</span></div>
+            <div class="price-row" id="variableItemsRow" style="display:none; color:var(--brand-gold);"><span>Variable items (price after inspection)</span><span id="variableCountDisplay">0</span></div>
+            <div class="price-row discount" id="discountRow"><span>First Order Discount (20%)</span><span id="discountAmount">-₹0</span></div>
+            <div class="price-row discount" id="promoDiscountRow" style="display:none;"><span>Promo Code Discount</span><span id="promoDiscountAmount">-₹0</span></div>
+            <div class="price-row" id="expressRow" style="display:none;"><span>Express Delivery (90%)</span><span id="expressCharge">₹0</span></div>
+            <div class="price-row total"><span>Total</span><span id="totalAmount">₹0</span></div>
+        </div>
+        <div class="min-order-warning" id="minOrderWarning">⚠️ Minimum order is ₹300. Please add more fixed-price items.</div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="expressCheckbox" />
+            <label for="expressCheckbox"><i class="fas fa-rocket" style="color:var(--brand-primary);"></i> Express Delivery (90% extra on subtotal)</label>
+        </div>
+
+        <form id="bookingForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name <span class="required-star">*</span></label>
+                    <input type="text" class="form-input" id="custName" required placeholder="Your name" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone-alt"></i> Mobile <span class="required-star">*</span></label>
+                    <input type="tel" class="form-input" id="custPhone" required placeholder="10-digit" pattern="[0-9]{10}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-map-pin"></i> Pickup Address <span class="required-star">*</span></label>
+                <textarea class="form-textarea" id="custAddress" rows="2" required placeholder="House no., street, landmark, Indira Nagar, Lucknow"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt"></i> Pickup Date</label>
+                    <input type="date" class="form-input" id="pickupDate" />
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Time Slot</label>
+                    <select class="form-select" id="timeSlot">
+                        <option value="morning">Morning (9AM-12PM)</option>
+                        <option value="afternoon">Afternoon (12PM-3PM)</option>
+                        <option value="evening">Evening (5PM-8PM)</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="submitBooking">Confirm Booking <i class="fas fa-arrow-right"></i></button>
+        </form>
+        <div class="booking-loading" id="bookingLoading"><div class="spinner"></div><p>Placing your order...</p></div>
+
+    </div>
+
+    <!-- ===== SUCCESS POPUP ===== -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-popup">
+            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <h2>Booking Confirmed!</h2>
+            <p>Your order has been placed successfully. Our team will contact you shortly.</p>
+            <div class="order-id-box"><div class="label">Your Order ID</div><div class="id" id="successOrderId">PDC-XXXX</div></div>
+            <div class="order-id-box" style="border-color:var(--brand-primary);"><div class="label">🔐 Your 4-digit PIN (for tracking)</div><div class="id" id="successPin" style="font-size:20px;">0000</div></div>
+            <p class="variable-note" id="variableNote"><i class="fas fa-info-circle"></i> We will contact you shortly for final price confirmation.</p>
+            <a href="index.html" class="btn-track-order"><i class="fas fa-home"></i> Go to Home & Track Order</a>
+        </div>
+    </div>
+
+    <script>
+        // FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
+            authDomain: "parth-dry-clean.firebaseapp.com",
+            databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "parth-dry-clean",
+            storageBucket: "parth-dry-clean.firebasestorage.app",
+            messagingSenderId: "673481985335",
+            appId: "1:673481985335:web:eb4194b4860cf979b21eb2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const FIRST_ORDER_KEY = 'pdc_first_order_used';
+        const CUSTOMER_DATA_KEY = 'pdc_customer_data';
+        const ACTIVE_ORDER_ID_KEY = 'pdc_active_order_id';
+        let appliedPromoDiscount = 0;
+
+        // Prefill Data
+        function prefillCustomerData() { const saved = localStorage.getItem(CUSTOMER_DATA_KEY); if (saved) { try { const data = JSON.parse(saved); if (data.name) document.getElementById('custName').value = data.name; if (data.phone) document.getElementById('custPhone').value = data.phone; if (data.address) document.getElementById('custAddress').value = data.address; } catch (e) {} } }
+        prefillCustomerData();
+
+        // Categories UI
+        function updateCategoriesUI() {
+            const variableCard = document.querySelector('[data-category="variable"]');
+            const isVariableSelected = variableCard && variableCard.classList.contains('selected');
+            const nonVariableCards = document.querySelectorAll('.category-card:not([data-category="variable"])');
+            if (isVariableSelected) {
+                nonVariableCards.forEach(c => { c.classList.add('disabled'); c.classList.remove('selected'); });
+                if (variableCard) variableCard.classList.remove('disabled');
+            } else {
+                const anySelected = Array.from(nonVariableCards).some(c => c.classList.contains('selected'));
+                if (anySelected) { if (variableCard) { variableCard.classList.add('disabled'); variableCard.classList.remove('selected'); } } 
+                else { document.querySelectorAll('.category-card').forEach(c => c.classList.remove('disabled')); }
+            }
+            document.querySelectorAll('.items-list').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.category-card.selected').forEach(card => { const list = document.getElementById(`items-${card.dataset.category}`); if (list) list.classList.add('active'); });
+        }
+
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (card.classList.contains('disabled')) return;
+                const cat = card.dataset.category;
+                const wasSelected = card.classList.contains('selected');
+                document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+                if (!wasSelected) card.classList.add('selected');
+                const variableCard = document.querySelector('[data-category="variable"]');
+                if (cat === 'variable' && card.classList.contains('selected')) { document.querySelectorAll('.category-card:not([data-category="variable"])').forEach(c => c.classList.remove('selected')); }
+                updateCategoriesUI(); updateOrderItems(); updatePriceSummary(); updateSelectedItemsSummary();
+            });
+        });
+
+        // Quantity Logic
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const row = btn.closest('.item-row');
+                const display = row.querySelector('.qty-display');
+                let qty = parseInt(display.textContent);
+                if (btn.classList.contains('plus')) qty++; else if (btn.classList.contains('minus') && qty > 0) qty--;
+                display.textContent = qty; display.classList.toggle('active-qty', qty > 0);
+                updateOrderItems(); updatePriceSummary(); updateSelectedItemsSummary();
+            });
+        });
+
+        let orderItems = {};
+        function updateOrderItems() { orderItems = {}; document.querySelectorAll('.item-row').forEach(row => { const qty = parseInt(row.querySelector('.qty-display').textContent); if (qty > 0) orderItems[row.dataset.item] = qty; }); }
+
+        function calculateTotal() {
+            let fixedSubtotal = 0; let variableCount = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                const qty = parseInt(row.querySelector('.qty-display').textContent);
+                if (qty > 0) { const isVar = row.dataset.item.startsWith('var-'); if (isVar) { variableCount += qty; } else { const price = parseFloat(row.dataset.price) || 0; fixedSubtotal += qty * price; } }
+            });
+            const express = document.getElementById('expressCheckbox').checked;
+            return { fixedSubtotal, variableCount, express };
+        }
+
+        function hasFirstOrderDiscount() { return !localStorage.getItem(FIRST_ORDER_KEY); }
+
+        function updatePriceSummary() {
+            const { fixedSubtotal, variableCount, express } = calculateTotal();
+            const discountApplied = hasFirstOrderDiscount();
+            const firstOrderDiscount = discountApplied ? Math.min(Math.round(fixedSubtotal * 0.20), 200) : 0;
+            const expressCharge = express ? Math.round(fixedSubtotal * 0.90) : 0;
+            const totalDiscount = firstOrderDiscount + appliedPromoDiscount;
+            const total = Math.max(0, fixedSubtotal - totalDiscount + expressCharge);
+
+            document.getElementById('subtotal').textContent = '₹' + fixedSubtotal;
+            document.getElementById('discountAmount').textContent = '-₹' + firstOrderDiscount;
+
+            const promoRow = document.getElementById('promoDiscountRow');
+            if (appliedPromoDiscount > 0) { promoRow.style.display = 'flex'; document.getElementById('promoDiscountAmount').textContent = '-₹' + appliedPromoDiscount; } else { promoRow.style.display = 'none'; }
+
+            document.getElementById('expressCharge').textContent = '₹' + expressCharge;
+            document.getElementById('totalAmount').textContent = '₹' + total;
+
+            const discountRow = document.getElementById('discountRow');
+            if (discountApplied && fixedSubtotal > 0) { discountRow.style.display = 'flex'; discountRow.classList.remove('used'); } else if (!discountApplied && fixedSubtotal > 0) { discountRow.style.display = 'flex'; discountRow.classList.add('used'); } else { discountRow.style.display = 'none'; }
+
+            document.getElementById('expressRow').style.display = express ? 'flex' : 'none';
+
+            const varRow = document.getElementById('variableItemsRow');
+            const varDisplay = document.getElementById('variableCountDisplay');
+            if (variableCount > 0) { varRow.style.display = 'flex'; varDisplay.textContent = variableCount + (variableCount > 1 ? ' items' : ' item'); } else { varRow.style.display = 'none'; }
+
+            const minWarning = document.getElementById('minOrderWarning');
+            if (fixedSubtotal < 300 && variableCount === 0 && fixedSubtotal > 0) { minWarning.style.display = 'block'; } else { minWarning.style.display = 'none'; }
+        }
+
+        document.getElementById('expressCheckbox').addEventListener('change', updatePriceSummary);
+
+        function updateSelectedItemsSummary() {
+            const summaryDiv = document.getElementById('selectedItemsSummary'); const listDiv = document.getElementById('summaryList'); let html = '';
+            document.querySelectorAll('.item-row').forEach(row => {
+                const qty = parseInt(row.querySelector('.qty-display').textContent);
+                if (qty > 0) {
+                    const name = row.querySelector('.item-name').textContent; const isVar = row.dataset.item.startsWith('var-'); const price = parseFloat(row.dataset.price) || 0;
+                    let priceText = (price > 0 && !isVar) ? `₹${price * qty}` : 'Inspection Required';
+                    html += `<div class="summary-item-row"><span>${name} × ${qty}</span><span>${priceText}</span></div>`;
+                }
+            });
+            if (html) { listDiv.innerHTML = html; summaryDiv.style.display = 'block'; } else { summaryDiv.style.display = 'none'; }
+        }
+
+        // Promo Logic
+        let promoCodeData = {};
+        function loadPromoCodes() {
+            db.ref('promo_codes').once('value').then(snap => { if (snap.exists()) { promoCodeData = snap.val(); } else { promoCodeData = { "PARTH20": { discount: 20, type: 'percent' }, "SAVE50": { discount: 50, type: 'flat' } }; }
+            }).catch(() => { promoCodeData = { "PARTH20": { discount: 20, type: 'percent' }, "SAVE50": { discount: 50, type: 'flat' } }; });
+        }
+        loadPromoCodes();
+
+        document.getElementById('applyPromoBtn').addEventListener('click', () => {
+            const code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+            const msgEl = document.getElementById('promoMsg');
+            const { fixedSubtotal } = calculateTotal();
+            if (fixedSubtotal === 0) { msgEl.textContent = '⚠️ Add fixed-price items first.'; msgEl.className = 'promo-msg error'; return; }
+            const promo = promoCodeData[code];
+            if (promo) {
+                let discount = 0;
+                if (promo.type === 'percent') discount = Math.round(fixedSubtotal * (promo.discount / 100)); else if (promo.type === 'flat') discount = promo.discount;
+                if (discount > 0) { appliedPromoDiscount = discount; msgEl.textContent = `🎉 ${promo.discount}% off applied!`; msgEl.className = 'promo-msg success'; } 
+                else { appliedPromoDiscount = 0; msgEl.textContent = '❌ Invalid code.'; msgEl.className = 'promo-msg error'; }
+            } else { appliedPromoDiscount = 0; msgEl.textContent = '❌ Invalid code.'; msgEl.className = 'promo-msg error'; }
+            updatePriceSummary();
+        });
+
+        function getItemDisplayName(key) {
+            const map = { 'reg-pant': 'Pant', 'reg-shirt': 'Shirt', 'reg-kurta': 'Kurta', 'reg-tshirt': 'T-Shirt', 'reg-dhoti': 'Dhoti', 'win-sweater-half': 'Sweater (Half)', 'win-sweater-full': 'Sweater (Full)', 'win-tshirt-wool': 'T-Shirt (Woollen)', 'win-shawl': 'Shawl', 'win-cardigan': 'Cardigan', 'sui-coat': 'Coat', 'sui-coat-pant': 'Coat Pant', 'sui-coat-long': 'Coat Long', 'sui-safari-suit': 'Safari Suit', 'sui-safari-coat': 'Safari Coat', 'sui-suit2': 'Suit (2 Piece)', 'sui-suit3': 'Suit (3 Piece)', 'sui-suit2-blazer': 'Suit (2 Pc + Blazer)', 'sui-suit3-blazer': 'Suit (3 Pc + Blazer)', 'eth-kurta-pajama': 'Kurta Pajama (Set)', 'eth-sherwani': 'Sherwani', 'jac-half': 'Jacket (Half)', 'jac-full': 'Jacket (Full)', 'hom-blanket-single': 'Blanket (Single)', 'hom-blanket-double': 'Blanket (Double)', 'hom-helmet': 'Helmet', 'hom-bag': 'Ladies Bag', 'var-saree': 'Saree Dry Clean', 'var-trolley': 'Trolley Bag', 'var-lehenga': 'Lehenga (3 Piece)', 'var-gagra': 'Gagra', 'var-gown': 'Gown', 'var-jents': 'Jents Wear', 'stm-saree-blouse': 'Saree + Blouse', 'stm-coat': 'Coat', 'stm-coat-pant': 'Coat Pant', 'stm-lehenga': 'Lehenga', 'stm-dupatta': 'Dupatta', 'stm-ladies-suit': 'Ladies Suit (3 Piece)', 'add-starch': 'Saree Starch', 'add-blouse': 'Blouse' };
+            return map[key] || key;
+        }
+
+        // Form Submit
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); updateOrderItems();
+            if (Object.keys(orderItems).length === 0) { alert('Add at least one item.'); return; }
+
+            const { fixedSubtotal, variableCount, express } = calculateTotal();
+            const discountApplied = hasFirstOrderDiscount();
+            const firstOrderDiscount = discountApplied ? Math.min(Math.round(fixedSubtotal * 0.20), 200) : 0;
+            const expressCharge = express ? Math.round(fixedSubtotal * 0.90) : 0;
+            const total = Math.max(0, fixedSubtotal - firstOrderDiscount - appliedPromoDiscount + expressCharge);
+
+            if (fixedSubtotal < 300 && variableCount === 0) { alert(`Minimum order is ₹300 for fixed-price items. Current subtotal: ₹${fixedSubtotal}`); return; }
+
+            const name = document.getElementById('custName').value.trim(); const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddress').value.trim(); const pickupDate = document.getElementById('pickupDate').value || 'Not specified';
+            const timeSlot = document.getElementById('timeSlot').value;
+
+            if (!name || !phone || !address) { alert('Please fill all required fields.'); return; }
+            if (!/^[0-9]{10}$/.test(phone)) { alert('Enter a valid 10-digit phone.'); return; }
+
+            localStorage.setItem(CUSTOMER_DATA_KEY, JSON.stringify({ name, phone, address }));
+            document.getElementById('bookingLoading').style.display = 'block'; document.getElementById('submitBooking').style.display = 'none';
+
+            const orderId = 'PDC-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            const pin = String(Math.floor(1000 + Math.random() * 9000)); 
+            const formattedItems = Object.entries(orderItems).map(([k, v]) => `${getItemDisplayName(k)} x${v}`).join(', ');
+
+            const orderData = { orderId, name, phone, address, pickupDate, timeSlot, items: orderItems, subtotal: fixedSubtotal, variableCount, discount: firstOrderDiscount + appliedPromoDiscount, express, expressCharge, total, pin: pin, status: express ? 'express-pending' : 'pending', createdAt: firebase.database.ServerValue.TIMESTAMP };
+            const sheetData = { orderId, name, phone, address, pickupDate, timeSlot, itemsList: formattedItems, subtotal: fixedSubtotal, discount: firstOrderDiscount + appliedPromoDiscount, express: express ? "Yes" : "No", total, pin: pin, status: orderData.status };
+
+            try {
+                await db.ref('orders/' + orderId).set(orderData);
+                await db.ref('customers/' + phone).set({ name, phone, address, orderId, totalAmount: total, createdAt: firebase.database.ServerValue.TIMESTAMP, lastOrderDate: firebase.database.ServerValue.TIMESTAMP });
+
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec';
+                fetch(scriptURL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sheetData) }).catch(() => {});
+
+                if (discountApplied) localStorage.setItem(FIRST_ORDER_KEY, 'true'); 
+                localStorage.setItem(ACTIVE_ORDER_ID_KEY, orderId);
+
+                document.getElementById('successOrderId').textContent = orderId; 
+                document.getElementById('successPin').textContent = pin;
+                document.getElementById('variableNote').style.display = variableCount > 0 ? 'block' : 'none';
+                
+                document.getElementById('successOverlay').classList.add('active');
+            } catch (err) { alert('Booking failed. Please try again.'); } 
+            finally { document.getElementById('bookingLoading').style.display = 'none'; document.getElementById('submitBooking').style.display = 'flex'; }
+        });
+    </script>
+</body>
+</html>
