@@ -1241,13 +1241,21 @@
             if (!snapshot || !snapshot.exists()) {
                 setStats(0,0,0,0,0); return;
             }
-            const orders = []; snapshot.forEach(c => orders.push(c.val()));
+            const orders = []; 
+            snapshot.forEach(c => orders.push(c.val()));
+            
             const total = orders.length;
             const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending').length;
             const processing = orders.filter(o => o.status === 'processing').length;
-            const delivered = orders.filter(o => o.status === 'delivered').length;
-            const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
-            setStats(total, pending, processing, delivered, revenue);
+            
+            // ✅ FIX: Array alag nikala aur Count alag
+            const deliveredOrders = orders.filter(o => o.status === 'delivered');
+            const deliveredCount = deliveredOrders.length;
+            
+            // ✅ FIX: Number() add kiya for safety
+            const revenue = deliveredOrders.reduce((s,o) => s + (Number(o.total) || 0), 0);
+            
+            setStats(total, pending, processing, deliveredCount, revenue);
         }
 
         function setStats(total, pending, processing, delivered, revenue) {
@@ -1263,12 +1271,17 @@
             if (!snapshot || !snapshot.exists()) {
                 setReport(0,0,0,0); return;
             }
-            const orders = []; snapshot.forEach(c => orders.push(c.val()));
+            const orders = []; 
+            snapshot.forEach(c => orders.push(c.val()));
+            
             const total = orders.length;
             const pending = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
-            const delivered = orders.filter(o => o.status === 'delivered');
-            const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
-            const discount = orders.reduce((s,o) => s + (o.discount || 0), 0);
+            
+            // ✅ FIX: Array for correct reduce operation
+            const deliveredOrders = orders.filter(o => o.status === 'delivered');
+            const revenue = deliveredOrders.reduce((s,o) => s + (Number(o.total) || 0), 0);
+            const discount = orders.reduce((s,o) => s + (Number(o.discount) || 0), 0);
+            
             setReport(total, pending, revenue, discount);
         }
 
