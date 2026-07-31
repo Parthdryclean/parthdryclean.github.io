@@ -1066,9 +1066,9 @@
         const reminderList = document.getElementById('reminderList');
         const orderBadge = document.getElementById('orderBadge');
 
-        let ordersListener = null;
+        // Global Cache to hold live data
+        let globalOrdersSnap = null;
         let cachedBoys = [];
-        let allOrders = [];
 
         // ============================================================
         // SIDEBAR TOGGLE (Mobile)
@@ -1077,7 +1077,6 @@
             sidebar.classList.toggle('open');
         });
 
-        // Close sidebar on outside click (mobile)
         document.addEventListener('click', (e) => {
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(e.target) && e.target !== menuToggle) {
@@ -1100,7 +1099,9 @@
             } else {
                 loginScreen.style.display = 'flex';
                 dashboard.classList.remove('active');
-                detachOrdersListener();
+                // Remove listeners when logged out
+                db.ref('orders').off();
+                db.ref('delivery_boys').off();
             }
         });
 
@@ -1122,8 +1123,7 @@
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 item.classList.add('active');
-                const tab = item.dataset.tab;
-                switchTab(tab);
+                switchTab(item.dataset.tab);
                 if (window.innerWidth <= 768) sidebar.classList.remove('open');
             });
         });
@@ -1132,11 +1132,9 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                const tab = btn.dataset.tab;
-                switchTab(tab);
-                // Sync sidebar
+                switchTab(btn.dataset.tab);
                 document.querySelectorAll('.nav-item').forEach(n => {
-                    n.classList.toggle('active', n.dataset.tab === tab);
+                    n.classList.toggle('active', n.dataset.tab === btn.dataset.tab);
                 });
             });
         });
@@ -1145,85 +1143,62 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
 
-            if (tab === 'orders') {
-                attachOrdersListener();
-                loadOrders();
-            } else {
-                detachOrdersListener();
-            }
-            if (tab === 'reports') loadReports();
+            // Data is globally live, just re-render UI from cache
+            if (tab === 'orders' && globalOrdersSnap) renderOrders(globalOrdersSnap);
+            if (tab === 'reports' && globalOrdersSnap) updateReportsFromSnapshot(globalOrdersSnap);
+            if (tab === 'deliveryboys') renderDeliveryBoys();
             if (tab === 'services') loadPriceEditor();
-            if (tab === 'deliveryboys') loadDeliveryBoys();
         }
 
         // ============================================================
         // LOAD DASHBOARD
         // ============================================================
         function loadDashboard() {
-            loadStats();
-            loadOrders();
-            loadDeliveryBoys();
+            initLiveListeners();
             loadPriceEditor();
-            loadReports();
-            loadDeliveryBoysCache();
-            attachOrdersListener();
         }
 
         // ============================================================
-        // STATS
+        // INIT FULLY REACTIVE LIVE LISTENERS (The Magic Fix)
         // ============================================================
-        function loadStats() {
-            db.ref('orders').once('value').then(snap => {
-                if (!snap.exists()) { setStats(0,0,0,0,0); return; }
-                const orders = []; snap.forEach(c => orders.push(c.val()));
-                const total = orders.length;
-                const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending').length;
-                const processing = orders.filter(o => o.status === 'processing').length;
-                const delivered = orders.filter(o => o.status === 'delivered').length;
-                const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
-                setStats(total, pending, processing, delivered, revenue);
-            }).catch(() => setStats(0,0,0,0,0));
-        }
+        function initLiveListeners() {
+            // Listen to orders constantly
+            db.ref('orders').on('value', snap => {
+                globalOrdersSnap = snap;
+                updateStatsFromSnapshot(snap);
+                updateReportsFromSnapshot(snap);
+                
+                if (document.getElementById('tab-orders').classList.contains('active')) {
+                    renderOrders(snap);
+                }
+            });
 
-        function setStats(total, pending, processing, delivered, revenue) {
-            document.getElementById('statTotal').textContent = total;
-            document.getElementById('statPending').textContent = pending;
-            document.getElementById('statProcessing').textContent = processing;
-            document.getElementById('statDelivered').textContent = delivered;
-            document.getElementById('statRevenue').textContent = '₹' + revenue;
-            orderBadge.textContent = pending;
+            // Listen to delivery boys constantly
+            db.ref('delivery_boys').on('value', snap => {
+                cachedBoys = [];
+                if (snap.exists()) snap.forEach(c => cachedBoys.push({ id: c.key, ...c.val() }));
+                
+                if (document.getElementById('tab-deliveryboys').classList.contains('active')) {
+                    renderDeliveryBoys();
+                }
+                // Refresh order dropdowns if the order tab is active
+                if (document.getElementById('tab-orders').classList.contains('active') && globalOrdersSnap) {
+                    renderOrders(globalOrdersSnap);
+                }
+            });
         }
 
         // ============================================================
-        // ORDERS — LIVE LISTENER
+        // RENDERING ORDERS
         // ============================================================
-        function attachOrdersListener() {
-            if (ordersListener) { db.ref('orders').off('value', ordersListener); ordersListener = null; }
-            ordersListener = (snapshot) => {
-                renderOrders(snapshot);
-                updateStatsFromSnapshot(snapshot);
-            };
-            db.ref('orders').on('value', ordersListener);
-        }
-
-        function detachOrdersListener() {
-            if (ordersListener) { db.ref('orders').off('value', ordersListener); ordersListener = null; }
-        }
-
-        function loadOrders() {
-            ordersBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px 0;color:var(--text-muted);"><span class="spinner"></span> Loading orders...</td></tr>';
-            db.ref('orders').once('value').then(snap => renderOrders(snap));
-        }
-
         function renderOrders(snapshot) {
-            if (!snapshot.exists()) {
+            if (!snapshot || !snapshot.exists()) {
                 ordersBody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i><h4>No orders yet</h4><p>Customer orders will appear here</p></div></td></tr>`;
                 return;
             }
             const orders = [];
             snapshot.forEach(c => orders.push({ id: c.key, ...c.val() }));
             orders.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-            allOrders = orders;
 
             const boys = cachedBoys;
             ordersBody.innerHTML = orders.map(o => {
@@ -1259,8 +1234,13 @@
             }).join('');
         }
 
+        // ============================================================
+        // STATS & REPORTS
+        // ============================================================
         function updateStatsFromSnapshot(snapshot) {
-            if (!snapshot.exists()) return;
+            if (!snapshot || !snapshot.exists()) {
+                setStats(0,0,0,0,0); return;
+            }
             const orders = []; snapshot.forEach(c => orders.push(c.val()));
             const total = orders.length;
             const pending = orders.filter(o => o.status === 'pending' || o.status === 'express-pending').length;
@@ -1268,6 +1248,35 @@
             const delivered = orders.filter(o => o.status === 'delivered').length;
             const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
             setStats(total, pending, processing, delivered, revenue);
+        }
+
+        function setStats(total, pending, processing, delivered, revenue) {
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statProcessing').textContent = processing;
+            document.getElementById('statDelivered').textContent = delivered;
+            document.getElementById('statRevenue').textContent = '₹' + revenue;
+            orderBadge.textContent = pending;
+        }
+
+        function updateReportsFromSnapshot(snapshot) {
+            if (!snapshot || !snapshot.exists()) {
+                setReport(0,0,0,0); return;
+            }
+            const orders = []; snapshot.forEach(c => orders.push(c.val()));
+            const total = orders.length;
+            const pending = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
+            const delivered = orders.filter(o => o.status === 'delivered');
+            const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
+            const discount = orders.reduce((s,o) => s + (o.discount || 0), 0);
+            setReport(total, pending, revenue, discount);
+        }
+
+        function setReport(total, pending, revenue, discount) {
+            document.getElementById('repTotal').textContent = total;
+            document.getElementById('repPending').textContent = pending;
+            document.getElementById('repRevenue').textContent = '₹' + revenue;
+            document.getElementById('repDiscount').textContent = '₹' + discount;
         }
 
         // ============================================================
@@ -1287,84 +1296,61 @@
         };
 
         // ============================================================
-        // REFRESH BUTTON
+        // REFRESH BUTTON & REMINDER
         // ============================================================
         refreshBtn.addEventListener('click', () => {
             ordersBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px 0;color:var(--text-muted);"><span class="spinner"></span> Refreshing...</td></tr>';
-            db.ref('orders').once('value').then(snap => renderOrders(snap));
+            setTimeout(() => { if (globalOrdersSnap) renderOrders(globalOrdersSnap); }, 400);
         });
 
-        // ============================================================
-        // REMINDER
-        // ============================================================
         checkReminderBtn.addEventListener('click', () => {
             reminderList.innerHTML = '<li><span class="spinner"></span> Checking...</li>';
             const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
             const dateStr = tomorrow.toISOString().split('T')[0];
-            db.ref('orders').once('value').then(snap => {
-                if (!snap.exists()) {
-                    reminderList.innerHTML = '<li>No orders found.</li>';
-                    reminderBox.classList.add('active');
-                    return;
-                }
-                const orders = []; snap.forEach(c => orders.push(c.val()));
-                const filtered = orders.filter(o =>
-                    o.pickupDate === dateStr &&
-                    o.status !== 'delivered' &&
-                    o.status !== 'cancelled'
-                );
-                if (filtered.length === 0) {
-                    reminderList.innerHTML = '<li>✅ No deliveries scheduled for tomorrow</li>';
-                } else {
-                    reminderList.innerHTML = filtered.map(o =>
-                        `<li>🔔 <strong>${o.orderId}</strong> — ${o.name} (${o.phone}) | <span style="color:#d97706;">${o.status}</span></li>`
-                    ).join('');
-                }
+            
+            if (!globalOrdersSnap || !globalOrdersSnap.exists()) {
+                reminderList.innerHTML = '<li>No orders found.</li>';
                 reminderBox.classList.add('active');
-            });
+                return;
+            }
+
+            const orders = []; globalOrdersSnap.forEach(c => orders.push(c.val()));
+            const filtered = orders.filter(o =>
+                o.pickupDate === dateStr && o.status !== 'delivered' && o.status !== 'cancelled'
+            );
+            
+            if (filtered.length === 0) {
+                reminderList.innerHTML = '<li>✅ No deliveries scheduled for tomorrow</li>';
+            } else {
+                reminderList.innerHTML = filtered.map(o =>
+                    `<li>🔔 <strong>${o.orderId}</strong> — ${o.name} (${o.phone}) | <span style="color:#d97706;">${o.status}</span></li>`
+                ).join('');
+            }
+            reminderBox.classList.add('active');
         });
 
         // ============================================================
         // DELIVERY BOYS
         // ============================================================
-        function loadDeliveryBoysCache() {
-            db.ref('delivery_boys').once('value').then(snap => {
-                cachedBoys = [];
-                if (snap.exists()) snap.forEach(c => cachedBoys.push({ id: c.key, ...c.val() }));
-            });
-        }
-
-        function loadDeliveryBoys() {
+        function renderDeliveryBoys() {
             const container = document.getElementById('dbList');
-            container.innerHTML = '<div class="empty-state"><span class="spinner"></span><h4>Loading...</h4></div>';
-            db.ref('delivery_boys').once('value').then(snap => {
-                if (!snap.exists()) {
-                    container.innerHTML = `<div class="empty-state"><i class="fas fa-truck"></i><h4>No delivery boys</h4><p>Add your first delivery boy to get started.</p></div>`;
-                    return;
-                }
-                let html = '';
-                snap.forEach(c => {
-                    const b = c.val();
-                    html += `<div class="db-item">
-                        <div class="info">
-                            <span class="name"><i class="fas fa-user-circle" style="color:var(--primary);"></i> ${b.name}</span>
-                            <span class="phone"><i class="fas fa-phone-alt"></i> ${b.phone}</span>
-                            <span class="deliveries"><i class="fas fa-box"></i> ${b.total_deliveries || 0} deliveries</span>
-                        </div>
-                        <button class="btn-del" onclick="deleteDb('${c.key}')"><i class="fas fa-trash-alt"></i> Delete</button>
-                    </div>`;
-                });
-                container.innerHTML = html;
-                loadDeliveryBoysCache();
-            });
+            if (cachedBoys.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-truck"></i><h4>No delivery boys</h4><p>Add your first delivery boy to get started.</p></div>`;
+                return;
+            }
+            container.innerHTML = cachedBoys.map(b => `<div class="db-item">
+                <div class="info">
+                    <span class="name"><i class="fas fa-user-circle" style="color:var(--primary);"></i> ${b.name}</span>
+                    <span class="phone"><i class="fas fa-phone-alt"></i> ${b.phone}</span>
+                    <span class="deliveries"><i class="fas fa-box"></i> ${b.total_deliveries || 0} deliveries</span>
+                </div>
+                <button class="btn-del" onclick="deleteDb('${b.id}')"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>`).join('');
         }
 
         window.deleteDb = function(id) {
             if (!confirm('Delete this delivery boy?')) return;
-            db.ref('delivery_boys/' + id).remove().then(() => {
-                loadDeliveryBoys();
-                loadDeliveryBoysCache();
-            });
+            db.ref('delivery_boys/' + id).remove();
         };
 
         document.getElementById('addDbBtn').addEventListener('click', () => {
@@ -1376,8 +1362,6 @@
             db.ref('delivery_boys').push(newBoy).then(() => {
                 document.getElementById('dbName').value = '';
                 document.getElementById('dbPhone').value = '';
-                loadDeliveryBoys();
-                loadDeliveryBoysCache();
             });
         });
 
@@ -1422,36 +1406,9 @@
         });
 
         // ============================================================
-        // REPORTS
-        // ============================================================
-        function loadReports() {
-            db.ref('orders').once('value').then(snap => {
-                if (!snap.exists()) {
-                    setReport(0,0,0,0);
-                    return;
-                }
-                const orders = []; snap.forEach(c => orders.push(c.val()));
-                const total = orders.length;
-                const pending = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
-                const delivered = orders.filter(o => o.status === 'delivered');
-                const revenue = delivered.reduce((s,o) => s + (o.total || 0), 0);
-                const discount = orders.reduce((s,o) => s + (o.discount || 0), 0);
-                setReport(total, pending, revenue, discount);
-            });
-        }
-
-        function setReport(total, pending, revenue, discount) {
-            document.getElementById('repTotal').textContent = total;
-            document.getElementById('repPending').textContent = pending;
-            document.getElementById('repRevenue').textContent = '₹' + revenue;
-            document.getElementById('repDiscount').textContent = '₹' + discount;
-        }
-
-        // ============================================================
         // INIT
         // ============================================================
-        console.log('🧺 Parth Dry Clean Admin Panel — Premium UI');
-        console.log('🔒 Firebase Auth + Live Orders Active');
+        console.log('🧺 Parth Dry Clean Admin Panel — Premium UI (Live Connected)');
     </script>
 
 </body>
