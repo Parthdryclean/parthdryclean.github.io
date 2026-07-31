@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0ea5e9" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Parth Dry Clean | Premium Laundry</title>
+    <title>Parth Dry Clean | Premium Laundry in Lucknow</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -16,42 +16,37 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-    <!-- Pura Original CSS -->
     <style>
-        /* ===== LIGHT THEME ===== */
         :root {
-            --bg-body: #f1f5f9;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --brand-primary: #0ea5e9;
-            --brand-secondary: #0d9488;
-            --brand-gold: #eab308;
-            --border-color: #e2e8f0;
-            --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.06);
+            --bg-body: #f1f5f9; --bg-card: #ffffff; --text-main: #0f172a; --text-muted: #475569;
+            --brand-primary: #0ea5e9; --brand-secondary: #0d9488; --brand-gold: #eab308;
+            --border-color: #e2e8f0; --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.06);
             --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.1);
-            --success: #22c55e;
-            --danger: #ef4444;
+            --success: #22c55e; --danger: #ef4444;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; line-height: 1.6; padding-bottom: 30px; }
+        body { background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; line-height: 1.6; padding-bottom: 30px; position: relative; }
 
         .top-banner { background: linear-gradient(135deg, #0d9488, #0ea5e9); color: #fff; text-align: center; padding: 10px 20px; font-size: 14px; font-weight: 600; position: relative; }
         .top-banner span { background: #fff; color: #0d9488; padding: 2px 12px; border-radius: 20px; margin: 0 4px; }
         .close-banner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8; }
 
-        /* ===== HEADER ===== */
-        header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); padding: 8px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; flex-wrap: nowrap; gap: 10px; min-height: 64px; }
+        /* HEADER */
+        header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); padding: 8px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 1000; min-height: 64px; }
         .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; cursor: pointer; }
-        .logo img { height: 40px; width: auto; object-fit: contain; flex-shrink: 0; }
+        .logo img { height: 40px; width: auto; object-fit: contain; }
         .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
         .logo-text .brand-name { font-size: 20px; font-weight: 800; color: var(--brand-primary); }
         .logo-text .brand-tagline { font-size: 9px; color: var(--text-muted); letter-spacing: 0.5px; }
         nav ul { list-style: none; display: flex; gap: 18px; align-items: center; margin: 0; padding: 0; }
         nav a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 14px; transition: 0.3s; cursor: pointer; white-space: nowrap; }
         nav a:hover { color: var(--brand-primary); }
-        .mobile-menu-btn { display: none; background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; z-index: 1001; position: relative; margin-left: auto; padding: 4px 8px; }
+        
+        .btn-login { background: rgba(14, 165, 233, 0.1); color: var(--brand-primary); padding: 8px 18px; border-radius: 50px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; font-family: 'Outfit'; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-login:hover { background: var(--brand-primary); color: #fff; }
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 24px; color: var(--text-main); cursor: pointer; z-index: 1001; margin-left: auto; padding: 4px 8px; }
 
+        /* TRUST BAR */
         .trust-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 14px 5%; background: #ffffff; border-bottom: 1px solid var(--border-color); }
         .trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-muted); }
         .trust-item i { color: var(--brand-primary); font-size: 18px; }
@@ -60,48 +55,69 @@
         .page.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== ACTIVE ORDER PANEL ===== */
+        /* ACTIVE ORDER PANEL */
         .active-order-panel { background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px; margin: 20px 5%; padding: 20px; box-shadow: var(--shadow-card); display: none; }
         .active-order-panel h4 { color: var(--brand-primary); display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .active-order-actions { display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
-        .btn-panel-action { padding: 10px 16px; font-size: 13px; font-weight: 600; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; border: 1px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; }
-        .btn-panel-action:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
-        .btn-panel-action.hidden { display: none; }
 
-        /* ===== HERO ===== */
+        /* HERO */
         .hero { display: flex; align-items: center; justify-content: space-between; padding: 40px 5%; gap: 40px; flex-wrap: wrap; }
         .hero-content { max-width: 550px; }
         .premium-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(14, 165, 233, 0.1); color: var(--brand-primary); padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; border: 1px solid rgba(14, 165, 233, 0.2); margin-bottom: 18px; }
         .hero-content h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 700; line-height: 1.1; margin-bottom: 15px; }
         .text-gradient { background: linear-gradient(135deg, var(--brand-secondary), var(--brand-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-content p { font-size: 16px; color: var(--text-muted); margin-bottom: 25px; }
-        .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+        .hero-content p { font-size: 16px; color: var(--text-muted); margin-bottom: 22px; }
+        .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
         .btn { padding: 14px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s; cursor: pointer; border: none; font-family: 'Outfit', sans-serif; }
         .btn-book-now { background: var(--brand-primary); color: #fff; box-shadow: 0 4px 20px rgba(14, 165, 233, 0.4); }
         .btn-book-now:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(14, 165, 233, 0.5); }
         .btn-whatsapp-sm { background: transparent; color: #0d9488; border: 1.5px solid #0d9488; }
         .btn-whatsapp-sm:hover { background: rgba(13, 148, 136, 0.06); transform: translateY(-3px); }
-        .btn-call { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border-color); }
-        .btn-call:hover { border-color: var(--brand-primary); color: var(--brand-primary); transform: translateY(-3px); }
         
-        /* PWA Install App Button */
-        .btn-install { background: #0f172a; color: #fff; box-shadow: 0 4px 15px rgba(15, 23, 42, 0.3); }
-        .btn-install:hover { background: #1e293b; transform: translateY(-3px); }
-
         .hero-extra-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-        .btn-hero-track, .btn-hero-history { padding: 10px 22px; font-size: 13px; font-weight: 500; border-radius: 50px; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .btn-hero-track:hover, .btn-hero-history:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+        .btn-hero-track { padding: 10px 22px; font-size: 13px; font-weight: 500; border-radius: 50px; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-hero-track:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+        
         .hero-images-container { width: 100%; max-width: 400px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; }
         .hero-img-box { border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-card); border: 1px solid var(--border-color); }
         .hero-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .img-1 { aspect-ratio: 3/4; }
         .img-2 { aspect-ratio: 3/4; transform: translateY(20px); }
 
+        /* SECTOR & LOCATION CHECKER WIDGET */
+        .sector-checker-box { background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 20px; padding: 20px; margin: 25px 5%; box-shadow: var(--shadow-card); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+        .sector-info h3 { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .sector-info p { font-size: 13px; color: var(--text-muted); }
+        .sector-select-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .sector-select { padding: 10px 16px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-family: 'Outfit'; font-size: 14px; outline: none; font-weight: 600; color: var(--text-main); cursor: pointer; }
+        .sector-status-badge { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+
+        /* STAIN REMOVAL SHOWCASE */
+        .stain-showcase-section { padding: 50px 5%; background: #ffffff; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .stain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; align-items: center; }
+        .stain-card { background: var(--bg-body); border-radius: 18px; padding: 20px; border: 1.5px solid var(--border-color); text-align: center; }
+        .stain-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
+        .stain-card h4 { font-size: 16px; font-weight: 700; }
+
+        /* FABRIC CARE ADVISOR */
+        .fabric-advisor-section { padding: 60px 5%; max-width: 1000px; margin: 0 auto; }
+        .fabric-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px; }
+        .fabric-pill { padding: 10px 20px; border-radius: 30px; background: #ffffff; border: 1.5px solid var(--border-color); font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .fabric-pill.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); }
+        .fabric-content-card { background: #ffffff; border-radius: 20px; padding: 30px; border: 1.5px solid var(--border-color); box-shadow: var(--shadow-card); text-align: center; display: none; }
+        .fabric-content-card.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+        /* FLOATING LIVE WHATSAPP WIDGET */
+        .floating-whatsapp { position: fixed; bottom: 25px; right: 25px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); z-index: 9999; text-decoration: none; transition: 0.3s; }
+        .floating-whatsapp:hover { transform: scale(1.1); }
+        .whatsapp-tooltip { position: absolute; right: 70px; background: #fff; color: var(--text-main); padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-card); white-space: nowrap; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
+        .whatsapp-tooltip span { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
+
         .section-header { text-align: center; margin-bottom: 40px; }
         .section-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
         .section-header p { color: var(--text-muted); font-size: 15px; }
 
-        /* ===== PRICING ===== */
+        /* PRICING */
         .pricing { padding: 60px 5%; }
         .price-menu { max-width: 700px; margin: 0 auto 12px; background: #ffffff; border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-card); }
         .price-menu .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; cursor: pointer; transition: background 0.2s; }
@@ -116,7 +132,7 @@
         .price-name { font-size: 15px; font-weight: 500; color: var(--text-main); }
         .price-tag { font-size: 15px; font-weight: 700; color: var(--brand-primary); background: rgba(14, 165, 233, 0.08); padding: 4px 14px; border-radius: 30px; }
 
-        /* ===== SERVICES ===== */
+        /* SERVICES */
         .services-section { padding: 60px 5%; background: #ffffff; }
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .service-card { background: var(--bg-body); padding: 28px 22px; border-radius: 18px; border: 1px solid var(--border-color); transition: all 0.3s; }
@@ -125,7 +141,7 @@
         .service-card h3 { font-size: 19px; margin-bottom: 8px; }
         .service-card p { color: var(--text-muted); font-size: 14px; }
 
-        /* ===== REVIEWS ===== */
+        /* REVIEWS */
         .reviews { padding: 60px 5%; overflow: hidden; }
         .reviews-slider { display: flex; gap: 20px; animation: slideLeft 30s linear infinite; width: max-content; }
         .reviews-slider:hover { animation-play-state: paused; }
@@ -136,7 +152,7 @@
         .customer-name { font-weight: 700; color: var(--brand-primary); }
         .customer-loc { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
 
-        /* ===== FAQ ===== */
+        /* FAQ */
         .faq-section { padding: 60px 5%; max-width: 800px; margin: 0 auto; }
         .faq-item { background: #ffffff; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow-card); }
         .faq-question { padding: 16px 22px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); }
@@ -145,7 +161,7 @@
         .faq-item.active .faq-answer { display: block; }
         .faq-item.active .faq-question i { transform: rotate(180deg); color: var(--brand-primary); }
 
-        /* ===== CONTACT ===== */
+        /* CONTACT */
         .info-section { padding: 60px 5%; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1000px; margin: 0 auto; }
         .info-box { background: #ffffff; padding: 30px; border-radius: 18px; border: 1px solid var(--border-color); box-shadow: var(--shadow-card); }
         .info-box h3 { font-size: 19px; margin-bottom: 14px; color: var(--brand-primary); display: flex; align-items: center; gap: 10px; }
@@ -154,41 +170,60 @@
         .map-direct-card:hover { background: rgba(14, 165, 233, 0.1); }
         .map-direct-card i { font-size: 28px; color: #ef4444; margin-bottom: 8px; }
 
-        /* ===== POPUPS ===== */
-        .hero-track-popup, .hero-history-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
-        .hero-track-popup.active, .hero-history-popup.active { display: flex; }
+        /* POPUPS */
+        .hero-track-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
+        .hero-track-popup.active { display: flex; }
         .popup-box { background: #ffffff; border-radius: 20px; padding: 24px; max-width: 420px; width: 100%; position: relative; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2); }
         .popup-box h3 { margin-bottom: 16px; color: var(--text-main); }
-        .popup-box input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; margin-bottom: 12px; }
+        .popup-box input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); color: var(--text-main); font-family: 'Outfit'; font-size: 14px; outline: none; margin-bottom: 12px; text-transform: uppercase; }
         .popup-box input:focus { border-color: var(--brand-primary); }
         .close-hero-popup { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
 
-        /* ===== RESPONSIVE ===== */
+        /* AUTH MODAL */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
+        .auth-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .auth-box { background: #ffffff; border-radius: 24px; padding: 35px; max-width: 400px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .close-auth { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+        .auth-box h2 { color: var(--brand-primary); margin-bottom: 10px; font-weight: 800; }
+        .auth-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+        
+        .btn-google { width: 100%; background: #ffffff; color: var(--text-main); border: 1.5px solid var(--border-color); padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; transition: 0.3s; font-family: 'Outfit'; }
+        .btn-google:hover { border-color: var(--brand-primary); background: rgba(14, 165, 233, 0.05); }
+        .btn-google img { width: 20px; height: 20px; }
+        
+        .auth-divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 13px; }
+        .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
+        .auth-divider:not(:empty)::before { margin-right: .5em; } .auth-divider:not(:empty)::after { margin-left: .5em; }
+
+        .auth-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-size: 14px; outline: none; margin-bottom: 15px; font-family: 'Outfit'; text-align: center; letter-spacing: 1px; }
+        .btn-phone { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; font-family: 'Outfit'; }
+        #recaptcha-container { display: flex; justify-content: center; margin-bottom: 15px; }
+
         @media (max-width: 768px) {
             nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: #ffffff; padding: 20px 5%; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-card); gap: 12px; }
             nav ul.active { display: flex; }
             .mobile-menu-btn { display: block; }
             header { flex-wrap: nowrap; gap: 6px; padding: 6px 4%; }
             .logo-text .brand-name { font-size: 16px; }
-            .logo-text .brand-tagline { font-size: 8px; }
             .logo img { height: 32px; }
             .hero { flex-direction: column; text-align: center; }
             .action-buttons { justify-content: center; }
             .hero-extra-btns { justify-content: center; }
             .hero-images-container { max-width: 280px; }
             .info-section { grid-template-columns: 1fr; }
+            .stain-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== TOP BANNER ===== -->
+    <!-- TOP BANNER -->
     <div class="top-banner" id="topBanner">
         🎉 First order? Get <span>20% OFF</span> automatically!
         <button class="close-banner" id="closeBanner">&times;</button>
     </div>
 
-    <!-- ===== HEADER ===== -->
+    <!-- HEADER -->
     <header>
         <a href="#" class="logo" id="logoClick">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Parth Dry Clean Logo" />
@@ -203,13 +238,15 @@
                 <li><a href="#pricing">Pricing</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#reviews">Reviews</a></li>
+                <li><a href="#faq">FAQ</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><button class="btn-login" id="loginBtn" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> Login / Sign Up</button></li>
             </ul>
         </nav>
         <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
     </header>
 
-    <!-- ===== TRUST BAR ===== -->
+    <!-- TRUST BAR -->
     <div class="trust-bar">
         <div class="trust-item"><i class="fas fa-truck"></i> Free Pickup & Delivery</div>
         <div class="trust-item"><i class="fas fa-clock"></i> 48-72 Hr Turnaround</div>
@@ -217,17 +254,19 @@
         <div class="trust-item"><i class="fas fa-star"></i> 4.9/5 Ratings</div>
     </div>
 
-    <!-- ===== PAGE: HOME ===== -->
+    <!-- FLOATING LIVE WHATSAPP WIDGET -->
+    <a href="https://wa.me/message/SD5ILPGDVQQEM1?src=qr" target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <div class="whatsapp-tooltip"><span></span> Need help? Chat with us!</div>
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- PAGE: HOME -->
     <div class="page active" id="page-home">
 
         <!-- ACTIVE ORDER PANEL -->
         <div class="active-order-panel" id="activeOrderPanel">
             <h4><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;box-shadow:0 0 10px #22c55e;"></span> Active Order Tracking</h4>
             <div id="activeOrderTimeline" style="color:var(--text-muted);"></div>
-            <div class="active-order-actions">
-                <button class="btn-panel-action" id="panelDownloadInvoice"><i class="fas fa-download"></i> Download Invoice</button>
-                <button class="btn-panel-action" id="panelShareWhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp Share</button>
-            </div>
         </div>
 
         <!-- HERO -->
@@ -237,43 +276,124 @@
                 <h1 id="dynamicGreeting">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
                 <p id="dynamicSubGreeting">Experience 5-star dry cleaning & laundry with free doorstep pickup & delivery across various locations in Lucknow.</p>
                 <div class="action-buttons">
-                    <!-- IMPORTANT: Changed button to an anchor tag linking to booking.html -->
                     <a href="booking.html" class="btn btn-book-now" style="text-decoration: none;"><i class="fas fa-calendar-check"></i> Book Now</a>
-                    
-                    <button class="btn btn-install" id="installAppBtn" style="display:none;"><i class="fas fa-mobile-alt"></i> Install App</button>
                     <a href="https://wa.me/message/SD5ILPGDVQQEM1?src=qr" target="_blank" class="btn btn-whatsapp-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
                 </div>
                 <div class="hero-extra-btns">
                     <button class="btn-hero-track" id="heroTrackBtn"><i class="fas fa-search-location"></i> Track Order</button>
-                    <button class="btn-hero-history" id="heroHistoryBtn"><i class="fas fa-history"></i> Order History</button>
                 </div>
             </div>
             <div class="hero-images-container">
-                <div class="hero-img-box img-1"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80" alt="Professional laundry service" /></div>
-                <div class="hero-img-box img-2"><img src="https://images.unsplash.com/photo-1567113463300-102a7eb3cb26?w=400&q=80" alt="Clean folded clothes" /></div>
+                <div class="hero-img-box img-1"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=80" alt="Shop neat and clean" /></div>
+                <div class="hero-img-box img-2"><img src="https://images.unsplash.com/photo-1567113463300-102a7eb3cb26?w=500&q=80" alt="Folded clothes" /></div>
             </div>
         </section>
 
-        <!-- TRACK POPUP -->
-        <div class="hero-track-popup" id="heroTrackPopup">
-            <div class="popup-box">
-                <button class="close-hero-popup" id="closeHeroTrackPopup">&times;</button>
-                <h3>Track Order</h3>
-                <input type="text" id="heroTrackInput" placeholder="Enter Order ID (e.g. PDC-XXXX)" />
-                <button class="btn btn-call" id="heroTrackSubmit" style="color:#fff; background:var(--brand-primary); border:none; width:100%;"><i class="fas fa-search"></i> Search</button>
-                <div id="heroTrackResult" style="margin-top:12px; font-size:14px; color:var(--text-muted);"></div>
+        <!-- SECTOR & LOCATION CHECKER WIDGET -->
+        <div class="sector-checker-box">
+            <div class="sector-info">
+                <h3><i class="fas fa-map-marked-alt" style="color:var(--brand-primary);"></i> Check Pickup Availability in Your Area</h3>
+                <p>Select your sector/locality in Lucknow to verify free valet pickup status.</p>
+            </div>
+            <div class="sector-select-group">
+                <select id="sectorDropdown" class="sector-select" onchange="updateSectorStatus()">
+                    <option value="indiranagar">Indira Nagar (All Sectors)</option>
+                    <option value="munshipulia">Munshipulia</option>
+                    <option value="aliganj">Aliganj</option>
+                    <option value="gomtinagar">Gomti Nagar</option>
+                    <option value="faizabadroad">Faizabad Road</option>
+                </select>
+                <div class="sector-status-badge" id="sectorStatusBadge">
+                    <i class="fas fa-check-circle" style="color:#22c55e;"></i> Free Pickup Active! Valet is nearby.
+                </div>
             </div>
         </div>
 
-        <!-- HISTORY POPUP -->
-        <div class="hero-history-popup" id="heroHistoryPopup">
+        <!-- STAIN REMOVAL SHOWCASE -->
+        <section class="stain-showcase-section">
+            <div class="section-header">
+                <h2>Our Expert <span class="text-gradient">Stain Removal</span> Care</h2>
+                <p>Advanced eco-friendly treatment that restores your precious garments</p>
+            </div>
+            <div class="stain-grid">
+                <div class="stain-card">
+                    <img src="https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=500&q=80" alt="Fabric Protection" />
+                    <h4>100% Fabric Protection & Shine</h4>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">Gentle solvents that remove toughest collar stains without fading fabric quality.</p>
+                </div>
+                <div class="stain-card">
+                    <img src="https://i.ibb.co/RpqRcryy/2.png" alt="Crisp & Crisp Steam Ironing" />
+                    <h4>Crisp & Crisp Steam Ironing</h4>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">Professional steam finishing for sharp creases and ready-to-wear elegance.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FABRIC CARE ADVISOR -->
+        <section class="fabric-advisor-section">
+            <div class="section-header">
+                <h2>Fabric Care <span class="text-gradient">Advisor</span></h2>
+                <p>Click a fabric type to know how we handle your specialized clothes</p>
+            </div>
+            <div class="fabric-pills">
+                <div class="fabric-pill active" onclick="switchFabric('silk', this)">Silk & Sarees</div>
+                <div class="fabric-pill" onclick="switchFabric('woollen', this)">Woollen & Sweaters</div>
+                <div class="fabric-pill" onclick="switchFabric('leather', this)">Leather & Jackets</div>
+                <div class="fabric-pill" onclick="switchFabric('formal', this)">Suits & Blazers</div>
+            </div>
+            <div class="fabric-content-card active" id="fabric-silk">
+                <h3 style="color:var(--brand-primary); margin-bottom:10px;"><i class="fas fa-crown"></i> Silk Saree & Delicate Care</h3>
+                <p style="color:var(--text-muted); font-size:15px; max-width:700px; margin:0 auto;">Handled with specialized dry solvents and starching options. We ensure your zari work and delicate weaves retain their royal shine for years.</p>
+            </div>
+            <div class="fabric-content-card" id="fabric-woollen">
+                <h3 style="color:var(--brand-primary); margin-bottom:10px;"><i class="fas fa-snowflake"></i> Woollen & Winter Wear Care</h3>
+                <p style="color:var(--text-muted); font-size:15px; max-width:700px; margin:0 auto;">Anti-shrinkage gentle tumbling and chemical-free conditioning to keep your sweaters fluffy, warm, and soft as new.</p>
+            </div>
+            <div class="fabric-content-card" id="fabric-leather">
+                <h3 style="color:var(--brand-primary); margin-bottom:10px;"><i class="fas fa-vest"></i> Jackets & Heavy Wear Care</h3>
+                <p style="color:var(--text-muted); font-size:15px; max-width:700px; margin:0 auto;">Deep conditioning for leather and waterproof treatment for padded jackets to remove dust and maintain texture.</p>
+            </div>
+            <div class="fabric-content-card" id="fabric-formal">
+                <h3 style="color:var(--brand-primary); margin-bottom:10px;"><i class="fas fa-user-tie"></i> Suits & Formal Wear Care</h3>
+                <p style="color:var(--text-muted); font-size:15px; max-width:700px; margin:0 auto;">Contoured hanger steam pressing to maintain suit structure, shoulder pads, and lapel shape perfectly.</p>
+            </div>
+        </section>
+
+        <!-- MANUAL TRACK POPUP -->
+        <div class="hero-track-popup" id="heroTrackPopup">
             <div class="popup-box">
-                <button class="close-hero-popup" id="closeHeroHistoryPopup">&times;</button>
-                <h3>Order History</h3>
-                <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Enter your phone number to check past orders.</p>
-                <input type="tel" id="heroHistoryPhone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" />
-                <button class="btn btn-call" id="heroHistorySubmit" style="color:#fff; background:var(--brand-primary); border:none; width:100%;"><i class="fas fa-history"></i> Show Orders</button>
-                <div id="heroHistoryResult" style="margin-top:16px; font-size:14px; color:var(--text-muted); max-height:300px; overflow-y:auto;"></div>
+                <button class="close-hero-popup" id="closeHeroTrackPopup">&times;</button>
+                <h3>Track Your Order</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Enter your Order ID to check current status.</p>
+                <input type="text" id="heroTrackInput" placeholder="Enter Order ID (e.g. PDC-XXXX)" />
+                <button class="btn" id="heroTrackSubmit" style="color:#fff; background:var(--brand-primary); border:none; width:100%;"><i class="fas fa-search"></i> Search</button>
+                <div id="heroTrackResult" style="margin-top:16px; font-size:14px; color:var(--text-muted);"></div>
+            </div>
+        </div>
+
+        <!-- AUTHENTICATION MODAL -->
+        <div class="auth-overlay" id="authModal">
+            <div class="auth-box">
+                <span class="close-auth" onclick="document.getElementById('authModal').classList.remove('active')">&times;</span>
+                <h2>Welcome Back</h2>
+                <p>Login to book faster & track your orders securely.</p>
+                
+                <button class="btn-google" onclick="signInWithGoogle()">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Continue with Google
+                </button>
+                
+                <div class="auth-divider">OR</div>
+                
+                <div id="phoneAuthSection">
+                    <div id="recaptcha-container"></div>
+                    <input type="tel" id="phoneInput" class="auth-input" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}">
+                    <button class="btn-phone" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                </div>
+
+                <div id="otpSection" style="display: none;">
+                    <input type="number" id="otpInput" class="auth-input" placeholder="Enter 6-digit OTP">
+                    <button class="btn-phone" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify OTP</button>
+                </div>
             </div>
         </div>
 
@@ -367,7 +487,7 @@
         <!-- FAQ -->
         <section class="faq-section" id="faq">
             <div class="section-header"><h2>Frequently Asked <span class="text-gradient">Questions</span></h2></div>
-            <div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery within 10 km radius.</div></div>
+            <div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery.</div></div>
             <div class="faq-item"><div class="faq-question">How long does dry cleaning take? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard turnaround is 48-72 hours. Express service available on request.</div></div>
             <div class="faq-item"><div class="faq-question">Do you clean wedding dresses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, we specialize in bridal wear, lehengas, sherwanis, and silk sarees.</div></div>
             <div class="faq-item"><div class="faq-question">What about the 20% first order discount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">It's automatically applied when you book your first order.</div></div>
@@ -390,66 +510,63 @@
         </section>
     </div>
 
-    <!-- ============================================================= -->
-    <!-- ===== JAVASCRIPT (Customer-side only) ===== -->
-    <!-- ============================================================= -->
+    <!-- JAVASCRIPT -->
     <script>
-        // ======================== PWA SETUP (AUTO INSTALL APP) ========================
+        // PWA SETUP
         const manifestContent = {
-            "name": "Parth Dry Clean",
-            "short_name": "Parth Dry",
-            "start_url": ".",
-            "display": "standalone",
-            "background_color": "#f1f5f9",
-            "theme_color": "#0ea5e9",
+            "name": "Parth Dry Clean", "short_name": "Parth Dry", "start_url": ".", "display": "standalone",
+            "background_color": "#f1f5f9", "theme_color": "#0ea5e9",
             "icons": [{"src": "https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png", "sizes": "192x192", "type": "image/png"}]
         };
         const blob = new Blob([JSON.stringify(manifestContent)], {type: 'application/json'});
         const manifestURL = URL.createObjectURL(blob);
         document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
 
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installAppBtn').style.display = 'inline-flex';
-        });
+        // UI INTERACTIONS
+        const FIRST_ORDER_KEY = 'pdc_first_order_used';
+        if (localStorage.getItem(FIRST_ORDER_KEY)) document.getElementById('topBanner').style.display = 'none';
+        document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
 
-        document.getElementById('installAppBtn').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') { document.getElementById('installAppBtn').style.display = 'none'; }
-                deferredPrompt = null;
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('active'));
+        document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
+
+        document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', () => q.parentElement.classList.toggle('active')));
+
+        // FABRIC ADVISOR TAB SWITCHER
+        function switchFabric(type, el) {
+            document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById(`fabric-${type}`).classList.add('active');
+        }
+
+        // SECTOR CHECKER STATUS LIVE UPDATE
+        function updateSectorStatus() {
+            const dropdown = document.getElementById('sectorDropdown');
+            const badge = document.getElementById('sectorStatusBadge');
+            const val = dropdown.value;
+            
+            if(val === 'indiranagar') {
+                badge.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e;"></i> Free Pickup Active! Valet is nearby.`;
+            } else if(val === 'munshipulia') {
+                badge.innerHTML = `<i class="fas fa-check-circle" style="color:#22c55e;"></i> Express Valet active in Munshipulia.`;
+            } else {
+                badge.innerHTML = `<i class="fas fa-shipping-fast" style="color:#0ea5e9;"></i> Free doorstep pickup available here!`;
             }
-        });
+        }
 
-        // ======================== TIME-BASED GREETING ========================
         function setTimeGreeting() {
             const hour = new Date().getHours();
             let greeting = "Your Clothes Deserve <span class='text-gradient'>Royal Treatment</span>";
-            let sub = "Experience 5-star dry cleaning & laundry with free doorstep pickup & delivery across various locations in Lucknow.";
-            
-            if(hour >= 5 && hour < 12) {
-                greeting = "Good Morning! <span class='text-gradient'>Ready for Fresh Clothes?</span> ☀️";
-                sub = "Start your day right. Let us handle your laundry with premium care.";
-            } else if(hour >= 12 && hour < 17) {
-                greeting = "Good Afternoon! <span class='text-gradient'>Relax & Unwind</span> 🌤️";
-                sub = "Take a break, we will pick up and clean your laundry for you.";
-            } else if(hour >= 17 && hour < 22) {
-                greeting = "Good Evening! <span class='text-gradient'>Got Plans?</span> 🌙";
-                sub = "Get your outfits perfectly dry-cleaned and ready for your next event.";
-            } else {
-                greeting = "Late Night? <span class='text-gradient'>We've Got You</span> 🦉";
-                sub = "Drop your order now, we'll pick it up first thing tomorrow morning!";
-            }
-            
+            if(hour >= 5 && hour < 12) greeting = "Good Morning! <span class='text-gradient'>Ready for Fresh Clothes?</span> ☀️";
+            else if(hour >= 12 && hour < 17) greeting = "Good Afternoon! <span class='text-gradient'>Relax & Unwind</span> 🌤️";
+            else if(hour >= 17 && hour < 22) greeting = "Good Evening! <span class='text-gradient'>Got Plans?</span> 🌙";
+            else greeting = "Late Night? <span class='text-gradient'>We've Got You</span> 🦉";
             document.getElementById('dynamicGreeting').innerHTML = greeting;
-            document.getElementById('dynamicSubGreeting').innerHTML = sub;
         }
         setTimeGreeting();
 
-        // ======================== FIREBASE CONFIG ========================
+        // FIREBASE CONFIG & AUTH
         const firebaseConfig = {
             apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
             authDomain: "parth-dry-clean.firebaseapp.com",
@@ -460,100 +577,134 @@
             appId: "1:673481985335:web:eb4194b4860cf979b21eb2"
         };
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const db = firebase.database();
 
-        // ======================== CONSTANTS & VARIABLES ========================
-        const FIRST_ORDER_KEY = 'pdc_first_order_used';
-        const ACTIVE_ORDER_ID_KEY = 'pdc_active_order_id';
-        let activePanelOrder = null;
+        let confirmationResult;
 
-        // ======================== UTILITY ========================
-        function openOverlay(el) { if (!el) return; el.classList.add('active'); history.pushState({ overlay: el.id }, ''); }
-        function closeOverlay(el) { if (!el) return; el.classList.remove('active'); }
+        function openAuthModal() {
+            if(auth.currentUser) {
+                if(confirm("Do you want to log out?")) { auth.signOut(); }
+            } else {
+                document.getElementById('authModal').classList.add('active');
+                if(!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                }
+            }
+        }
 
-        // ======================== BANNER & MENU ========================
-        if (localStorage.getItem(FIRST_ORDER_KEY)) document.getElementById('topBanner').style.display = 'none';
-        document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
-
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('active'));
-        document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
-
-        // ======================== FAQ ========================
-        document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', () => q.parentElement.classList.toggle('active')));
-
-        // ======================== POPSTATE ========================
-        window.addEventListener('popstate', function(event) {
-            const overlays = ['heroTrackPopup', 'heroHistoryPopup'];
-            for (let id of overlays) { const el = document.getElementById(id); if (el && el.classList.contains('active')) { closeOverlay(el); break; } }
+        auth.onAuthStateChanged((user) => {
+            const loginBtn = document.getElementById('loginBtn');
+            const activePanel = document.getElementById('activeOrderPanel');
+            
+            if (user) {
+                document.getElementById('authModal').classList.remove('active');
+                let displayName = user.displayName || user.phoneNumber || "User";
+                loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> Hi, ${displayName.split(" ")[0]}`;
+                loginBtn.style.background = "var(--brand-primary)";
+                loginBtn.style.color = "#fff";
+                checkActiveOrders(user.uid); 
+            } else {
+                loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login / Sign Up`;
+                loginBtn.style.background = "rgba(14, 165, 233, 0.1)";
+                loginBtn.style.color = "var(--brand-primary)";
+                activePanel.style.display = 'none';
+                if(window.activeOrderUnsubscribe) { window.activeOrderUnsubscribe(); }
+            }
         });
 
-        // ======================== TRACK & HISTORY ========================
-        const heroTrackPopup = document.getElementById('heroTrackPopup'); const heroHistoryPopup = document.getElementById('heroHistoryPopup');
-        document.getElementById('heroTrackBtn').addEventListener('click', () => openOverlay(heroTrackPopup)); 
-        document.getElementById('heroHistoryBtn').addEventListener('click', () => openOverlay(heroHistoryPopup));
-        document.getElementById('closeHeroTrackPopup').addEventListener('click', () => closeOverlay(heroTrackPopup)); 
-        document.getElementById('closeHeroHistoryPopup').addEventListener('click', () => closeOverlay(heroHistoryPopup));
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch((error) => { alert("Google Login Failed: " + error.message); });
+        }
 
-        document.getElementById('heroTrackSubmit').addEventListener('click', () => { const id = document.getElementById('heroTrackInput').value.trim(); if (id) fetchOrderStatus(id, 'heroTrackResult'); });
-        document.getElementById('heroHistorySubmit').addEventListener('click', () => { alert('🔒 For security and privacy, public Order History lookup is disabled. Please check your WhatsApp for order updates, or contact our support.'); closeOverlay(document.getElementById('heroHistoryPopup')); });
+        function sendOTP() {
+            const number = document.getElementById('phoneInput').value;
+            if(number.length !== 10) { alert("Enter a valid 10-digit number"); return; }
+            
+            const phoneNumber = "+91" + number;
+            const appVerifier = window.recaptchaVerifier;
+            document.getElementById('sendOtpBtn').innerText = "Sending...";
+            
+            auth.signInWithPhoneNumber(phoneNumber, appVerifier)
+                .then((result) => {
+                    confirmationResult = result;
+                    document.getElementById('phoneAuthSection').style.display = 'none';
+                    document.getElementById('otpSection').style.display = 'block';
+                }).catch((error) => {
+                    alert("Error sending OTP. Please try again.");
+                    document.getElementById('sendOtpBtn').innerText = "Send OTP";
+                });
+        }
+
+        function verifyOTP() {
+            const code = document.getElementById('otpInput').value;
+            if(code.length !== 6) { alert("Enter 6-digit OTP"); return; }
+            document.getElementById('verifyOtpBtn').innerText = "Verifying...";
+            
+            confirmationResult.confirm(code).catch((error) => {
+                alert("Invalid OTP");
+                document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-check-circle"></i> Verify OTP`;
+            });
+        }
+
+        // TRACKING & ORDER LOGIC
+        function checkActiveOrders(uid) {
+            db.ref('customers/' + uid + '/lastOrderId').once('value').then(snap => {
+                if(snap.exists()) {
+                    let orderId = snap.val();
+                    const orderRef = db.ref('orders/' + orderId);
+                    
+                    orderRef.on('value', orderSnap => {
+                        if(orderSnap.exists()) {
+                            let order = orderSnap.val();
+                            let rawStatus = order.status ? order.status.toLowerCase().replace('express-', '').replace(' ', '_').trim() : '';
+                            
+                            if(rawStatus !== 'delivered' && rawStatus !== 'cancelled') {
+                                document.getElementById('activeOrderPanel').style.display = 'block';
+                                document.getElementById('activeOrderTimeline').innerHTML = renderTimeline(order);
+                            } else {
+                                document.getElementById('activeOrderPanel').style.display = 'none';
+                            }
+                        }
+                    });
+                    window.activeOrderUnsubscribe = () => orderRef.off();
+                }
+            });
+        }
+
+        document.getElementById('heroTrackBtn').addEventListener('click', () => { document.getElementById('heroTrackPopup').classList.add('active'); });
+        document.getElementById('closeHeroTrackPopup').addEventListener('click', () => { document.getElementById('heroTrackPopup').classList.remove('active'); });
+
+        document.getElementById('heroTrackSubmit').addEventListener('click', () => { 
+            const id = document.getElementById('heroTrackInput').value.trim().toUpperCase(); 
+            if (id) fetchOrderStatus(id, 'heroTrackResult'); 
+        });
 
         function fetchOrderStatus(orderId, outputId) {
-            const el = document.getElementById(outputId); if (!el) return; el.innerHTML = 'Loading...';
-            db.ref('orders/' + orderId).once('value').then(snap => { if (snap.exists()) { el.innerHTML = renderTimeline(snap.val()); } else { el.innerHTML = '<p style="color:#ef4444;">Order not found.</p>'; } }).catch(() => { el.innerHTML = '<p style="color:#ef4444;">Error finding order.</p>'; });
+            const el = document.getElementById(outputId); if (!el) return; 
+            el.innerHTML = '<p style="text-align:center;">Searching...</p>';
+            
+            db.ref('orders/' + orderId).once('value').then(snap => { 
+                if (snap.exists()) { el.innerHTML = renderTimeline(snap.val()); } 
+                else { el.innerHTML = '<p style="color:#ef4444; text-align:center; font-weight:600;">Order not found. Please check ID.</p>'; } 
+            }).catch(() => { el.innerHTML = '<p style="color:#ef4444; text-align:center;">Error finding order. Please check ID.</p>'; });
         }
 
         function renderTimeline(order) {
             let rawStatus = order.status ? order.status.toLowerCase().replace('express-', '').replace(' ', '_').trim() : ''; let step = 0;
             if (rawStatus === 'pending') step = 0; else if (rawStatus === 'picked_up') step = 1; else if (rawStatus === 'processing') step = 2; else if (rawStatus === 'delivered') step = 3;
-            else if (rawStatus === 'cancelled') return `<p style="color:#ef4444;margin-bottom:10px;">Order Cancelled</p>`; else return `<p style="margin-bottom:15px;">Status: <strong>${order.status}</strong></p>`;
-            const steps = [ { label: 'Placed', icon: 'fa-box', active: step >= 0, completed: step > 0 }, { label: 'Picked Up', icon: 'fa-truck', active: step >= 1, completed: step > 1 }, { label: 'Processing', icon: 'fa-cog', active: step >= 2, completed: step > 2 }, { label: 'Delivered', icon: 'fa-check', active: step >= 3, completed: step > 3 } ];
+            else if (rawStatus === 'cancelled') return `<p style="color:#ef4444;margin-bottom:10px;text-align:center;font-weight:bold;">Order Cancelled</p>`; 
+            
+            const steps = [ 
+                { label: 'Placed', icon: 'fa-box', active: step >= 0, completed: step > 0 }, 
+                { label: 'Picked Up', icon: 'fa-truck', active: step >= 1, completed: step > 1 }, 
+                { label: 'Processing', icon: 'fa-cog', active: step >= 2, completed: step > 2 }, 
+                { label: 'Delivered', icon: 'fa-check', active: step >= 3, completed: step > 3 } 
+            ];
+            
             return `<div style="display:flex;justify-content:space-between;position:relative;margin:25px 0 15px;"><div style="position:absolute;top:20px;left:10%;right:10%;height:2px;background:var(--border-color);"></div>${steps.map(s => `<div style="display:flex;flex-direction:column;align-items:center;flex:1;z-index:1;"><div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;transition:0.3s;${s.completed ? 'background:#22c55e;color:#fff;box-shadow:0 0 15px rgba(34,197,94,0.3);' : s.active ? 'background:var(--brand-primary);color:#fff;box-shadow:0 0 15px rgba(14,165,233,0.3);' : 'background:var(--bg-body);color:var(--text-muted);border:2px solid var(--border-color);'}"><i class="fas ${s.icon}"></i></div><div style="margin-top:8px;font-size:11px;font-weight:500;color:${s.active||s.completed?'var(--text-main)':'var(--text-muted)'}">${s.label}</div></div>`).join('')}</div><p style="text-align:center;color:var(--brand-primary);margin-top:15px;font-size:14px;"><strong>${order.orderId}</strong> — ${order.name} | ₹${order.total} ${order.express ? '🚀' : ''}</p>`;
         }
-
-        // ======================== ACTIVE ORDER PANEL ========================
-        let activeOrderListenerId = null;
-        function updateActiveOrderPanel() {
-            const panel = document.getElementById('activeOrderPanel'); const timelineDiv = document.getElementById('activeOrderTimeline'); const localOrderId = localStorage.getItem(ACTIVE_ORDER_ID_KEY);
-            if (!localOrderId) { panel.style.display = 'none'; if(activeOrderListenerId) { db.ref('orders/' + activeOrderListenerId).off(); activeOrderListenerId = null; } return; }
-            if(activeOrderListenerId !== localOrderId) {
-                if(activeOrderListenerId) db.ref('orders/' + activeOrderListenerId).off();
-                db.ref('orders/' + localOrderId).on('value', snap => {
-                    if (snap.exists()) {
-                        const o = snap.val(); const raw = o.status ? o.status.toLowerCase().replace('express-', '').replace(' ', '_').trim() : '';
-                        if (raw !== 'delivered' && raw !== 'cancelled') { panel.style.display = 'block'; timelineDiv.innerHTML = renderTimeline(o); activePanelOrder = o; const waShared = localStorage.getItem('pdc_wa_shared_' + o.orderId); const waBtn = document.getElementById('panelShareWhatsApp'); if (waShared === 'true') { waBtn.classList.add('hidden'); } else { waBtn.classList.remove('hidden'); } } 
-                        else { panel.style.display = 'none'; localStorage.removeItem(ACTIVE_ORDER_ID_KEY); db.ref('orders/' + localOrderId).off(); }
-                    } else { panel.style.display = 'none'; localStorage.removeItem(ACTIVE_ORDER_ID_KEY); db.ref('orders/' + localOrderId).off(); }
-                });
-                activeOrderListenerId = localOrderId;
-            }
-        }
-        updateActiveOrderPanel();
-
-        // ======================== INVOICE & WHATSAPP BUTTON LOGIC ========================
-        document.getElementById('panelDownloadInvoice').addEventListener('click', () => generateInvoice(activePanelOrder));
-        document.getElementById('panelShareWhatsApp').addEventListener('click', () => { if (activePanelOrder) { shareWhatsApp(activePanelOrder); localStorage.setItem('pdc_wa_shared_' + activePanelOrder.orderId, 'true'); document.getElementById('panelShareWhatsApp').classList.add('hidden'); } });
-
-        function generateInvoice(order) {
-            if (!order) return;
-            const variableNote = (order.variableCount > 0) ? '<p style="color:#d4af37;"><strong>Note:</strong> We will contact you for final price of variable items.</p>' : '';
-            const html = `<html><head><title>Invoice ${order.orderId}</title><style>body{font-family:Arial;padding:20px;}</style></head><body><h2>Parth Dry Clean</h2><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><hr><p><strong>Order:</strong> ${order.orderId}</p><p><strong>Name:</strong> ${order.name}</p><p><strong>Phone:</strong> ${order.phone}</p><p><strong>Address:</strong> ${order.address}</p><p><strong>Pickup:</strong> ${order.pickupDate} (${order.timeSlot})</p><p><strong>Express:</strong> ${order.express ? 'Yes (+₹'+order.expressCharge+')' : 'No'}</p><hr><h3>Items</h3><ul>${Object.entries(order.items).map(([k,v]) => `<li>${getItemDisplayName(k)} x ${v}</li>`).join('')}</ul><p>Subtotal (fixed-price): ₹${order.subtotal}</p>${order.variableCount > 0 ? '<p>Variable items: '+order.variableCount+' (inspection required)</p>' : ''}<p>Discount: -₹${order.discount}</p>${order.express ? '<p>Express: ₹'+order.expressCharge+'</p>' : ''}<p><strong>Total: ₹${order.total}</strong></p>${variableNote}<hr><p>Thank you!</p></body></html>`;
-            const win = window.open('', '_blank'); if (win) { win.document.write(html); win.document.close(); }
-        }
-
-        function shareWhatsApp(order) {
-            if (!order) return; const cleanAddress = order.address.replace(/[\r\n]+/g, ', ').replace(/\s+/g, ' ').trim(); const itemsList = Object.entries(order.items).map(([k, v]) => `${getItemDisplayName(k)} x${v}`).join(', ');
-            let msg = `Order Confirmed! 🧺\n\nOrder: ${order.orderId}\nName: ${order.name}\nTotal: ₹${order.total}\n${order.express ? '🚀 Express (+₹'+order.expressCharge+')\n' : ''}Items: ${itemsList}\nAddress: ${cleanAddress}\nPickup: ${order.pickupDate} (${order.timeSlot})\n🔐 Your PIN: ${order.pin}`;
-            if (order.variableCount > 0) msg += `\n\nNote: We will contact you for final price of variable items.`;
-            window.open(`https://wa.me/919235601645?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        // ======================== HELPER FUNCTIONS ========================
-        function getItemDisplayName(key) {
-            const map = { 'reg-pant': 'Pant', 'reg-shirt': 'Shirt', 'reg-kurta': 'Kurta', 'reg-tshirt': 'T-Shirt', 'reg-dhoti': 'Dhoti', 'win-sweater-half': 'Sweater (Half)', 'win-sweater-full': 'Sweater (Full)', 'win-tshirt-wool': 'T-Shirt (Woollen)', 'win-shawl': 'Shawl', 'win-cardigan': 'Cardigan', 'sui-coat': 'Coat', 'sui-coat-pant': 'Coat Pant', 'sui-coat-long': 'Coat Long', 'sui-safari-suit': 'Safari Suit', 'sui-safari-coat': 'Safari Coat', 'sui-suit2': 'Suit (2 Piece)', 'sui-suit3': 'Suit (3 Piece)', 'sui-suit2-blazer': 'Suit (2 Pc + Blazer)', 'sui-suit3-blazer': 'Suit (3 Pc + Blazer)', 'eth-kurta-pajama': 'Kurta Pajama (Set)', 'eth-sherwani': 'Sherwani', 'jac-half': 'Jacket (Half)', 'jac-full': 'Jacket (Full)', 'hom-blanket-single': 'Blanket (Single)', 'hom-blanket-double': 'Blanket (Double)', 'hom-helmet': 'Helmet', 'hom-bag': 'Ladies Bag', 'var-saree': 'Saree Dry Clean', 'var-trolley': 'Trolley Bag', 'var-lehenga': 'Lehenga (3 Piece)', 'var-gagra': 'Gagra', 'var-gown': 'Gown', 'var-jents': 'Jents Wear', 'stm-saree-blouse': 'Saree + Blouse', 'stm-coat': 'Coat', 'stm-coat-pant': 'Coat Pant', 'stm-lehenga': 'Lehenga', 'stm-dupatta': 'Dupatta', 'stm-ladies-suit': 'Ladies Suit (3 Piece)', 'add-starch': 'Saree Starch', 'add-blouse': 'Blouse' };
-            return map[key] || key;
-        }
-
-        console.log('✅ Parth Dry Clean Website Loaded Successfully!');
     </script>
 </body>
 </html>
