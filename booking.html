@@ -24,7 +24,7 @@
             --danger-color: #ef4444; --success-color: #10b981;
         }
         
-        /* STRICT NO-OVERFLOW FIX - FONT FAMILY FIXED FOR ICONS */
+        /* STRICT NO-OVERFLOW FIX */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; max-width: 100vw; overflow-x: hidden; position: relative; }
         body, input, textarea, select, button { font-family: 'Outfit', sans-serif; }
@@ -109,7 +109,6 @@
         .bag-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; font-weight: 700; border-bottom: 1px solid rgba(2, 132, 199, 0.1); }
         .bag-row:last-child { border-bottom: none; }
 
-        /* EXPRESS CARD FIX: Changed div to label for perfect checkbox toggling */
         .express-card { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(249,115,22,0.06)); border: 1.5px solid rgba(245,158,11,0.3); padding: 12px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; cursor: pointer; width: 100%; box-sizing: border-box; }
         .express-info { display: flex; align-items: center; gap: 10px; }
         .express-info i { color: #f59e0b; font-size: 20px; }
@@ -453,7 +452,6 @@
 
             <div id="bagItemsSummary"></div>
 
-            <!-- FIXED EXPRESS CARD: Changed from div to label for native checkbox click -->
             <label class="express-card" for="expressToggle">
                 <div class="express-info">
                     <i class="fas fa-bolt"></i>
@@ -516,7 +514,7 @@
         <button class="dock-btn" onclick="document.getElementById('cockpitSection').scrollIntoView({behavior: 'smooth'})">View & Checkout</button>
     </div>
 
-    <!-- AUTH POPUP -->
+    <!-- AUTH POPUP WITH VISIBLE RECAPTCHA -->
     <div class="auth-overlay" id="authModal">
         <div class="auth-box">
             <span class="close-auth" onclick="document.getElementById('authModal').classList.remove('active')">&times;</span>
@@ -601,8 +599,13 @@
                 auth.signOut().then(() => showToast("Logged out successfully", "info"));
             } else {
                 document.getElementById('authModal').classList.add('active');
+                
+                // VISIBLE RECAPTCHA FIX
                 if(!window.recaptchaVerifier) {
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 
+                        'size': 'normal' 
+                    });
+                    window.recaptchaVerifier.render(); 
                 }
             }
         }
@@ -660,22 +663,39 @@
         function sendOTP() {
             const num = document.getElementById('phoneInput').value;
             if(num.length !== 10) { showToast("Enter valid 10-digit number", "warning"); return; }
+            
             document.getElementById('sendOtpBtn').innerText = "Sending...";
+            
+            // EXACT ERROR LOGGING ADDED HERE
             auth.signInWithPhoneNumber("+91" + num, window.recaptchaVerifier)
                 .then((res) => {
                     confirmationResult = res;
                     document.getElementById('phoneAuthSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
                     showToast("OTP sent to your mobile number", "success");
-                }).catch(() => { showToast("Error sending OTP", "error"); document.getElementById('sendOtpBtn').innerText = "Send OTP"; });
+                }).catch((error) => { 
+                    showToast("OTP Error: " + error.message, "error"); 
+                    document.getElementById('sendOtpBtn').innerText = "Send OTP"; 
+                    
+                    if(window.recaptchaVerifier) {
+                        window.recaptchaVerifier.render().then(function(widgetId) {
+                          grecaptcha.reset(widgetId);
+                        });
+                    }
+                });
         }
 
         function verifyOTP() {
             const code = document.getElementById('otpInput').value;
             if(code.length !== 6) { showToast("Enter 6-digit OTP", "warning"); return; }
+            document.getElementById('verifyOtpBtn').innerText = "Verifying...";
+            
             confirmationResult.confirm(code).then(() => {
                 showToast("Phone verified successfully!", "success");
-            }).catch(() => showToast("Invalid OTP entered", "error"));
+            }).catch(() => {
+                showToast("Invalid OTP entered", "error");
+                document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-check-circle"></i> Verify OTP`;
+            });
         }
 
         function getCurrentLocation() {
@@ -788,7 +808,6 @@
             document.getElementById('estDeliveryBox').style.display = 'flex';
         }
 
-        // FIXED EXPRESS FEE PRICING LOGIC (Exact 90% of Subtotal)
         function updatePriceSummary() {
             let orderItems = {}; let subtotal = 0; let totalItems = 0; let html = '';
             document.querySelectorAll('.item-tile').forEach(tile => {
@@ -814,7 +833,7 @@
             }
 
             const isExpress = document.getElementById('expressToggle').checked;
-            const expressFee = isExpress ? Math.round(subtotal * 0.90) : 0; // Calculates exactly 90% of the subtotal
+            const expressFee = isExpress ? Math.round(subtotal * 0.90) : 0;
 
             let discount = 0;
             if (activeDiscountPct > 0) {
@@ -840,10 +859,11 @@
             } else { document.getElementById('mobileDock').classList.remove('visible'); }
         }
 
-        // BOOKING SUBMIT
+        // BOOKING SUBMIT - STRICT LOGIN & ₹300 VALIDATION
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // 1. Strict Login Check
             if(!auth.currentUser || !loggedInUid) { 
                 showToast("Please login or sign up first to confirm booking!", "warning");
                 openAuthModal(); 
@@ -864,6 +884,7 @@
                 return; 
             }
 
+            // 2. Minimum Order Value Check (₹300)
             if(subtotal < 300) {
                 showToast(`Minimum order amount is ₹300. Please add ₹${300 - subtotal} more items.`, "error");
                 return;
