@@ -24,7 +24,6 @@
             --danger-color: #ef4444; --success-color: #10b981;
         }
         
-        /* STRICT NO-OVERFLOW FIX */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; max-width: 100vw; overflow-x: hidden; position: relative; }
         body, input, textarea, select, button { font-family: 'Outfit', sans-serif; }
@@ -47,11 +46,6 @@
         .custom-toast.error { border-left-color: var(--danger-color); }
         .custom-toast.warning { border-left-color: var(--brand-gold); }
         .custom-toast i { font-size: 18px; flex-shrink: 0; }
-        .custom-toast.success i { color: var(--success-color); }
-        .custom-toast.error i { color: var(--danger-color); }
-        .custom-toast.warning i { color: var(--brand-gold); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
 
         /* MAIN APP LAYOUT */
         .app-container { width: 100%; max-width: 1200px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
@@ -78,7 +72,7 @@
         .pill-tab { padding: 10px 18px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; flex-shrink: 0; box-shadow: var(--shadow-card); }
         .pill-tab.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25); }
 
-        /* ITEM CARDS (LIST VIEW FIX) */
+        /* ITEM CARDS (LIST VIEW) */
         .items-grid-container { display: none; width: 100%; }
         .items-grid-container.active { display: grid; grid-template-columns: 1fr; gap: 14px; animation: fadeIn 0.3s ease; width: 100%; }
         @media (min-width: 768px) { .items-grid-container.active { grid-template-columns: repeat(2, 1fr); } }
@@ -137,9 +131,7 @@
         .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--brand-primary); background: #fff; }
         
         .f-row-responsive { display: flex; gap: 12px; width: 100%; }
-
         .btn-gps { background: none; border: none; color: var(--brand-primary); font-size: 11px; cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
-
         .btn-submit-order { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--brand-primary); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3); transition: 0.3s; }
         .btn-submit-order:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
 
@@ -150,36 +142,44 @@
         .dock-total { font-size: 18px; font-weight: 800; color: var(--text-main); }
         .dock-btn { background: var(--brand-primary); color: #fff; border: none; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); }
 
-        /* POPUPS RESPONSIVE */
-        .auth-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(6px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 16px; }
+        /* AUTH MODAL */
+        .auth-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 16px; }
         .auth-overlay.active, .success-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
         .auth-box, .success-popup { background: #ffffff; border-radius: 20px; padding: 30px 20px; max-width: 380px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .close-auth { position: absolute; top: 16px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
         .auth-box h2, .success-popup h2 { color: var(--brand-primary); margin-bottom: 8px; font-weight: 800; font-size: 22px; }
         .auth-box p, .success-popup p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
-        
         .btn-google { width: 100%; background: #ffffff; color: var(--text-main); border: 1.5px solid var(--border-color); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; transition: 0.3s; }
         .btn-google:hover { border-color: var(--brand-primary); background: rgba(2, 132, 199, 0.05); }
         .btn-google img { width: 18px; height: 18px; }
-        
         .auth-divider { display: flex; align-items: center; text-align: center; margin: 16px 0; color: var(--text-muted); font-size: 12px; font-weight: 700; }
         .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1.5px solid var(--border-color); }
         .auth-divider:not(:empty)::before { margin-right: .5em; } .auth-divider:not(:empty)::after { margin-left: .5em; }
-
         .auth-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-size: 14px; outline: none; margin-bottom: 12px; text-align: center; }
         .btn-phone { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
         #recaptcha-container { display: flex; justify-content: center; margin-bottom: 12px; }
-
+        
         .success-icon { width: 70px; height: 70px; border-radius: 50%; background: #f0fdf4; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; color: #16a34a; border: 2px solid #bbf7d0; }
         .order-id-display { background: var(--bg-body); border: 1.5px dashed var(--border-color); border-radius: 14px; padding: 14px; margin: 16px 0; }
         .order-id-display .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; }
         .order-id-display .val { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
 
-        /* STRICT MOBILE BREAKPOINTS */
-        @media (max-width: 1024px) { 
-            .app-container { grid-template-columns: 1fr; gap: 20px; } 
-            .laundry-bag-cockpit { position: static; } 
-        }
+        /* MY PROFILE MODAL */
+        .profile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
+        .profile-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .profile-box { background: #ffffff; border-radius: 24px; padding: 35px; max-width: 420px; width: 100%; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .close-profile { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+        .profile-box h2 { color: var(--brand-primary); margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; font-size: 22px; }
+        .profile-group { margin-bottom: 15px; text-align: left; }
+        .profile-group label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; }
+        .profile-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-size: 14px; font-family: 'Outfit'; outline: none; transition: 0.2s; font-weight: 500; color: var(--text-main); }
+        .profile-input:focus { border-color: var(--brand-primary); background: #fff; }
+        .profile-input.readonly { background: #e2e8f0; color: var(--text-muted); cursor: not-allowed; }
+        .btn-save-profile { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; margin-top: 10px; font-family: 'Outfit'; }
+        .btn-save-profile:hover { box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); transform: translateY(-2px); }
+        .btn-logout { width: 100%; background: rgba(239, 68, 68, 0.08); color: var(--danger-color); border: 1.5px solid rgba(239, 68, 68, 0.2); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; margin-top: 15px; font-family: 'Outfit'; }
+        .btn-logout:hover { background: var(--danger-color); color: #fff; }
+
         @media (max-width: 600px) {
             .f-row-responsive { flex-direction: column; gap: 12px; }
             header { padding: 10px 16px; }
@@ -514,12 +514,12 @@
         <button class="dock-btn" onclick="document.getElementById('cockpitSection').scrollIntoView({behavior: 'smooth'})">View & Checkout</button>
     </div>
 
-    <!-- AUTH POPUP WITH VISIBLE RECAPTCHA -->
+    <!-- AUTHENTICATION MODAL -->
     <div class="auth-overlay" id="authModal">
         <div class="auth-box">
             <span class="close-auth" onclick="document.getElementById('authModal').classList.remove('active')">&times;</span>
-            <h2>Login Required</h2>
-            <p>Please login or sign up to confirm your booking.</p>
+            <h2>Welcome Back</h2>
+            <p>Login to book faster & track your orders securely.</p>
             
             <button class="btn-google" onclick="signInWithGoogle()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Continue with Google
@@ -551,7 +551,37 @@
         </div>
     </div>
 
+    <!-- MY PROFILE MODAL (NEW) -->
+    <div class="profile-overlay" id="profileModal">
+        <div class="profile-box">
+            <span class="close-profile" onclick="document.getElementById('profileModal').classList.remove('active')">&times;</span>
+            <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+            
+            <div class="profile-group">
+                <label>Full Name</label>
+                <input type="text" id="profName" class="profile-input readonly" readonly />
+            </div>
+            <div class="profile-group">
+                <label>Email (Google Login)</label>
+                <input type="text" id="profEmail" class="profile-input readonly" readonly />
+            </div>
+            <div class="profile-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="profPhone" class="profile-input" placeholder="Enter 10-digit number" pattern="[0-9]{10}" />
+            </div>
+            <div class="profile-group">
+                <label>Saved Address</label>
+                <textarea id="profAddress" class="profile-input" rows="2" placeholder="Enter your full pickup address"></textarea>
+            </div>
+
+            <button class="btn-save-profile" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+            <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout Securely</button>
+        </div>
+    </div>
+
     <script>
+        let loggedInUid = null;
+
         // CUSTOM TOAST NOTIFICATION SYSTEM
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
@@ -582,8 +612,6 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        
-        let loggedInUid = null;
         let confirmationResult;
         let activeDiscountPct = 0;
         let lastOrderCache = null;
@@ -594,20 +622,65 @@
             document.getElementById('promoBagCard').style.display = 'flex';
         }
 
+        // AUTH & PROFILE LOGIC
         function openAuthModal() {
-            if(auth.currentUser) {
-                auth.signOut().then(() => showToast("Logged out successfully", "info"));
-            } else {
-                document.getElementById('authModal').classList.add('active');
-                
-                // VISIBLE RECAPTCHA FIX
-                if(!window.recaptchaVerifier) {
-                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 
-                        'size': 'normal' 
-                    });
-                    window.recaptchaVerifier.render(); 
-                }
+            document.getElementById('authModal').classList.add('active');
+            if(!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'normal' });
+                window.recaptchaVerifier.render();
             }
+        }
+
+        function openProfileModal() {
+            const user = auth.currentUser;
+            if(!user) return;
+            
+            document.getElementById('profName').value = user.displayName || "User";
+            document.getElementById('profEmail').value = user.email || "Not Linked";
+            
+            db.ref('customers/' + user.uid).once('value').then(snap => {
+                if(snap.exists()) {
+                    const d = snap.val();
+                    document.getElementById('profPhone').value = d.phone || (user.phoneNumber ? user.phoneNumber.replace('+91', '') : "");
+                    document.getElementById('profAddress').value = d.address || "";
+                } else {
+                    document.getElementById('profPhone').value = user.phoneNumber ? user.phoneNumber.replace('+91', '') : "";
+                    document.getElementById('profAddress').value = "";
+                }
+            });
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function saveProfile() {
+            const user = auth.currentUser;
+            if(!user) return;
+            const phone = document.getElementById('profPhone').value;
+            const address = document.getElementById('profAddress').value;
+            const name = document.getElementById('profName').value;
+            
+            db.ref('customers/' + user.uid).update({ name: name, phone: phone, address: address }).then(() => {
+                showToast("Profile updated successfully!", "success");
+                document.getElementById('profileModal').classList.remove('active');
+                
+                // AUTO FILL BOOKING FORM IF PRESENT
+                if(document.getElementById('custPhone')) {
+                    document.getElementById('custPhone').value = phone;
+                    document.getElementById('custAddress').value = address;
+                }
+            }).catch(err => { showToast("Error updating profile.", "error"); });
+        }
+
+        function logoutUser() {
+            auth.signOut().then(() => {
+                document.getElementById('profileModal').classList.remove('active');
+                showToast("Logged out securely", "info");
+                // CLEAR BOOKING FORM
+                if(document.getElementById('custName')) {
+                    document.getElementById('custName').value = "";
+                    document.getElementById('custPhone').value = "";
+                    document.getElementById('custAddress').value = "";
+                }
+            });
         }
 
         auth.onAuthStateChanged((user) => {
@@ -615,18 +688,18 @@
             if (user) {
                 loggedInUid = user.uid;
                 document.getElementById('authModal').classList.remove('active');
-                if(loginBtn) {
-                    let name = user.displayName || user.phoneNumber || "User";
-                    loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${name.split(" ")[0]}</span>`;
-                    loginBtn.style.background = "var(--brand-primary)";
-                    loginBtn.style.color = "#fff";
-                }
+                let displayName = user.displayName || user.phoneNumber || "User";
+                loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> Hi, ${displayName.split(" ")[0]}`;
+                loginBtn.style.background = "var(--brand-primary)";
+                loginBtn.style.color = "#fff";
+                loginBtn.onclick = openProfileModal; // Replaces previous logout alert
+                
                 db.ref('customers/' + user.uid).once('value').then(snap => {
                     if(snap.exists()) {
                         const d = snap.val();
                         if(d.address) {
-                            document.getElementById('custName').value = d.name || "";
-                            document.getElementById('custPhone').value = d.phone || "";
+                            document.getElementById('custName').value = d.name || user.displayName || "";
+                            document.getElementById('custPhone').value = d.phone || (user.phoneNumber ? user.phoneNumber.replace('+91','') : "");
                             document.getElementById('custAddress').value = d.address || "";
                         }
                         if(d.lastOrderId) {
@@ -638,49 +711,43 @@
                             });
                         }
                     } else {
-                        if(user.displayName) document.getElementById('custName').value = user.displayName;
-                        if(user.phoneNumber) document.getElementById('custPhone').value = user.phoneNumber.replace('+91', '');
+                        document.getElementById('custName').value = user.displayName || "";
+                        document.getElementById('custPhone').value = user.phoneNumber ? user.phoneNumber.replace('+91', '') : "";
                     }
                 });
             } else {
                 loggedInUid = null;
-                if(loginBtn) {
-                    loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
-                    loginBtn.style.background = "rgba(2, 132, 199, 0.08)";
-                    loginBtn.style.color = "var(--brand-primary)";
-                }
+                loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login / Sign Up`;
+                loginBtn.style.background = "rgba(14, 165, 233, 0.08)";
+                loginBtn.style.color = "var(--brand-primary)";
+                loginBtn.onclick = openAuthModal;
                 document.getElementById('repeatCard').style.display = 'none';
             }
         });
 
         function signInWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(() => {
-                showToast("Logged in with Google!", "success");
-            }).catch((error) => { showToast("Google Login Failed: " + error.message, "error"); });
+            auth.signInWithPopup(provider).catch((error) => { showToast("Google Login Failed: " + error.message, "error"); });
         }
 
         function sendOTP() {
-            const num = document.getElementById('phoneInput').value;
-            if(num.length !== 10) { showToast("Enter valid 10-digit number", "warning"); return; }
-            
+            const number = document.getElementById('phoneInput').value;
+            if(number.length !== 10) { showToast("Enter a valid 10-digit number", "warning"); return; }
+            const phoneNumber = "+91" + number;
+            const appVerifier = window.recaptchaVerifier;
             document.getElementById('sendOtpBtn').innerText = "Sending...";
             
-            // EXACT ERROR LOGGING ADDED HERE
-            auth.signInWithPhoneNumber("+91" + num, window.recaptchaVerifier)
-                .then((res) => {
-                    confirmationResult = res;
+            auth.signInWithPhoneNumber(phoneNumber, appVerifier)
+                .then((result) => {
+                    confirmationResult = result;
                     document.getElementById('phoneAuthSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
-                    showToast("OTP sent to your mobile number", "success");
-                }).catch((error) => { 
-                    showToast("OTP Error: " + error.message, "error"); 
-                    document.getElementById('sendOtpBtn').innerText = "Send OTP"; 
-                    
+                    showToast("OTP sent to your mobile!", "success");
+                }).catch((error) => {
+                    showToast("OTP Error: " + error.message, "error");
+                    document.getElementById('sendOtpBtn').innerText = "Send OTP";
                     if(window.recaptchaVerifier) {
-                        window.recaptchaVerifier.render().then(function(widgetId) {
-                          grecaptcha.reset(widgetId);
-                        });
+                        window.recaptchaVerifier.render().then(function(widgetId) { grecaptcha.reset(widgetId); });
                     }
                 });
         }
@@ -692,8 +759,9 @@
             
             confirmationResult.confirm(code).then(() => {
                 showToast("Phone verified successfully!", "success");
-            }).catch(() => {
-                showToast("Invalid OTP entered", "error");
+                document.getElementById('authModal').classList.remove('active');
+            }).catch((error) => {
+                showToast("Invalid OTP: " + error.message, "error");
                 document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-check-circle"></i> Verify OTP`;
             });
         }
@@ -744,7 +812,6 @@
             });
         });
 
-        // CART SAVE & RESTORE LOGIC
         function saveCartState() {
             const cartData = {};
             document.querySelectorAll('.item-tile').forEach(tile => {
@@ -859,11 +926,9 @@
             } else { document.getElementById('mobileDock').classList.remove('visible'); }
         }
 
-        // BOOKING SUBMIT - STRICT LOGIN & ₹300 VALIDATION
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // 1. Strict Login Check
             if(!auth.currentUser || !loggedInUid) { 
                 showToast("Please login or sign up first to confirm booking!", "warning");
                 openAuthModal(); 
@@ -884,7 +949,6 @@
                 return; 
             }
 
-            // 2. Minimum Order Value Check (₹300)
             if(subtotal < 300) {
                 showToast(`Minimum order amount is ₹300. Please add ₹${300 - subtotal} more items.`, "error");
                 return;
@@ -943,7 +1007,6 @@
             }
         });
 
-        // Initialize restored cart
         restoreCartState();
         updatePriceSummary();
     </script>
