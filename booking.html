@@ -24,6 +24,7 @@
             --danger-color: #ef4444; --success-color: #10b981;
         }
         
+        /* STRICT NO-OVERFLOW FIX */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; max-width: 100vw; overflow-x: hidden; position: relative; }
         body, input, textarea, select, button { font-family: 'Outfit', sans-serif; }
@@ -36,6 +37,11 @@
         .brand-name { font-size: 18px; font-weight: 800; color: var(--brand-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        
+        /* PREMIUM INSTALL BUTTON */
+        .btn-install { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 13px; border: none; cursor: pointer; display: none; align-items: center; gap: 6px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); transition: 0.3s; font-family: 'Outfit'; }
+        .btn-install:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+        
         .back-btn, .btn-login { text-decoration: none; color: var(--brand-primary); font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; background: rgba(2, 132, 199, 0.08); padding: 8px 14px; border-radius: 10px; transition: 0.3s; border: none; cursor: pointer; white-space: nowrap; }
         .back-btn:hover, .btn-login:hover { background: var(--brand-primary); color: #fff; }
 
@@ -46,6 +52,8 @@
         .custom-toast.error { border-left-color: var(--danger-color); }
         .custom-toast.warning { border-left-color: var(--brand-gold); }
         .custom-toast i { font-size: 18px; flex-shrink: 0; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
 
         /* MAIN APP LAYOUT */
         .app-container { width: 100%; max-width: 1200px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 400px; gap: 24px; align-items: start; }
@@ -72,28 +80,33 @@
         .pill-tab { padding: 10px 18px; background: #fff; border: 1.5px solid var(--border-color); border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; flex-shrink: 0; box-shadow: var(--shadow-card); }
         .pill-tab.active { background: var(--brand-primary); color: #fff; border-color: var(--brand-primary); box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25); }
 
-        /* ITEM CARDS (LIST VIEW) */
+        /* 🔥 ORIGINAL GRID BOX STYLE RESTORED 🔥 */
         .items-grid-container { display: none; width: 100%; }
-        .items-grid-container.active { display: grid; grid-template-columns: 1fr; gap: 14px; animation: fadeIn 0.3s ease; width: 100%; }
-        @media (min-width: 768px) { .items-grid-container.active { grid-template-columns: repeat(2, 1fr); } }
+        .items-grid-container.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; animation: fadeIn 0.3s ease; width: 100%; }
         @keyframes fadeIn { from{opacity:0; transform: translateY(6px);} to{opacity:1; transform: translateY(0);} }
 
-        .item-tile { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 18px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; box-shadow: var(--shadow-card); width: 100%; gap: 12px; }
-        .item-tile:hover { border-color: var(--brand-primary); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .item-tile { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; box-shadow: var(--shadow-card); min-width: 0; overflow: hidden; width: 100%; }
+        .item-tile:hover { border-color: var(--brand-primary); }
         
-        .item-left { display: flex; align-items: center; gap: 14px; flex-grow: 1; min-width: 0; }
-        .tile-icon { width: 44px; height: 44px; background: rgba(2, 132, 199, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); font-size: 18px; flex-shrink: 0; }
-        .item-details { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
-        .tile-name { font-size: 15px; font-weight: 800; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .tile-meta { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
-        .tile-price { font-size: 13px; font-weight: 800; color: var(--brand-primary); background: rgba(2, 132, 199, 0.06); padding: 2px 8px; border-radius: 6px; }
+        .tile-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; width: 100%; }
+        .tile-icon { width: 38px; height: 38px; background: rgba(2, 132, 199, 0.08); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); font-size: 16px; flex-shrink: 0; }
+        .tile-price { font-size: 12px; font-weight: 800; color: var(--brand-primary); background: rgba(2, 132, 199, 0.06); padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+        .tile-name { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; word-break: break-word; min-width: 0; }
+        
+        .tile-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; gap: 4px; width: 100%; }
+        .tile-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; min-width: 0; }
 
-        .item-right { flex-shrink: 0; }
-        .qty-pill { display: flex; align-items: center; background: #fff; border: 1.5px solid var(--border-color); border-radius: 10px; height: 38px; width: 95px; justify-content: space-between; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: 0.2s; }
-        .item-tile:hover .qty-pill { border-color: var(--brand-primary); }
-        .qty-btn { width: 32px; height: 100%; background: rgba(2, 132, 199, 0.05); border: none; color: var(--brand-primary); font-size: 14px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .qty-pill { display: flex; align-items: center; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 50px; padding: 2px; flex-shrink: 0; }
+        .qty-btn { width: 26px; height: 26px; border-radius: 50%; border: none; background: #fff; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.06); transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .qty-btn:hover { background: var(--brand-primary); color: #fff; }
-        .qty-display { font-size: 14px; font-weight: 800; color: var(--text-main); text-align: center; flex-grow: 1; }
+        .qty-display { font-size: 13px; font-weight: 800; min-width: 20px; text-align: center; }
+
+        @media (max-width: 600px) {
+            .items-grid-container.active { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .item-tile { padding: 12px; }
+            .tile-bottom { flex-direction: column; align-items: stretch; gap: 10px; padding-top: 12px; }
+            .qty-pill { width: 100%; justify-content: space-between; padding: 4px 8px; }
+        }
 
         /* CHECKOUT COCKPIT */
         .laundry-bag-cockpit { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-card); border: 1.5px solid var(--border-color); position: sticky; top: 80px; width: 100%; }
@@ -131,7 +144,9 @@
         .f-input:focus, .f-select:focus, .f-textarea:focus { border-color: var(--brand-primary); background: #fff; }
         
         .f-row-responsive { display: flex; gap: 12px; width: 100%; }
+
         .btn-gps { background: none; border: none; color: var(--brand-primary); font-size: 11px; cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+
         .btn-submit-order { width: 100%; padding: 16px; border-radius: 14px; border: none; background: var(--brand-primary); color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3); transition: 0.3s; }
         .btn-submit-order:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
 
@@ -142,49 +157,74 @@
         .dock-total { font-size: 18px; font-weight: 800; color: var(--text-main); }
         .dock-btn { background: var(--brand-primary); color: #fff; border: none; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); }
 
-        /* AUTH MODAL */
-        .auth-overlay, .success-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 16px; }
-        .auth-overlay.active, .success-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .auth-box, .success-popup { background: #ffffff; border-radius: 20px; padding: 30px 20px; max-width: 380px; width: 100%; position: relative; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .close-auth { position: absolute; top: 16px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
-        .auth-box h2, .success-popup h2 { color: var(--brand-primary); margin-bottom: 8px; font-weight: 800; font-size: 22px; }
+        /* GLASSMORPHISM POPUPS & SAFE CLOSE BUTTONS */
+        .auth-overlay, .success-overlay, .profile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 16px; }
+        .auth-overlay.active, .success-overlay.active, .profile-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .auth-box, .success-popup, .profile-box { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px 20px; max-width: 380px; width: 100%; position: relative; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.4); max-height: 90vh; overflow-y: auto; }
+        .close-modal-btn { position: absolute; top: 16px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 26px; cursor: pointer; transition: 0.2s; }
+        .close-modal-btn:hover { color: var(--danger-color); transform: scale(1.1); }
+        
+        .auth-box h2, .success-popup h2, .profile-box h2 { color: var(--brand-primary); margin-bottom: 8px; font-weight: 800; font-size: 22px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .auth-box p, .success-popup p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
-        .btn-google { width: 100%; background: #ffffff; color: var(--text-main); border: 1.5px solid var(--border-color); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; transition: 0.3s; }
+        
+        .btn-google { width: 100%; background: #ffffff; color: var(--text-main); border: 1.5px solid var(--border-color); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; transition: 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .btn-google:hover { border-color: var(--brand-primary); background: rgba(2, 132, 199, 0.05); }
         .btn-google img { width: 18px; height: 18px; }
+        
         .auth-divider { display: flex; align-items: center; text-align: center; margin: 16px 0; color: var(--text-muted); font-size: 12px; font-weight: 700; }
         .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-bottom: 1.5px solid var(--border-color); }
         .auth-divider:not(:empty)::before { margin-right: .5em; } .auth-divider:not(:empty)::after { margin-left: .5em; }
-        .auth-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-size: 14px; outline: none; margin-bottom: 12px; text-align: center; }
-        .btn-phone { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-        #recaptcha-container { display: flex; justify-content: center; margin-bottom: 12px; }
+
+        /* OTP UI FIX */
+        .auth-input, .profile-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); font-size: 14px; outline: none; margin-bottom: 12px; font-family: 'Outfit'; background: #f8fafc; transition: 0.2s; }
+        .auth-input:focus, .profile-input:focus { border-color: var(--brand-primary); background: #ffffff; box-shadow: 0 0 0 4px rgba(2,132,199,0.1); }
+        .auth-input { text-align: center; font-weight: 600; letter-spacing: 2px; }
+        #otpInput { letter-spacing: 4px; font-weight: 800; font-size: 20px; }
+
+        .btn-primary-full { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Outfit'; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3); transition: 0.3s; }
+        .btn-primary-full:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4); }
         
+        #recaptcha-container { display: flex; justify-content: center; margin-bottom: 12px; }
+
         .success-icon { width: 70px; height: 70px; border-radius: 50%; background: #f0fdf4; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; color: #16a34a; border: 2px solid #bbf7d0; }
-        .order-id-display { background: var(--bg-body); border: 1.5px dashed var(--border-color); border-radius: 14px; padding: 14px; margin: 16px 0; }
+        .order-id-display { background: rgba(248, 250, 252, 0.6); border: 1.5px dashed var(--border-color); border-radius: 14px; padding: 14px; margin: 16px 0; }
         .order-id-display .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; }
         .order-id-display .val { font-size: 22px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
 
-        /* MY PROFILE MODAL */
-        .profile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 10001; padding: 20px; }
-        .profile-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
-        .profile-box { background: #ffffff; border-radius: 24px; padding: 35px; max-width: 420px; width: 100%; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
-        .close-profile { position: absolute; top: 15px; right: 20px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
-        .profile-box h2 { color: var(--brand-primary); margin-bottom: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; font-size: 22px; }
-        .profile-group { margin-bottom: 15px; text-align: left; }
-        .profile-group label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; }
-        .profile-input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border-color); background: var(--bg-body); font-size: 14px; font-family: 'Outfit'; outline: none; transition: 0.2s; font-weight: 500; color: var(--text-main); }
-        .profile-input:focus { border-color: var(--brand-primary); background: #fff; }
-        .profile-input.readonly { background: #e2e8f0; color: var(--text-muted); cursor: not-allowed; }
-        .btn-save-profile { width: 100%; background: var(--brand-primary); color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; margin-top: 10px; font-family: 'Outfit'; }
-        .btn-save-profile:hover { box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); transform: translateY(-2px); }
-        .btn-logout { width: 100%; background: rgba(239, 68, 68, 0.08); color: var(--danger-color); border: 1.5px solid rgba(239, 68, 68, 0.2); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; margin-top: 15px; font-family: 'Outfit'; }
-        .btn-logout:hover { background: var(--danger-color); color: #fff; }
+        /* PROFILE TABS & ORDER HISTORY */
+        .profile-tabs { display: flex; gap: 8px; margin-bottom: 24px; background: #f1f5f9; padding: 6px; border-radius: 14px; }
+        .ptab { flex: 1; background: transparent; border: none; padding: 10px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 10px; transition: 0.3s; font-family: 'Outfit'; }
+        .ptab.active { background: #ffffff; color: var(--brand-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        
+        .p-content { display: none; text-align: left; }
+        .p-content.active { display: block; animation: fadeIn 0.3s; }
+        
+        .profile-group { margin-bottom: 16px; text-align: left; }
+        .profile-group label { display: block; font-size: 11px; font-weight: 800; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .profile-input.readonly { background: #e2e8f0; color: var(--text-muted); cursor: not-allowed; border-color: #cbd5e1; }
+        
+        .btn-logout { width: 100%; background: #fef2f2; color: var(--danger-color); border: 1px solid #fca5a5; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Outfit'; transition: 0.2s; }
+        .btn-logout:hover { background: var(--danger-color); color: #fff; border-color: var(--danger-color); }
+        
+        /* INVOICE BUTTON IN TRACKING & HISTORY */
+        .btn-invoice { background: rgba(13, 148, 136, 0.1); color: var(--brand-secondary); border: 1.5px solid rgba(13, 148, 136, 0.3); padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; transition: 0.2s; font-family: 'Outfit'; width: 100%; justify-content: center; }
+        .btn-invoice:hover { background: var(--brand-secondary); color: #fff; }
+        
+        .hist-card { background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .hist-card h4 { font-size: 15px; color: var(--text-main); display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 800; }
+        .hist-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
 
+        /* STRICT MOBILE BREAKPOINTS */
+        @media (max-width: 1024px) { 
+            .app-container { grid-template-columns: 1fr; gap: 20px; } 
+            .laundry-bag-cockpit { position: static; } 
+        }
         @media (max-width: 600px) {
             .f-row-responsive { flex-direction: column; gap: 12px; }
             header { padding: 10px 16px; }
             .brand-name { font-size: 16px; }
             .back-btn, .btn-login { padding: 6px 12px; font-size: 12px; }
+            .auth-box, .success-popup, .profile-box { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -195,7 +235,9 @@
     <header>
         <a href="index.html" class="logo"><img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Logo" /><span class="brand-name">Parth Dry Clean</span></a>
         <div class="header-actions">
-            <button class="btn-login" id="loginBtn" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> <span>Login</span></button>
+            <!-- [FIXED] Premium Install App Button -->
+            <button type="button" class="btn-install installAppBtn"><i class="fas fa-download"></i> Install App</button>
+            <button class="btn-login" id="loginBtn" onclick="openModal('authModal')"><i class="fas fa-sign-in-alt"></i> <span>Login</span></button>
             <a href="index.html" class="back-btn"><i class="fas fa-home"></i> <span>Home</span></a>
         </div>
     </header>
@@ -452,12 +494,13 @@
 
             <div id="bagItemsSummary"></div>
 
+            <!-- [FIXED] EXPRESS CARD: Positive text without scaring customer -->
             <label class="express-card" for="expressToggle">
                 <div class="express-info">
                     <i class="fas fa-bolt"></i>
                     <div>
-                        <strong>Express 24-Hr Delivery</strong>
-                        <span>Priority cleaning (+90% Extra)</span>
+                        <strong>Priority 24-Hr Express 🚀</strong>
+                        <span>(Nominal fee for fast-track processing)</span>
                     </div>
                 </div>
                 <input type="checkbox" id="expressToggle" class="express-checkbox" onchange="updatePriceSummary()">
@@ -514,14 +557,14 @@
         <button class="dock-btn" onclick="document.getElementById('cockpitSection').scrollIntoView({behavior: 'smooth'})">View & Checkout</button>
     </div>
 
-    <!-- AUTHENTICATION MODAL -->
+    <!-- [FIXED] AUTH POPUP -->
     <div class="auth-overlay" id="authModal">
         <div class="auth-box">
-            <span class="close-auth" onclick="document.getElementById('authModal').classList.remove('active')">&times;</span>
-            <h2>Welcome Back</h2>
-            <p>Login to book faster & track your orders securely.</p>
+            <button type="button" class="close-modal-btn" onclick="closeModal('authModal')">&times;</button>
+            <h2 style="color:var(--brand-primary);"><i class="fas fa-user-shield"></i> Login Required</h2>
+            <p style="font-size:13px; margin-bottom:24px;">Please login or sign up to confirm your booking.</p>
             
-            <button class="btn-google" onclick="signInWithGoogle()">
+            <button type="button" class="btn-google" onclick="signInWithGoogle()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G"> Continue with Google
             </button>
             
@@ -530,59 +573,106 @@
             <div id="phoneAuthSection">
                 <div id="recaptcha-container"></div>
                 <input type="tel" id="phoneInput" class="auth-input" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}">
-                <button class="btn-phone" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                <button type="button" class="btn-primary-full" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
             </div>
 
             <div id="otpSection" style="display: none;">
-                <input type="number" id="otpInput" class="auth-input" placeholder="Enter 6-digit OTP">
-                <button class="btn-phone" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify OTP</button>
+                <input type="number" id="otpInput" class="auth-input" id="otpInputBox" placeholder="Enter 6-digit OTP">
+                <button type="button" class="btn-primary-full" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify OTP</button>
             </div>
         </div>
     </div>
 
-    <!-- SUCCESS POPUP -->
+    <!-- [FIXED] SUCCESS POPUP -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-popup">
+            <button type="button" class="close-modal-btn" onclick="closeModal('successOverlay')">&times;</button>
             <div class="success-icon"><i class="fas fa-check"></i></div>
-            <h2>Order Booked!</h2>
-            <p>Our valet will pick up your laundry at the scheduled time.</p>
+            <h2 style="color:#166534;">Order Booked!</h2>
+            <p style="font-size:13px;">Our valet will pick up your laundry at the scheduled time.</p>
             <div class="order-id-display"><div class="lbl">ORDER ID</div><div class="val" id="successOrderId">PDC-XXXX</div></div>
-            <a href="index.html" class="btn-submit-order" style="text-decoration: none;">Track Order on Home</a>
+            <a href="index.html" class="btn-primary-full" style="text-decoration: none;">Track Order on Home</a>
         </div>
     </div>
 
-    <!-- MY PROFILE MODAL (NEW) -->
+    <!-- [FIXED] MY PROFILE MODAL -->
     <div class="profile-overlay" id="profileModal">
         <div class="profile-box">
-            <span class="close-profile" onclick="document.getElementById('profileModal').classList.remove('active')">&times;</span>
-            <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+            <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')">&times;</button>
+            <h2 style="color:var(--text-main); font-size:20px; display:flex; align-items:center; gap:8px;"><i class="fas fa-user-circle" style="color:var(--brand-primary);"></i> My Account</h2>
             
-            <div class="profile-group">
-                <label>Full Name</label>
-                <input type="text" id="profName" class="profile-input readonly" readonly />
-            </div>
-            <div class="profile-group">
-                <label>Email (Google Login)</label>
-                <input type="text" id="profEmail" class="profile-input readonly" readonly />
-            </div>
-            <div class="profile-group">
-                <label>Mobile Number</label>
-                <input type="tel" id="profPhone" class="profile-input" placeholder="Enter 10-digit number" pattern="[0-9]{10}" />
-            </div>
-            <div class="profile-group">
-                <label>Saved Address</label>
-                <textarea id="profAddress" class="profile-input" rows="2" placeholder="Enter your full pickup address"></textarea>
+            <div class="profile-tabs">
+                <button type="button" class="ptab active" onclick="switchPTab('details')">My Details</button>
+                <button type="button" class="ptab" onclick="switchPTab('history'); loadOrderHistory();">Order History</button>
             </div>
 
-            <button class="btn-save-profile" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
-            <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout Securely</button>
+            <div id="p-details" class="p-content active">
+                <div class="profile-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profName" class="profile-input readonly" readonly />
+                </div>
+                <div class="profile-group">
+                    <label>Email (Google Login)</label>
+                    <input type="text" id="profEmail" class="profile-input readonly" readonly />
+                </div>
+                <div class="profile-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="profPhone" class="profile-input" placeholder="Enter 10-digit number" pattern="[0-9]{10}" />
+                </div>
+                <div class="profile-group">
+                    <label>Saved Address</label>
+                    <textarea id="profAddress" class="profile-input" rows="2" placeholder="Enter your full pickup address"></textarea>
+                </div>
+
+                <button type="button" class="btn-primary-full" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+                <button type="button" class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout Securely</button>
+            </div>
+
+            <div id="p-history" class="p-content" style="max-height: 350px; overflow-y: auto;">
+                <div id="orderHistoryList"><p style="text-align:center; font-size:13px; color:var(--text-muted); padding:20px 0;"><i class="fas fa-spinner fa-spin"></i> Loading orders...</p></div>
+            </div>
         </div>
     </div>
 
+    <!-- JAVASCRIPT -->
     <script>
         let loggedInUid = null;
+        
+        // SAFE MODAL TOGGLERS
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            if(id === 'authModal' && !window.recaptchaVerifier) {
+                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'normal' });
+                window.recaptchaVerifier.render();
+            }
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // CUSTOM TOAST NOTIFICATION SYSTEM
+        // PWA SETUP
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); deferredPrompt = e;
+            document.querySelectorAll('.installAppBtn').forEach(btn => btn.style.display = 'inline-flex');
+        });
+        document.querySelectorAll('.installAppBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.querySelectorAll('.installAppBtn').forEach(b => b.style.display = 'none'); });
+                }
+            });
+        });
+
+        const manifestContent = {
+            "name": "Parth Dry Clean", "short_name": "Parth Dry", "start_url": ".", "display": "standalone",
+            "background_color": "#f1f5f9", "theme_color": "#0ea5e9",
+            "icons": [{"src": "https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png", "sizes": "192x192", "type": "image/png"}]
+        };
+        const blob = new Blob([JSON.stringify(manifestContent)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
+
+        // CUSTOM TOAST SYSTEM
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -612,6 +702,7 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        
         let confirmationResult;
         let activeDiscountPct = 0;
         let lastOrderCache = null;
@@ -622,33 +713,61 @@
             document.getElementById('promoBagCard').style.display = 'flex';
         }
 
-        // AUTH & PROFILE LOGIC
-        function openAuthModal() {
-            document.getElementById('authModal').classList.add('active');
-            if(!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'normal' });
-                window.recaptchaVerifier.render();
-            }
-        }
-
-        function openProfileModal() {
-            const user = auth.currentUser;
-            if(!user) return;
-            
-            document.getElementById('profName').value = user.displayName || "User";
-            document.getElementById('profEmail').value = user.email || "Not Linked";
-            
-            db.ref('customers/' + user.uid).once('value').then(snap => {
-                if(snap.exists()) {
-                    const d = snap.val();
-                    document.getElementById('profPhone').value = d.phone || (user.phoneNumber ? user.phoneNumber.replace('+91', '') : "");
-                    document.getElementById('profAddress').value = d.address || "";
-                } else {
-                    document.getElementById('profPhone').value = user.phoneNumber ? user.phoneNumber.replace('+91', '') : "";
-                    document.getElementById('profAddress').value = "";
+        auth.onAuthStateChanged((user) => {
+            const loginBtn = document.getElementById('loginBtn');
+            if (user) {
+                loggedInUid = user.uid;
+                closeModal('authModal');
+                if(loginBtn) {
+                    let name = user.displayName || user.phoneNumber || "User";
+                    loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${name.split(" ")[0]}</span>`;
+                    loginBtn.style.background = "var(--brand-primary)";
+                    loginBtn.style.color = "#fff";
+                    loginBtn.onclick = () => openModal('profileModal');
                 }
-            });
-            document.getElementById('profileModal').classList.add('active');
+                db.ref('customers/' + user.uid).once('value').then(snap => {
+                    if(snap.exists()) {
+                        const d = snap.val();
+                        document.getElementById('profName').value = d.name || user.displayName || "";
+                        document.getElementById('profEmail').value = user.email || "Not Linked";
+                        if(d.address) {
+                            document.getElementById('custName').value = d.name || "";
+                            document.getElementById('custPhone').value = d.phone || "";
+                            document.getElementById('custAddress').value = d.address || "";
+                            document.getElementById('profPhone').value = d.phone || "";
+                            document.getElementById('profAddress').value = d.address || "";
+                        }
+                        if(d.lastOrderId) {
+                            db.ref('orders/' + d.lastOrderId).once('value').then(orderSnap => {
+                                if(orderSnap.exists()) {
+                                    lastOrderCache = orderSnap.val().items;
+                                    document.getElementById('repeatCard').style.display = 'flex';
+                                }
+                            });
+                        }
+                    } else {
+                        if(user.displayName) document.getElementById('custName').value = user.displayName;
+                        if(user.phoneNumber) document.getElementById('custPhone').value = user.phoneNumber.replace('+91', '');
+                    }
+                });
+            } else {
+                loggedInUid = null;
+                if(loginBtn) {
+                    loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
+                    loginBtn.style.background = "rgba(2, 132, 199, 0.08)";
+                    loginBtn.style.color = "var(--brand-primary)";
+                    loginBtn.onclick = () => openModal('authModal');
+                }
+                document.getElementById('repeatCard').style.display = 'none';
+            }
+        });
+
+        // PROFILE TABS
+        function switchPTab(tab) {
+            document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+            document.querySelectorAll('.p-content').forEach(c=>c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('p-'+tab).classList.add('active');
         }
 
         function saveProfile() {
@@ -660,110 +779,45 @@
             
             db.ref('customers/' + user.uid).update({ name: name, phone: phone, address: address }).then(() => {
                 showToast("Profile updated successfully!", "success");
-                document.getElementById('profileModal').classList.remove('active');
-                
-                // AUTO FILL BOOKING FORM IF PRESENT
-                if(document.getElementById('custPhone')) {
-                    document.getElementById('custPhone').value = phone;
-                    document.getElementById('custAddress').value = address;
-                }
+                closeModal('profileModal');
             }).catch(err => { showToast("Error updating profile.", "error"); });
         }
 
         function logoutUser() {
             auth.signOut().then(() => {
-                document.getElementById('profileModal').classList.remove('active');
+                closeModal('profileModal');
                 showToast("Logged out securely", "info");
-                // CLEAR BOOKING FORM
-                if(document.getElementById('custName')) {
-                    document.getElementById('custName').value = "";
-                    document.getElementById('custPhone').value = "";
-                    document.getElementById('custAddress').value = "";
-                }
             });
         }
 
-        auth.onAuthStateChanged((user) => {
-            const loginBtn = document.getElementById('loginBtn');
-            if (user) {
-                loggedInUid = user.uid;
-                document.getElementById('authModal').classList.remove('active');
-                let displayName = user.displayName || user.phoneNumber || "User";
-                loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> Hi, ${displayName.split(" ")[0]}`;
-                loginBtn.style.background = "var(--brand-primary)";
-                loginBtn.style.color = "#fff";
-                loginBtn.onclick = openProfileModal; // Replaces previous logout alert
-                
-                db.ref('customers/' + user.uid).once('value').then(snap => {
-                    if(snap.exists()) {
-                        const d = snap.val();
-                        if(d.address) {
-                            document.getElementById('custName').value = d.name || user.displayName || "";
-                            document.getElementById('custPhone').value = d.phone || (user.phoneNumber ? user.phoneNumber.replace('+91','') : "");
-                            document.getElementById('custAddress').value = d.address || "";
-                        }
-                        if(d.lastOrderId) {
-                            db.ref('orders/' + d.lastOrderId).once('value').then(orderSnap => {
-                                if(orderSnap.exists()) {
-                                    lastOrderCache = orderSnap.val().items;
-                                    document.getElementById('repeatCard').style.display = 'flex';
-                                }
-                            });
-                        }
-                    } else {
-                        document.getElementById('custName').value = user.displayName || "";
-                        document.getElementById('custPhone').value = user.phoneNumber ? user.phoneNumber.replace('+91', '') : "";
-                    }
-                });
-            } else {
-                loggedInUid = null;
-                loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login / Sign Up`;
-                loginBtn.style.background = "rgba(14, 165, 233, 0.08)";
-                loginBtn.style.color = "var(--brand-primary)";
-                loginBtn.onclick = openAuthModal;
-                document.getElementById('repeatCard').style.display = 'none';
-            }
-        });
-
         function signInWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch((error) => { showToast("Google Login Failed: " + error.message, "error"); });
+            auth.signInWithPopup(provider).then(() => {
+                showToast("Logged in with Google!", "success");
+            }).catch((error) => { showToast("Google Login Failed: " + error.message, "error"); });
         }
 
         function sendOTP() {
-            const number = document.getElementById('phoneInput').value;
-            if(number.length !== 10) { showToast("Enter a valid 10-digit number", "warning"); return; }
-            const phoneNumber = "+91" + number;
-            const appVerifier = window.recaptchaVerifier;
-            document.getElementById('sendOtpBtn').innerText = "Sending...";
-            
-            auth.signInWithPhoneNumber(phoneNumber, appVerifier)
-                .then((result) => {
-                    confirmationResult = result;
+            const num = document.getElementById('phoneInput').value;
+            if(num.length !== 10) { showToast("Enter valid 10-digit number", "warning"); return; }
+            document.getElementById('sendOtpBtn').innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sending...`;
+            auth.signInWithPhoneNumber("+91" + num, window.recaptchaVerifier)
+                .then((res) => {
+                    confirmationResult = res;
                     document.getElementById('phoneAuthSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
-                    showToast("OTP sent to your mobile!", "success");
-                }).catch((error) => {
-                    showToast("OTP Error: " + error.message, "error");
-                    document.getElementById('sendOtpBtn').innerText = "Send OTP";
-                    if(window.recaptchaVerifier) {
-                        window.recaptchaVerifier.render().then(function(widgetId) { grecaptcha.reset(widgetId); });
-                    }
-                });
+                    showToast("OTP sent to your mobile number", "success");
+                }).catch(() => { showToast("Error sending OTP. Check Firebase region.", "error"); document.getElementById('sendOtpBtn').innerHTML = `<i class="fas fa-paper-plane"></i> Send OTP`; });
         }
 
         function verifyOTP() {
             const code = document.getElementById('otpInput').value;
             if(code.length !== 6) { showToast("Enter 6-digit OTP", "warning"); return; }
-            document.getElementById('verifyOtpBtn').innerText = "Verifying...";
-            
+            document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-spinner fa-spin"></i> Verifying...`;
             confirmationResult.confirm(code).then(() => {
                 showToast("Phone verified successfully!", "success");
-                document.getElementById('authModal').classList.remove('active');
-            }).catch((error) => {
-                showToast("Invalid OTP: " + error.message, "error");
-                document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-check-circle"></i> Verify OTP`;
-            });
+                closeModal('authModal');
+            }).catch(() => { showToast("Invalid OTP entered", "error"); document.getElementById('verifyOtpBtn').innerHTML = `<i class="fas fa-check-circle"></i> Verify OTP`; });
         }
 
         function getCurrentLocation() {
@@ -812,6 +866,7 @@
             });
         });
 
+        // CART SAVE & RESTORE LOGIC
         function saveCartState() {
             const cartData = {};
             document.querySelectorAll('.item-tile').forEach(tile => {
@@ -875,6 +930,7 @@
             document.getElementById('estDeliveryBox').style.display = 'flex';
         }
 
+        // FIXED EXPRESS FEE PRICING LOGIC
         function updatePriceSummary() {
             let orderItems = {}; let subtotal = 0; let totalItems = 0; let html = '';
             document.querySelectorAll('.item-tile').forEach(tile => {
@@ -900,7 +956,7 @@
             }
 
             const isExpress = document.getElementById('expressToggle').checked;
-            const expressFee = isExpress ? Math.round(subtotal * 0.90) : 0;
+            const expressFee = isExpress ? Math.round(subtotal * 0.90) : 0; 
 
             let discount = 0;
             if (activeDiscountPct > 0) {
@@ -926,12 +982,37 @@
             } else { document.getElementById('mobileDock').classList.remove('visible'); }
         }
 
+        function loadOrderHistory() {
+            const list = document.getElementById('orderHistoryList'); list.innerHTML = `<p style="text-align:center; padding:20px 0;"><i class="fas fa-spinner fa-spin"></i> Fetching orders...</p>`;
+            if(!loggedInUid) return;
+            db.ref('orders').orderByChild('uid').equalTo(loggedInUid).once('value').then(snap => {
+                if(!snap.exists()) { list.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No past orders found.</p>"; return; }
+                let html = "";
+                snap.forEach(child => {
+                    const o = child.val(); const date = new Date(o.createdAt).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+                    html = `<div class="hist-card"><h4>${o.orderId} <span style="font-size:12px;color:var(--text-muted); font-weight:600;">${date}</span></h4><p style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Status: <strong style="text-transform:capitalize; color:var(--brand-primary);">${o.status}</strong></p><p style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">Total Paid: <strong>₹${o.total}</strong></p><button type="button" class="btn-invoice" onclick="downloadInvoice('${o.orderId}')"><i class="fas fa-download"></i> Get Invoice</button></div>` + html;
+                });
+                list.innerHTML = html;
+            });
+        }
+
+        function downloadInvoice(id) {
+            db.ref('orders/' + id).once('value').then(snap => {
+                if(!snap.exists()) return; const o = snap.val(); let items = '';
+                for(let k in o.items) { items += `<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0;">${k}</td><td style="text-align:right;">x${o.items[k]}</td></tr>`; }
+                const win = window.open('', '', 'width=400,height=600');
+                win.document.write(`<html><body style="font-family:sans-serif;padding:20px;color:#333;"><h2 style="text-align:center;color:#0ea5e9;margin-bottom:0;">Parth Dry Clean</h2><p style="text-align:center;font-size:12px;margin-top:4px;">Invoice #${id}</p><hr><p><strong>Name:</strong> ${o.name}<br><strong>Phone:</strong> ${o.phone}<br><strong>Date:</strong> ${new Date(o.createdAt).toLocaleString()}</p><h3>Items</h3><table style="width:100%;font-size:14px;border-collapse:collapse;">${items}</table><hr><p style="text-align:right;">Subtotal: ₹${o.subtotal}<br>Express Fee: ₹${o.express === 'Yes' ? Math.round(o.subtotal*0.9) : 0}<br>Discount: ₹${o.discount}<br><strong style="font-size:16px;">Total Paid: ₹${o.total}</strong></p><p style="text-align:center;font-size:12px;margin-top:40px;">Thank you for choosing Parth Dry Clean!</p><script>window.print();window.close();<\/script></body></html>`);
+                win.document.close();
+            });
+        }
+
+        // BOOKING SUBMIT
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             if(!auth.currentUser || !loggedInUid) { 
                 showToast("Please login or sign up first to confirm booking!", "warning");
-                openAuthModal(); 
+                openModal('authModal'); 
                 return; 
             }
 
@@ -990,7 +1071,7 @@
 
             try {
                 await db.ref('orders/' + orderId).set(orderData);
-                await db.ref('customers/' + loggedInUid).set({ name, phone, address, lastOrderId: orderId });
+                await db.ref('customers/' + loggedInUid).update({ name, phone, address, lastOrderId: orderId });
 
                 fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec', { method: 'POST', mode: 'no-cors', body: JSON.stringify(sheetData) }).catch(()=>{});
 
@@ -998,7 +1079,7 @@
                 localStorage.removeItem(CART_CACHE_KEY); 
                 
                 document.getElementById('successOrderId').textContent = orderId; 
-                document.getElementById('successOverlay').classList.add('active');
+                openModal('successOverlay');
                 document.getElementById('mobileDock').classList.remove('visible');
             } catch(e) {
                 showToast("Booking failed! Check connection.", "error");
@@ -1007,6 +1088,7 @@
             }
         });
 
+        // Initialize restored cart
         restoreCartState();
         updatePriceSummary();
     </script>
