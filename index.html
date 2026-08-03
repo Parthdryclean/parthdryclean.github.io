@@ -68,7 +68,23 @@
         .btn-login:hover { background:var(--primary); color:#fff; box-shadow:0 4px 15px rgba(14,165,233,0.3); }
         .mobile-menu-btn { display:none; background:none; border:none; font-size:26px; color:var(--text); cursor:pointer; z-index:1001; padding:4px 8px; transition:0.2s; }
         .mobile-menu-btn:hover { color:var(--primary); }
-        .install-pill { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; border:none; padding:8px 14px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; display:none; align-items:center; gap:6px; font-family:'Outfit'; }
+        
+        /* UPGRADED INSTALL PILL UI */
+        .install-pill { 
+            background: linear-gradient(135deg, #f59e0b, #f97316); 
+            color:#fff; border:none; padding:10px 18px; border-radius:50px; 
+            font-weight:800; font-size:13px; cursor:pointer; display:none; 
+            align-items:center; gap:8px; font-family:'Outfit'; 
+            box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: pulse-install 2s infinite;
+        }
+        .install-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.4); }
+        @keyframes pulse-install {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
 
         /* MARQUEE TRUST BAR */
         .trust-bar-wrapper {
@@ -90,9 +106,7 @@
         .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; transition:0.2s; }
         .close-banner:hover { color:#fff; transform:translateY(-50%) scale(1.1); }
 
-        /* ==========================================================
-           UPGRADED HERO SECTION (Overlapping Collage + Floating Badge)
-           ========================================================== */
+        /* HERO SECTION */
         .hero { display:flex; align-items:center; justify-content:space-between; padding:60px 5%; gap:40px; flex-wrap:wrap; }
         .hero-content { max-width:550px; }
         .premium-tag { display:inline-flex; align-items:center; gap:8px; background: rgba(14,165,233,0.1); color:var(--primary); padding:6px 16px; border-radius:30px; font-size:13px; font-weight:800; border:1px solid rgba(14,165,233,0.2); margin-bottom:18px; }
@@ -103,7 +117,14 @@
         .btn { padding:14px 28px; border-radius:50px; font-size:15px; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s; cursor:pointer; border:none; font-family:'Outfit'; }
         .btn-book-now { background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; box-shadow:0 8px 20px rgba(99,102,241,0.25); }
         .btn-book-now:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(99,102,241,0.35); }
-        .btn-install { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; box-shadow:0 4px 20px rgba(245,158,11,0.4); display:none; }
+        
+        .btn-install { 
+            background: linear-gradient(135deg, #f59e0b, #f97316); 
+            color:#fff; box-shadow:0 6px 20px rgba(245,158,11,0.35); 
+            display:none; 
+        }
+        .btn-install:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(245,158,11,0.45); }
+        
         .btn-whatsapp-sm { background:transparent; color:var(--accent); border:1.5px solid var(--accent); }
         .btn-whatsapp-sm:hover { background:rgba(99,102,241,0.06); transform:translateY(-2px); }
         
@@ -113,15 +134,14 @@
         .hero-img-box:hover img { transform: scale(1.08); }
         .img-1 { width: 85%; aspect-ratio: 3/4; z-index: 1; border: 1px solid var(--border); }
         
-        /* Overlapping Image 2 (Fixed: object-position set to left center) */
+        /* Overlapping Image 2 (Fixed: object-position left center) */
         .img-2 { position: absolute; left: 0; bottom: 0; width: 55%; aspect-ratio: 1/1; z-index: 2; border: 6px solid #ffffff; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 20px; }
         .img-2 img { object-position: left center; } 
         
-        /* Floating Trust Badge */
         .hero-floating-badge { position: absolute; top: 15%; left: -5%; z-index: 3; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); padding: 12px 20px; border-radius: 50px; font-size: 14px; font-weight: 800; color: var(--text); box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; animation: breathe 3s ease-in-out infinite alternate; pointer-events: none; }
         @keyframes breathe { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
 
-        /* PERFECT BEFORE / AFTER SLIDER (CLIP-PATH) */
+        /* BEFORE / AFTER SLIDER */
         .before-after-section { padding: 50px 5%; max-width: 900px; margin: 0 auto; text-align:center; }
         .ba-container { position:relative; width:100%; max-width:650px; margin: 20px auto; border-radius:18px; overflow:hidden; box-shadow:var(--shadow); border:2px solid var(--border); aspect-ratio: 16/10; background:#e2e8f0; }
         .ba-img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; pointer-events:none; }
@@ -133,13 +153,10 @@
         .badge-dirty { right:15px; background:rgba(239,68,68,0.8); backdrop-filter:blur(4px); }
         .badge-clean { left:15px; background:rgba(16,185,129,0.8); backdrop-filter:blur(4px); }
 
-        /* ==========================================================
-           MASTER DASHBOARD (3D Floating Space + Fabric Advisor Merged)
-           ========================================================== */
+        /* MASTER DASHBOARD */
         .master-section { padding: 80px 5%; background: #ffffff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow-x: clip; margin-top:20px; }
         .master-container { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; gap: 50px; }
         
-        /* Left: 3D Space */
         .master-left { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; min-height: 420px; }
         .stain-arch { position: absolute; width: 280px; height: 380px; background-color: #f8fafc; border-top-left-radius: 140px; border-top-right-radius: 140px; box-shadow: inset 0px 8px 20px rgba(0,0,0,0.03); z-index: 1; bottom: 10px; }
         
@@ -152,7 +169,6 @@
         
         .stain-hanger { position: absolute; bottom: -80px; right: 70px; width: 220px; z-index: 15; animation: float-delayed 5s ease-in-out infinite; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); }
 
-        /* Right: Dashboard Controls (Advisor) */
         .master-right { flex: 1.1; display: flex; flex-direction: column; justify-content: center; }
         .stain-brand-text { font-size: 1.1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
         .stain-main-title { font-size: clamp(2.2rem, 3.5vw, 3rem); line-height: 1.1; font-weight: 800; color: var(--text); margin-bottom: 1.5rem; letter-spacing: -1px; }
@@ -174,7 +190,7 @@
         @keyframes float-bg-saree { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
         @keyframes float-bg-blazer { 0%, 100% { transform: translateY(0) rotate(4deg); } 50% { transform: translateY(-12px) rotate(-1deg); } }
 
-        /* PRICING (Pro App-Style Chips Upgrade) */
+        /* PRICING */
         .section-header { text-align:center; margin-bottom:40px; }
         .section-header h2 { font-size:32px; font-weight:800; margin-bottom:8px; }
         .section-header p { color:var(--text-muted); font-size:15px; font-weight:600; }
@@ -277,14 +293,12 @@
             .action-buttons { justify-content:center; flex-direction:column; width:100%; gap:14px; }
             .action-buttons .btn { width:100%; max-width:300px; }
             
-            /* Mobile adjustments for overlapping hero */
             .hero-images-container { max-width: 320px; margin: 0 auto; padding-bottom: 30px; }
             .hero-floating-badge { top: 5%; left: -10px; padding: 10px 15px; font-size: 12px; }
             
             .info-section { grid-template-columns:1fr; }
             .ba-clean-wrapper img { width: 100vw; max-width:280px; } 
 
-            /* Mobile Master Section Fits */
             .master-section { padding: 50px 5%; }
             .master-left { min-height: 320px; margin-bottom: 10px; width: 100%;}
             .stain-arch { width: 220px; height: 320px; border-top-left-radius: 110px; border-top-right-radius: 110px; }
@@ -325,7 +339,7 @@
                     <li><a href="#" onclick="openModal('heroTrackPopup')">Track Order</a></li>
                 </ul>
             </nav>
-            <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install</button>
+            <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install App</button>
             <button class="btn-login" id="loginBtn" onclick="openModal('authModal')"><i class="fas fa-sign-in-alt"></i> <span>Login</span></button>
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
         </div>
@@ -357,14 +371,14 @@
         <div id="activeOrderTimeline"></div>
     </div>
 
-    <!-- UPGRADED HERO SECTION -->
+    <!-- HERO SECTION (booking.html link & hero2 left center fixed) -->
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="premium-tag"><i class="fas fa-crown"></i> Premium Care in Lucknow</div>
             <h1 id="dynamicGreeting">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
             <p>Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
             <div class="action-buttons">
-                <a href="ParthbookPro7.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
+                <a href="booking.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
                 <button type="button" class="btn btn-install installAppBtn"><i class="fas fa-download"></i> Install App</button>
                 <a href="https://wa.me/message/SD5ILPGDVQQEM1?src=qr" target="_blank" class="btn btn-whatsapp-sm"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
             </div>
@@ -378,7 +392,7 @@
         </div>
     </section>
 
-    <!-- PERFECT BEFORE / AFTER SLIDER (CLIP-PATH) -->
+    <!-- BEFORE / AFTER SLIDER -->
     <section class="before-after-section">
         <div class="section-header" style="margin-bottom:20px;">
             <h2>See The <span class="text-gradient">Magic</span></h2>
@@ -398,7 +412,7 @@
         </div>
     </section>
 
-    <!-- MASTER DASHBOARD (3D Floating + Fabric Advisor) -->
+    <!-- MASTER DASHBOARD -->
     <section class="master-section" id="fabric-advisor">
         <div class="section-header">
             <h2>Our Expert <span class="text-gradient">Care Masterclass</span></h2>
@@ -453,7 +467,7 @@
         </div>
     </section>
 
-    <!-- PRICING (App-Style Category Chips + Fold Logic Fix) -->
+    <!-- PRICING -->
     <section class="pricing" id="pricing">
         <div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>No hidden charges, premium quality guaranteed</p></div>
         
@@ -706,7 +720,7 @@
             winterMen: "Winter (Men)", festival: "Festival Special", iron: "Iron / Press", home: "Home & Travel"
         };
 
-        // === 4. PRICING UPGRADE (New Fold Logic & Default 'combos') ===
+        // === 4. PRICING UPGRADE (Default Combos & Fold Fix) ===
         let activeCategory = 'combos';
 
         function renderPricing() {
@@ -742,7 +756,6 @@
         }
 
         window.filterCategory = function(cat, btn) {
-            // Fold Fix: If clicking the already active button, fold it (hide)
             if (btn && btn.classList.contains('active')) {
                 btn.classList.remove('active');
                 activeCategory = null;
@@ -810,7 +823,7 @@
             });
         }
 
-        // === 5. THE REST OF ORIGINAL JS (UNTOUCHED) ===
+        // === 5. ORIGINAL LOGIC (UNTOUCHED) ===
         function setTimeGreeting() {
             const hour = new Date().getHours();
             let greeting = "Your Clothes Deserve <span class='text-gradient'>Royal Treatment</span>";
@@ -1056,8 +1069,28 @@
         });
 
         let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
-        document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
+        window.addEventListener('beforeinstallprompt', e => { 
+            e.preventDefault(); 
+            deferredPrompt = e; 
+            document.querySelectorAll('.installAppBtn').forEach(b => {
+                b.style.display = 'inline-flex';
+            });
+        });
+        
+        document.querySelectorAll('.installAppBtn').forEach(b => {
+            b.addEventListener('click', () => { 
+                if (deferredPrompt) { 
+                    deferredPrompt.prompt(); 
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null; 
+                        document.querySelectorAll('.installAppBtn').forEach(btn => btn.style.display = 'none');
+                    }); 
+                } 
+            });
+        });
 
         document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('active'));
         document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
