@@ -211,7 +211,7 @@
     <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999999; display:flex; flex-direction:column; gap:8px;"></div>
 
     <header>
-        <a href="Indexpro7.html" class="logo">
+        <a href="index.html" class="logo">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Logo" />
             <div class="logo-text">
                 <span class="brand-name">Parth Dry Clean</span>
@@ -220,7 +220,7 @@
         </a>
         <div class="header-actions">
             <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install</button>
-            <button class="icon-btn" onclick="window.location.href='Indexpro7.html'" title="Home"><i class="fas fa-home"></i></button>
+            <button class="icon-btn" onclick="window.location.href='index.html'" title="Home"><i class="fas fa-home"></i></button>
             <button class="icon-btn" id="loginBtn" onclick="openModal('authModal')"><i class="fas fa-user-circle"></i></button>
         </div>
     </header>
@@ -288,7 +288,8 @@
                 <div class="bill-row total"><span>Total Payable</span><span id="totalAmount">₹0</span></div>
             </div>
 
-            <form class="booking-form" id="bookingForm" onsubmit="return false;">
+            <!-- FIX: Removed onsubmit="return false;" – now fully controlled by JS -->
+            <form class="booking-form" id="bookingForm">
                 <div class="form-group">
                     <label>Pickup Date *</label>
                     <input type="date" id="pickupDate" required onchange="updateTimeSlots()" />
@@ -355,7 +356,7 @@
                 <strong id="successOrderId" style="font-size:24px; color:var(--primary);">PDC-XXXX</strong>
             </div>
             <div style="display:flex; gap:10px;">
-                <a href="Indexpro7.html" class="btn-primary-full" style="text-decoration:none; flex:1; background:#f1f5f9; color:var(--text-secondary); border:1px solid var(--border); box-shadow:none;">Back to Home</a>
+                <a href="index.html" class="btn-primary-full" style="text-decoration:none; flex:1; background:#f1f5f9; color:var(--text-secondary); border:1px solid var(--border); box-shadow:none;">Back to Home</a>
                 <button class="btn-primary-full" style="flex:1;" onclick="downloadInvoiceFromSuccess()"><i class="fas fa-file-pdf"></i> Download Bill</button>
             </div>
         </div>
@@ -455,17 +456,29 @@
         let selectedTimeSlot = '';
 
         // HISTORY API FOR POPUPS (Fixing Back Button)
+        // FIX: Recaptcha handled safely – always clear and recreate
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             history.pushState({ modal: id }, '', '#' + id);
             
             if (id === 'authModal') {
-                if (!recaptchaVerifier) {
-                    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
+                // Ensure fresh recaptcha verifier to avoid "already rendered" errors
+                if (recaptchaVerifier) {
+                    recaptchaVerifier.clear();
                 }
-                recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId);
+                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    size: 'invisible',
+                    callback: () => {}
+                });
+                recaptchaVerifier.render().then(widgetId => {
+                    window.recaptchaWidgetId = widgetId;
+                }).catch(err => {
+                    console.warn('Recaptcha render error:', err);
+                    // Still, modal is open – user can try OTP later
+                });
             }
         }
+
         function closeModal(id) {
             if (history.state && history.state.modal === id) {
                 history.back(); // Let popstate handle the UI closing
@@ -488,12 +501,10 @@
         }
 
         window.addEventListener('popstate', function(e) {
-            // Close all modals and mobile cart
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
             document.getElementById('checkoutSidebar').classList.remove('mobile-open'); 
             document.getElementById('mobileOverlay').classList.remove('active'); 
             
-            // Re-open if state says so
             if (e.state) {
                 if(e.state.modal) {
                     document.getElementById(e.state.modal).classList.add('active');
@@ -520,16 +531,18 @@
             const isToday = (dateVal === todayStr);
             const curHr = now.getHours();
 
+            let anyValidSlotAvailable = false;
+
             slots.forEach(slot => {
                 const pill = document.createElement('div');
                 pill.className = 'time-pill';
                 pill.textContent = slot.label;
                 pill.dataset.slot = slot.value;
                 
-                // Disable past slots if 'today' is selected
                 if (isToday && curHr >= slot.endHour) {
                     pill.classList.add('disabled');
                 } else {
+                    anyValidSlotAvailable = true;
                     pill.addEventListener('click', () => {
                         document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
                         pill.classList.add('active');
@@ -540,7 +553,15 @@
                 container.appendChild(pill);
             });
             
-            if (![...container.querySelectorAll('.time-pill:not(.disabled)')].some(p => p.classList.contains('active'))) {
+            // If selectedTimeSlot is now disabled, reset
+            const currentlySelectedPill = container.querySelector(`.time-pill[data-slot="${selectedTimeSlot}"]`);
+            if (currentlySelectedPill && currentlySelectedPill.classList.contains('disabled')) {
+                selectedTimeSlot = '';
+                document.getElementById('selectedTimeSlot').value = '';
+            }
+
+            // If no pill is active, ensure hidden input is empty
+            if (!document.querySelector('.time-pill.active')) {
                 selectedTimeSlot = '';
                 document.getElementById('selectedTimeSlot').value = '';
             }
@@ -577,7 +598,6 @@
                 const priceHTML = item.price > 0 ? `<span class="item-price">₹${item.price}</span>` : '<span class="item-price">₹—</span>';
                 const originalHTML = item.originalPrice ? `<span class="item-original-price">₹${item.originalPrice}</span>` : '';
                 
-                // Fixed Animation on click
                 card.innerHTML = `
                     <div class="item-icon"><i class="fas ${item.icon}"></i></div>
                     <div class="item-name">${item.name}</div>
@@ -592,10 +612,9 @@
         }
 
         window.updateQty = function(id, delta, btnElem) {
-            // Apply Pop Animation on the Button
             if(btnElem) {
                 btnElem.classList.remove('pop-anim');
-                void btnElem.offsetWidth; // trigger reflow
+                void btnElem.offsetWidth;
                 btnElem.classList.add('pop-anim');
             }
 
@@ -603,7 +622,7 @@
             if (bag[id] <= 0) delete bag[id];
             localStorage.setItem(CART_KEY, JSON.stringify(bag));
             
-            if(delta > 0 && navigator.vibrate) navigator.vibrate(50); // Small haptic feedback
+            if(delta > 0 && navigator.vibrate) navigator.vibrate(50);
 
             renderItems(document.getElementById('itemSearch').value);
             updateSummary();
@@ -659,7 +678,6 @@
             
             const total = Math.max(0, subtotal + expressFee - discount);
 
-            // Progress Bar Logic
             const progressFill = document.getElementById('deliveryProgress');
             const statusText = document.getElementById('deliveryStatusText');
             if (subtotal >= 300) {
@@ -770,11 +788,9 @@
             }
         }
 
-        // Repeat Order Logic (Fixed Mapping)
         window.repeatLastOrder = function() {
             if (!lastOrderCache) return;
             bag = {};
-            // Map Name back to Item ID
             for (let [name, qty] of Object.entries(lastOrderCache)) {
                 let foundId = null;
                 for (let cat in categories) {
@@ -792,8 +808,12 @@
 
         // Booking submission
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!auth.currentUser) { showToast('Please login first to confirm booking.','warning'); openModal('authModal'); return; }
+            e.preventDefault(); // fully controlled, no onsubmit attribute needed
+            if (!auth.currentUser) { 
+                showToast('Please login first to confirm booking.','warning'); 
+                openModal('authModal'); // This now safely handles recaptcha
+                return; 
+            }
             let name, phone, address;
             if (isLoggedIn && !isEditingFields && userProfile.name) {
                 name = userProfile.name; phone = userProfile.phone; address = userProfile.address;
@@ -834,17 +854,30 @@
             try {
                 await db.ref('orders/'+orderId).set(orderData);
                 await db.ref('customers/'+auth.currentUser.uid).update({name,phone,address,lastOrderId:orderId});
-                // Apps script webhook silently
                 fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}).catch(()=>{});
                 
                 if (!localStorage.getItem(FIRST_ORDER_KEY)) localStorage.setItem(FIRST_ORDER_KEY,'true');
                 
-                bag={}; localStorage.removeItem(CART_KEY); renderItems(''); updateSummary();
+                // Reset form & bag
+                bag={}; localStorage.removeItem(CART_KEY);
+                const todayStr = new Date().toLocaleDateString('en-CA');
+                document.getElementById('pickupDate').value = todayStr;
+                document.getElementById('expressToggle').checked = false;
+                document.getElementById('specialInst').value = '';
+                selectedTimeSlot = '';
+                document.getElementById('selectedTimeSlot').value = '';
+                
+                // Safe call to updateTimeSlots – wrap in try-catch to avoid blocking success modal
+                try {
+                    updateTimeSlots();
+                } catch (err) {
+                    console.warn('updateTimeSlots after reset error:', err);
+                }
+                renderItems(''); 
+                updateSummary();
+                
                 document.getElementById('successOrderId').textContent = orderId;
-                
-                // Store order ID globally for invoice button
                 window.lastBookedOrderId = orderId;
-                
                 openModal('successOverlay');
                 document.getElementById('couponCard').style.display = 'none';
             } catch(err) { 
@@ -878,7 +911,12 @@
             }).catch(err => {
                 showToast('Error: '+err.message,'error');
                 document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP';
-                recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId);
+                // Re-render recaptcha if needed
+                if (recaptchaVerifier) {
+                    recaptchaVerifier.clear();
+                    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
+                    recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId);
+                }
             });
         }
         
@@ -891,7 +929,6 @@
             }).catch(() => showToast('Invalid OTP','error'));
         }
 
-        // Invoice logic for Success Modal (PDF Download)
         window.downloadInvoiceFromSuccess = function() {
             if(window.lastBookedOrderId) {
                 downloadInvoice(window.lastBookedOrderId);
@@ -938,7 +975,6 @@
             });
         }
 
-        // Auth state listener
         auth.onAuthStateChanged(user => {
             const loginBtn = document.getElementById('loginBtn');
             if (user) {
@@ -972,12 +1008,10 @@
             }
         });
 
-        // PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
         document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
-        // Toast
         function showToast(msg, type='info'){
             const container = document.getElementById('toastContainer');
             const t = document.createElement('div');
@@ -989,7 +1023,6 @@
             setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
         }
 
-        // Init
         const saved = localStorage.getItem(CART_KEY);
         if (saved) bag = JSON.parse(saved);
         
@@ -1002,7 +1035,6 @@
         renderItems();
         updateSummary();
 
-        // Coupon display check
         if (!localStorage.getItem(FIRST_ORDER_KEY)) {
             document.getElementById('couponCard').style.display = 'flex';
         } else {
