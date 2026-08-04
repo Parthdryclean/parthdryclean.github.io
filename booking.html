@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0ea5e9" />
-    <title>Bookpro7 | Parth Dry Clean</title>
+    <title>Booking | Parth Dry Clean</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -36,9 +36,13 @@
             --shadow: 0 8px 30px rgba(0,0,0,0.06);
             --transition: 0.2s ease;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body, input, textarea, select, button { font-family: 'Outfit', sans-serif; }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+        body, input, textarea, select, button { font-family: 'Outfit', sans-serif; outline: none; }
+        
         body { background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); color: var(--text); line-height: 1.5; min-height: 100vh; }
+        
+        /* Mobile Scroll Freeze When Cart is Open */
+        body.cart-open { overflow: hidden; height: 100vh; }
 
         /* HEADER */
         header {
@@ -110,21 +114,27 @@
         .qty-btn:hover { background:var(--primary); color:#fff; }
         .qty-num { font-weight:800; min-width:20px; text-align:center; color:var(--text); }
 
-        /* BUTTON POP ANIMATION */
         @keyframes popBtn { 0%{transform:scale(1);} 50%{transform:scale(1.25); background:var(--primary); color:#fff;} 100%{transform:scale(1);} }
         .pop-anim { animation: popBtn 0.35s ease; }
 
         /* CHECKOUT PANEL */
         .checkout-sidebar { background:var(--surface); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow); border:1px solid var(--border); position:sticky; top:90px; }
-        .panel-title { font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border); background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .panel-title { font-size:20px; font-weight:800; display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border); background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* New Clear Cart Button */
+        .clear-cart-btn { background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; transition: 0.2s; display:none; align-items:center; gap:4px; }
+        .clear-cart-btn:hover { background: #fee2e2; color: var(--danger); border-color: #fca5a5; }
+
         /* Progress Bar for Delivery */
         .free-delivery-bar { margin-bottom: 15px; }
         .progress-track { width: 100%; height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 6px; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); width: 0%; transition: width 0.5s ease-out; }
         #deliveryStatusText { font-size: 12px; font-weight: 800; color: var(--text-muted); text-align: center; }
 
-        .bag-items { max-height:240px; overflow-y:auto; margin-bottom:16px; display:none; }
+        .bag-items { max-height:240px; overflow-y:auto; margin-bottom:16px; display:block; }
+        /* Empty Bag Message */
+        .empty-bag-msg { text-align:center; padding: 25px 0; color: var(--text-muted); font-weight:600; font-size:13px; display:none; }
+        
         .bag-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; font-weight:600;}
         .bag-row-left { display:flex; align-items:center; gap:10px; flex:1; }
         .bag-row-icon { width:28px; height:28px; background:var(--accent-light); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--accent); }
@@ -160,7 +170,8 @@
         .booking-form label { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:5px; }
         .booking-form input, .booking-form select, .booking-form textarea { width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:2px solid var(--border); background:var(--bg); font-size:13px; font-weight:600; font-family:inherit; outline:none; transition:0.3s; }
         .booking-form input:focus, .booking-form textarea:focus { border-color:var(--primary); }
-        .btn-book { width:100%; padding:15px; border-radius:var(--radius); background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; font-weight:800; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.3s ease; box-shadow:0 8px 18px rgba(99,102,241,0.25); }
+        
+        .btn-book { width:100%; padding:15px; border-radius:var(--radius); background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; font-weight:800; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.3s ease; box-shadow:0 8px 18px rgba(99,102,241,0.25); overflow: hidden; }
         .btn-book:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(99,102,241,0.35); }
         .btn-book:disabled { background:#cbd5e1; box-shadow:none; transform:none; cursor:not-allowed; }
 
@@ -197,11 +208,10 @@
         @media (max-width:1024px) { .app-layout { grid-template-columns:1fr; } .checkout-sidebar { position:static; } }
         @media (max-width:768px) {
             .items-grid { grid-template-columns:repeat(2,1fr); }
-            .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:85vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,0.2); z-index:300; overflow-y:auto; top:auto; }
+            .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:85vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,0.2); z-index:300; overflow-y:auto; top:auto; touch-action: pan-y; }
             .checkout-sidebar.mobile-open { display:block; animation:slideUp 0.3s ease; }
             .mobile-fab { display:flex; }
             .mobile-overlay.active { display:block; }
-            .mobile-menu-btn { display:block; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
         @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
@@ -211,6 +221,7 @@
     <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999999; display:flex; flex-direction:column; gap:8px;"></div>
 
     <header>
+        <!-- Corrected link back to home -->
         <a href="index.html" class="logo">
             <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2c2bf6.png" alt="Logo" />
             <div class="logo-text">
@@ -247,7 +258,10 @@
         </div>
 
         <div class="checkout-sidebar" id="checkoutSidebar">
-            <div class="panel-title"><i class="fas fa-shopping-bag" id="bagIcon"></i> Laundry Bag</div>
+            <div class="panel-title">
+                <span><i class="fas fa-shopping-bag" id="bagIcon"></i> Laundry Bag</span>
+                <button class="clear-cart-btn" id="clearCartBtn" onclick="clearCart()"><i class="fas fa-trash-alt"></i> Clear</button>
+            </div>
             
             <!-- FREE DELIVERY PROGRESS BAR -->
             <div class="free-delivery-bar">
@@ -255,7 +269,13 @@
                 <p id="deliveryStatusText">Add ₹300 for FREE Pickup</p>
             </div>
 
-            <div class="bag-items" id="bagItemsSummary"></div>
+            <div class="bag-items" id="bagItemsSummary">
+                <div class="empty-bag-msg" id="emptyBagMsg">
+                    <i class="fas fa-shopping-basket" style="font-size:26px; color:#cbd5e1; margin-bottom:10px; display:block;"></i>
+                    Your bag is empty. Add items to continue.
+                </div>
+                <div id="bagItemsList"></div>
+            </div>
 
             <div class="coupon-card" id="couponCard" style="display:none;">
                 <div class="offer-text">
@@ -288,16 +308,15 @@
                 <div class="bill-row total"><span>Total Payable</span><span id="totalAmount">₹0</span></div>
             </div>
 
-            <!-- FIX: Removed onsubmit="return false;" – now fully controlled by JS -->
-            <form class="booking-form" id="bookingForm">
+            <form class="booking-form" id="bookingForm" onsubmit="return false;">
                 <div class="form-group">
                     <label>Pickup Date *</label>
-                    <input type="date" id="pickupDate" required onchange="updateTimeSlots()" />
+                    <input type="date" id="pickupDate" onchange="updateTimeSlots()" />
                 </div>
                 <div class="form-group">
                     <label>Time Slot *</label>
                     <div class="time-pills" id="timeSlotPills"></div>
-                    <input type="hidden" id="selectedTimeSlot" required />
+                    <input type="hidden" id="selectedTimeSlot" />
                 </div>
                 
                 <div id="customerInfoSection">
@@ -308,7 +327,8 @@
                     <label>Special Instructions</label>
                     <textarea id="specialInst" rows="1" placeholder="E.g. remove coffee stain on shirt..."></textarea>
                 </div>
-                <button type="submit" class="btn-book" id="submitBooking">Confirm Booking <i class="fas fa-check-circle"></i></button>
+                <!-- Changed to button type="button" so native required doesn't block the JS login modal -->
+                <button type="button" class="btn-book" id="submitBooking" onclick="processBooking()">Confirm Booking <i class="fas fa-check-circle"></i></button>
             </form>
         </div>
     </div>
@@ -455,30 +475,31 @@
         let isLoggedIn = false;
         let selectedTimeSlot = '';
 
+        // Safely handle Swipe-to-close Mobile Cart
+        const checkoutSidebar = document.getElementById('checkoutSidebar');
+        let startY = 0;
+        checkoutSidebar.addEventListener('touchstart', (e) => {
+            if (checkoutSidebar.scrollTop === 0) { startY = e.touches[0].clientY; } 
+            else { startY = 0; }
+        }, {passive: true});
+        checkoutSidebar.addEventListener('touchmove', (e) => {
+            if (startY && e.touches[0].clientY - startY > 60 && checkoutSidebar.scrollTop === 0) {
+                closeMobileCheckout(); startY = 0;
+            }
+        }, {passive: true});
+
         // HISTORY API FOR POPUPS (Fixing Back Button)
-        // FIX: Recaptcha handled safely – always clear and recreate
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             history.pushState({ modal: id }, '', '#' + id);
             
             if (id === 'authModal') {
-                // Ensure fresh recaptcha verifier to avoid "already rendered" errors
-                if (recaptchaVerifier) {
-                    recaptchaVerifier.clear();
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
+                    window.recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId);
                 }
-                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                    size: 'invisible',
-                    callback: () => {}
-                });
-                recaptchaVerifier.render().then(widgetId => {
-                    window.recaptchaWidgetId = widgetId;
-                }).catch(err => {
-                    console.warn('Recaptcha render error:', err);
-                    // Still, modal is open – user can try OTP later
-                });
             }
         }
-
         function closeModal(id) {
             if (history.state && history.state.modal === id) {
                 history.back(); // Let popstate handle the UI closing
@@ -489,6 +510,7 @@
         function openMobileCheckout(){ 
             document.getElementById('checkoutSidebar').classList.add('mobile-open'); 
             document.getElementById('mobileOverlay').classList.add('active'); 
+            document.body.classList.add('cart-open');
             history.pushState({ mobileCheckout: true }, '', '#cart');
         }
         function closeMobileCheckout(){ 
@@ -497,23 +519,36 @@
             } else {
                 document.getElementById('checkoutSidebar').classList.remove('mobile-open'); 
                 document.getElementById('mobileOverlay').classList.remove('active'); 
+                document.body.classList.remove('cart-open');
             }
         }
 
         window.addEventListener('popstate', function(e) {
+            // Close all modals and mobile cart
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
             document.getElementById('checkoutSidebar').classList.remove('mobile-open'); 
             document.getElementById('mobileOverlay').classList.remove('active'); 
+            document.body.classList.remove('cart-open');
             
+            // Re-open if state says so
             if (e.state) {
                 if(e.state.modal) {
                     document.getElementById(e.state.modal).classList.add('active');
                 } else if(e.state.mobileCheckout) {
                     document.getElementById('checkoutSidebar').classList.add('mobile-open'); 
                     document.getElementById('mobileOverlay').classList.add('active'); 
+                    document.body.classList.add('cart-open');
                 }
             }
         });
+
+        window.clearCart = function() {
+            bag = {};
+            localStorage.removeItem(CART_KEY);
+            renderItems(document.getElementById('itemSearch').value);
+            updateSummary();
+            showToast('Bag cleared', 'info');
+        }
 
         // TIME SLOTS (Fixed Logic to 9 PM)
         function updateTimeSlots() {
@@ -531,18 +566,19 @@
             const isToday = (dateVal === todayStr);
             const curHr = now.getHours();
 
-            let anyValidSlotAvailable = false;
-
             slots.forEach(slot => {
                 const pill = document.createElement('div');
                 pill.className = 'time-pill';
                 pill.textContent = slot.label;
                 pill.dataset.slot = slot.value;
                 
+                // Disable past slots if 'today' is selected
                 if (isToday && curHr >= slot.endHour) {
                     pill.classList.add('disabled');
                 } else {
-                    anyValidSlotAvailable = true;
+                    if (selectedTimeSlot === slot.value) {
+                        pill.classList.add('active');
+                    }
                     pill.addEventListener('click', () => {
                         document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
                         pill.classList.add('active');
@@ -553,18 +589,11 @@
                 container.appendChild(pill);
             });
             
-            // If selectedTimeSlot is now disabled, reset
-            const currentlySelectedPill = container.querySelector(`.time-pill[data-slot="${selectedTimeSlot}"]`);
-            if (currentlySelectedPill && currentlySelectedPill.classList.contains('disabled')) {
+            if (![...container.querySelectorAll('.time-pill:not(.disabled)')].some(p => p.classList.contains('active') && p.dataset.slot === selectedTimeSlot)) {
                 selectedTimeSlot = '';
                 document.getElementById('selectedTimeSlot').value = '';
             }
-
-            // If no pill is active, ensure hidden input is empty
-            if (!document.querySelector('.time-pill.active')) {
-                selectedTimeSlot = '';
-                document.getElementById('selectedTimeSlot').value = '';
-            }
+            updateSummary();
         }
 
         // Render categories
@@ -575,29 +604,41 @@
                 const pill = document.createElement('div');
                 pill.className = `pill ${cat === currentCat ? 'active' : ''}`;
                 pill.innerHTML = `<i class="fas ${categories[cat][0]?.icon || 'fa-tshirt'}"></i> ${categoryNames[cat]}`;
-                pill.addEventListener('click', () => { currentCat = cat; renderCategories(); renderItems(); });
+                pill.addEventListener('click', () => { currentCat = cat; document.getElementById('itemSearch').value=''; renderCategories(); renderItems(); });
                 container.appendChild(pill);
             });
         }
 
+        // GLOBAL SEARCH FIX
         function renderItems(filterText = '') {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
-            const items = categories[currentCat] || [];
-            const filtered = items.filter(item => item.name.toLowerCase().includes(filterText.toLowerCase()));
+            let itemsToRender = [];
             
-            if(filtered.length === 0) {
+            if (filterText.trim() !== '') {
+                Object.keys(categories).forEach(cat => {
+                    let matching = categories[cat].filter(item => item.name.toLowerCase().includes(filterText.toLowerCase()));
+                    itemsToRender = itemsToRender.concat(matching);
+                });
+                // Remove duplicates if any based on ID
+                itemsToRender = [...new Map(itemsToRender.map(item => [item.id, item])).values()];
+            } else {
+                itemsToRender = categories[currentCat] || [];
+            }
+            
+            if(itemsToRender.length === 0) {
                 grid.innerHTML = '<p style="color:var(--text-muted); font-weight:700;">No items found.</p>';
                 return;
             }
 
-            filtered.forEach(item => {
+            itemsToRender.forEach(item => {
                 const qty = bag[item.id] || 0;
                 const card = document.createElement('div');
                 card.className = 'item-card';
                 const priceHTML = item.price > 0 ? `<span class="item-price">₹${item.price}</span>` : '<span class="item-price">₹—</span>';
                 const originalHTML = item.originalPrice ? `<span class="item-original-price">₹${item.originalPrice}</span>` : '';
                 
+                // Fixed Animation on click
                 card.innerHTML = `
                     <div class="item-icon"><i class="fas ${item.icon}"></i></div>
                     <div class="item-name">${item.name}</div>
@@ -612,9 +653,10 @@
         }
 
         window.updateQty = function(id, delta, btnElem) {
+            // Apply Pop Animation on the Button
             if(btnElem) {
                 btnElem.classList.remove('pop-anim');
-                void btnElem.offsetWidth;
+                void btnElem.offsetWidth; // trigger reflow
                 btnElem.classList.add('pop-anim');
             }
 
@@ -622,7 +664,7 @@
             if (bag[id] <= 0) delete bag[id];
             localStorage.setItem(CART_KEY, JSON.stringify(bag));
             
-            if(delta > 0 && navigator.vibrate) navigator.vibrate(50);
+            if(delta > 0 && navigator.vibrate) navigator.vibrate(50); // Small haptic feedback
 
             renderItems(document.getElementById('itemSearch').value);
             updateSummary();
@@ -631,7 +673,7 @@
         document.getElementById('itemSearch').addEventListener('input', (e) => renderItems(e.target.value));
 
         function renderBagSummary() {
-            const container = document.getElementById('bagItemsSummary');
+            const container = document.getElementById('bagItemsList');
             let html = '';
             let hasItems = false;
             for (let [id, qty] of Object.entries(bag)) {
@@ -656,7 +698,15 @@
                 }
             }
             container.innerHTML = html;
-            container.style.display = hasItems ? 'block' : 'none';
+            
+            // Empty Logic UI
+            if(hasItems) {
+                document.getElementById('emptyBagMsg').style.display = 'none';
+                document.getElementById('clearCartBtn').style.display = 'flex';
+            } else {
+                document.getElementById('emptyBagMsg').style.display = 'block';
+                document.getElementById('clearCartBtn').style.display = 'none';
+            }
         }
 
         function updateSummary() {
@@ -678,6 +728,7 @@
             
             const total = Math.max(0, subtotal + expressFee - discount);
 
+            // Progress Bar Logic
             const progressFill = document.getElementById('deliveryProgress');
             const statusText = document.getElementById('deliveryStatusText');
             if (subtotal >= 300) {
@@ -714,6 +765,12 @@
             }
 
             document.getElementById('mobileCount').textContent = totalItems;
+            if(totalItems === 0) {
+                document.getElementById('mobileFab').style.display = 'none';
+            } else {
+                document.getElementById('mobileFab').style.display = 'flex';
+            }
+
             document.getElementById('submitBooking').disabled = subtotal < 300;
 
             const pickupDate = document.getElementById('pickupDate').value;
@@ -727,22 +784,45 @@
             }
         }
 
+        // Promo Code Backend logic fix
         function applyPromoCode() {
             if (localStorage.getItem(FIRST_ORDER_KEY)) {
                 showToast('This coupon is only valid for your first order.','error');
                 return;
             }
             if (appliedPromoCode === 'PARTH20') return;
-            appliedPromoCode = 'PARTH20';
-            const btn = document.getElementById('applyCouponBtn');
-            btn.textContent = '✔ Applied';
-            btn.classList.add('applied');
-            updateSummary();
-            showToast('Promo PARTH20 applied! 20% off','success');
+            
+            if(auth.currentUser) {
+                db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).once('value').then(snap => {
+                    if(snap.exists()) {
+                        showToast('Promo code is valid only on 1st order!','error');
+                        localStorage.setItem(FIRST_ORDER_KEY, 'true'); // lock them out permanently
+                    } else {
+                        appliedPromoCode = 'PARTH20';
+                        const btn = document.getElementById('applyCouponBtn');
+                        btn.textContent = '✔ Applied';
+                        btn.classList.add('applied');
+                        updateSummary();
+                        showToast('Promo PARTH20 applied! 20% off','success');
+                    }
+                });
+            } else {
+                appliedPromoCode = 'PARTH20';
+                const btn = document.getElementById('applyCouponBtn');
+                btn.textContent = '✔ Applied';
+                btn.classList.add('applied');
+                updateSummary();
+                showToast('Promo PARTH20 applied! 20% off','success');
+            }
         }
 
         function renderCustomerInfo() {
             const section = document.getElementById('customerInfoSection');
+            // Save what user is currently typing before re-rendering
+            let tName = document.getElementById('custName')?.value || userProfile.name || '';
+            let tPhone = document.getElementById('custPhone')?.value || userProfile.phone || '';
+            let tAddr = document.getElementById('custAddress')?.value || userProfile.address || '';
+
             if (isLoggedIn && userProfile.name && userProfile.phone && userProfile.address && !isEditingFields) {
                 section.innerHTML = `
                     <div class="delivery-card">
@@ -756,21 +836,22 @@
             } else {
                 section.innerHTML = `
                     <div style="display:flex; gap:8px;">
-                        <div class="form-group" style="flex:1;"><label>Name *</label><input type="text" id="custName" required value="${userProfile.name||''}" placeholder="Full Name" /></div>
-                        <div class="form-group" style="flex:1;"><label>Mobile *</label><input type="tel" id="custPhone" pattern="[0-9]{10}" maxlength="10" required value="${userProfile.phone||''}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10 Digits" /></div>
+                        <div class="form-group" style="flex:1;"><label>Name *</label><input type="text" id="custName" value="${tName}" placeholder="Full Name" /></div>
+                        <div class="form-group" style="flex:1;"><label>Mobile *</label><input type="tel" id="custPhone" pattern="[0-9]{10}" maxlength="10" value="${tPhone}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10 Digits" /></div>
                     </div>
                     <div class="form-group">
                         <label style="display:flex; justify-content:space-between; align-items:center;">
                             Address * 
                             <button type="button" onclick="getCurrentLocation()" style="background:none; border:none; color:var(--primary); font-weight:800; cursor:pointer; font-size:12px;"><i class="fas fa-location-arrow"></i> Use GPS</button>
                         </label>
-                        <textarea id="custAddress" rows="2" required minlength="20" placeholder="Full address (Minimum 20 characters)...">${userProfile.address||''}</textarea>
+                        <textarea id="custAddress" rows="2" minlength="20" placeholder="Full address (Minimum 20 characters)...">${tAddr}</textarea>
                     </div>`;
             }
         }
 
         window.editCustomerInfo = function() { isEditingFields = true; renderCustomerInfo(); }
 
+        // GPS LOCATION FIX
         window.getCurrentLocation = function() {
             showToast('Fetching GPS Location...','info');
             if (navigator.geolocation) {
@@ -780,17 +861,23 @@
                         addr.value += ` (GPS: https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude})`;
                         showToast('Location added successfully!','success');
                     }
-                }, () => {
-                    showToast('GPS access denied or failed.','error');
+                }, (err) => {
+                    if(err.code === err.PERMISSION_DENIED) {
+                        showToast('Location blocked. Please enable it in browser settings.','error'); 
+                    } else {
+                        showToast('GPS access failed.','error'); 
+                    }
                 });
             } else {
                 showToast('Geolocation not supported by your browser.','error');
             }
         }
 
+        // Repeat Order Logic (Fixed Mapping)
         window.repeatLastOrder = function() {
             if (!lastOrderCache) return;
             bag = {};
+            // Map Name back to Item ID
             for (let [name, qty] of Object.entries(lastOrderCache)) {
                 let foundId = null;
                 for (let cat in categories) {
@@ -806,26 +893,32 @@
             showToast('Previous order loaded successfully!','success');
         }
 
-        // Booking submission
-        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // fully controlled, no onsubmit attribute needed
+        // FIX: Manual process booking to allow login modal pop immediately
+        window.processBooking = async function() {
             if (!auth.currentUser) { 
                 showToast('Please login first to confirm booking.','warning'); 
-                openModal('authModal'); // This now safely handles recaptcha
+                openModal('authModal'); 
                 return; 
             }
+            
+            let nameEl = document.getElementById('custName');
+            let phoneEl = document.getElementById('custPhone');
+            let addressEl = document.getElementById('custAddress');
+            
             let name, phone, address;
             if (isLoggedIn && !isEditingFields && userProfile.name) {
                 name = userProfile.name; phone = userProfile.phone; address = userProfile.address;
             } else {
-                name = document.getElementById('custName')?.value.trim();
-                phone = document.getElementById('custPhone')?.value.trim();
-                address = document.getElementById('custAddress')?.value.trim();
+                name = nameEl ? nameEl.value.trim() : '';
+                phone = phoneEl ? phoneEl.value.trim() : '';
+                address = addressEl ? addressEl.value.trim() : '';
             }
+            
+            if (!document.getElementById('pickupDate').value) { showToast('Please select a pickup date','warning'); return; }
+            if (!selectedTimeSlot) { showToast('Please select a pickup time slot','warning'); return; }
             if (!name || !phone || !address) { showToast('Please fill all address details','warning'); return; }
             if (phone.length !== 10 || !/^\d{10}$/.test(phone)) { showToast('Enter valid 10-digit mobile number','warning'); return; }
             if (address.length < 20) { showToast('Address must be at least 20 characters','warning'); return; }
-            if (!selectedTimeSlot) { showToast('Please select a pickup time slot','warning'); return; }
 
             let orderItems = {}, subtotal = 0;
             for (let [id,qty] of Object.entries(bag)) {
@@ -845,39 +938,36 @@
             const total = parseInt(document.getElementById('totalAmount').textContent.replace('₹',''));
             const orderId = 'PDC-'+Math.random().toString(36).substring(2,8).toUpperCase();
             
+            // SHEET DATA FIX: Convert items and dates into pure strings for google sheets
+            let itemsString = Object.entries(orderItems).map(([k,v]) => `${k} x${v}`).join(' | ');
+            const estDeliveryDate = document.getElementById('estDeliveryDate').textContent;
+
             const orderData = {
                 orderId, uid:auth.currentUser.uid, name, phone, address, pickupDate, timeSlot:selectedTimeSlot,
-                specialInst, items:orderItems, subtotal, express:isExpress?'Yes':'No', discount, total,
-                status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP
+                specialInst: specialInst || "None", items:orderItems, itemsString: itemsString, subtotal, express:isExpress?'Yes':'No', 
+                discount, total, estDeliveryDate: estDeliveryDate, status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP
             };
             
             try {
                 await db.ref('orders/'+orderId).set(orderData);
                 await db.ref('customers/'+auth.currentUser.uid).update({name,phone,address,lastOrderId:orderId});
+                // Apps script webhook silently
                 fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}).catch(()=>{});
                 
                 if (!localStorage.getItem(FIRST_ORDER_KEY)) localStorage.setItem(FIRST_ORDER_KEY,'true');
                 
-                // Reset form & bag
-                bag={}; localStorage.removeItem(CART_KEY);
-                const todayStr = new Date().toLocaleDateString('en-CA');
-                document.getElementById('pickupDate').value = todayStr;
-                document.getElementById('expressToggle').checked = false;
-                document.getElementById('specialInst').value = '';
-                selectedTimeSlot = '';
-                document.getElementById('selectedTimeSlot').value = '';
-                
-                // Safe call to updateTimeSlots – wrap in try-catch to avoid blocking success modal
-                try {
-                    updateTimeSlots();
-                } catch (err) {
-                    console.warn('updateTimeSlots after reset error:', err);
-                }
-                renderItems(''); 
-                updateSummary();
+                // POST-BOOKING RESET
+                bag={}; localStorage.removeItem(CART_KEY); 
+                document.getElementById('bookingForm').reset();
+                document.getElementById('pickupDate').value = new Date().toLocaleDateString('en-CA');
+                updateTimeSlots();
+                renderItems(''); updateSummary();
                 
                 document.getElementById('successOrderId').textContent = orderId;
+                
+                // Store order ID globally for invoice button
                 window.lastBookedOrderId = orderId;
+                
                 openModal('successOverlay');
                 document.getElementById('couponCard').style.display = 'none';
             } catch(err) { 
@@ -886,7 +976,7 @@
                 document.getElementById('submitBooking').innerHTML = 'Confirm Booking <i class="fas fa-check-circle"></i>';
                 document.getElementById('submitBooking').disabled = false;
             }
-        });
+        };
 
         // Auth
         let confirmationResult;
@@ -903,7 +993,7 @@
             const num = document.getElementById('phoneInput').value;
             if (num.length !== 10) return showToast('Enter 10 digits','warning');
             document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            auth.signInWithPhoneNumber('+91'+num, recaptchaVerifier).then(res => {
+            auth.signInWithPhoneNumber('+91'+num, window.recaptchaVerifier).then(res => {
                 confirmationResult = res;
                 document.getElementById('phoneAuthSection').style.display = 'none';
                 document.getElementById('otpSection').style.display = 'block';
@@ -911,12 +1001,6 @@
             }).catch(err => {
                 showToast('Error: '+err.message,'error');
                 document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP';
-                // Re-render recaptcha if needed
-                if (recaptchaVerifier) {
-                    recaptchaVerifier.clear();
-                    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
-                    recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId);
-                }
             });
         }
         
@@ -929,6 +1013,7 @@
             }).catch(() => showToast('Invalid OTP','error'));
         }
 
+        // Premium Invoice logic for Success Modal
         window.downloadInvoiceFromSuccess = function() {
             if(window.lastBookedOrderId) {
                 downloadInvoice(window.lastBookedOrderId);
@@ -942,18 +1027,23 @@
                 let itemsHTML = '';
                 for (let k in o.items) itemsHTML += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${k}</td><td style="text-align:right; font-weight:bold;">x${o.items[k]}</td></tr>`;
                 
+                let d = new Date(o.pickupDate || o.createdAt);
+                d.setDate(d.getDate() + (o.express==='Yes'?1:3));
+                const estDateStr = d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
+
                 const element = document.createElement('div');
                 element.innerHTML = `
                 <div style="padding:30px; font-family:sans-serif; width:400px; color:#0f172a; background:#ffffff;">
                     <h2 style="color:#0ea5e9; text-align:center; margin:0;">Parth Dry Clean</h2>
-                    <p style="text-align:center; font-size:12px; color:#64748b; font-weight:700; margin-top:4px;">DIGITAL RECEIPT</p>
-                    <div style="background:#f8fafc; padding:15px; border-radius:12px; margin:20px 0;">
-                        <div style="display:flex; justify-content:space-between;"><span>Order ID:</span><strong>${id}</strong></div>
-                        <div style="display:flex; justify-content:space-between; margin-top:8px;"><span>Date:</span><strong>${new Date(o.createdAt).toLocaleDateString()}</strong></div>
+                    <p style="text-align:center; font-size:12px; color:#64748b; font-weight:700; margin-top:4px;">TAX INVOICE / RECEIPT</p>
+                    <div style="background:#f8fafc; padding:15px; border-radius:12px; margin:20px 0; border: 1px solid #e2e8f0;">
+                        <div style="display:flex; justify-content:space-between;"><span>Order ID:</span><strong style="color:#0ea5e9;">${id}</strong></div>
+                        <div style="display:flex; justify-content:space-between; margin-top:8px;"><span>Order Date:</span><strong>${new Date(o.createdAt).toLocaleDateString()}</strong></div>
+                        <div style="display:flex; justify-content:space-between; margin-top:8px;"><span>Est. Delivery:</span><strong style="color:#10b981;">${o.estDeliveryDate || estDateStr} ${o.express==='Yes'?'(Express)':'(Normal)'}</strong></div>
                     </div>
-                    <h3>Garments</h3>
-                    <table style="width:100%; border-collapse:collapse; font-weight:600;">${itemsHTML}</table>
-                    <div style="margin-top:20px; border-top:2px dashed #e2e8f0; padding-top:15px; font-weight:600;">
+                    <div style="background:#eef2ff; padding:8px 15px; font-weight:bold; font-size:14px; color:#4f46e5; border-radius:8px 8px 0 0;">Garments Details</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; font-weight:600;">${itemsHTML}</table>
+                    <div style="margin-top:20px; border-top:2px dashed #e2e8f0; padding-top:15px; font-weight:600; font-size:14px;">
                         <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><span>₹${o.subtotal}</span></div>
                         ${o.express==='Yes'?`<div style="display:flex; justify-content:space-between; color:#ea580c; margin-top:5px;"><span>Express Fee</span><span>+₹${Math.round(o.subtotal*0.9)}</span></div>`:''}
                         ${o.discount>0?`<div style="display:flex; justify-content:space-between; color:#16a34a; margin-top:5px;"><span>Discount</span><span>-₹${o.discount}</span></div>`:''}
@@ -961,6 +1051,8 @@
                             <span>Total Paid</span><span style="color:#0ea5e9;">₹${o.total}</span>
                         </div>
                     </div>
+                    ${o.specialInst && o.specialInst !== 'None' ? `<div style="margin-top:20px; padding:10px; background:#fef2f2; color:#991b1b; font-size:11px; border-radius:8px;"><strong>Note:</strong> ${o.specialInst}</div>` : ''}
+                    <div style="margin-top:30px; text-align:center; font-size:12px; font-weight:700; color:#64748b;">Thank you for choosing Parth Dry Clean ❤️</div>
                 </div>`;
                 
                 html2pdf().set({
@@ -975,6 +1067,7 @@
             });
         }
 
+        // Auth state listener
         auth.onAuthStateChanged(user => {
             const loginBtn = document.getElementById('loginBtn');
             if (user) {
@@ -1008,14 +1101,16 @@
             }
         });
 
+        // PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
         document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
+        // Toast
         function showToast(msg, type='info'){
             const container = document.getElementById('toastContainer');
             const t = document.createElement('div');
-            t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700;';
+            t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700; z-index:999999;';
             const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
             const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#0ea5e9';
             t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${msg}`;
@@ -1023,6 +1118,7 @@
             setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
         }
 
+        // Init
         const saved = localStorage.getItem(CART_KEY);
         if (saved) bag = JSON.parse(saved);
         
@@ -1035,10 +1131,19 @@
         renderItems();
         updateSummary();
 
+        // Coupon display check
         if (!localStorage.getItem(FIRST_ORDER_KEY)) {
             document.getElementById('couponCard').style.display = 'flex';
         } else {
             document.getElementById('couponCard').style.display = 'none';
+        }
+    </script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(()=>{});
+            });
         }
     </script>
 </body>
