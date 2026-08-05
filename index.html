@@ -36,6 +36,7 @@
             --shadow-sm: 0 2px 10px rgba(0,0,0,0.04);
             --shadow: 0 8px 30px rgba(0,0,0,0.06);
             --transition: 0.25s ease;
+            --header-height: 60px;
         }
         [data-theme="dark"] {
             --bg: #0f172a;
@@ -56,7 +57,6 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height:1.6; padding-bottom:30px; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
-        /* Remove tap highlight and focus ring */
         button, a, input, textarea {
             -webkit-tap-highlight-color: transparent;
             outline: none;
@@ -68,7 +68,7 @@
             background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
             padding: 8px 5%; display:flex; align-items:center; justify-content:space-between;
             border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
-            min-height:60px; box-shadow:0 2px 12px rgba(0,0,0,0.03);
+            min-height:var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,0.03);
             flex-wrap: nowrap;
         }
         .logo { display:flex; align-items:center; gap:0; text-decoration:none; flex-shrink:0; }
@@ -153,9 +153,9 @@
         .mobile-menu-btn:hover { color:var(--primary); }
         .install-pill { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; border:none; padding:8px 14px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; display:none; align-items:center; gap:6px; font-family:'Outfit'; }
 
-        /* MOBILE MENU */
+        /* MOBILE MENU – hidden by default */
         #navLinks {
-            transition: max-height 0.3s ease, opacity 0.3s ease;
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
             max-height: 500px;
             opacity: 1;
         }
@@ -163,6 +163,8 @@
             max-height: 0;
             opacity: 0;
             overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
         }
 
         /* TRUST BAR */
@@ -196,7 +198,7 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             position: sticky;
-            top: 60px;
+            top: var(--header-height);
             z-index: 99;
         }
         .active-order-bar .mini-timelines {
@@ -240,7 +242,7 @@
             background: var(--surface);
             border-bottom: 1px solid var(--border);
             position: sticky;
-            top: 104px;
+            top: calc(var(--header-height) + 40px);
             z-index: 98;
         }
         .active-order-dropdown.open {
@@ -286,6 +288,9 @@
             margin-left: 6px;
         }
         .express-badge i { font-size: 10px; }
+        .order-actions {
+            margin-left: auto;
+        }
         .order-actions .btn-view-invoice {
             background: var(--primary);
             color: #fff;
@@ -481,6 +486,7 @@
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:100000; padding:16px; }
         .modal-overlay.active { display:flex; animation:fadeIn 0.3s ease; }
         .modal-box { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:420px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.4); text-align:center; max-height:90vh; overflow-y:auto; }
+        [data-theme="dark"] .modal-box { background:rgba(30,41,59,0.95); border:1px solid rgba(255,255,255,0.1); }
         .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:0.2s; }
         .close-modal-btn:hover { color:var(--danger); transform:scale(1.1); }
         .btn-google { width:100%; background:#ffffff; color:var(--text); border:1.5px solid var(--border); padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:0.3s; font-family:'Outfit'; box-shadow:0 2px 10px rgba(0,0,0,0.02); }
@@ -491,11 +497,6 @@
         .auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; color:var(--text); font-family:'Outfit'; font-size:14px; outline:none; margin-bottom:14px; text-align:center; font-weight:600;}
         .auth-input:focus { border-color:var(--primary); }
         .btn-primary-full { width:100%; background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:0.3s; font-family:'Outfit'; box-shadow:0 4px 15px rgba(14,165,233,0.3); }
-        .profile-tabs { display:flex; gap:8px; margin-bottom:24px; background:#f1f5f9; padding:6px; border-radius:14px; }
-        .ptab { flex:1; background:transparent; border:none; padding:10px; font-size:14px; font-weight:800; color:var(--text-muted); cursor:pointer; border-radius:10px; transition:0.3s; font-family:'Outfit'; }
-        .ptab.active { background:#ffffff; color:var(--primary); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
-        .p-content { display:none; text-align:left; }
-        .p-content.active { display:block; animation:fadeIn 0.3s; }
         .profile-group { margin-bottom:16px; }
         .profile-group label { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; }
         .profile-input { width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; font-family:'Outfit'; font-size:14px; outline:none; font-weight:600;}
@@ -508,6 +509,7 @@
             .fabric-content-card h3 { justify-content: center; }
         }
         @media (max-width:768px) {
+            :root { --header-height: 56px; }
             header { padding: 6px 4%; }
             .logo-main { font-size: 1.8rem; }
             .logo-sub { font-size: 0.85rem; }
@@ -515,7 +517,30 @@
             .btn-login span { display: none; }
             .btn-login { padding: 8px 12px; border: none; background: transparent; }
             .install-pill { display: none; }
-            nav ul { display:flex; flex-direction:column; position:absolute; top:100%; left:0; width:100%; background:var(--surface); padding:20px 5%; border-bottom:1px solid var(--border); box-shadow:var(--shadow); gap:12px; }
+            /* MOBILE MENU – HIDDEN BY DEFAULT */
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--surface);
+                padding: 20px 5%;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+                gap: 12px;
+                max-height: 500px;
+                opacity: 1;
+            }
+            nav ul.active { display: flex; }
+            nav ul.collapsed {
+                max-height: 0;
+                opacity: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+                overflow: hidden;
+            }
             .mobile-menu-btn { display:block; }
             .hero { flex-direction:column; text-align:center; }
             .action-buttons { justify-content:center; flex-direction:column; width:100%; gap:14px; }
@@ -533,8 +558,6 @@
             .stain-main-title { font-size: 2rem; }
             .stain-spray { width: 100px; top: -40px; right: -10px; }
             .stain-hanger { width: 140px; bottom: -50px; right: 20px; opacity: 0.7; }
-            .active-order-bar { top: 56px; }
-            .active-order-dropdown { top: 96px; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
     </style>
@@ -703,9 +726,9 @@
             <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
         </div>
         <div class="quick-picks">
-            <button class="quick-pick-chip" onclick="filterCategory('mens', document.querySelector('.price-chip[onclick*=\"mens\"]'))"><i class="fas fa-tshirt"></i> Shirt</button>
-            <button class="quick-pick-chip" onclick="filterCategory('mens', document.querySelector('.price-chip[onclick*=\"mens\"]'))"><i class="fas fa-tshirt"></i> Pant</button>
-            <button class="quick-pick-chip" onclick="filterCategory('festival', document.querySelector('.price-chip[onclick*=\"festival\"]'))"><i class="fas fa-female"></i> Saree</button>
+            <button class="quick-pick-chip" onclick="quickFilter('mens')"><i class="fas fa-tshirt"></i> Shirt</button>
+            <button class="quick-pick-chip" onclick="quickFilter('mens')"><i class="fas fa-tshirt"></i> Pant</button>
+            <button class="quick-pick-chip" onclick="quickFilter('festival')"><i class="fas fa-female"></i> Saree</button>
         </div>
         <div class="pricing-chips-wrapper" id="pricingChipsWrapper"></div>
         <div id="pricingContainer"></div>
@@ -951,7 +974,7 @@
         };
         const catOrder = Object.keys(categories);
         let activeCategory = 'combos';
-        let activeOrdersOpen = false;
+        let activeOrderListeners = [];
 
         // ====== SLIDER ======
         function updateSlider(val) {
@@ -1000,6 +1023,12 @@
             });
             chipsWrapper.innerHTML = chipsHTML;
             container.innerHTML = itemsHTML;
+        }
+
+        function quickFilter(cat) {
+            const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`);
+            if (btn) filterCategory(cat, btn);
+            else filterCategory(cat, null);
         }
 
         window.filterCategory = function(cat, btn) {
@@ -1052,7 +1081,6 @@
             globalSearch('');
         }
 
-        // Swipe on pricing list
         function enableListSwipe() {
             const container = document.getElementById('pricingContainer');
             let startX = 0, startY = 0, swiping = false;
@@ -1067,31 +1095,25 @@
                     const idx = catOrder.indexOf(activeCategory);
                     if (dx < -30 && idx < catOrder.length - 1) {
                         const next = catOrder[idx + 1];
-                        filterCategory(next, document.querySelector(`.price-chip[onclick*="${next}"]`));
+                        const btn = document.querySelector(`.price-chip[onclick*="${next}"]`);
+                        filterCategory(next, btn);
                     } else if (dx > 30 && idx > 0) {
                         const prev = catOrder[idx - 1];
-                        filterCategory(prev, document.querySelector(`.price-chip[onclick*="${prev}"]`));
+                        const btn = document.querySelector(`.price-chip[onclick*="${prev}"]`);
+                        filterCategory(prev, btn);
                     }
                 }
             }, {passive: false});
             container.addEventListener('touchend', () => { swiping = false; });
         }
 
-        // ====== ACTIVE ORDER BAR & DROPDOWN ======
+        // ====== ACTIVE ORDERS (REAL‑TIME) ======
         function renderMiniTimeline(order) {
-            let step = 0;
-            if (order.status === 'pending') step = 0;
-            else if (order.status === 'picked_up') step = 1;
-            else if (order.status === 'processing') step = 2;
             const dotClass = order.status === 'pending' ? 'pending' : order.status === 'picked_up' ? 'picked_up' : 'processing';
             return `<div class="mini-order"><span class="status-dot ${dotClass}"></span>${order.orderId}</div>`;
         }
 
         function renderActiveOrderCard(order) {
-            let step = 0;
-            if (order.status === 'pending') step = 0;
-            else if (order.status === 'picked_up') step = 1;
-            else if (order.status === 'processing') step = 2;
             const expressHtml = order.express === 'Yes' ? `<span class="express-badge"><i class="fas fa-bolt"></i> Express</span>` : '';
             return `<div class="active-order-card">
                 <div class="order-info">
@@ -1104,9 +1126,13 @@
             </div>`;
         }
 
-        function updateActiveOrdersUI() {
-            if (!auth.currentUser) return;
-            db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).once('value').then(snap => {
+        function attachActiveOrderListener(uid) {
+            // Cleanup old listeners
+            activeOrderListeners.forEach(ref => ref.off('value'));
+            activeOrderListeners = [];
+
+            const ordersRef = db.ref('orders').orderByChild('uid').equalTo(uid);
+            const listener = ordersRef.on('value', snap => {
                 const active = [];
                 snap.forEach(child => {
                     const o = child.val();
@@ -1125,12 +1151,12 @@
                 miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
                 dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
             });
+            activeOrderListeners.push(ordersRef);
         }
 
         function toggleActiveOrders() {
             const dropdown = document.getElementById('activeOrderDropdown');
             dropdown.classList.toggle('open');
-            activeOrdersOpen = !activeOrdersOpen;
         }
 
         // ====== THEME TOGGLE ======
@@ -1284,7 +1310,7 @@
                     });
                     openModal('profileModal');
                 };
-                updateActiveOrdersUI();
+                attachActiveOrderListener(user.uid);
             } else {
                 loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
                 loginBtn.style.background = ''; loginBtn.style.color = '';
@@ -1292,6 +1318,8 @@
                 myOrdersItem.style.display = 'none';
                 document.getElementById('activeOrderBar').style.display = 'none';
                 document.getElementById('activeOrderDropdown').classList.remove('open');
+                activeOrderListeners.forEach(ref => ref.off('value'));
+                activeOrderListeners = [];
             }
         });
 
@@ -1334,9 +1362,20 @@
         document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
         document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            document.getElementById('navLinks').classList.toggle('active');
+            const nav = document.getElementById('navLinks');
+            if (nav.classList.contains('active')) {
+                nav.classList.add('collapsed');
+                setTimeout(() => nav.classList.remove('active', 'collapsed'), 300);
+            } else {
+                nav.classList.remove('collapsed');
+                nav.classList.add('active');
+            }
         });
-        document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
+        document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => {
+            const nav = document.getElementById('navLinks');
+            nav.classList.add('collapsed');
+            setTimeout(() => nav.classList.remove('active', 'collapsed'), 300);
+        }));
         document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
             const parent = this.parentElement;
             document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
