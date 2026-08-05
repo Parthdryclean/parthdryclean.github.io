@@ -167,9 +167,9 @@
             padding-bottom: 0;
         }
 
-        /* TRUST BAR */
+        /* TRUST BAR – no bottom border to avoid extra line */
         .trust-bar-wrapper {
-            background: var(--surface); border-bottom: 1px solid var(--border);
+            background: var(--surface);
             overflow: hidden; white-space: nowrap; padding: 10px 0;
         }
         .trust-bar-track { display: inline-block; animation: scroll-left 20s linear infinite; }
@@ -377,7 +377,7 @@
         .pricing { padding:60px 5%; }
         .price-search-container { max-width:700px; margin: 0 auto 20px auto; position:relative; }
         .price-search-container i { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:18px; }
-        .price-search-input { width:100%; padding:16px 50px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
+        .price-search-input { width:100%; padding:16px 60px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
         .price-search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
         .search-clear-btn {
             position: absolute;
@@ -394,6 +394,7 @@
             border-radius: 50%;
             line-height: 1;
             transition: 0.2s;
+            z-index: 2;
         }
         .search-clear-btn:hover { background: rgba(0,0,0,0.05); color: var(--danger); }
         .quick-picks { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
@@ -1127,7 +1128,6 @@
         }
 
         function attachActiveOrderListener(uid) {
-            // Cleanup old listeners
             activeOrderListeners.forEach(ref => ref.off('value'));
             activeOrderListeners = [];
 
