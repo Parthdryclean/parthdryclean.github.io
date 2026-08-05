@@ -153,21 +153,7 @@
         .mobile-menu-btn:hover { color:var(--primary); }
         .install-pill { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; border:none; padding:8px 14px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; display:none; align-items:center; gap:6px; font-family:'Outfit'; }
 
-        /* MOBILE MENU – hidden by default */
-        #navLinks {
-            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-            max-height: 500px;
-            opacity: 1;
-        }
-        #navLinks.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        /* TRUST BAR – no bottom border to avoid extra line */
+        /* TRUST BAR */
         .trust-bar-wrapper {
             background: var(--surface);
             overflow: hidden; white-space: nowrap; padding: 10px 0;
@@ -518,30 +504,33 @@
             .btn-login span { display: none; }
             .btn-login { padding: 8px 12px; border: none; background: transparent; }
             .install-pill { display: none; }
-            /* MOBILE MENU – HIDDEN BY DEFAULT */
+            
+            /* FIXED MOBILE MENU */
             nav ul {
-                display: none;
+                display: flex; /* Changed from none */
                 flex-direction: column;
                 position: absolute;
                 top: 100%;
                 left: 0;
                 width: 100%;
                 background: var(--surface);
-                padding: 20px 5%;
+                padding: 0 5%;
                 border-bottom: 1px solid var(--border);
                 box-shadow: var(--shadow);
                 gap: 12px;
-                max-height: 500px;
-                opacity: 1;
-            }
-            nav ul.active { display: flex; }
-            nav ul.collapsed {
                 max-height: 0;
                 opacity: 0;
-                padding-top: 0;
-                padding-bottom: 0;
                 overflow: hidden;
+                pointer-events: none;
+                transition: all 0.3s ease;
             }
+            nav ul.active {
+                max-height: 500px;
+                opacity: 1;
+                padding: 20px 5%;
+                pointer-events: auto;
+            }
+            
             .mobile-menu-btn { display:block; }
             .hero { flex-direction:column; text-align:center; }
             .action-buttons { justify-content:center; flex-direction:column; width:100%; gap:14px; }
@@ -839,7 +828,7 @@
             </button>
             <div class="auth-divider">OR</div>
             <div id="phoneAuthSection">
-                <div id="recaptcha-container" style="display:none;"></div>
+                <div id="recaptcha-container"></div>
                 <input type="tel" id="phoneInput" class="auth-input" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="10">
                 <button type="button" class="btn-primary-full" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send SMS OTP</button>
             </div>
@@ -1323,14 +1312,20 @@
             }
         });
 
-        // ====== MOBILE MENU AUTO-CLOSE WITH ANIMATION ======
+        // ====== MOBILE MENU AUTO-CLOSE & TOGGLE ======
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const nav = document.getElementById('navLinks');
+            nav.classList.toggle('active');
+        });
+        
+        document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => {
+            document.getElementById('navLinks').classList.remove('active');
+        }));
+        
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navLinks');
             if (window.scrollY > 30 && nav.classList.contains('active')) {
-                nav.classList.add('collapsed');
-                setTimeout(() => {
-                    nav.classList.remove('active', 'collapsed');
-                }, 300);
+                nav.classList.remove('active');
             }
         });
 
@@ -1361,21 +1356,6 @@
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
         document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            const nav = document.getElementById('navLinks');
-            if (nav.classList.contains('active')) {
-                nav.classList.add('collapsed');
-                setTimeout(() => nav.classList.remove('active', 'collapsed'), 300);
-            } else {
-                nav.classList.remove('collapsed');
-                nav.classList.add('active');
-            }
-        });
-        document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => {
-            const nav = document.getElementById('navLinks');
-            nav.classList.add('collapsed');
-            setTimeout(() => nav.classList.remove('active', 'collapsed'), 300);
-        }));
         document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
             const parent = this.parentElement;
             document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
