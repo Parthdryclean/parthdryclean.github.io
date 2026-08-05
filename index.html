@@ -37,7 +37,6 @@
             --shadow: 0 8px 30px rgba(0,0,0,0.06);
             --transition: 0.25s ease;
         }
-
         [data-theme="dark"] {
             --bg: #0f172a;
             --surface: #1e293b;
@@ -57,7 +56,7 @@
 
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height:1.6; padding-bottom:30px; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
-
+        button { -webkit-tap-highlight-color: transparent; }
         :focus { outline: none; }
         :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
@@ -112,7 +111,6 @@
         nav ul { list-style:none; display:flex; gap:18px; align-items:center; margin:0; padding:0; }
         nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-size:14px; transition:0.3s; white-space:nowrap; }
         nav a:hover { color:var(--primary); }
-
         .btn-login {
             background: transparent;
             color: var(--accent);
@@ -129,40 +127,30 @@
             white-space: nowrap;
             font-family: 'Outfit', sans-serif;
         }
-        .btn-login:hover {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
-        }
+        .btn-login:hover { background: var(--accent); color: #fff; box-shadow:0 4px 15px rgba(99,102,241,0.3); }
         .theme-toggle {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
+            background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem;
+            cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
         .theme-toggle:hover { color: var(--primary); }
         .mobile-menu-btn { display:none; background:none; border:none; font-size:24px; color:var(--text); cursor:pointer; z-index:1001; padding:4px 8px; transition:0.2s; }
         .mobile-menu-btn:hover { color:var(--primary); }
         .install-pill { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; border:none; padding:8px 14px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; display:none; align-items:center; gap:6px; font-family:'Outfit'; }
 
-        /* TRUST BAR */
-        .trust-bar-wrapper {
-            background: var(--surface); border-bottom: 1px solid var(--border);
-            overflow: hidden; white-space: nowrap; padding: 10px 0;
+        /* MOBILE MENU ANIMATION */
+        #navLinks {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: 500px; opacity: 1; overflow: hidden;
         }
+        #navLinks.collapsed {
+            max-height: 0; opacity: 0;
+        }
+
+        /* TRUST BAR */
+        .trust-bar-wrapper { background: var(--surface); border-bottom: 1px solid var(--border); overflow: hidden; white-space: nowrap; padding: 10px 0; }
         .trust-bar-track { display: inline-block; animation: scroll-left 20s linear infinite; }
         .trust-bar-track:hover { animation-play-state: paused; }
-        .trust-item {
-            display: inline-flex; align-items: center; gap: 8px; font-size: 13px;
-            font-weight: 700; color: var(--text-muted); margin: 0 25px;
-        }
+        .trust-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 0 25px; }
         .trust-item i { color: var(--primary); font-size: 16px; }
         @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
@@ -172,29 +160,37 @@
         .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; transition:0.2s; }
         .close-banner:hover { color:#fff; }
 
-        /* ACTIVE PANEL PRO (Book Style) */
-        .active-book-panel {
-            background: var(--surface); border-bottom: 1px solid var(--border);
-            padding: 12px 5%; display: none; align-items: center; justify-content: center;
-            position: relative; z-index: 50; overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        /* ACTIVE ORDER BAR (sticky, improved) */
+        .active-order-bar {
+            position: sticky; top: 60px; z-index: 99;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 5%; display: none; flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .book-page-wrapper {
-            display: flex; align-items: center; gap: 16px; width: 100%; max-width: 800px;
-            transition: transform 0.4s ease;
+        .order-bar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-weight: 800; font-size: 14px;
         }
-        .book-page {
-            min-width: 100%; flex-shrink: 0;
-            display: flex; flex-direction: column; gap: 6px;
+        .order-bar-title { display: flex; align-items: center; gap: 6px; }
+        .order-bar-title span { color: var(--success); font-size: 11px; margin-left: 4px; }
+        .order-bar-body {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+            margin-top: 8px;
+            display: flex; flex-direction: column; gap: 10px;
         }
-        .book-nav-btn {
-            background: var(--bg); border: 1px solid var(--border); border-radius: 50%;
-            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--text-muted); transition: 0.2s; flex-shrink: 0;
+        .order-bar-body.open { max-height: 500px; }
+        .active-order-mini-card {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 12px; display: flex; align-items: center; gap: 12px;
         }
-        .book-nav-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-        .book-nav-btn:disabled { opacity: 0.4; pointer-events: none; }
-        .express-badge { background: #fbbf24; color: #1e293b; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; }
+        .mini-order-info { flex: 1; }
+        .mini-order-info strong { font-size: 14px; }
+        .mini-order-info small { display: block; color: var(--text-muted); }
+        .mini-order-status-dots { display: flex; gap: 4px; align-items: center; }
+        .mini-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+        .mini-dot.active { background: var(--primary); box-shadow: 0 0 6px var(--primary); }
+        .mini-dot.done { background: var(--success); }
 
         /* HERO */
         .hero { display:flex; align-items:center; justify-content:space-between; padding:50px 5%; gap:40px; flex-wrap:wrap; }
@@ -232,7 +228,7 @@
         .badge-dirty { right:15px; background:rgba(239,68,68,0.8); backdrop-filter:blur(4px); }
         .badge-clean { left:15px; background:rgba(16,185,129,0.8); backdrop-filter:blur(4px); }
 
-        /* MASTER DASHBOARD */
+        /* MASTER DASHBOARD (Expert Care) */
         .master-section { padding: 80px 5%; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow-x: clip; margin-top:20px; }
         .master-container { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; gap: 50px; }
         .master-left { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; min-height: 420px; }
@@ -268,30 +264,33 @@
         .pricing { padding:60px 5%; }
         .price-search-container { max-width:700px; margin: 0 auto 20px auto; position:relative; }
         .price-search-container i { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:18px; }
-        .price-search-input { width:100%; padding:16px 20px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
+        .price-search-input { width:100%; padding:16px 50px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
         .price-search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
         .search-clear-btn {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            display: none;
-            padding: 0;
-            line-height: 1;
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-muted); font-size: 18px;
+            cursor: pointer; display: none; padding: 6px; border-radius: 50%; line-height: 1; transition: 0.2s;
         }
-        .search-clear-btn:hover { color: var(--danger); }
-        .quick-picks { display: flex; gap: 8px; max-width: 700px; margin: 0 auto 12px; flex-wrap: wrap; }
+        .search-clear-btn:hover { background: rgba(0,0,0,0.05); color: var(--danger); }
+        .quick-picks { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
         .quick-pick-chip {
-            padding: 6px 14px; border-radius: 20px; background: var(--surface); border: 1.5px solid var(--border);
-            font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s;
-            white-space: nowrap; font-family: 'Outfit';
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--primary);
+            transition: 0.2s;
+            font-family: 'Outfit';
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        .quick-pick-chip i { color: var(--primary); }
         .quick-pick-chip:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .quick-pick-chip:hover i { color: #fff; }
         .pricing-chips-wrapper { display:flex; gap:10px; max-width:700px; margin:0 auto 20px; overflow-x:auto; padding-bottom:10px; scrollbar-width: none; }
         .pricing-chips-wrapper::-webkit-scrollbar { display:none; }
         .price-chip { white-space:nowrap; padding:10px 20px; border-radius:30px; background:var(--surface); border:1.5px solid var(--border); font-size:14px; font-weight:700; color:var(--text-muted); cursor:pointer; transition:0.3s; font-family:'Outfit'; }
@@ -331,7 +330,7 @@
         .review-text { font-size:14px; color:var(--text); font-style:italic; margin-bottom:12px; font-weight:600; }
         .customer-name { font-weight:800; color:var(--primary); }
         .customer-loc { font-size:12px; color:var(--text-muted); margin-left:8px; font-weight:600; }
-        .write-review-btn { margin-top: 20px; display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; padding: 10px 24px; border-radius: 50px; font-weight: 800; text-decoration: none; transition: 0.3s; cursor: pointer; border: none; font-family: 'Outfit'; }
+        .write-review-btn { margin-top: 20px; display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; padding: 10px 24px; border-radius: 50px; font-weight: 800; text-decoration: none; transition: 0.3s; cursor: pointer; border: none; font-family:'Outfit'; }
         .write-review-btn:hover { background: var(--primary); }
 
         .faq-section { padding:60px 5%; max-width:800px; margin:0 auto; }
@@ -383,11 +382,26 @@
         .profile-input { width:100%; padding:14px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; font-family:'Outfit'; font-size:14px; outline:none; font-weight:600;}
         .profile-input.readonly { background:#e2e8f0; color:var(--text-muted); }
 
-        /* Mobile menu slide animation */
-        nav ul {
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            overflow: hidden;
-            max-height: 500px; /* enough for menu items */
+        /* My Orders Modal */
+        .order-history-card {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 14px; margin-bottom: 12px; text-align: left;
+        }
+        .order-history-card .order-id { font-weight: 800; font-size: 15px; }
+        .order-history-card .order-meta { font-size: 13px; color: var(--text-muted); margin: 4px 0; }
+        .order-history-card .order-items { font-size: 12px; }
+        .view-invoice-btn {
+            background: var(--primary); color: #fff; border: none; padding: 8px 16px;
+            border-radius: 20px; font-weight: 800; font-size: 12px; cursor: pointer; margin-top: 8px;
+            display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;
+        }
+        .view-invoice-btn:hover { background: var(--primary-dark); }
+
+        @media (max-width:900px) {
+            .master-container { flex-direction: column; text-align: center; gap: 30px;}
+            .master-right { align-items: center; }
+            .fabric-pills { justify-content: center; }
+            .fabric-content-card h3 { justify-content: center; }
         }
         @media (max-width:768px) {
             header { padding: 6px 4%; }
@@ -397,8 +411,7 @@
             .btn-login span { display: none; }
             .btn-login { padding: 8px 12px; border: none; background: transparent; }
             .install-pill { display: none; }
-            nav ul { display:flex; flex-direction:column; position:absolute; top:100%; left:0; width:100%; background:var(--surface); border-bottom:1px solid var(--border); box-shadow:var(--shadow); max-height: 0; padding:0 5%; gap:0; }
-            nav ul.active { max-height: 500px; padding: 20px 5%; }
+            nav ul { display:flex; flex-direction:column; position:absolute; top:100%; left:0; width:100%; background:var(--surface); padding:20px 5%; border-bottom:1px solid var(--border); box-shadow:var(--shadow); gap:12px; }
             .mobile-menu-btn { display:block; }
             .hero { flex-direction:column; text-align:center; }
             .action-buttons { justify-content:center; flex-direction:column; width:100%; gap:14px; }
@@ -416,8 +429,7 @@
             .stain-main-title { font-size: 2rem; }
             .stain-spray { width: 100px; top: -40px; right: -10px; }
             .stain-hanger { width: 140px; bottom: -50px; right: 20px; opacity: 0.7; }
-            .active-book-panel { padding: 8px 4%; }
-            .book-nav-btn { width: 28px; height: 28px; }
+            .active-order-bar { top: 55px; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
     </style>
@@ -447,7 +459,7 @@
                     <li><a href="#pricing">Pricing</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#reviews">Reviews</a></li>
-                    <li id="myOrdersLink" style="display:none;"><a href="#" onclick="openModal('orderHistoryModal'); loadOrderHistory(); return false;">My Orders</a></li>
+                    <li id="myOrdersNavItem" style="display:none;"><a href="#" onclick="openModal('ordersModal'); loadOrderHistory(); return false;">My Orders</a></li>
                 </ul>
             </nav>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
@@ -456,6 +468,18 @@
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
         </div>
     </header>
+
+    <!-- Active Order Bar (sticky) -->
+    <div class="active-order-bar" id="activeOrderBar">
+        <div class="order-bar-header" onclick="toggleActiveBar()">
+            <div class="order-bar-title">
+                <i class="fas fa-clock" style="color:var(--primary);"></i> Active Orders
+                <span id="activeOrderCount">0</span>
+            </div>
+            <i class="fas fa-chevron-down" id="activeBarArrow"></i>
+        </div>
+        <div class="order-bar-body" id="activeBarBody"></div>
+    </div>
 
     <div class="trust-bar-wrapper">
         <div class="trust-bar-track">
@@ -470,15 +494,6 @@
             <div class="trust-item"><i class="fas fa-star"></i> 4.9/5 Google Ratings</div>
             <div class="trust-item"><i class="fas fa-tags"></i> Bulk Booking Discounts</div>
         </div>
-    </div>
-
-    <!-- Active Panel Pro (Book Style) -->
-    <div class="active-book-panel" id="activeBookPanel">
-        <button class="book-nav-btn" id="bookPrevBtn" onclick="flipBookPage(-1)"><i class="fas fa-chevron-left"></i></button>
-        <div class="book-page-wrapper" id="bookPageWrapper">
-            <div class="book-page" id="bookPage1"></div>
-        </div>
-        <button class="book-nav-btn" id="bookNextBtn" onclick="flipBookPage(1)"><i class="fas fa-chevron-right"></i></button>
     </div>
 
     <a href="https://wa.me/919235601645?text=Hello%2C%20I%20need%20help%20with%20my%20laundry%20order." target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
@@ -524,7 +539,7 @@
         </div>
     </section>
 
-    <!-- MASTER DASHBOARD -->
+    <!-- MASTER DASHBOARD (Expert Care) -->
     <section class="master-section" id="fabric-advisor">
         <div class="section-header">
             <h2>Our Expert <span class="text-gradient">Care Masterclass</span></h2>
@@ -577,7 +592,7 @@
         </div>
     </section>
 
-    <!-- PRICING (Global search + swipe + quick picks) -->
+    <!-- PRICING -->
     <section class="pricing" id="pricing">
         <div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>No hidden charges, premium quality guaranteed</p></div>
         <div class="price-search-container">
@@ -585,18 +600,16 @@
             <input type="text" id="priceSearchInput" class="price-search-input" placeholder="Search for a garment (e.g., Jacket, Saree)..." oninput="globalSearch(this.value)">
             <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
         </div>
-        <div class="quick-picks" id="quickPicksRow">
-            <span class="quick-pick-chip" onclick="filterCategory('mens')">👔 Shirt</span>
-            <span class="quick-pick-chip" onclick="filterCategory('mens')">👖 Pant</span>
-            <span class="quick-pick-chip" onclick="filterCategory('ladies')">👗 Ladies Kurta</span>
-            <span class="quick-pick-chip" onclick="filterCategory('winterWomen')">🧥 Sweater</span>
-            <span class="quick-pick-chip" onclick="filterCategory('festival')">🥻 Saree</span>
+        <div class="quick-picks">
+            <button class="quick-pick-chip" onclick="filterCategory('mens', document.querySelector('.price-chip[onclick*=\"mens\"]'))"><i class="fas fa-tshirt"></i> Shirt</button>
+            <button class="quick-pick-chip" onclick="filterCategory('mens', document.querySelector('.price-chip[onclick*=\"mens\"]'))"><i class="fas fa-tshirt"></i> Pant</button>
+            <button class="quick-pick-chip" onclick="filterCategory('festival', document.querySelector('.price-chip[onclick*=\"festival\"]'))"><i class="fas fa-female"></i> Saree</button>
         </div>
         <div class="pricing-chips-wrapper" id="pricingChipsWrapper"></div>
         <div id="pricingContainer"></div>
     </section>
 
-    <!-- HOW IT WORKS (moved after pricing) -->
+    <!-- HOW IT WORKS -->
     <section class="how-it-works" id="how-it-works">
         <div class="section-header">
             <h2>How It <span class="text-gradient">Works</span></h2>
@@ -678,7 +691,7 @@
         </div>
     </section>
 
-    <!-- Nearby Areas Map (reduced height) -->
+    <!-- Nearby Areas Map -->
     <div class="map-section">
         <iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe>
     </div>
@@ -711,7 +724,7 @@
         </div>
     </div>
 
-    <!-- Profile Modal (only My Details) -->
+    <!-- Profile Modal -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
             <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')">&times;</button>
@@ -739,17 +752,17 @@
         </div>
     </div>
 
-    <!-- Order History Modal (new) -->
-    <div class="modal-overlay" id="orderHistoryModal">
+    <!-- Orders Modal -->
+    <div class="modal-overlay" id="ordersModal">
         <div class="modal-box">
-            <button type="button" class="close-modal-btn" onclick="closeModal('orderHistoryModal')">&times;</button>
-            <h2 style="color:var(--primary); margin-bottom:15px;"><i class="fas fa-history"></i> My Orders</h2>
-            <div id="orderHistoryList" style="text-align:left; max-height:350px; overflow-y:auto;"></div>
+            <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')">&times;</button>
+            <h2 style="color:var(--text); margin-bottom:20px;"><i class="fas fa-history"></i> My Orders</h2>
+            <div id="orderHistoryList" style="max-height: 60vh; overflow-y: auto;"><p style="text-align:center; font-size:13px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading orders...</p></div>
         </div>
     </div>
 
     <script>
-        // ===== GLOBALS =====
+        // ====== FIREBASE ======
         const firebaseConfig = {
             apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
             authDomain: "parth-dry-clean.firebaseapp.com",
@@ -763,6 +776,7 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
+        // ====== CATEGORIES ======
         const categories = {
             combos: [
                 { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-crown' },
@@ -830,14 +844,14 @@
         const catOrder = Object.keys(categories);
         let activeCategory = 'combos';
 
-        // ===== SLIDER =====
+        // ====== SLIDER ======
         function updateSlider(val) {
             document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`;
             document.getElementById('baSliderLine').style.left = `${val}%`;
             document.getElementById('baSliderBtn').style.left = `${val}%`;
         }
 
-        // ===== FABRIC ADVISOR =====
+        // ====== FABRIC ADVISOR ======
         function switchFabric(type, el, imageSrc) {
             document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active'));
@@ -854,99 +868,45 @@
             }, 300);
         }
 
-        // ===== PRICING =====
+        // ====== PRICING & SEARCH ======
         function renderPricing() {
             const chipsWrapper = document.getElementById('pricingChipsWrapper');
             const container = document.getElementById('pricingContainer');
             chipsWrapper.innerHTML = '';
             let chipsHTML = `<button class="price-chip" onclick="filterCategory('all', this)">All Items</button>`;
             let itemsHTML = '';
-            
             Object.keys(categories).forEach(cat => {
                 const items = categories[cat];
                 const isActive = (cat === activeCategory) ? 'active' : '';
-                // No icon for combos chip
-                const iconHTML = (cat === 'combos') ? '' : `<i class="fas ${items[0]?.icon || 'fa-tshirt'}"></i> `;
-                chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${iconHTML}${categoryNames[cat]}</button>`;
-                
+                chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)"><i class="fas ${items[0]?.icon || 'fa-tshirt'}"></i> ${categoryNames[cat]}</button>`;
                 const displayStyle = (cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;';
                 itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`;
-                const groupIcon = (cat === 'combos') ? '' : `<i class="fas ${items[0]?.icon || 'fa-tshirt'}"></i> `;
-                itemsHTML += `<h3 class="category-group-title">${groupIcon}${categoryNames[cat]}</h3>`;
+                itemsHTML += `<h3 class="category-group-title">${categoryNames[cat]}</h3>`;
                 items.forEach(item => {
                     const priceText = item.price > 0 ? `₹${item.price}` : '₹—';
                     const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : '';
-                    itemsHTML += `
-                        <div class="price-item" data-name="${item.name.toLowerCase()}">
-                            <span class="price-name">${item.name}</span>
-                            <span class="price-tag">${priceText}${originalText}</span>
-                        </div>`;
+                    itemsHTML += `<div class="price-item" data-name="${item.name.toLowerCase()}"><span class="price-name">${item.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`;
                 });
                 itemsHTML += `</div>`;
             });
-            
             chipsWrapper.innerHTML = chipsHTML;
             container.innerHTML = itemsHTML;
-        }
-
-        function enableListSwipe() {
-            const container = document.getElementById('pricingContainer');
-            let startX = 0, startY = 0, isSwiping = false;
-            
-            container.addEventListener('touchstart', e => {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-                isSwiping = false;
-            }, {passive: true});
-
-            container.addEventListener('touchmove', e => {
-                if (isSwiping) return;
-                const dx = e.touches[0].clientX - startX;
-                const dy = e.touches[0].clientY - startY;
-                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) {
-                    e.preventDefault();
-                    isSwiping = true;
-                    const idx = catOrder.indexOf(activeCategory);
-                    if (dx < -30 && idx < catOrder.length - 1) {
-                        goToCategory(catOrder[idx + 1]);
-                    } else if (dx > 30 && idx > 0) {
-                        goToCategory(catOrder[idx - 1]);
-                    }
-                }
-            }, {passive: false});
-
-            container.addEventListener('touchend', () => { isSwiping = false; });
-        }
-
-        function goToCategory(cat) {
-            if (cat === activeCategory) return;
-            const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`);
-            if (btn) filterCategory(cat, btn);
-            else filterCategory(cat, null);
         }
 
         window.filterCategory = function(cat, btn) {
             if (btn && btn.classList.contains('active')) {
                 btn.classList.remove('active');
                 activeCategory = null;
-                document.querySelectorAll('.price-category-group').forEach(group => group.style.display = 'none');
+                document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none');
                 return;
             }
             activeCategory = cat;
             document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active'));
             if (btn) btn.classList.add('active');
-            const searchInput = document.getElementById('priceSearchInput');
-            if (searchInput.value !== '') {
-                searchInput.value = '';
-                document.getElementById('searchClearBtn').style.display = 'none';
-            }
-            document.querySelectorAll('.price-category-group').forEach(group => {
-                if (cat === 'all' || group.getAttribute('data-category') === cat) {
-                    group.style.display = 'block';
-                    group.style.animation = 'fadeIn 0.3s ease';
-                } else {
-                    group.style.display = 'none';
-                }
+            document.getElementById('priceSearchInput').value = '';
+            document.getElementById('searchClearBtn').style.display = 'none';
+            document.querySelectorAll('.price-category-group').forEach(g => {
+                g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none';
             });
         };
 
@@ -954,159 +914,105 @@
             val = val.trim();
             const container = document.getElementById('pricingContainer');
             const clearBtn = document.getElementById('searchClearBtn');
-            if (val === '') {
+            if (!val) {
                 clearBtn.style.display = 'none';
                 renderPricing();
                 return;
             }
             clearBtn.style.display = 'block';
-            let resultItems = [];
+            let results = [];
             for (let cat in categories) {
                 categories[cat].forEach(item => {
-                    if (item.name.toLowerCase().includes(val)) {
-                        resultItems.push({ ...item, cat });
-                    }
+                    if (item.name.toLowerCase().includes(val.toLowerCase())) results.push(item);
                 });
             }
-            let html = `<div class="price-category-group" style="display:block; animation:fadeIn 0.3s ease;">
-                <h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${val}"</h3>`;
-            if (resultItems.length === 0) {
-                html += `<p style="padding:20px; text-align:center; color:var(--text-muted); font-weight:600;">No items found</p>`;
-            } else {
-                resultItems.forEach(item => {
-                    const priceText = item.price > 0 ? `₹${item.price}` : '₹—';
-                    const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : '';
-                    html += `
-                        <div class="price-item">
-                            <span class="price-name">${item.name}</span>
-                            <span class="price-tag">${priceText}${originalText}</span>
-                        </div>`;
-                });
-            }
+            let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${val}"</h3>`;
+            html += results.length ? results.map(i => {
+                const priceText = i.price > 0 ? `₹${i.price}` : '₹—';
+                const originalText = i.originalPrice ? `<span class="price-original">₹${i.originalPrice}</span>` : '';
+                return `<div class="price-item"><span class="price-name">${i.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`;
+            }).join('') : `<p style="padding:20px; text-align:center; color:var(--text-muted);">No items found</p>`;
             html += `</div>`;
             container.innerHTML = html;
             document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active'));
         }
 
         function clearSearch() {
-            const input = document.getElementById('priceSearchInput');
-            input.value = '';
+            document.getElementById('priceSearchInput').value = '';
             document.getElementById('searchClearBtn').style.display = 'none';
             globalSearch('');
         }
 
-        // ===== ACTIVE PANEL PRO (Book Flip) =====
-        let activeOrders = [];
-        let currentActivePage = 0;
-
-        function renderActivePanel() {
-            const panel = document.getElementById('activeBookPanel');
-            if (activeOrders.length === 0) {
-                panel.style.display = 'none';
-                return;
-            }
-            panel.style.display = 'flex';
-            const pageWrapper = document.getElementById('bookPageWrapper');
-            // Build pages
-            pageWrapper.innerHTML = '';
-            activeOrders.forEach((order, idx) => {
-                const page = document.createElement('div');
-                page.className = 'book-page';
-                page.innerHTML = renderBookTimeline(order);
-                pageWrapper.appendChild(page);
-            });
-            // Update navigation
-            updateBookNav();
-            showBookPage(currentActivePage);
-        }
-
-        function renderBookTimeline(order) {
-            let step = 0;
-            if (order.status === 'pending') step = 0;
-            else if (order.status === 'picked_up') step = 1;
-            else if (order.status === 'processing') step = 2;
-            else if (order.status === 'delivered') step = 3;
-            const steps = [
-                { label: 'Placed', icon: 'fa-box', active: step >= 0, completed: step > 0 },
-                { label: 'Picked Up', icon: 'fa-truck', active: step >= 1, completed: step > 1 },
-                { label: 'In Care', icon: 'fa-tshirt', active: step >= 2, completed: step > 2 },
-                { label: 'Delivered', icon: 'fa-check', active: step >= 3, completed: step > 3 }
-            ];
-            const expressHtml = order.express === 'Yes' ? `<span class="express-badge"><i class="fas fa-bolt"></i> Express</span>` : '';
-            let riderBtn = '';
-            if (step === 1 || step === 2) riderBtn = `<a href="tel:+919235601645" style="display:inline-block; background:#22c55e; color:#fff; padding:6px 14px; border-radius:20px; text-decoration:none; font-weight:800; font-size:12px; margin-top:8px;"><i class="fas fa-phone-alt"></i> Call Pickup</a>`;
-            return `
-                <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-                    <span style="font-weight:700; font-size:14px;">${order.orderId} ${expressHtml}</span>
-                    ${riderBtn}
-                </div>
-                <div style="display:flex; justify-content:space-between; position:relative; margin:8px 0;">
-                    <div style="position:absolute; top:14px; left:5%; right:5%; height:2px; background:var(--border);"></div>
-                    ${steps.map(s => `<div style="display:flex; flex-direction:column; align-items:center; flex:1; z-index:1;">
-                        <div style="width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; ${s.completed?'background:#22c55e; color:#fff;':s.active?'background:var(--primary); color:#fff; box-shadow:0 0 6px rgba(14,165,233,0.4);':'background:var(--bg); color:var(--text-muted); border:2px solid var(--border);'}"><i class="fas ${s.icon}"></i></div>
-                        <div style="margin-top:4px; font-size:10px; font-weight:800; color:${s.active||s.completed?'var(--text)':'var(--text-muted)'}">${s.label}</div>
-                    </div>`).join('')}
-                </div>`;
-        }
-
-        function showBookPage(index) {
-            const pages = document.querySelectorAll('.book-page');
-            const wrapper = document.getElementById('bookPageWrapper');
-            if (pages.length === 0) return;
-            currentActivePage = ((index % pages.length) + pages.length) % pages.length;
-            const offset = -currentActivePage * 100;
-            wrapper.style.transform = `translateX(${offset}%)`;
-            updateBookNav();
-        }
-
-        function flipBookPage(dir) {
-            const newIndex = currentActivePage + dir;
-            showBookPage(newIndex);
-        }
-
-        function updateBookNav() {
-            const prevBtn = document.getElementById('bookPrevBtn');
-            const nextBtn = document.getElementById('bookNextBtn');
-            if (activeOrders.length <= 1) {
-                prevBtn.disabled = true;
-                nextBtn.disabled = true;
-            } else {
-                prevBtn.disabled = (currentActivePage === 0);
-                nextBtn.disabled = (currentActivePage === activeOrders.length - 1);
-            }
-        }
-
-        // Swipe on book panel
-        function enableBookSwipe() {
-            const panel = document.getElementById('activeBookPanel');
-            let startX = 0;
-            panel.addEventListener('touchstart', e => {
-                startX = e.touches[0].clientX;
-            });
-            panel.addEventListener('touchend', e => {
-                const diff = startX - e.changedTouches[0].clientX;
-                if (Math.abs(diff) > 50) {
-                    if (diff > 0) flipBookPage(1);
-                    else flipBookPage(-1);
+        // Swipe on pricing list
+        function enableListSwipe() {
+            const container = document.getElementById('pricingContainer');
+            let startX = 0, startY = 0, swiping = false;
+            container.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; swiping = false; }, {passive: true});
+            container.addEventListener('touchmove', e => {
+                if (swiping) return;
+                const dx = e.touches[0].clientX - startX;
+                const dy = e.touches[0].clientY - startY;
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) {
+                    e.preventDefault();
+                    swiping = true;
+                    const idx = catOrder.indexOf(activeCategory);
+                    if (dx < -30 && idx < catOrder.length - 1) {
+                        const next = catOrder[idx + 1];
+                        filterCategory(next, document.querySelector(`.price-chip[onclick*="${next}"]`));
+                    } else if (dx > 30 && idx > 0) {
+                        const prev = catOrder[idx - 1];
+                        filterCategory(prev, document.querySelector(`.price-chip[onclick*="${prev}"]`));
+                    }
                 }
-            });
+            }, {passive: false});
+            container.addEventListener('touchend', () => { swiping = false; });
         }
 
-        function loadActiveOrders() {
+        // ====== ACTIVE ORDERS BAR ======
+        function toggleActiveBar() {
+            const body = document.getElementById('activeBarBody');
+            const arrow = document.getElementById('activeBarArrow');
+            body.classList.toggle('open');
+            arrow.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+        }
+
+        function updateActiveOrdersBar() {
             if (!auth.currentUser) return;
-            db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).on('value', snap => {
-                const orders = [];
+            db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).once('value').then(snap => {
+                const active = [];
                 snap.forEach(child => {
                     const o = child.val();
-                    if (['pending','picked_up','processing'].includes(o.status)) orders.push(o);
+                    if (['pending','picked_up','processing'].includes(o.status)) active.push(o);
                 });
-                activeOrders = orders;
-                currentActivePage = 0;
-                renderActivePanel();
+                const bar = document.getElementById('activeOrderBar');
+                const countEl = document.getElementById('activeOrderCount');
+                const body = document.getElementById('activeBarBody');
+                if (active.length === 0) {
+                    bar.style.display = 'none';
+                    return;
+                }
+                bar.style.display = 'flex';
+                countEl.textContent = active.length;
+                // Build mini cards
+                body.innerHTML = active.map(order => {
+                    const date = order.pickupDate || new Date(order.createdAt).toLocaleDateString();
+                    const step = order.status === 'pending' ? 0 : order.status === 'picked_up' ? 1 : 2;
+                    const dots = [0,1,2].map(i => {
+                        if (i < step) return '<div class="mini-dot done"></div>';
+                        if (i === step) return '<div class="mini-dot active"></div>';
+                        return '<div class="mini-dot"></div>';
+                    }).join('');
+                    return `<div class="active-order-mini-card">
+                        <div class="mini-order-info">
+                            <strong>${order.orderId}</strong> <small>${date}</small>
+                            <div class="mini-order-status-dots">${dots}</div>
+                        </div>
+                    </div>`;
+                }).join('');
             });
         }
 
-        // ===== THEME TOGGLE =====
+        // ====== THEME TOGGLE ======
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.querySelector('#themeToggle i');
@@ -1120,15 +1026,14 @@
                 icon.className = 'fas fa-sun';
             }
         }
-        (function() {
-            const saved = localStorage.getItem('theme');
-            if (saved === 'dark') {
+        (() => {
+            if (localStorage.getItem('theme') === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
                 document.querySelector('#themeToggle i').className = 'fas fa-sun';
             }
         })();
 
-        // ===== MODALS & SCROLL LOCK =====
+        // ====== MODALS & SCROLL LOCK ======
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1157,10 +1062,7 @@
 
         let confirmationResult, recaptchaVerifier;
         function signInWithGoogle() {
-            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(() => {
-                showToast('Logged in successfully!','success');
-                closeModal('authModal');
-            }).catch(e => showToast(e.message,'error'));
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(() => { showToast('Logged in!','success'); closeModal('authModal'); }).catch(e => showToast(e.message,'error'));
         }
         function sendOTP() {
             const num = document.getElementById('phoneInput').value;
@@ -1172,64 +1074,61 @@
                 document.getElementById('otpSection').style.display = 'block';
                 showToast('OTP sent!','success');
             }).catch(err => {
-                showToast('Error: '+err.message,'error');
+                showToast(err.message,'error');
                 document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP';
-                if (recaptchaVerifier) {
-                    recaptchaVerifier.clear();
-                    recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
-                    recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId);
-                }
+                if (recaptchaVerifier) { recaptchaVerifier.clear(); recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} }); recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId); }
             });
         }
         function verifyOTP() {
             const code = document.getElementById('otpInput').value;
             if (code.length !== 6) return showToast('Enter 6-digit OTP','warning');
-            confirmationResult.confirm(code).then(() => {
-                showToast('Verified & Logged In!','success');
-                closeModal('authModal');
-            }).catch(() => showToast('Invalid OTP','error'));
+            confirmationResult.confirm(code).then(() => { showToast('Verified!','success'); closeModal('authModal'); }).catch(() => showToast('Invalid OTP','error'));
         }
 
         function saveProfile() {
             const user = auth.currentUser;
             if (!user) return;
             const phone = document.getElementById('profPhone').value;
-            if (!/^\d{10}$/.test(phone)) {
-                showToast('Please enter a valid 10-digit mobile number','warning');
-                return;
-            }
+            if (!/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number','warning');
             db.ref('customers/'+user.uid).update({
                 name: document.getElementById('profName').value,
                 phone: phone,
                 address: document.getElementById('profAddress').value
-            }).then(() => showToast('Profile saved successfully!','success'))
-            .catch(() => showToast('Failed to save profile.','error'));
+            }).then(() => showToast('Profile saved!','success')).catch(() => showToast('Error saving','error'));
         }
         function logoutUser() { auth.signOut().then(() => { closeModal('profileModal'); showToast('Logged out','info'); }); }
 
+        // ====== MY ORDERS (new design) ======
         function loadOrderHistory() {
             const list = document.getElementById('orderHistoryList');
             if (!auth.currentUser) return;
-            list.innerHTML = '<p style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
             db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).once('value').then(snap => {
                 let html = '';
                 snap.forEach(child => {
                     const o = child.val();
-                    html = `<div style="background:var(--bg); padding:12px; border-radius:12px; margin-bottom:8px;"><strong>${o.orderId}</strong> - ₹${o.total}<br><small>${new Date(o.createdAt).toLocaleDateString()}</small><button type="button" onclick="downloadInvoice('${o.orderId}')" style="background:var(--primary); color:#fff; border:none; padding:6px 14px; border-radius:20px; margin-top:8px; font-weight:800; font-family:'Outfit'; cursor:pointer;"><i class="fas fa-file-pdf"></i> Download PDF</button></div>` + html;
+                    const date = new Date(o.createdAt).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+                    const statusColor = o.status === 'delivered' ? 'var(--success)' : o.status === 'cancelled' ? 'var(--danger)' : 'var(--primary)';
+                    const statusText = o.status.replace('_', ' ');
+                    html += `
+                    <div class="order-history-card">
+                        <div class="order-id">${o.orderId} <span style="font-size:12px; background:${statusColor}20; color:${statusColor}; padding:2px 8px; border-radius:20px; margin-left:8px;">${statusText}</span></div>
+                        <div class="order-meta">📅 ${date} · 💰 ₹${o.total} · 👕 ${Object.values(o.items).reduce((a,b)=>a+b,0)} items</div>
+                        <button class="view-invoice-btn" onclick="downloadInvoice('${o.orderId}')"><i class="fas fa-file-invoice"></i> View Invoice</button>
+                    </div>`;
                 });
-                list.innerHTML = html || '<p style="text-align:center; font-size:14px; font-weight:600;">No orders yet.</p>';
+                list.innerHTML = html || '<p style="text-align:center; font-weight:600;">No orders yet.</p>';
             });
         }
 
         function downloadInvoice(id) {
-            showToast('Generating PDF Invoice...', 'info');
+            showToast('Generating PDF...','info');
             db.ref('orders/'+id).once('value').then(snap => {
                 const o = snap.val();
                 let itemsHTML = '';
                 for (let k in o.items) itemsHTML += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${k}</td><td style="text-align:right; font-weight:bold;">x${o.items[k]}</td></tr>`;
                 const element = document.createElement('div');
                 element.innerHTML = `
-                <div style="padding:30px; font-family:sans-serif; width:400px; color:#0f172a; background:#ffffff;">
+                <div style="padding:30px; font-family:sans-serif; width:400px; color:#0f172a; background:#fff;">
                     <h2 style="color:#0ea5e9; text-align:center;">Parth Dry Clean</h2>
                     <p style="text-align:center; font-size:12px; color:#64748b; font-weight:700;">DIGITAL RECEIPT</p>
                     <div style="background:#f8fafc; padding:15px; border-radius:12px; margin:20px 0;">
@@ -1247,25 +1146,19 @@
                         </div>
                     </div>
                 </div>`;
-                html2pdf().set({
-                    margin: 10,
-                    filename: 'Parth_Invoice_'+id+'.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                }).from(element).save().then(() => showToast('Invoice Downloaded!','success'));
+                html2pdf().set({ margin: 10, filename: 'Parth_Invoice_'+id+'.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Downloaded!','success'));
             });
         }
 
-        // ===== AUTH STATE =====
+        // ====== AUTH STATE ======
         auth.onAuthStateChanged(user => {
             const loginBtn = document.getElementById('loginBtn');
-            const myOrdersLink = document.getElementById('myOrdersLink');
+            const myOrdersItem = document.getElementById('myOrdersNavItem');
             if (user) {
                 const firstName = (user.displayName || 'User').split(' ')[0];
                 loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${firstName}</span>`;
                 loginBtn.style.background = 'var(--accent)'; loginBtn.style.color = '#fff';
-                document.getElementById('dynamicGreeting').innerHTML = document.getElementById('dynamicGreeting').innerHTML.replace("!", ", " + firstName + "!");
+                myOrdersItem.style.display = 'block';
                 loginBtn.onclick = () => {
                     document.getElementById('profName').value = user.displayName || '';
                     document.getElementById('profEmail').value = user.email || '';
@@ -1274,39 +1167,28 @@
                     });
                     openModal('profileModal');
                 };
-                myOrdersLink.style.display = 'block';
-                loadActiveOrders();
+                updateActiveOrdersBar();
             } else {
                 loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
                 loginBtn.style.background = ''; loginBtn.style.color = '';
                 loginBtn.onclick = () => openModal('authModal');
-                myOrdersLink.style.display = 'none';
-                document.getElementById('activeBookPanel').style.display = 'none';
-                activeOrders = [];
+                myOrdersItem.style.display = 'none';
+                document.getElementById('activeOrderBar').style.display = 'none';
             }
         });
 
-        // ===== MOBILE MENU AUTO-CLOSE =====
+        // ====== MOBILE MENU AUTO-CLOSE WITH ANIMATION ======
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navLinks');
-            if (nav.classList.contains('active') && window.scrollY > 10) {
-                nav.classList.remove('active');
-            }
-            const tooltip = document.getElementById('waTooltip');
-            if (tooltip) {
-                if (window.scrollY > 100) {
-                    tooltip.style.opacity = '0';
-                    tooltip.style.transform = 'scale(0.8) translateX(20px)';
-                    tooltip.style.pointerEvents = 'none';
-                } else {
-                    tooltip.style.opacity = '1';
-                    tooltip.style.transform = 'scale(1) translateX(0)';
-                    tooltip.style.pointerEvents = 'auto';
-                }
+            if (window.scrollY > 30 && nav.classList.contains('active')) {
+                nav.classList.add('collapsed');
+                setTimeout(() => {
+                    nav.classList.remove('active', 'collapsed');
+                }, 300);
             }
         });
 
-        // ===== INITIALIZATION =====
+        // ====== INIT ======
         function setTimeGreeting() {
             const hour = new Date().getHours();
             let greeting = "Your Clothes Deserve <span class='text-gradient'>Royal Treatment</span>";
@@ -1333,7 +1215,9 @@
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
         document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('active'));
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
         document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
         document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
             const parent = this.parentElement;
@@ -1348,7 +1232,6 @@
 
         renderPricing();
         enableListSwipe();
-        enableBookSwipe();
     </script>
 </body>
 </html>
