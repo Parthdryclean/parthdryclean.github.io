@@ -6,6 +6,10 @@
     <meta name="theme-color" content="#0ea5e9" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- SEO META TAGS -->
+    <meta name="description" content="Parth Dry Clean provides premium laundry and dry cleaning services in Lucknow with free doorstep pickup and delivery. 48-72 hour turnaround.">
+    <meta property="og:title" content="Parth Dry Clean | Premium Laundry in Lucknow">
+    <meta property="og:description" content="Experience 5-star dry cleaning with free doorstep pickup across Lucknow.">
     <title>Parth Dry Clean | Premium Laundry in Lucknow</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
@@ -62,6 +66,15 @@
             outline: none;
         }
         :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
 
         /* HEADER */
         header {
@@ -173,94 +186,174 @@
         .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; transition:0.2s; }
         .close-banner:hover { color:#fff; }
 
-        /* ACTIVE ORDER BAR */
-        .active-order-bar {
-            background: var(--surface);
+        /* PREMIUM LIVE CARE STRIP */
+        .active-care-strip {
+            background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12));
             border-bottom: 1px solid var(--border);
-            padding: 6px 5%;
+            padding: 8px 5%;
             display: none;
             align-items: center;
             justify-content: space-between;
+            gap: 14px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 18px rgba(14,165,233,0.08);
             position: sticky;
             top: var(--header-height);
             z-index: 99;
+            backdrop-filter: blur(14px);
         }
-        .active-order-bar .mini-timelines {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            overflow-x: auto;
-            flex: 1;
+        .active-care-left {
+            display:flex; align-items:center; gap:10px; flex-shrink:0;
         }
-        .mini-order {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--bg);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
+        .live-care-dot {
+            width:10px; height:10px; background:var(--success); border-radius:50%;
+            box-shadow:0 0 8px var(--success); animation:pulseDot 1.8s infinite;
+            flex-shrink:0;
         }
-        .mini-order .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        @keyframes pulseDot {
+            0%,100% { transform:scale(1); opacity:1; }
+            50% { transform:scale(1.25); opacity:.72; }
         }
-        .mini-order .status-dot.pending { background: var(--gold); }
-        .mini-order .status-dot.picked_up { background: var(--primary); }
-        .mini-order .status-dot.processing { background: var(--accent); }
-        .active-order-bar .bar-label {
-            font-weight: 700;
-            font-size: 13px;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .active-care-label {
+            font-weight:800; font-size:13px; color:var(--text);
+            display:flex; flex-direction:column; line-height:1.15;
         }
-        .active-order-dropdown {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: calc(var(--header-height) + 40px);
-            z-index: 98;
+        .active-care-label small {
+            font-size:10px; color:var(--text-muted); font-weight:700;
         }
-        .active-order-dropdown.open {
-            max-height: 400px;
+        .active-orders-scroller {
+            display:flex; align-items:center; gap:10px; overflow-x:auto;
+            flex:1; padding:2px; scrollbar-width:none;
         }
-        .active-order-dropdown .dropdown-inner {
-            padding: 0 5% 16px;
+        .active-orders-scroller::-webkit-scrollbar { display:none; }
+        .care-order-pill {
+            display:flex; align-items:center; gap:10px;
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:999px; padding:7px 14px;
+            box-shadow:var(--shadow-sm); white-space:nowrap; flex-shrink:0;
         }
-        .active-order-card {
-            background: var(--bg);
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 12px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
+        .care-order-pill .pill-icon {
+            width:28px; height:28px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            color:#fff; font-size:13px; flex-shrink:0;
         }
-        .order-info {
-            flex: 1;
+        .care-order-pill .pill-id {
+            font-size:12px; font-weight:800; color:var(--text); line-height:1.1;
         }
-        .order-info p {
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 4px;
+        .care-order-pill .pill-status {
+            font-size:11px; font-weight:700; color:var(--text-muted);
         }
-        .order-info .meta {
-            font-size: 12px;
-            color: var(--text-muted);
+        .care-order-pill .pill-eta {
+            font-size:11px; font-weight:800; color:var(--primary);
+            display:flex; align-items:center; gap:5px;
         }
+        .pill-status.status-pending { color:var(--gold); }
+        .pill-status.status-picked_up { color:var(--primary); }
+        .pill-status.status-processing { color:var(--accent); }
+        .pill-status.status-quality_check { color:var(--success); }
+        .pill-status.status-out_for_delivery { color:var(--primary-dark); }
+        .active-care-right {
+            flex-shrink:0; display:flex; align-items:center; gap:10px;
+        }
+        .care-expand-btn {
+            background:var(--surface); border:1px solid var(--border);
+            color:var(--text); border-radius:999px; padding:8px 14px;
+            font-weight:800; font-size:12px; display:flex; align-items:center;
+            gap:7px; cursor:pointer; transition:.2s; font-family:'Outfit';
+        }
+        .care-expand-btn:hover { border-color:var(--primary); color:var(--primary); }
+        .care-expand-btn i { transition:.2s; }
+        .active-care-dropdown {
+            max-height:0; overflow:hidden;
+            transition:max-height .35s ease;
+            background:var(--surface); border-bottom:1px solid var(--border);
+            position:sticky; top:calc(var(--header-height) + 56px); z-index:98;
+        }
+        .active-care-dropdown.open {
+            max-height:560px; overflow-y:auto;
+        }
+        .active-care-dropdown .dropdown-inner {
+            padding:18px 5%; display:grid; gap:16px;
+        }
+        .care-card {
+            background:var(--bg); border:1px solid var(--border);
+            border-radius:22px; padding:20px; box-shadow:var(--shadow-sm);
+        }
+        .care-card-top {
+            display:flex; justify-content:space-between; gap:16px;
+            align-items:flex-start; flex-wrap:wrap; margin-bottom:18px;
+        }
+        .care-card-title {
+            font-size:18px; font-weight:800; margin-bottom:6px;
+            display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+        }
+        .care-card-meta {
+            font-size:12px; color:var(--text-muted); font-weight:700;
+            display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+        }
+        .meta-pill {
+            background:var(--surface); border:1px solid var(--border);
+            padding:5px 10px; border-radius:999px;
+        }
+        .eta-highlight { color:var(--primary); font-weight:800; }
+        .care-progress {
+            display:flex; align-items:flex-start; justify-content:space-between;
+            gap:6px; margin:18px 0 10px; position:relative;
+        }
+        .care-progress::before {
+            content:''; position:absolute; top:14px; left:18px; right:18px;
+            height:3px; background:var(--border); border-radius:999px; z-index:0;
+        }
+        .progress-step {
+            position:relative; z-index:1; flex:1;
+            display:flex; flex-direction:column; align-items:center;
+            text-align:center; gap:7px; min-width:52px;
+        }
+        .step-dot {
+            width:30px; height:30px; border-radius:50%;
+            background:var(--surface); border:2px solid var(--border);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--text-muted); font-size:12px; transition:.3s;
+        }
+        .progress-step.done .step-dot {
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            border-color:transparent; color:#fff;
+            box-shadow:0 6px 16px rgba(99,102,241,.22);
+        }
+        .progress-step.current .step-dot {
+            border-color:var(--primary); color:var(--primary);
+            animation:currentPulse 1.8s infinite;
+        }
+        @keyframes currentPulse {
+            0%,100% { box-shadow:0 0 0 5px rgba(14,165,233,.12); }
+            50% { box-shadow:0 0 0 9px rgba(14,165,233,.18); }
+        }
+        .step-label {
+            font-size:10px; font-weight:800; color:var(--text-muted); line-height:1.25;
+        }
+        .progress-step.done .step-label,
+        .progress-step.current .step-label { color:var(--text); }
+        .care-card-actions {
+            display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;
+        }
+        .care-btn {
+            border:none; padding:10px 16px; border-radius:999px;
+            font-weight:800; font-size:12px; cursor:pointer;
+            display:inline-flex; align-items:center; gap:7px;
+            transition:.2s; font-family:'Outfit'; text-decoration:none;
+        }
+        .care-btn.primary {
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            color:#fff; box-shadow:0 8px 18px rgba(99,102,241,.2);
+        }
+        .care-btn.secondary {
+            background:var(--surface); color:var(--text); border:1px solid var(--border);
+        }
+        .care-btn.whatsapp {
+            background:#25d366; color:#fff;
+        }
+        .care-btn:hover { transform:translateY(-1px); }
         .express-badge {
             background: #fbbf24;
             color: #1e293b;
@@ -271,25 +364,8 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            margin-left: 6px;
         }
         .express-badge i { font-size: 10px; }
-        .order-actions {
-            margin-left: auto;
-        }
-        .order-actions .btn-view-invoice {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-        .order-actions .btn-view-invoice:hover { background: var(--accent); }
 
         /* HERO */
         .hero { display:flex; align-items:center; justify-content:space-between; padding:50px 5%; gap:40px; flex-wrap:wrap; }
@@ -505,9 +581,8 @@
             .btn-login { padding: 8px 12px; border: none; background: transparent; }
             .install-pill { display: none; }
             
-            /* FIXED MOBILE MENU */
             nav ul {
-                display: flex; /* Changed from none */
+                display: flex;
                 flex-direction: column;
                 position: absolute;
                 top: 100%;
@@ -548,6 +623,20 @@
             .stain-main-title { font-size: 2rem; }
             .stain-spray { width: 100px; top: -40px; right: -10px; }
             .stain-hanger { width: 140px; bottom: -50px; right: 20px; opacity: 0.7; }
+            
+            .floating-whatsapp { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 26px; }
+            .whatsapp-tooltip { display: none; }
+
+            /* Premium Care Strip Mobile */
+            .active-care-strip { padding:8px 4%; gap:8px; }
+            .active-care-label small { display:none; }
+            .care-expand-btn span { display:none; }
+            .active-care-dropdown { top:calc(var(--header-height) + 52px); }
+            .active-care-dropdown.open { max-height:70vh; }
+            .care-card { padding:16px; border-radius:18px; }
+            .care-progress { gap:2px; }
+            .step-label { font-size:8.5px; }
+            .care-card-actions .care-btn { flex:1; justify-content:center; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
     </style>
@@ -557,7 +646,7 @@
 
     <div class="top-banner" id="topBanner" style="display:none;">
         🎉 First order? Use code <span>PARTH20</span> for 20% OFF!
-        <button class="close-banner" id="closeBanner">&times;</button>
+        <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>
     </div>
 
     <header>
@@ -580,10 +669,10 @@
                     <li id="myOrdersNavItem" style="display:none;"><a href="#" onclick="openModal('ordersModal'); loadOrderHistory(); return false;">My Orders</a></li>
                 </ul>
             </nav>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
             <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install</button>
             <button class="btn-login" id="loginBtn" onclick="openModal('authModal')"><i class="fas fa-sign-in-alt"></i> <span>Login</span></button>
-            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu"><i class="fas fa-bars"></i></button>
         </div>
     </header>
 
@@ -602,12 +691,27 @@
         </div>
     </div>
 
-    <!-- Active Order Bar (sticky) -->
-    <div class="active-order-bar" id="activeOrderBar" onclick="toggleActiveOrders()">
-        <span class="bar-label"><span class="active-order-dot" style="width:10px;height:10px;background:#10b981;border-radius:50%;box-shadow:0 0 6px #10b981;"></span> Active Orders</span>
-        <div class="mini-timelines" id="miniTimelines"></div>
+    <!-- PREMIUM LIVE CARE STRIP -->
+    <div class="active-care-strip" id="activeOrderBar" onclick="toggleActiveOrders()" aria-live="polite">
+        <div class="active-care-left">
+            <span class="live-care-dot"></span>
+            <div class="active-care-label">
+                Active Care
+                <small id="activeOrderCount">0 orders live</small>
+            </div>
+        </div>
+
+        <div class="active-orders-scroller" id="miniTimelines"></div>
+
+        <div class="active-care-right">
+            <button class="care-expand-btn" type="button" onclick="event.stopPropagation(); toggleActiveOrders();">
+                <i class="fas fa-chevron-down" id="careExpandIcon"></i>
+                <span>Details</span>
+            </button>
+        </div>
     </div>
-    <div class="active-order-dropdown" id="activeOrderDropdown">
+
+    <div class="active-care-dropdown" id="activeOrderDropdown">
         <div class="dropdown-inner" id="dropdownInner"></div>
     </div>
 
@@ -644,17 +748,17 @@
             <p>Slide to see how our premium solvents remove the toughest stains.</p>
         </div>
         <div class="ba-container">
-            <img src="assets/dirty.jpg" alt="Dirty Cloth" class="ba-img">
-            <img src="assets/clean.jpg" alt="Clean Cloth" class="ba-img ba-clean-img" id="baCleanImg">
+            <img src="assets/dirty.jpg" alt="Dirty Cloth" class="ba-img" loading="lazy">
+            <img src="assets/clean.jpg" alt="Clean Cloth" class="ba-img ba-clean-img" id="baCleanImg" loading="lazy">
             <div class="ba-slider-line" id="baSliderLine"></div>
             <div class="ba-slider-btn" id="baSliderBtn"><i class="fas fa-arrows-alt-h"></i></div>
             <div class="ba-badge badge-dirty">Before</div>
             <div class="ba-badge badge-clean">After</div>
-            <input type="range" min="0" max="100" value="50" class="ba-slider" oninput="updateSlider(this.value)">
+            <input type="range" min="0" max="100" value="50" class="ba-slider" aria-label="Before and after comparison slider" oninput="updateSlider(this.value)">
         </div>
     </section>
 
-    <!-- MASTER DASHBOARD – Our Expert Care Masterclass -->
+    <!-- MASTER DASHBOARD -->
     <section class="master-section" id="fabric-advisor">
         <div class="section-header">
             <h2>Our Expert <span class="text-gradient">Care Masterclass</span></h2>
@@ -663,12 +767,12 @@
         <div class="master-container">
             <div class="master-left">
                 <div class="stain-arch"></div>
-                <img src="assets/saree.png" alt="Premium Saree" class="stain-saree-bg">
-                <img src="assets/blazer.png" alt="Premium Blazer" class="stain-blazer-bg">
-                <img src="assets/shirt.png" alt="Premium Folded Shirt" class="stain-main-img" id="mainFloatingImg">
-                <img src="assets/decor-left.png" alt="Decor" class="stain-decor-left">
-                <img src="assets/spray.png" alt="Care Spray" class="stain-spray">
-                <img src="assets/hanger.png" alt="Hanger Bag" class="stain-hanger">
+                <img src="assets/saree.png" alt="Premium Saree" class="stain-saree-bg" loading="lazy">
+                <img src="assets/blazer.png" alt="Premium Blazer" class="stain-blazer-bg" loading="lazy">
+                <img src="assets/shirt.png" alt="Premium Folded Shirt" class="stain-main-img" id="mainFloatingImg" loading="lazy">
+                <img src="assets/decor-left.png" alt="Decor" class="stain-decor-left" loading="lazy">
+                <img src="assets/spray.png" alt="Care Spray" class="stain-spray" loading="lazy">
+                <img src="assets/hanger.png" alt="Hanger Bag" class="stain-hanger" loading="lazy">
             </div>
             <div class="master-right">
                 <div class="stain-brand-text">100% Fabric Protection</div>
@@ -707,12 +811,12 @@
         </div>
     </section>
 
-    <!-- PRICING (Global search + swipe + quick picks) -->
+    <!-- PRICING -->
     <section class="pricing" id="pricing">
         <div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>No hidden charges, premium quality guaranteed</p></div>
         <div class="price-search-container">
             <i class="fas fa-search"></i>
-            <input type="text" id="priceSearchInput" class="price-search-input" placeholder="Search for a garment (e.g., Jacket, Saree)..." oninput="globalSearch(this.value)">
+            <input type="text" id="priceSearchInput" class="price-search-input" placeholder="Search for a garment (e.g., Jacket, Saree)..." oninput="debouncedSearch(this.value)">
             <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
         </div>
         <div class="quick-picks">
@@ -779,6 +883,10 @@
             <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
             <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
             <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
+            <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
+            <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
+            <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
+            <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
         </div>
     </section>
 
@@ -814,7 +922,7 @@
     <!-- Auth Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
-            <button type="button" class="close-modal-btn" onclick="closeModal('authModal')">&times;</button>
+            <button type="button" class="close-modal-btn" onclick="closeModal('authModal')" aria-label="Close">&times;</button>
             <h2 style="color:var(--primary); margin-bottom:12px;"><i class="fas fa-user-shield"></i> Welcome Back</h2>
             <p style="color:var(--text-muted); margin-bottom:20px; font-weight:600;">Login to book faster & track your orders securely.</p>
             <button type="button" class="btn-google" onclick="signInWithGoogle()">
@@ -839,10 +947,10 @@
         </div>
     </div>
 
-    <!-- Profile Modal (only My Details) -->
+    <!-- Profile Modal -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
-            <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')">&times;</button>
+            <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
             <h2 style="color:var(--text); font-size:20px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fas fa-user-circle" style="color:var(--primary);"></i> My Account</h2>
             <div id="p-details" style="text-align:left;">
                 <div class="profile-group">
@@ -867,10 +975,10 @@
         </div>
     </div>
 
-    <!-- Orders Modal (from My Orders nav link) -->
+    <!-- Orders Modal -->
     <div class="modal-overlay" id="ordersModal">
         <div class="modal-box">
-            <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')">&times;</button>
+            <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')" aria-label="Close">&times;</button>
             <h2 style="color:var(--text); margin-bottom:20px;"><i class="fas fa-history"></i> My Orders</h2>
             <div id="orderHistoryList" style="max-height: 60vh; overflow-y: auto;"><p style="text-align:center; font-size:13px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading orders...</p></div>
         </div>
@@ -890,6 +998,10 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+
+        // ====== UTILS ======
+        const sanitizeHTML = (str) => String(str || '').replace(/[<>"']/g, '');
+        const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
 
         // ====== GLOBAL VARS ======
         const categories = {
@@ -965,6 +1077,34 @@
         const catOrder = Object.keys(categories);
         let activeCategory = 'combos';
         let activeOrderListeners = [];
+
+        // Premium Live Care Strip status config
+        const activeStatuses = ['pending','picked_up','processing','quality_check','out_for_delivery'];
+        const statusLabels = {
+            pending: 'Pickup Scheduled',
+            picked_up: 'Garments Collected',
+            processing: 'Premium Cleaning',
+            quality_check: 'Quality Check',
+            out_for_delivery: 'Fresh Clothes on the Way',
+            delivered: 'Delivered Successfully',
+            cancelled: 'Cancelled'
+        };
+        const statusIcons = {
+            pending: 'fa-clock',
+            picked_up: 'fa-truck',
+            processing: 'fa-tshirt',
+            quality_check: 'fa-circle-check',
+            out_for_delivery: 'fa-truck-fast',
+            delivered: 'fa-box-open',
+            cancelled: 'fa-ban'
+        };
+        const careSteps = [
+            { key:'pending', label:'Pickup', icon:'fa-calendar-check' },
+            { key:'picked_up', label:'Collected', icon:'fa-truck' },
+            { key:'processing', label:'Premium Cleaning', icon:'fa-tshirt' },
+            { key:'quality_check', label:'Quality Check', icon:'fa-circle-check' },
+            { key:'out_for_delivery', label:'On the Way', icon:'fa-truck-fast' }
+        ];
 
         // ====== SLIDER ======
         function updateSlider(val) {
@@ -1054,15 +1194,21 @@
                     if (item.name.toLowerCase().includes(val.toLowerCase())) results.push(item);
                 });
             }
-            let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${val}"</h3>`;
+            let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${sanitizeHTML(val)}"</h3>`;
             html += results.length ? results.map(i => {
                 const priceText = i.price > 0 ? `₹${i.price}` : '₹—';
                 const originalText = i.originalPrice ? `<span class="price-original">₹${i.originalPrice}</span>` : '';
-                return `<div class="price-item"><span class="price-name">${i.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`;
+                return `<div class="price-item"><span class="price-name">${sanitizeHTML(i.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`;
             }).join('') : `<p style="padding:20px; text-align:center; color:var(--text-muted);">No items found</p>`;
             html += `</div>`;
             container.innerHTML = html;
             document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active'));
+        }
+
+        let searchTimeout;
+        function debouncedSearch(val) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => globalSearch(val), 300);
         }
 
         function clearSearch() {
@@ -1097,23 +1243,132 @@
             container.addEventListener('touchend', () => { swiping = false; });
         }
 
-        // ====== ACTIVE ORDERS (REAL‑TIME) ======
+        // ====== PREMIUM LIVE CARE STRIP ======
+        function getOrderEtaDate(order) {
+            if (order.eta) {
+                const d = new Date(order.eta);
+                if (!isNaN(d)) return d;
+            }
+            const base = order.createdAt ? new Date(order.createdAt) : new Date();
+            const hours = order.express === 'Yes' ? 24 : 72;
+            return new Date(base.getTime() + hours * 60 * 60 * 1000);
+        }
+
+        function formatEta(order) {
+            const etaDate = getOrderEtaDate(order);
+            const now = new Date();
+
+            if (etaDate <= now) return 'Very soon';
+
+            const diffMs = etaDate - now;
+            const hours = Math.floor(diffMs / 3600000);
+
+            if (hours < 1) return 'Under 1 hour';
+            if (hours < 24) return `${hours}h left`;
+
+            const day = etaDate.toLocaleDateString('en-IN', { weekday: 'short' });
+            const time = etaDate.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+            return `${day}, ${time}`;
+        }
+
+        function getOrderItemSummary(order) {
+            if (!order.items) return '0 items';
+            const entries = Object.entries(order.items);
+            const count = entries.reduce((sum, [, qty]) => sum + Number(qty || 0), 0);
+            return `${count} item${count === 1 ? '' : 's'}`;
+        }
+
         function renderMiniTimeline(order) {
-            const dotClass = order.status === 'pending' ? 'pending' : order.status === 'picked_up' ? 'picked_up' : 'processing';
-            return `<div class="mini-order"><span class="status-dot ${dotClass}"></span>${order.orderId}</div>`;
+            const label = statusLabels[order.status] || 'Live Update';
+            const icon = statusIcons[order.status] || 'fa-circle-notch';
+            const eta = formatEta(order);
+            const orderId = sanitizeHTML(order.orderId);
+
+            return `
+                <div class="care-order-pill">
+                    <div class="pill-icon"><i class="fas ${icon}"></i></div>
+                    <div>
+                        <div class="pill-id">#${orderId}</div>
+                        <div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div>
+                    </div>
+                    <div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div>
+                </div>
+            `;
+        }
+
+        function renderCareProgress(order) {
+            let currentIdx = careSteps.findIndex(step => step.key === order.status);
+            if (currentIdx < 0) currentIdx = 0;
+
+            return `
+                <div class="care-progress">
+                    ${careSteps.map((step, idx) => {
+                        let cls = '';
+                        if (order.status === 'delivered' || idx < currentIdx) cls = 'done';
+                        else if (idx === currentIdx) cls = 'current';
+
+                        const icon = cls === 'done' ? 'fa-check' : step.icon;
+
+                        return `
+                            <div class="progress-step ${cls}">
+                                <div class="step-dot"><i class="fas ${icon}"></i></div>
+                                <div class="step-label">${step.label}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
         }
 
         function renderActiveOrderCard(order) {
+            const label = statusLabels[order.status] || 'Live Update';
             const expressHtml = order.express === 'Yes' ? `<span class="express-badge"><i class="fas fa-bolt"></i> Express</span>` : '';
-            return `<div class="active-order-card">
-                <div class="order-info">
-                    <p>${order.orderId} ${expressHtml}</p>
-                    <div class="meta">${new Date(order.createdAt).toLocaleDateString()} • ${order.items ? Object.keys(order.items).length : 0} items • ₹${order.total}</div>
+            const itemCount = getOrderItemSummary(order);
+            const eta = formatEta(order);
+            const orderIdRaw = safeId(order.orderId);
+            const orderIdDisplay = sanitizeHTML(order.orderId);
+            const dateText = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Today';
+            const waLink = `https://wa.me/919235601645?text=${encodeURIComponent(`Hello, I need support for my order ${orderIdRaw}. Current status: ${label}.`)}`;
+
+            return `
+                <div class="care-card">
+                    <div class="care-card-top">
+                        <div>
+                            <div class="care-card-title">#${orderIdDisplay} ${expressHtml}</div>
+                            <div class="care-card-meta">
+                                <span class="meta-pill">${dateText}</span>
+                                <span class="meta-pill">${itemCount}</span>
+                                <span class="meta-pill">₹${order.total || 0}</span>
+                                <span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span>
+                            </div>
+                        </div>
+
+                        <div class="active-care-label" style="align-items:flex-end; text-align:right;">
+                            <span class="live-care-dot"></span>
+                            <div>
+                                ${label}
+                                <small>Live status</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${renderCareProgress(order)}
+
+                    <div class="care-card-actions">
+                        <button class="care-btn primary" onclick="event.stopPropagation(); downloadInvoice('${orderIdRaw}')">
+                            <i class="fas fa-file-invoice"></i> Invoice
+                        </button>
+
+                        <a class="care-btn whatsapp" href="${waLink}" target="_blank" onclick="event.stopPropagation();">
+                            <i class="fab fa-whatsapp"></i> Support
+                        </a>
+
+                        <button class="care-btn secondary" onclick="event.stopPropagation(); showToast('Live tracking updates automatically.', 'info')">
+                            <i class="fas fa-location-dot"></i> Track
+                        </button>
+                    </div>
                 </div>
-                <div class="order-actions">
-                    <button class="btn-view-invoice" onclick="event.stopPropagation(); downloadInvoice('${order.orderId}')"><i class="fas fa-file-invoice"></i> View Invoice</button>
-                </div>
-            </div>`;
+            `;
         }
 
         function attachActiveOrderListener(uid) {
@@ -1123,29 +1378,43 @@
             const ordersRef = db.ref('orders').orderByChild('uid').equalTo(uid);
             const listener = ordersRef.on('value', snap => {
                 const active = [];
+
                 snap.forEach(child => {
                     const o = child.val();
-                    if (['pending','picked_up','processing'].includes(o.status)) active.push(o);
+                    if (activeStatuses.includes(o.status)) active.push(o);
                 });
+
+                active.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
                 const bar = document.getElementById('activeOrderBar');
                 const dropdown = document.getElementById('activeOrderDropdown');
                 const miniContainer = document.getElementById('miniTimelines');
                 const dropdownInner = document.getElementById('dropdownInner');
+                const countText = document.getElementById('activeOrderCount');
+
                 if (active.length === 0) {
                     bar.style.display = 'none';
                     dropdown.classList.remove('open');
                     return;
                 }
+
                 bar.style.display = 'flex';
+                countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`;
                 miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
                 dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
             });
+
             activeOrderListeners.push(ordersRef);
         }
 
         function toggleActiveOrders() {
             const dropdown = document.getElementById('activeOrderDropdown');
+            const icon = document.getElementById('careExpandIcon');
             dropdown.classList.toggle('open');
+
+            if (icon) {
+                icon.style.transform = dropdown.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
         }
 
         // ====== THEME TOGGLE ======
@@ -1174,10 +1443,14 @@
             document.getElementById(id).classList.add('active');
             document.body.style.overflow = 'hidden';
             history.pushState({ modal: id }, '', '#' + id);
+            
             if (id === 'authModal') {
-                if (recaptchaVerifier) recaptchaVerifier.clear();
-                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
-                recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId).catch(e => console.warn(e));
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 
+                        size: 'invisible', 
+                        callback: () => {} 
+                    });
+                }
             }
         }
         function closeModal(id) {
@@ -1196,7 +1469,7 @@
             }
         });
 
-        let confirmationResult, recaptchaVerifier;
+        let confirmationResult;
         function signInWithGoogle() {
             auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(() => { showToast('Logged in!','success'); closeModal('authModal'); }).catch(e => showToast(e.message,'error'));
         }
@@ -1204,7 +1477,7 @@
             const num = document.getElementById('phoneInput').value;
             if (num.length !== 10) return showToast('Enter 10 digits','warning');
             document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            auth.signInWithPhoneNumber('+91'+num, recaptchaVerifier).then(res => {
+            auth.signInWithPhoneNumber('+91'+num, window.recaptchaVerifier).then(res => {
                 confirmationResult = res;
                 document.getElementById('phoneAuthSection').style.display = 'none';
                 document.getElementById('otpSection').style.display = 'block';
@@ -1212,7 +1485,6 @@
             }).catch(err => {
                 showToast(err.message,'error');
                 document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP';
-                if (recaptchaVerifier) { recaptchaVerifier.clear(); recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} }); recaptchaVerifier.render().then(widgetId => window.recaptchaWidgetId = widgetId); }
             });
         }
         function verifyOTP() {
@@ -1232,7 +1504,14 @@
                 address: document.getElementById('profAddress').value
             }).then(() => showToast('Profile saved!','success')).catch(() => showToast('Error saving','error'));
         }
-        function logoutUser() { auth.signOut().then(() => { closeModal('profileModal'); showToast('Logged out','info'); }); }
+        function logoutUser() { 
+            auth.signOut().then(() => { 
+                closeModal('profileModal'); 
+                showToast('Logged out','info'); 
+                activeOrderListeners.forEach(ref => ref.off('value'));
+                activeOrderListeners = [];
+            }); 
+        }
 
         function loadOrderHistory() {
             const list = document.getElementById('orderHistoryList');
@@ -1241,12 +1520,20 @@
                 let html = '';
                 snap.forEach(child => {
                     const o = child.val();
-                    const statusText = o.status.charAt(0).toUpperCase() + o.status.slice(1);
-                    html = `<div style="background:var(--bg); padding:12px; border-radius:12px; margin-bottom:8px; text-align:left;">
-                        <strong>${o.orderId}</strong> - <span style="color:var(--primary);">${statusText}</span><br>
-                        <small>${new Date(o.createdAt).toLocaleDateString()} • ₹${o.total}</small>
-                        <button type="button" onclick="downloadInvoice('${o.orderId}')" style="background:var(--primary); color:#fff; border:none; padding:6px 14px; border-radius:20px; margin-top:8px; font-weight:800; font-family:'Outfit'; cursor:pointer;"><i class="fas fa-file-invoice"></i> View Invoice</button>
-                    </div>` + html;
+                    const statusText = statusLabels[o.status] || (o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Order');
+                    const orderIdRaw = safeId(o.orderId);
+                    const orderIdDisplay = sanitizeHTML(o.orderId);
+                    const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'Today';
+
+                    html = `
+                        <div style="background:var(--bg); padding:12px; border-radius:12px; margin-bottom:8px; text-align:left;">
+                            <strong>#${orderIdDisplay}</strong> - <span style="color:var(--primary);">${statusText}</span><br>
+                            <small>${dateText} • ₹${o.total || 0}</small>
+                            <button type="button" onclick="downloadInvoice('${orderIdRaw}')" style="background:var(--primary); color:#fff; border:none; padding:6px 14px; border-radius:20px; margin-top:8px; font-weight:800; font-family:'Outfit'; cursor:pointer;">
+                                <i class="fas fa-file-invoice"></i> View Invoice
+                            </button>
+                        </div>
+                    ` + html;
                 });
                 list.innerHTML = html || '<p style="text-align:center; font-weight:600;">No orders yet.</p>';
             });
@@ -1254,17 +1541,29 @@
 
         function downloadInvoice(id) {
             showToast('Generating invoice...','info');
-            db.ref('orders/'+id).once('value').then(snap => {
+            const orderId = safeId(id);
+
+            db.ref('orders/' + orderId).once('value').then(snap => {
                 const o = snap.val();
                 let itemsHTML = '';
-                for (let k in o.items) itemsHTML += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${k}</td><td style="text-align:right; font-weight:bold;">x${o.items[k]}</td></tr>`;
+
+                for (let k in o.items) {
+                    const safeKey = sanitizeHTML(k);
+                    itemsHTML += `
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 0;">${safeKey}</td>
+                            <td style="text-align:right; font-weight:bold;">x${o.items[k]}</td>
+                        </tr>
+                    `;
+                }
+
                 const element = document.createElement('div');
                 element.innerHTML = `
                 <div style="padding:30px; font-family:sans-serif; width:400px; color:#0f172a; background:#fff;">
                     <h2 style="color:#0ea5e9; text-align:center;">Parth Dry Clean</h2>
                     <p style="text-align:center; font-size:12px; color:#64748b; font-weight:700;">INVOICE</p>
                     <div style="background:#f8fafc; padding:15px; border-radius:12px; margin:20px 0;">
-                        <div style="display:flex; justify-content:space-between;"><span>Order ID:</span><strong>${id}</strong></div>
+                        <div style="display:flex; justify-content:space-between;"><span>Order ID:</span><strong>${orderId}</strong></div>
                         <div style="display:flex; justify-content:space-between; margin-top:8px;"><span>Date:</span><strong>${new Date(o.createdAt).toLocaleDateString()}</strong></div>
                     </div>
                     <h3>Garments</h3>
@@ -1278,7 +1577,14 @@
                         </div>
                     </div>
                 </div>`;
-                html2pdf().set({ margin: 10, filename: 'Parth_Invoice_'+id+'.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Invoice downloaded!','success'));
+
+                html2pdf().set({
+                    margin: 10,
+                    filename: 'Parth_Invoice_' + orderId + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                }).from(element).save().then(() => showToast('Invoice downloaded!','success'));
             });
         }
 
@@ -1312,7 +1618,7 @@
             }
         });
 
-        // ====== MOBILE MENU AUTO-CLOSE & TOGGLE ======
+        // ====== MOBILE MENU ======
         document.getElementById('mobileMenuBtn').addEventListener('click', () => {
             const nav = document.getElementById('navLinks');
             nav.classList.toggle('active');
@@ -1343,11 +1649,13 @@
 
         function showToast(msg, type='info'){
             const container = document.getElementById('toastContainer');
+            while(container.children.length > 3) container.removeChild(container.firstChild);
+            
             const t = document.createElement('div');
-            t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700;';
+            t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700; transition: opacity 0.3s;';
             const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
             const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#0ea5e9';
-            t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${msg}`;
+            t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`;
             container.appendChild(t);
             setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
         }
