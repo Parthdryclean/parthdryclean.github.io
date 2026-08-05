@@ -14,6 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <!-- HTML2PDF for Invoice Downloading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- CONFETTI JS FOR PREMIUM SUCCESS ANIMATION -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
@@ -114,6 +116,20 @@
         @keyframes popBtn { 0%{transform:scale(1);} 50%{transform:scale(1.25); background:var(--primary); color:#fff;} 100%{transform:scale(1);} }
         .pop-anim { animation: popBtn 0.35s ease; }
 
+        /* SKELETON LOADER (NEW FEATURE) */
+        .skeleton {
+            background: #e2e8f0;
+            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+            background-size: 200% 100%;
+            animation: 1.5s shimmer linear infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer { to { background-position-x: -200%; } }
+
+        /* EMPTY STATE UI (NEW FEATURE) */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); grid-column: 1 / -1; }
+        .empty-state i { font-size: 48px; color: #cbd5e1; margin-bottom: 12px; }
+
         /* CHECKOUT PANEL */
         .checkout-sidebar { background:var(--surface); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow); border:1px solid var(--border); position:sticky; top:90px; }
         .panel-title { font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border); background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -132,6 +148,14 @@
         .bag-qty-btn { width:24px; height:24px; border-radius:50%; background:var(--bg); border:1px solid var(--border); font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:var(--transition); color:var(--text); }
         .bag-qty-btn:hover { background:var(--primary); color:#fff; }
         .bag-row-price { font-weight:800; color:var(--text); min-width:50px; text-align:right; }
+
+        /* UPSELL CARD (NEW FEATURE) */
+        .upsell-card {
+            background: linear-gradient(135deg, #fdf4ff, #fae8ff); border: 1px dashed #e879f9; padding: 12px;
+            border-radius: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+        }
+        .upsell-card button { background: #d946ef; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow:0 4px 10px rgba(217, 70, 239, 0.3); }
+        .upsell-card button:hover { transform: scale(1.05); }
 
         /* Coupon Card */
         .coupon-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border:1px solid #fbbf24; border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; font-weight:700; box-shadow:0 4px 12px rgba(251,191,36,0.1); }
@@ -179,7 +203,7 @@
         .mobile-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:250; }
         .mobile-overlay.active { display:block; animation:fadeIn 0.3s ease; }
 
-        /* MODALS (With Back Logic) */
+        /* MODALS */
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:1000; padding:16px; }
         .modal-overlay.active { display:flex; animation:fadeIn 0.3s ease; }
         .modal-box { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:420px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.4); text-align:center; max-height:90vh; overflow-y:auto; }
@@ -201,7 +225,6 @@
             .checkout-sidebar.mobile-open { display:block; animation:slideUp 0.3s ease; }
             .mobile-fab { display:flex; }
             .mobile-overlay.active { display:block; }
-            .mobile-menu-btn { display:block; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
         @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
@@ -257,6 +280,9 @@
 
             <div class="bag-items" id="bagItemsSummary"></div>
 
+            <!-- UPSELL CONTAINER (NEW FEATURE) -->
+            <div id="upsellContainer" style="display:none;"></div>
+
             <div class="coupon-card" id="couponCard" style="display:none;">
                 <div class="offer-text">
                     <strong>🎉 PARTH20</strong>
@@ -288,7 +314,6 @@
                 <div class="bill-row total"><span>Total Payable</span><span id="totalAmount">₹0</span></div>
             </div>
 
-            <!-- FIX: Removed onsubmit="return false;" – now fully controlled by JS -->
             <form class="booking-form" id="bookingForm">
                 <div class="form-group">
                     <label>Pickup Date *</label>
@@ -301,7 +326,8 @@
                 </div>
                 
                 <div id="customerInfoSection">
-                    <p style="text-align:center; font-size:13px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Checking Profile...</p>
+                    <!-- SKELETON APPLIED HERE INITIALLY -->
+                    <div class="skeleton" style="height: 80px; width: 100%; border-radius: 12px; margin-bottom: 14px;"></div>
                 </div>
                 
                 <div class="form-group">
@@ -436,6 +462,10 @@
                 { id:'home-carpet', name:'Carpet', price:0, icon:'fa-rug' },
                 { id:'home-towel', name:'Towel', price:0, icon:'fa-shower' },
                 { id:'home-pillow-cover', name:'Pillow Cover', price:0, icon:'fa-bed' }
+            ],
+            // Upsell hidden category
+            upsell: [
+                { id:'upsell-tie', name:'Tie (Premium Wash)', price:40, icon:'fa-user-tie' }
             ]
         };
 
@@ -456,26 +486,18 @@
         let selectedTimeSlot = '';
 
         // HISTORY API FOR POPUPS (Fixing Back Button)
-        // FIX: Recaptcha handled safely – always clear and recreate
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             history.pushState({ modal: id }, '', '#' + id);
             
             if (id === 'authModal') {
-                // Ensure fresh recaptcha verifier to avoid "already rendered" errors
-                if (recaptchaVerifier) {
-                    recaptchaVerifier.clear();
-                }
+                if (recaptchaVerifier) { recaptchaVerifier.clear(); }
                 recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                    size: 'invisible',
-                    callback: () => {}
+                    size: 'invisible', callback: () => {}
                 });
                 recaptchaVerifier.render().then(widgetId => {
                     window.recaptchaWidgetId = widgetId;
-                }).catch(err => {
-                    console.warn('Recaptcha render error:', err);
-                    // Still, modal is open – user can try OTP later
-                });
+                }).catch(err => { console.warn('Recaptcha render error:', err); });
             }
         }
 
@@ -530,7 +552,6 @@
             const todayStr = now.toLocaleDateString('en-CA'); 
             const isToday = (dateVal === todayStr);
             const curHr = now.getHours();
-
             let anyValidSlotAvailable = false;
 
             slots.forEach(slot => {
@@ -553,17 +574,12 @@
                 container.appendChild(pill);
             });
             
-            // If selectedTimeSlot is now disabled, reset
             const currentlySelectedPill = container.querySelector(`.time-pill[data-slot="${selectedTimeSlot}"]`);
             if (currentlySelectedPill && currentlySelectedPill.classList.contains('disabled')) {
-                selectedTimeSlot = '';
-                document.getElementById('selectedTimeSlot').value = '';
+                selectedTimeSlot = ''; document.getElementById('selectedTimeSlot').value = '';
             }
-
-            // If no pill is active, ensure hidden input is empty
             if (!document.querySelector('.time-pill.active')) {
-                selectedTimeSlot = '';
-                document.getElementById('selectedTimeSlot').value = '';
+                selectedTimeSlot = ''; document.getElementById('selectedTimeSlot').value = '';
             }
         }
 
@@ -572,6 +588,7 @@
             const container = document.getElementById('categoryPills');
             container.innerHTML = '';
             Object.keys(categories).forEach(cat => {
+                if(cat === 'upsell') return; // Hide upsell from menu
                 const pill = document.createElement('div');
                 pill.className = `pill ${cat === currentCat ? 'active' : ''}`;
                 pill.innerHTML = `<i class="fas ${categories[cat][0]?.icon || 'fa-tshirt'}"></i> ${categoryNames[cat]}`;
@@ -586,8 +603,14 @@
             const items = categories[currentCat] || [];
             const filtered = items.filter(item => item.name.toLowerCase().includes(filterText.toLowerCase()));
             
+            // --- NEW FEATURE: EMPTY STATE ILLUSTRATION ---
             if(filtered.length === 0) {
-                grid.innerHTML = '<p style="color:var(--text-muted); font-weight:700;">No items found.</p>';
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3 style="color:var(--text); font-weight:800; font-size:18px;">No items found</h3>
+                        <p style="font-size:14px; margin-top:4px;">Try searching with a different keyword <br> like 'Shirt' or 'Coat'.</p>
+                    </div>`;
                 return;
             }
 
@@ -617,18 +640,38 @@
                 void btnElem.offsetWidth;
                 btnElem.classList.add('pop-anim');
             }
-
             bag[id] = (bag[id] || 0) + delta;
             if (bag[id] <= 0) delete bag[id];
             localStorage.setItem(CART_KEY, JSON.stringify(bag));
             
             if(delta > 0 && navigator.vibrate) navigator.vibrate(50);
-
             renderItems(document.getElementById('itemSearch').value);
             updateSummary();
         }
 
         document.getElementById('itemSearch').addEventListener('input', (e) => renderItems(e.target.value));
+
+        // --- NEW FEATURE: UPSELL LOGIC ---
+        function renderUpsell(subtotal) {
+            const container = document.getElementById('upsellContainer');
+            // If they have something in bag but haven't added the Tie yet
+            if(subtotal > 0 && !bag['upsell-tie']) {
+                container.innerHTML = `
+                    <div class="upsell-card">
+                        <div><strong style="color:#86198f;"><i class="fas fa-magic"></i> Add Premium Tie Wash?</strong><br><span style="color:#d946ef;">Just ₹40 extra</span></div>
+                        <button onclick="addUpsellItem('upsell-tie')">Add +</button>
+                    </div>
+                `;
+                container.style.display = 'flex';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        window.addUpsellItem = function(id) {
+            updateQty(id, 1, null);
+            showToast('Premium Tie Wash added!', 'success');
+        }
 
         function renderBagSummary() {
             const container = document.getElementById('bagItemsSummary');
@@ -667,6 +710,9 @@
                 for (let cat in categories) { found = categories[cat].find(i => i.id === id); if (found) break; }
                 if (found) { subtotal += (found.price || 0) * qty; totalItems += qty; }
             }
+            
+            // Render Upsell Card based on subtotal
+            renderUpsell(subtotal);
             
             const isExpress = document.getElementById('expressToggle').checked;
             const expressFee = isExpress ? Math.round(subtotal * 0.9) : 0;
@@ -806,12 +852,12 @@
             showToast('Previous order loaded successfully!','success');
         }
 
-        // Booking submission
+        // Booking submission & Validation
         document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // fully controlled, no onsubmit attribute needed
+            e.preventDefault(); 
             if (!auth.currentUser) { 
                 showToast('Please login first to confirm booking.','warning'); 
-                openModal('authModal'); // This now safely handles recaptcha
+                openModal('authModal');
                 return; 
             }
             let name, phone, address;
@@ -822,9 +868,14 @@
                 phone = document.getElementById('custPhone')?.value.trim();
                 address = document.getElementById('custAddress')?.value.trim();
             }
+            
+            // --- NEW FEATURE: STRICT FORM VALIDATION ---
             if (!name || !phone || !address) { showToast('Please fill all address details','warning'); return; }
-            if (phone.length !== 10 || !/^\d{10}$/.test(phone)) { showToast('Enter valid 10-digit mobile number','warning'); return; }
-            if (address.length < 20) { showToast('Address must be at least 20 characters','warning'); return; }
+            
+            const nameRegex = /^[a-zA-Z\s]{3,50}$/;
+            if (!nameRegex.test(name)) { showToast('Enter a valid name (letters only, min 3 chars)','error'); return; }
+            if (phone.length !== 10 || !/^\d{10}$/.test(phone)) { showToast('Enter valid 10-digit mobile number','error'); return; }
+            if (address.length < 20) { showToast('Address must be at least 20 characters','error'); return; }
             if (!selectedTimeSlot) { showToast('Please select a pickup time slot','warning'); return; }
 
             let orderItems = {}, subtotal = 0;
@@ -835,8 +886,10 @@
             }
             if (subtotal<300) { showToast('Minimum ₹300 requirement not met','error'); return; }
             
-            document.getElementById('submitBooking').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            document.getElementById('submitBooking').disabled = true;
+            // Apply Skeleton Loader effect on button
+            const btn = document.getElementById('submitBooking');
+            btn.innerHTML = '<span class="skeleton" style="display:inline-block; width:100px; height:20px;"></span>';
+            btn.disabled = true;
 
             const pickupDate = document.getElementById('pickupDate').value;
             const specialInst = document.getElementById('specialInst').value;
@@ -854,7 +907,10 @@
             try {
                 await db.ref('orders/'+orderId).set(orderData);
                 await db.ref('customers/'+auth.currentUser.uid).update({name,phone,address,lastOrderId:orderId});
-                fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}).catch(()=>{});
+                // Note: Using try/catch for webhook to prevent app break if script fails
+                try {
+                    fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)});
+                } catch(e) { console.warn("Webhook failed, but order processed"); }
                 
                 if (!localStorage.getItem(FIRST_ORDER_KEY)) localStorage.setItem(FIRST_ORDER_KEY,'true');
                 
@@ -867,24 +923,25 @@
                 selectedTimeSlot = '';
                 document.getElementById('selectedTimeSlot').value = '';
                 
-                // Safe call to updateTimeSlots – wrap in try-catch to avoid blocking success modal
-                try {
-                    updateTimeSlots();
-                } catch (err) {
-                    console.warn('updateTimeSlots after reset error:', err);
-                }
+                updateTimeSlots();
                 renderItems(''); 
                 updateSummary();
                 
                 document.getElementById('successOrderId').textContent = orderId;
                 window.lastBookedOrderId = orderId;
+                
+                // --- NEW FEATURE: CONFETTI ANIMATION ---
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                }
+                
                 openModal('successOverlay');
                 document.getElementById('couponCard').style.display = 'none';
             } catch(err) { 
                 showToast('Booking failed. Check connection.','error'); 
             } finally {
-                document.getElementById('submitBooking').innerHTML = 'Confirm Booking <i class="fas fa-check-circle"></i>';
-                document.getElementById('submitBooking').disabled = false;
+                btn.innerHTML = 'Confirm Booking <i class="fas fa-check-circle"></i>';
+                btn.disabled = false;
             }
         });
 
@@ -911,7 +968,6 @@
             }).catch(err => {
                 showToast('Error: '+err.message,'error');
                 document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP';
-                // Re-render recaptcha if needed
                 if (recaptchaVerifier) {
                     recaptchaVerifier.clear();
                     recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
@@ -930,9 +986,7 @@
         }
 
         window.downloadInvoiceFromSuccess = function() {
-            if(window.lastBookedOrderId) {
-                downloadInvoice(window.lastBookedOrderId);
-            }
+            if(window.lastBookedOrderId) downloadInvoice(window.lastBookedOrderId);
         }
 
         function downloadInvoice(id) {
@@ -964,11 +1018,8 @@
                 </div>`;
                 
                 html2pdf().set({
-                    margin: 10,
-                    filename: 'Parth_Invoice_'+id+'.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    margin: 10, filename: 'Parth_Invoice_'+id+'.pdf', image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 }).from(element).save().then(() => {
                     showToast('Invoice Downloaded Successfully!', 'success');
                 });
@@ -1012,10 +1063,15 @@
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
         document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
+        // --- NEW FEATURE: SMART TOAST CONTROL ---
         function showToast(msg, type='info'){
             const container = document.getElementById('toastContainer');
+            // Remove oldest toast if more than 2 are present to prevent spamming
+            if(container.childElementCount >= 2) {
+                container.removeChild(container.firstChild);
+            }
             const t = document.createElement('div');
-            t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700;';
+            t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700; transition:0.3s ease;';
             const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
             const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#0ea5e9';
             t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${msg}`;
