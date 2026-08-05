@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- ParthindexGen5.8 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -75,6 +76,23 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* ===== DARK MODE FIXES ===== */
+        [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
+        [data-theme="dark"] .auth-input,
+        [data-theme="dark"] .profile-input { background:#0f172a; color:var(--text); }
+        [data-theme="dark"] .profile-input.readonly { background:#334155; color:var(--text-muted); }
+        [data-theme="dark"] .btn-google { background:#1e293b; color:var(--text); border-color:var(--border); }
+        [data-theme="dark"] .btn-google:hover { background:rgba(14,165,233,0.08); }
+        [data-theme="dark"] .whatsapp-tooltip { background:var(--surface); color:var(--text); border-color:var(--border); }
+        [data-theme="dark"] .hero-floating-badge { background:rgba(30,41,59,0.88); border-color:rgba(255,255,255,0.12); color:var(--text); }
+        [data-theme="dark"] .img-2 { border-color:var(--surface); }
+        [data-theme="dark"] .search-clear-btn { background:#334155; border-color:#475569; }
+        [data-theme="dark"] .search-clear-btn:hover { background:#475569; }
+        [data-theme="dark"] ::placeholder { color:var(--text-muted); opacity:1; }
+        [data-theme="dark"] .care-hint { background:var(--surface); }
+        [data-theme="dark"] .step-dot { background:#0f172a; }
+        [data-theme="dark"] .modal-box .btn-logout { background:#3b1519 !important; border-color:#7f1d1d !important; color:#fca5a5 !important; }
 
         /* HEADER */
         header {
@@ -186,7 +204,7 @@
         .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; transition:0.2s; }
         .close-banner:hover { color:#fff; }
 
-        /* PREMIUM LIVE CARE STRIP */
+        /* ===== PREMIUM LIVE CARE STRIP ===== */
         .active-care-strip {
             background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12));
             border-bottom: 1px solid var(--border);
@@ -201,6 +219,19 @@
             top: var(--header-height);
             z-index: 99;
             backdrop-filter: blur(14px);
+        }
+        .active-care-strip::after {
+            content:'';
+            position:absolute;
+            bottom:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+            background-size:200% 100%;
+            animation: shimmerLine 3s linear infinite;
+            pointer-events:none;
+        }
+        @keyframes shimmerLine {
+            0% { background-position:200% 0; }
+            100% { background-position:-200% 0; }
         }
         .active-care-left {
             display:flex; align-items:center; gap:10px; flex-shrink:0;
@@ -224,6 +255,7 @@
         .active-orders-scroller {
             display:flex; align-items:center; gap:10px; overflow-x:auto;
             flex:1; padding:2px; scrollbar-width:none;
+            overscroll-behavior: contain;
         }
         .active-orders-scroller::-webkit-scrollbar { display:none; }
         .care-order-pill {
@@ -253,22 +285,50 @@
         .pill-status.status-processing { color:var(--accent); }
         .pill-status.status-quality_check { color:var(--success); }
         .pill-status.status-out_for_delivery { color:var(--primary-dark); }
-        .active-care-right {
-            flex-shrink:0; display:flex; align-items:center; gap:10px;
-        }
-        .care-expand-btn {
+
+        /* NEW LIVE BADGE (replaces arrow button) */
+        .care-live-badge {
+            flex-shrink:0; display:flex; align-items:center; gap:8px;
             background:var(--surface); border:1px solid var(--border);
-            color:var(--text); border-radius:999px; padding:8px 14px;
-            font-weight:800; font-size:12px; display:flex; align-items:center;
-            gap:7px; cursor:pointer; transition:.2s; font-family:'Outfit';
+            padding:7px 14px; border-radius:999px; font-size:11px; font-weight:800;
+            color:var(--success); letter-spacing:1px; box-shadow:var(--shadow-sm);
         }
-        .care-expand-btn:hover { border-color:var(--primary); color:var(--primary); }
-        .care-expand-btn i { transition:.2s; }
+        .live-ring {
+            width:18px; height:18px; position:relative;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .live-ring::before {
+            content:''; position:absolute; width:8px; height:8px;
+            background:var(--success); border-radius:50%;
+        }
+        .live-ring::after {
+            content:''; position:absolute; width:18px; height:18px;
+            border:2px solid var(--success); border-radius:50%;
+            animation: ringPulse 1.8s ease-out infinite;
+        }
+        @keyframes ringPulse {
+            0% { transform:scale(.4); opacity:1; }
+            100% { transform:scale(1.15); opacity:0; }
+        }
+
+        /* ONE-TIME HINT BUBBLE */
+        .care-hint {
+            position:absolute; top:calc(100% + 8px); right:5%;
+            background:var(--surface); border:1px solid var(--border); color:var(--text);
+            padding:8px 14px; border-radius:12px; font-size:12px; font-weight:700;
+            box-shadow:var(--shadow); display:flex; align-items:center; gap:8px;
+            opacity:0; transform:translateY(-6px); pointer-events:none;
+            transition:all .4s ease; z-index:97;
+        }
+        .care-hint.show { opacity:1; transform:translateY(0); }
+        .care-hint i { color:var(--primary); }
+
         .active-care-dropdown {
             max-height:0; overflow:hidden;
             transition:max-height .35s ease;
             background:var(--surface); border-bottom:1px solid var(--border);
             position:sticky; top:calc(var(--header-height) + 56px); z-index:98;
+            overscroll-behavior: contain;
         }
         .active-care-dropdown.open {
             max-height:560px; overflow-y:auto;
@@ -340,7 +400,7 @@
         .care-btn {
             border:none; padding:10px 16px; border-radius:999px;
             font-weight:800; font-size:12px; cursor:pointer;
-            display:inline-flex; align-items:center; gap:7px;
+            display:inline-flex; align-items:center; justify-content:center; gap:7px;
             transition:.2s; font-family:'Outfit'; text-decoration:none;
         }
         .care-btn.primary {
@@ -366,6 +426,47 @@
             gap: 4px;
         }
         .express-badge i { font-size: 10px; }
+
+        /* ===== ORDER HISTORY CARDS ===== */
+        #ordersModal .modal-box { max-width: 500px; }
+        .history-card {
+            background:var(--bg); border:1px solid var(--border);
+            border-radius:18px; padding:16px; margin-bottom:12px;
+            box-shadow:var(--shadow-sm); text-align:left; transition:.2s;
+        }
+        .history-card:hover { border-color:var(--primary); transform:translateY(-2px); }
+        .history-top {
+            display:flex; justify-content:space-between; align-items:center;
+            gap:10px; margin-bottom:8px; flex-wrap:wrap;
+        }
+        .history-id { font-weight:800; font-size:15px; color:var(--text); }
+        .status-badge {
+            padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800;
+            display:inline-flex; align-items:center; gap:5px;
+        }
+        .status-badge.pending { background:rgba(245,158,11,.15); color:var(--gold); }
+        .status-badge.picked_up { background:rgba(14,165,233,.12); color:var(--primary); }
+        .status-badge.processing { background:rgba(99,102,241,.12); color:var(--accent); }
+        .status-badge.quality_check { background:rgba(16,185,129,.12); color:var(--success); }
+        .status-badge.out_for_delivery { background:rgba(2,132,199,.12); color:var(--primary-dark); }
+        .status-badge.delivered { background:rgba(16,185,129,.15); color:var(--success); }
+        .status-badge.cancelled { background:rgba(239,68,68,.12); color:var(--danger); }
+        .history-meta {
+            font-size:12px; color:var(--text-muted); font-weight:600;
+            display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;
+        }
+        .history-meta span { display:inline-flex; align-items:center; gap:5px; }
+        .history-actions { display:flex; gap:8px; flex-wrap:wrap; }
+        .history-actions .care-btn { flex:1; }
+        .history-empty {
+            text-align:center; padding:34px 10px; color:var(--text-muted); font-weight:600;
+        }
+        .history-empty i {
+            font-size:36px; color:var(--primary); opacity:.45;
+            margin-bottom:12px; display:block;
+        }
+        .history-empty .care-btn { margin-top:14px; }
+        #orderHistoryList { overscroll-behavior: contain; }
 
         /* HERO */
         .hero { display:flex; align-items:center; justify-content:space-between; padding:50px 5%; gap:40px; flex-wrap:wrap; }
@@ -438,27 +539,19 @@
         .section-header p { color:var(--text-muted); font-size:15px; font-weight:600; }
         .pricing { padding:60px 5%; }
         .price-search-container { max-width:700px; margin: 0 auto 20px auto; position:relative; }
-        .price-search-container i { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:18px; }
-        .price-search-input { width:100%; padding:16px 60px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
+        .price-search-container > i.fa-search { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:18px; pointer-events:none; }
+        .price-search-input { width:100%; padding:16px 58px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
         .price-search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
         .search-clear-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            display: none;
-            padding: 6px;
-            border-radius: 50%;
-            line-height: 1;
-            transition: 0.2s;
-            z-index: 2;
+            position:absolute; right:12px; top:50%; transform:translateY(-50%);
+            width:34px; height:34px; border-radius:50%;
+            background:var(--bg); border:1px solid var(--border);
+            color:var(--text-muted); font-size:15px; cursor:pointer;
+            display:none; align-items:center; justify-content:center;
+            transition:.2s; z-index:3; line-height:1;
         }
-        .search-clear-btn:hover { background: rgba(0,0,0,0.05); color: var(--danger); }
+        .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
+
         .quick-picks { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
         .quick-pick-chip {
             padding: 8px 16px;
@@ -539,16 +632,16 @@
         .map-section { padding: 0 5% 40px; max-width: 1000px; margin: 0 auto; }
         .map-iframe { width: 100%; height: 200px; border: none; border-radius: var(--radius); box-shadow: var(--shadow); }
 
-        /* FLOATING WHATSAPP */
+        /* FLOATING WHATSAPP (tooltip restored) */
         .floating-whatsapp { position:fixed; bottom:25px; right:25px; background:#25d366; color:#fff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; box-shadow:0 8px 25px rgba(37,211,102,0.4); z-index:99999; text-decoration:none; transition:0.3s; }
         .floating-whatsapp:hover { transform:scale(1.1); }
-        .whatsapp-tooltip { position:absolute; right:70px; background:#fff; color:var(--text); padding:8px 14px; border-radius:12px; font-size:12px; font-weight:800; box-shadow:var(--shadow); white-space:nowrap; border:1px solid var(--border); display:flex; align-items:center; gap:6px; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); transform-origin:right center; }
+        .whatsapp-tooltip { position:absolute; right:72px; top:50%; transform:translateY(-50%); background:#fff; color:var(--text); padding:8px 14px; border-radius:12px; font-size:12px; font-weight:800; box-shadow:var(--shadow); white-space:nowrap; border:1px solid var(--border); display:flex; align-items:center; gap:6px; }
         .whatsapp-tooltip span { width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; box-shadow:0 0 8px #22c55e; }
 
         /* MODALS */
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:100000; padding:16px; }
         .modal-overlay.active { display:flex; animation:fadeIn 0.3s ease; }
-        .modal-box { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:420px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.4); text-align:center; max-height:90vh; overflow-y:auto; }
+        .modal-box { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:420px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.4); text-align:center; max-height:90vh; overflow-y:auto; overscroll-behavior: contain; }
         [data-theme="dark"] .modal-box { background:rgba(30,41,59,0.95); border:1px solid rgba(255,255,255,0.1); }
         .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:0.2s; }
         .close-modal-btn:hover { color:var(--danger); transform:scale(1.1); }
@@ -625,18 +718,25 @@
             .stain-hanger { width: 140px; bottom: -50px; right: 20px; opacity: 0.7; }
             
             .floating-whatsapp { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 26px; }
-            .whatsapp-tooltip { display: none; }
+            /* Tooltip wapas — mobile par button ke upar */
+            .whatsapp-tooltip {
+                right: 0; left: auto; top: auto;
+                bottom: calc(100% + 12px);
+                transform: none;
+                font-size: 11px; padding: 6px 12px;
+            }
 
             /* Premium Care Strip Mobile */
             .active-care-strip { padding:8px 4%; gap:8px; }
             .active-care-label small { display:none; }
-            .care-expand-btn span { display:none; }
+            .care-live-badge { padding:6px 10px; }
             .active-care-dropdown { top:calc(var(--header-height) + 52px); }
             .active-care-dropdown.open { max-height:70vh; }
             .care-card { padding:16px; border-radius:18px; }
             .care-progress { gap:2px; }
             .step-label { font-size:8.5px; }
-            .care-card-actions .care-btn { flex:1; justify-content:center; }
+            .care-card-actions .care-btn { flex:1; }
+            .care-hint { right:4%; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
     </style>
@@ -691,7 +791,7 @@
         </div>
     </div>
 
-    <!-- PREMIUM LIVE CARE STRIP -->
+    <!-- PREMIUM LIVE CARE STRIP (no arrow, LIVE badge + hint) -->
     <div class="active-care-strip" id="activeOrderBar" onclick="toggleActiveOrders()" aria-live="polite">
         <div class="active-care-left">
             <span class="live-care-dot"></span>
@@ -703,12 +803,11 @@
 
         <div class="active-orders-scroller" id="miniTimelines"></div>
 
-        <div class="active-care-right">
-            <button class="care-expand-btn" type="button" onclick="event.stopPropagation(); toggleActiveOrders();">
-                <i class="fas fa-chevron-down" id="careExpandIcon"></i>
-                <span>Details</span>
-            </button>
+        <div class="care-live-badge">
+            <span class="live-ring"></span> LIVE
         </div>
+
+        <div class="care-hint" id="careHint"><i class="fas fa-hand-pointer"></i> Tap for full details</div>
     </div>
 
     <div class="active-care-dropdown" id="activeOrderDropdown">
@@ -817,7 +916,7 @@
         <div class="price-search-container">
             <i class="fas fa-search"></i>
             <input type="text" id="priceSearchInput" class="price-search-input" placeholder="Search for a garment (e.g., Jacket, Saree)..." oninput="debouncedSearch(this.value)">
-            <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
+            <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" aria-label="Clear search"><i class="fas fa-times"></i></button>
         </div>
         <div class="quick-picks">
             <button class="quick-pick-chip" onclick="quickFilter('mens')"><i class="fas fa-tshirt"></i> Shirt</button>
@@ -975,12 +1074,15 @@
         </div>
     </div>
 
-    <!-- Orders Modal -->
+    <!-- Orders Modal (redesigned) -->
     <div class="modal-overlay" id="ordersModal">
         <div class="modal-box">
             <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')" aria-label="Close">&times;</button>
-            <h2 style="color:var(--text); margin-bottom:20px;"><i class="fas fa-history"></i> My Orders</h2>
-            <div id="orderHistoryList" style="max-height: 60vh; overflow-y: auto;"><p style="text-align:center; font-size:13px; color:var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading orders...</p></div>
+            <h2 style="color:var(--text); margin-bottom:6px;"><i class="fas fa-history" style="color:var(--primary);"></i> My Orders</h2>
+            <p style="color:var(--text-muted); font-size:12px; font-weight:600; margin-bottom:18px;">Track all your premium care orders</p>
+            <div id="orderHistoryList" style="max-height: 60vh; overflow-y: auto;">
+                <p style="text-align:center; font-size:13px; color:var(--text-muted); padding:20px 0;"><i class="fas fa-spinner fa-spin"></i> Loading orders...</p>
+            </div>
         </div>
     </div>
 
@@ -1078,7 +1180,20 @@
         let activeCategory = 'combos';
         let activeOrderListeners = [];
 
-        // Premium Live Care Strip status config
+        // Price lookup for invoice
+        const priceLookup = (() => {
+            const map = {};
+            for (const cat in categories) {
+                categories[cat].forEach(item => { map[item.name.toLowerCase()] = item.price; });
+            }
+            return map;
+        })();
+        function getItemRate(name) {
+            const p = priceLookup[String(name || '').toLowerCase()];
+            return (p && p > 0) ? p : null;
+        }
+
+        // Status config
         const activeStatuses = ['pending','picked_up','processing','quality_check','out_for_delivery'];
         const statusLabels = {
             pending: 'Pickup Scheduled',
@@ -1187,7 +1302,7 @@
                 renderPricing();
                 return;
             }
-            clearBtn.style.display = 'block';
+            clearBtn.style.display = 'flex';
             let results = [];
             for (let cat in categories) {
                 categories[cat].forEach(item => {
@@ -1207,6 +1322,9 @@
 
         let searchTimeout;
         function debouncedSearch(val) {
+            // X button turant dikhao, typing smooth rahe
+            const clearBtn = document.getElementById('searchClearBtn');
+            if (clearBtn) clearBtn.style.display = val.trim() ? 'flex' : 'none';
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => globalSearch(val), 300);
         }
@@ -1215,6 +1333,7 @@
             document.getElementById('priceSearchInput').value = '';
             document.getElementById('searchClearBtn').style.display = 'none';
             globalSearch('');
+            document.getElementById('priceSearchInput').focus();
         }
 
         function enableListSwipe() {
@@ -1276,6 +1395,17 @@
             const entries = Object.entries(order.items);
             const count = entries.reduce((sum, [, qty]) => sum + Number(qty || 0), 0);
             return `${count} item${count === 1 ? '' : 's'}`;
+        }
+
+        function maybeShowCareHint() {
+            if (localStorage.getItem('pdc_care_hint_shown')) return;
+            const hint = document.getElementById('careHint');
+            if (!hint) return;
+            localStorage.setItem('pdc_care_hint_shown', '1');
+            setTimeout(() => {
+                hint.classList.add('show');
+                setTimeout(() => hint.classList.remove('show'), 4000);
+            }, 800);
         }
 
         function renderMiniTimeline(order) {
@@ -1402,6 +1532,7 @@
                 countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`;
                 miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
                 dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
+                maybeShowCareHint();
             });
 
             activeOrderListeners.push(ordersRef);
@@ -1409,12 +1540,7 @@
 
         function toggleActiveOrders() {
             const dropdown = document.getElementById('activeOrderDropdown');
-            const icon = document.getElementById('careExpandIcon');
             dropdown.classList.toggle('open');
-
-            if (icon) {
-                icon.style.transform = dropdown.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
-            }
         }
 
         // ====== THEME TOGGLE ======
@@ -1513,79 +1639,178 @@
             }); 
         }
 
+        // ====== ORDER HISTORY (REDESIGNED) ======
         function loadOrderHistory() {
             const list = document.getElementById('orderHistoryList');
             if (!auth.currentUser) return;
+
+            list.innerHTML = `
+                <div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div>
+                <div class="history-card" style="opacity:.4;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:50%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:75%;"></div></div>
+            `;
+
             db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).once('value').then(snap => {
+                const orders = [];
+                snap.forEach(child => orders.push(child.val()));
+                orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                if (!orders.length) {
+                    list.innerHTML = `
+                        <div class="history-empty">
+                            <i class="fas fa-box-open"></i>
+                            Abhi koi order nahi hai.<br>Apna pehla premium order book karo!
+                            <br>
+                            <a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a>
+                        </div>
+                    `;
+                    return;
+                }
+
                 let html = '';
-                snap.forEach(child => {
-                    const o = child.val();
+                orders.forEach(o => {
                     const statusText = statusLabels[o.status] || (o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Order');
+                    const statusClass = sanitizeHTML(o.status || '');
                     const orderIdRaw = safeId(o.orderId);
                     const orderIdDisplay = sanitizeHTML(o.orderId);
-                    const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'Today';
+                    const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today';
+                    const itemCount = getOrderItemSummary(o);
+                    const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : '';
 
-                    html = `
-                        <div style="background:var(--bg); padding:12px; border-radius:12px; margin-bottom:8px; text-align:left;">
-                            <strong>#${orderIdDisplay}</strong> - <span style="color:var(--primary);">${statusText}</span><br>
-                            <small>${dateText} • ₹${o.total || 0}</small>
-                            <button type="button" onclick="downloadInvoice('${orderIdRaw}')" style="background:var(--primary); color:#fff; border:none; padding:6px 14px; border-radius:20px; margin-top:8px; font-weight:800; font-family:'Outfit'; cursor:pointer;">
-                                <i class="fas fa-file-invoice"></i> View Invoice
-                            </button>
+                    html += `
+                        <div class="history-card">
+                            <div class="history-top">
+                                <span class="history-id">#${orderIdDisplay}</span>
+                                <span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span>
+                            </div>
+                            <div class="history-meta">
+                                <span><i class="fas fa-calendar"></i> ${dateText}</span>
+                                <span><i class="fas fa-tshirt"></i> ${itemCount}</span>
+                                <span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>
+                                ${expressHtml}
+                            </div>
+                            <div class="history-actions">
+                                <button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button>
+                                <a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a>
+                            </div>
                         </div>
-                    ` + html;
+                    `;
                 });
-                list.innerHTML = html || '<p style="text-align:center; font-weight:600;">No orders yet.</p>';
+
+                list.innerHTML = html;
             });
         }
 
+        // ====== FULL DETAIL INVOICE ======
         function downloadInvoice(id) {
             showToast('Generating invoice...','info');
             const orderId = safeId(id);
 
             db.ref('orders/' + orderId).once('value').then(snap => {
                 const o = snap.val();
-                let itemsHTML = '';
+                if (!o) { showToast('Order not found','error'); return; }
 
-                for (let k in o.items) {
-                    const safeKey = sanitizeHTML(k);
-                    itemsHTML += `
-                        <tr style="border-bottom:1px solid #e2e8f0;">
-                            <td style="padding:10px 0;">${safeKey}</td>
-                            <td style="text-align:right; font-weight:bold;">x${o.items[k]}</td>
-                        </tr>
-                    `;
-                }
-
-                const element = document.createElement('div');
-                element.innerHTML = `
-                <div style="padding:30px; font-family:sans-serif; width:400px; color:#0f172a; background:#fff;">
-                    <h2 style="color:#0ea5e9; text-align:center;">Parth Dry Clean</h2>
-                    <p style="text-align:center; font-size:12px; color:#64748b; font-weight:700;">INVOICE</p>
-                    <div style="background:#f8fafc; padding:15px; border-radius:12px; margin:20px 0;">
-                        <div style="display:flex; justify-content:space-between;"><span>Order ID:</span><strong>${orderId}</strong></div>
-                        <div style="display:flex; justify-content:space-between; margin-top:8px;"><span>Date:</span><strong>${new Date(o.createdAt).toLocaleDateString()}</strong></div>
-                    </div>
-                    <h3>Garments</h3>
-                    <table style="width:100%; border-collapse:collapse; font-weight:600;">${itemsHTML}</table>
-                    <div style="margin-top:20px; border-top:2px dashed #e2e8f0; padding-top:15px; font-weight:600;">
-                        <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><span>₹${o.subtotal}</span></div>
-                        ${o.express==='Yes'?`<div style="display:flex; justify-content:space-between; color:#ea580c;"><span>Express Fee</span><span>+₹${Math.round(o.subtotal*0.9)}</span></div>`:''}
-                        ${o.discount>0?`<div style="display:flex; justify-content:space-between; color:#16a34a;"><span>Discount</span><span>-₹${o.discount}</span></div>`:''}
-                        <div style="display:flex; justify-content:space-between; font-size:18px; font-weight:800; margin-top:12px; padding-top:12px; border-top:1px solid #e2e8f0;">
-                            <span>Total Paid</span><span style="color:#0ea5e9;">₹${o.total}</span>
-                        </div>
-                    </div>
-                </div>`;
-
-                html2pdf().set({
-                    margin: 10,
-                    filename: 'Parth_Invoice_' + orderId + '.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                }).from(element).save().then(() => showToast('Invoice downloaded!','success'));
+                const fetchProfile = o.uid ? db.ref('customers/' + o.uid).once('value') : Promise.resolve(null);
+                fetchProfile.then(pSnap => {
+                    const prof = (pSnap && pSnap.exists()) ? pSnap.val() : {};
+                    buildInvoicePDF(o, prof, orderId);
+                }).catch(() => buildInvoicePDF(o, {}, orderId));
             });
+        }
+
+        function buildInvoicePDF(o, prof, orderId) {
+            const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer');
+            const custPhone = sanitizeHTML(o.phone || prof.phone || '—');
+            const custAddress = sanitizeHTML(o.address || prof.address || 'Not provided');
+            const statusLabel = statusLabels[o.status] || (o.status || 'Confirmed');
+            const payStatus = sanitizeHTML(o.paymentStatus || 'Pay on Delivery');
+            const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+
+            let rows = '';
+            for (let k in (o.items || {})) {
+                const qty = Number(o.items[k]) || 0;
+                const rate = getItemRate(k);
+                const rateText = rate !== null ? `₹${rate}` : '—';
+                const amtText = rate !== null ? `₹${rate * qty}` : '—';
+                rows += `
+                    <tr style="border-bottom:1px solid #e2e8f0;">
+                        <td style="padding:9px 6px; font-weight:600;">${sanitizeHTML(k)}</td>
+                        <td style="padding:9px 6px; text-align:center;">${qty}</td>
+                        <td style="padding:9px 6px; text-align:right;">${rateText}</td>
+                        <td style="padding:9px 6px; text-align:right; font-weight:700;">${amtText}</td>
+                    </tr>
+                `;
+            }
+
+            const baseSubtotal = o.subtotal || 0;
+            const expressFee = o.express === 'Yes' ? Math.round(baseSubtotal * 0.9) : 0;
+            const discount = o.discount || 0;
+            const total = o.total || (baseSubtotal + expressFee - discount);
+
+            const element = document.createElement('div');
+            element.innerHTML = `
+            <div style="padding:28px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;">
+                <div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:14px; margin-bottom:16px;">
+                    <div style="font-size:24px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div>
+                    <div style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM FOR EVERYONE</div>
+                    <div style="font-size:10px; color:#64748b; margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div>
+                    <div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <div style="font-size:16px; font-weight:800; color:#0f172a;">TAX INVOICE</div>
+                    <div style="background:#e0f2fe; color:#0284c7; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800;">${statusLabel}</div>
+                </div>
+
+                <div style="background:#f8fafc; padding:12px 14px; border-radius:10px; margin-bottom:12px; font-size:11px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#64748b;">Date:</span><strong>${dateStr}</strong></div>
+                    <div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment:</span><strong>${payStatus}</strong></div>
+                </div>
+
+                <div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:11px;">
+                    <div style="font-size:10px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;">Billed To</div>
+                    <div style="font-weight:800; font-size:13px;">${custName}</div>
+                    <div style="color:#334155;">📞 ${custPhone}</div>
+                    <div style="color:#334155;">📍 ${custAddress}</div>
+                </div>
+
+                <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                    <thead>
+                        <tr style="background:#f1f5f9;">
+                            <th style="padding:8px 6px; text-align:left; font-size:10px; color:#64748b; text-transform:uppercase;">Item</th>
+                            <th style="padding:8px 6px; text-align:center; font-size:10px; color:#64748b; text-transform:uppercase;">Qty</th>
+                            <th style="padding:8px 6px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Rate</th>
+                            <th style="padding:8px 6px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+
+                <div style="margin-top:16px; border-top:2px dashed #e2e8f0; padding-top:12px; font-size:12px; font-weight:600;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>
+                    ${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#ea580c;"><span>Express Fee (24hr)</span><span>+₹${expressFee}</span></div>` : ''}
+                    ${discount > 0 ? `<div style="display:flex; justify-content:space-between; margin-bottom:6px; color:#16a34a;"><span>Discount</span><span>-₹${discount}</span></div>` : ''}
+                    <div style="display:flex; justify-content:space-between; font-size:17px; font-weight:800; margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">
+                        <span>Grand Total</span><span style="color:#0ea5e9;">₹${total}</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:18px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px 14px; font-size:10px; color:#166534; font-weight:600;">
+                    💚 Thank you for choosing Parth Dry Clean! Your garments are handled with premium care & eco-friendly solvents.
+                </div>
+
+                <div style="margin-top:10px; font-size:9px; color:#94a3b8; text-align:center;">
+                    * Garments not collected within 30 days of delivery readiness are not our responsibility. For any issue, contact us within 48 hours of delivery.
+                </div>
+            </div>`;
+
+            html2pdf().set({
+                margin: 8,
+                filename: 'ParthDryClean_Invoice_' + orderId + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).from(element).save().then(() => showToast('Invoice downloaded!','success'));
         }
 
         // ====== AUTH STATE ======
