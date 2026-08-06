@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthbookGen9 -->
+<!-- ParthbookGen10 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -165,7 +165,8 @@
         }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
-        .category-pills { display:flex; gap:10px; overflow-x:auto; padding:4px 4px 14px; scrollbar-width:none; }
+        /* Category pills — soft glow, no clipping */
+        .category-pills { display:flex; gap:10px; overflow-x:auto; padding:6px 10px 16px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
         .pill {
             padding:10px 20px; background:var(--surface); border:1.5px solid var(--border);
@@ -177,10 +178,11 @@
         .pill.active {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color:#fff; border-color:transparent;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.25);
         }
 
         /* ITEM GRID */
-        .items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(165px,1fr)); gap:14px; }
+        .items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(165px,1fr)); gap:14px; will-change: transform; }
         .item-card {
             background:var(--surface); border:1px solid var(--border); border-radius:18px;
             padding:16px; display:flex; flex-direction:column; gap:8px;
@@ -203,7 +205,7 @@
         .item-price { font-size:16px; font-weight:800; color:var(--primary); }
         .item-original-price { font-size:12px; color:var(--text-muted); text-decoration:line-through; font-weight:600; }
 
-        /* ADD / STEPPER — clean */
+        /* ADD / STEPPER */
         .add-btn {
             width:100%; padding:9px 0; margin-top:auto; border-radius:30px;
             border:1.5px solid var(--primary); background:transparent; color:var(--primary);
@@ -358,18 +360,26 @@
         .btn-book:hover { transform:translateY(-2px); }
         .btn-book:disabled { background:var(--border); color:var(--text-muted); transform:none; cursor:not-allowed; }
 
-        .time-pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+        /* TIME SLOTS — card style, clearly visible */
+        .time-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
         .time-pill {
-            padding:11px 18px; border-radius:30px; background:var(--surface);
-            border:1.5px solid var(--border); font-size:12px; font-weight:800;
-            cursor:pointer; transition:0.3s; color:var(--text-muted);
+            display:flex; flex-direction:column; align-items:center; gap:2px;
+            padding:12px 6px; border-radius:14px; background:var(--surface);
+            border:1.5px solid var(--border); cursor:pointer; transition:0.3s;
+            color:var(--text-secondary); text-align:center;
         }
-        .time-pill:hover:not(.disabled) { border-color:var(--primary); color:var(--primary); }
+        .time-pill i { font-size:16px; color:var(--primary); margin-bottom:2px; }
+        .time-pill .tp-label { font-size:12px; font-weight:800; }
+        .time-pill .tp-time { font-size:10px; font-weight:700; color:var(--text-muted); }
         .time-pill.active {
             background:linear-gradient(135deg,var(--primary),var(--accent));
-            color:#fff; border-color:transparent;
+            border-color:transparent;
+            box-shadow:0 4px 14px rgba(14,165,233,0.25);
         }
-        .time-pill.disabled { opacity:0.35; pointer-events:none; text-decoration:line-through; background:var(--border); }
+        .time-pill.active i, .time-pill.active .tp-label { color:#fff; }
+        .time-pill.active .tp-time { color:rgba(255,255,255,0.85); }
+        .time-pill.disabled { opacity:0.4; pointer-events:none; }
+        .time-pill.disabled i { color:var(--text-muted); }
         .time-slot-note { font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600; }
 
         .delivery-card {
@@ -385,13 +395,14 @@
         }
         .edit-link:hover { background:rgba(14,165,233,0.15); }
 
-        /* MOBILE CART BAR — hidden by default, JS shows when items > 0 */
+        /* MOBILE CART BAR — GPU stable */
         .mobile-cart-bar {
             position:fixed; bottom:0; left:0; right:0; z-index:240;
             display:none; justify-content:space-between; align-items:center;
             background:linear-gradient(135deg,var(--primary),var(--accent));
             color:#fff; padding:15px 20px; padding-bottom:calc(15px + env(safe-area-inset-bottom));
             box-shadow:0 -8px 24px rgba(99,102,241,0.35); cursor:pointer;
+            transform: translateZ(0); backface-visibility: hidden;
         }
         .mobile-cart-bar .mcb-left { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
         .mobile-cart-bar .mcb-right { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
@@ -412,8 +423,10 @@
             max-height:90vh; overflow-y:auto;
         }
         [data-theme="dark"] .modal-box { background:rgba(30,41,59,0.95); border:1px solid rgba(255,255,255,0.1); }
-        .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:0.2s; }
+        .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:0.2s; z-index:6; }
         .close-modal-btn:hover { color:var(--danger); transform:scale(1.1); }
+        #successOverlay .close-modal-btn { color:#fff; top:12px; right:14px; }
+        #successOverlay .close-modal-btn:hover { color:#fff; transform:scale(1.1); }
         .btn-google {
             width:100%; background:#fff; color:var(--text); border:1.5px solid var(--border);
             padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer;
@@ -498,6 +511,7 @@
             .banner h2 { font-size:20px; }
             .banner-icon { display:none; }
             .banner-sparkle { font-size:40px; right:16px; bottom:8px; }
+            .time-pill .tp-time { font-size:9px; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
         @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
@@ -517,7 +531,7 @@
             </div>
         </a>
         <div class="header-actions">
-            <button class="icon-btn" id="themeToggleBtn" onclick="App.UI.toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-sun" style="color:var(--gold);"></i></button>
+            <button class="icon-btn" id="themeToggleBtn" onclick="App.UI.toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
             <button class="icon-btn" onclick="App.UI.cartButtonAction()" title="My Bag">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="cart-count-badge" id="headerCartCount">0</span>
@@ -717,8 +731,8 @@
         const STATE = {
             categories: {
                 combos: [
-                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-gift' },
-                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-gift' }
+                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-gem' },
+                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-gem' }
                 ],
                 mens: [
                     { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80, icon:'fa-tshirt' },
@@ -839,13 +853,14 @@
                     this.applyTheme(STATE.theme);
                     localStorage.setItem('pdc_theme', STATE.theme);
                 },
+                // INDEX JESA: day = moon, dark = sun
                 applyTheme: function(theme) {
                     if(theme === 'dark') {
                         document.documentElement.setAttribute('data-theme', 'dark');
-                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-moon"></i>';
+                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-sun" style="color:var(--gold);"></i>';
                     } else {
                         document.documentElement.removeAttribute('data-theme');
-                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-sun" style="color:var(--gold);"></i>';
+                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-moon"></i>';
                     }
                 },
                 cartButtonAction: function() {
@@ -870,21 +885,36 @@
                     }
                 },
                 openMobileCheckout: function() {
-                    document.getElementById('checkoutSidebar').classList.add('mobile-open');
-                    document.getElementById('mobileOverlay').classList.add('active');
+                    const sheet = document.getElementById('checkoutSidebar');
+                    const overlay = document.getElementById('mobileOverlay');
+                    overlay.style.opacity = '';
+                    overlay.style.transition = '';
+                    sheet.classList.add('mobile-open');
+                    overlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                     history.pushState({ mobileCheckout: true }, '', '#cart');
                 },
-                closeMobileCheckout: function() {
-                    if (history.state?.mobileCheckout) history.back();
-                    else {
-                        document.getElementById('checkoutSidebar').classList.remove('mobile-open');
-                        document.getElementById('mobileOverlay').classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
+                // SMOOTH CLOSE: slide-down animation, no jhatka
+                closeMobileCheckout: function(skipAnim) {
+                    const sheet = document.getElementById('checkoutSidebar');
+                    const overlay = document.getElementById('mobileOverlay');
+                    if (!sheet.classList.contains('mobile-open')) return;
+                    const finalize = () => {
+                        if (history.state?.mobileCheckout) history.back();
+                        else {
+                            sheet.classList.remove('mobile-open');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }
+                    };
+                    if (skipAnim || !sheet.animate) { finalize(); return; }
+                    sheet.animate([{ transform:'translateY(0)' }, { transform:'translateY(100%)' }], { duration:230, easing:'cubic-bezier(0.4,0,0.6,1)' });
+                    overlay.animate([{ opacity:1 }, { opacity:0 }], { duration:230, easing:'ease' });
+                    setTimeout(finalize, 240);
                 },
                 initSheetSwipe: function() {
                     const sheet = document.getElementById('checkoutSidebar');
+                    const overlay = document.getElementById('mobileOverlay');
                     let startY = null, curDy = 0, tracking = false;
                     sheet.addEventListener('touchstart', (e) => {
                         if (window.innerWidth > 1024 || !sheet.classList.contains('mobile-open')) { tracking = false; return; }
@@ -899,16 +929,29 @@
                             sheet.style.transform = `translateY(${curDy}px)`;
                         } else {
                             tracking = false;
-                            sheet.style.transition = '';
+                            sheet.style.transition = 'transform 0.2s ease';
                             sheet.style.transform = '';
+                            setTimeout(() => { sheet.style.transition = ''; }, 220);
                         }
                     }, { passive: true });
                     sheet.addEventListener('touchend', () => {
                         if (!tracking) { curDy = 0; return; }
                         tracking = false;
-                        sheet.style.transition = '';
-                        sheet.style.transform = '';
-                        if (curDy > 120) App.UI.closeMobileCheckout();
+                        if (curDy > 120) {
+                            sheet.style.transition = 'transform 0.23s cubic-bezier(0.4,0,0.6,1)';
+                            sheet.style.transform = 'translateY(100%)';
+                            overlay.style.transition = 'opacity 0.23s ease';
+                            overlay.style.opacity = '0';
+                            setTimeout(() => {
+                                sheet.style.transition = ''; sheet.style.transform = '';
+                                overlay.style.transition = ''; overlay.style.opacity = '';
+                                App.UI.closeMobileCheckout(true);
+                            }, 240);
+                        } else {
+                            sheet.style.transition = 'transform 0.2s ease';
+                            sheet.style.transform = '';
+                            setTimeout(() => { sheet.style.transition = ''; }, 220);
+                        }
                         curDy = 0;
                     });
                 },
@@ -927,6 +970,11 @@
                         }
                     }, { passive: true });
                 },
+                setActivePill: function(cat) {
+                    document.querySelectorAll('#categoryPills .pill').forEach(p => {
+                        p.classList.toggle('active', p.dataset.cat === cat);
+                    });
+                },
                 goCategory: function(dir) {
                     const keys = Object.keys(STATE.categories).filter(k => k !== 'upsell');
                     const idx = keys.indexOf(STATE.currentCat);
@@ -935,7 +983,7 @@
                     const grid = document.getElementById('catalogGrid');
                     const doSwitch = () => {
                         STATE.currentCat = next;
-                        this.renderCategories();
+                        this.setActivePill(next);
                         this.renderItems(document.getElementById('itemSearch').value);
                         if (grid.animate) grid.animate(
                             [{ opacity: 0, transform: `translateX(${40 * dir}px)` }, { opacity: 1, transform: 'translateX(0)' }],
@@ -966,9 +1014,9 @@
                     container.innerHTML = '';
 
                     const slots = [
-                        { l: '🌅 9 AM - 12 PM', v: 'Morning (9-12)', endHr: 12 },
-                        { l: '☀️ 1 PM - 5 PM', v: 'Afternoon (1-5)', endHr: 17 },
-                        { l: '🌙 6 PM - 9 PM', v: 'Evening (6-9)', endHr: 21 }
+                        { l: 'Morning', t: '9 AM – 12 PM', v: 'Morning (9-12)', endHr: 12, icon: 'fa-sunrise' },
+                        { l: 'Afternoon', t: '1 PM – 5 PM', v: 'Afternoon (1-5)', endHr: 17, icon: 'fa-sun' },
+                        { l: 'Evening', t: '6 PM – 9 PM', v: 'Evening (6-9)', endHr: 21, icon: 'fa-moon' }
                     ];
 
                     const todayStr = new Date().toLocaleDateString('en-CA');
@@ -989,7 +1037,7 @@
                         const pill = document.createElement('div');
                         const isDisabled = isToday && curHr >= s.endHr;
                         pill.className = `time-pill ${isDisabled ? 'disabled' : ''}`;
-                        pill.textContent = s.l;
+                        pill.innerHTML = `<i class="fas ${s.icon}"></i><span class="tp-label">${s.l}</span><span class="tp-time">${s.t}</span>`;
                         if (!isDisabled) {
                             availableCount++;
                             if (STATE.selectedTimeSlot === s.v) pill.classList.add('active');
@@ -1005,8 +1053,8 @@
                     });
 
                     if (availableCount === 0 && isToday) {
-                        note.textContent = '⚠️ All slots passed for today. Please select tomorrow.';
-                        note.style.color = 'var(--danger)';
+                        note.textContent = '🌙 Today\'s slots are fully booked — please choose tomorrow.';
+                        note.style.color = 'var(--text-muted)';
                         STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
                     } else if (isToday && availableCount < 3) {
@@ -1029,6 +1077,7 @@
                         if(cat === 'upsell') return;
                         const pill = document.createElement('div');
                         pill.className = `pill ${cat === STATE.currentCat ? 'active' : ''}`;
+                        pill.dataset.cat = cat;
                         pill.innerHTML = `<i class="fas ${STATE.categories[cat][0]?.icon || 'fa-tshirt'}"></i> ${STATE.catNames[cat]}`;
                         pill.onclick = () => {
                             STATE.currentCat = cat;
@@ -1143,9 +1192,9 @@
                     App.UI.renderAddControl(id);
                     this.updateSummary();
                 },
+                // NO confirm() — seedha clear + toast
                 clearBag: function() {
                     if (!Object.keys(STATE.bag).length) return;
-                    if (!confirm('Clear all items from bag?')) return;
                     STATE.bag = {};
                     localStorage.removeItem('pdc_cart');
                     App.UI.renderItems(document.getElementById('itemSearch').value);
@@ -1203,7 +1252,6 @@
                     emptyBag.style.display = totalItems === 0 ? 'block' : 'none';
                     document.getElementById('bagCountLabel').textContent = totalItems > 0 ? `• ${totalItems} item${totalItems === 1 ? '' : 's'}` : '';
 
-                    // Mobile cart bar: sirf items hone par dikhe
                     document.getElementById('mobileCartBar').style.display = totalItems > 0 ? 'flex' : 'none';
 
                     const headerBadge = document.getElementById('headerCartCount');
@@ -1446,6 +1494,12 @@
                     const pickupDate = document.getElementById('pickupDate').value;
                     const timeSlot = STATE.selectedTimeSlot;
 
+                    // ESTD + itemsList for Google Sheets
+                    const estDate = new Date(pickupDate);
+                    estDate.setDate(estDate.getDate() + (isExpress ? 1 : 3));
+                    const estd = estDate.toISOString().split('T')[0];
+                    const itemsList = Object.entries(orderItems).map(([k,v]) => `${k} x${v}`).join(', ');
+
                     const orderData = {
                         orderId,
                         uid: auth.currentUser.uid,
@@ -1455,6 +1509,8 @@
                         address: App.sanitizeHTML(address),
                         pickupDate,
                         timeSlot,
+                        estd,
+                        itemsList,
                         specialInst,
                         items: orderItems,
                         subtotal,
@@ -1493,8 +1549,6 @@
                         document.getElementById('successOrderId').textContent = orderId;
                         STATE.lastBookedOrderId = orderId;
 
-                        const estDate = new Date(pickupDate);
-                        estDate.setDate(estDate.getDate() + (isExpress ? 1 : 3));
                         const estDateStr = estDate.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
                         const pickupDateStr = new Date(pickupDate).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
 
