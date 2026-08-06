@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthbookGen8 -->
+<!-- ParthbookGen9 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -203,7 +203,7 @@
         .item-price { font-size:16px; font-weight:800; color:var(--primary); }
         .item-original-price { font-size:12px; color:var(--text-muted); text-decoration:line-through; font-weight:600; }
 
-        /* ADD / STEPPER — clean, no glow */
+        /* ADD / STEPPER — clean */
         .add-btn {
             width:100%; padding:9px 0; margin-top:auto; border-radius:30px;
             border:1.5px solid var(--primary); background:transparent; color:var(--primary);
@@ -239,7 +239,7 @@
         .checkout-sidebar {
             background:var(--surface); border-radius:22px; padding:24px;
             box-shadow:var(--shadow); border:1px solid var(--border);
-            position:sticky; top: 84px;
+            position:sticky; top: 84px; overscroll-behavior: contain;
         }
         .sheet-handle { display:none; width:48px; height:5px; border-radius:5px; background:var(--border); margin:0 auto 14px; }
         .panel-title {
@@ -385,7 +385,7 @@
         }
         .edit-link:hover { background:rgba(14,165,233,0.15); }
 
-        /* MOBILE CART BAR */
+        /* MOBILE CART BAR — hidden by default, JS shows when items > 0 */
         .mobile-cart-bar {
             position:fixed; bottom:0; left:0; right:0; z-index:240;
             display:none; justify-content:space-between; align-items:center;
@@ -484,7 +484,6 @@
             }
             .checkout-sidebar.mobile-open { display:block; animation:slideUp 0.3s ease; }
             .sheet-handle { display:block; }
-            .mobile-cart-bar { display:flex; }
             .mobile-overlay.active { display:block; }
         }
         @media (max-width:768px) {
@@ -816,10 +815,10 @@
             },
 
             sanitizeHTML: function(str) {
-                if(!str) return '';
-                return String(str).replace(/[&<>"']/]/g, (match) => ({
-                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', "/": '&#x2F;'
-                })[match] || match);
+                if (!str) return '';
+                return String(str).replace(/[&<>"']/g, function(m) {
+                    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m];
+                });
             },
 
             showToast: function(msg, type='info') {
@@ -884,12 +883,11 @@
                         document.body.style.overflow = '';
                     }
                 },
-                // SWIPE DOWN TO CLOSE SHEET
                 initSheetSwipe: function() {
                     const sheet = document.getElementById('checkoutSidebar');
                     let startY = null, curDy = 0, tracking = false;
                     sheet.addEventListener('touchstart', (e) => {
-                        if (window.innerWidth > 1024 || !sheet.classList.contains('mobile-open')) return;
+                        if (window.innerWidth > 1024 || !sheet.classList.contains('mobile-open')) { tracking = false; return; }
                         if (sheet.scrollTop <= 5) { startY = e.touches[0].clientY; tracking = true; }
                         else tracking = false;
                     }, { passive: true });
@@ -899,10 +897,14 @@
                         if (curDy > 0) {
                             sheet.style.transition = 'none';
                             sheet.style.transform = `translateY(${curDy}px)`;
+                        } else {
+                            tracking = false;
+                            sheet.style.transition = '';
+                            sheet.style.transform = '';
                         }
                     }, { passive: true });
                     sheet.addEventListener('touchend', () => {
-                        if (!tracking) return;
+                        if (!tracking) { curDy = 0; return; }
                         tracking = false;
                         sheet.style.transition = '';
                         sheet.style.transform = '';
@@ -910,7 +912,6 @@
                         curDy = 0;
                     });
                 },
-                // SMOOTH SWIPE CATEGORIES
                 initCatalogSwipe: function() {
                     const area = document.getElementById('catalogGrid');
                     let sx = 0, sy = 0, active = false;
@@ -958,7 +959,6 @@
                     this.updateTimeSlots();
                     App.Cart.updateSummary();
                 },
-                // SLOT LOGIC: available till END time
                 updateTimeSlots: function() {
                     const container = document.getElementById('timeSlotPills');
                     const dateVal = document.getElementById('pickupDate').value;
@@ -1063,7 +1063,6 @@
                     for (let cat in STATE.categories) { item = STATE.categories[cat].find(i => i.id === id); if (item) break; }
                     if (item) el.outerHTML = this.buildAddControl(item, qty);
                 },
-                // GLOBAL SEARCH across all categories
                 renderItems: function(filterText = '') {
                     const grid = document.getElementById('catalogGrid');
                     grid.innerHTML = '';
@@ -1203,6 +1202,9 @@
                     bagItemsCont.style.display = totalItems > 0 ? 'block' : 'none';
                     emptyBag.style.display = totalItems === 0 ? 'block' : 'none';
                     document.getElementById('bagCountLabel').textContent = totalItems > 0 ? `• ${totalItems} item${totalItems === 1 ? '' : 's'}` : '';
+
+                    // Mobile cart bar: sirf items hone par dikhe
+                    document.getElementById('mobileCartBar').style.display = totalItems > 0 ? 'flex' : 'none';
 
                     const headerBadge = document.getElementById('headerCartCount');
                     headerBadge.textContent = totalItems;
