@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthbookGen13 -->
+<!-- ParthbookGen14 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -38,6 +38,9 @@
             --shadow: 0 8px 30px rgba(0,0,0,0.06);
             --transition: 0.25s ease;
             --header-height: 64px;
+            /* SOFT GRADIENT + GLOW */
+            --grad-soft: linear-gradient(135deg, #38bdf8, #818cf8);
+            --glow-soft: 0 4px 16px rgba(56,189,248,0.35);
         }
         [data-theme="dark"] {
             --bg: #0f172a;
@@ -54,6 +57,8 @@
             --success: #34d399;
             --danger: #f87171;
             --gold: #fbbf24;
+            --grad-soft: linear-gradient(135deg, #38bdf8, #818cf8);
+            --glow-soft: 0 4px 16px rgba(56,189,248,0.30);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1.6; min-height: 100vh; transition: background 0.3s, color 0.3s; }
@@ -114,9 +119,9 @@
         /* BANNER */
         .banner {
             position: relative; overflow: hidden;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: var(--grad-soft);
             color:#fff; padding:28px 30px; border-radius:22px; margin-bottom:18px;
-            box-shadow: 0 12px 30px rgba(99,102,241,0.30);
+            box-shadow: var(--glow-soft);
         }
         .banner::before { content:''; position:absolute; top:-40px; right:-30px; width:150px; height:150px; border-radius:50%; background:rgba(255,255,255,0.12); }
         .banner::after { content:''; position:absolute; bottom:-50px; left:-25px; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,0.08); }
@@ -137,7 +142,7 @@
         .repeat-card button {
             background: linear-gradient(135deg, var(--success), #059669); color:#fff; border:none;
             padding:9px 20px; border-radius:30px; font-weight:800; cursor:pointer; font-size:13px;
-            transition: 0.2s;
+            transition: 0.2s; box-shadow: 0 3px 12px rgba(16,185,129,0.3);
         }
         .repeat-card button:hover { transform: translateY(-1px); }
 
@@ -166,14 +171,14 @@
         }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
-        /* CATEGORY CHIPS — clear buttons + scroll fade hint */
+        /* CATEGORY CHIPS — soft gradient + glow, room for glow */
         .category-pills-wrap { position:relative; }
         .category-pills-wrap::after {
             content:''; position:absolute; right:0; top:0; bottom:8px; width:44px;
             background:linear-gradient(90deg, transparent, var(--bg));
             pointer-events:none; z-index:2;
         }
-        .category-pills { display:flex; gap:8px; overflow-x:auto; padding:6px 4px 12px; scrollbar-width:none; }
+        .category-pills { display:flex; gap:8px; overflow-x:auto; padding:6px 10px 14px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
         .pill {
             padding:9px 16px; background:var(--surface); border:1.5px solid var(--border);
@@ -184,8 +189,9 @@
         .pill i { font-size:13px; }
         .pill:hover { border-color:var(--primary); color:var(--primary); }
         .pill.active {
-            background:linear-gradient(135deg,var(--primary),var(--accent));
+            background: var(--grad-soft);
             color:#fff; border-color:transparent;
+            box-shadow: 0 3px 12px rgba(56,189,248,0.30);
         }
 
         /* ITEM GRID */
@@ -212,7 +218,7 @@
         .item-price { font-size:16px; font-weight:800; color:var(--primary); }
         .item-original-price { font-size:12px; color:var(--text-muted); text-decoration:line-through; font-weight:600; }
 
-        /* ADD / STEPPER */
+        /* ADD / STEPPER — soft gradient + glow */
         .add-btn {
             width:100%; padding:9px 0; margin-top:auto; border-radius:30px;
             border:1.5px solid var(--primary); background:transparent; color:var(--primary);
@@ -222,8 +228,9 @@
         .add-btn:hover { background:var(--primary); color:#fff; }
         .stepper {
             display:flex; align-items:center; justify-content:space-between; margin-top:auto;
-            background:linear-gradient(135deg,var(--primary),var(--accent));
+            background: var(--grad-soft);
             border-radius:30px; padding:4px;
+            box-shadow: 0 3px 10px rgba(56,189,248,0.30);
         }
         .step-btn {
             width:26px; height:26px; border-radius:50%; border:none;
@@ -278,8 +285,9 @@
         .empty-bag i { font-size:34px; opacity:.4; margin-bottom:8px; display:block; }
         .empty-bag p { font-weight:700; font-size:13px; margin-bottom:10px; }
         .browse-btn {
-            background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border:none;
+            background: var(--grad-soft); color:#fff; border:none;
             padding:10px 22px; border-radius:30px; font-weight:800; font-size:12px; cursor:pointer; transition:.2s;
+            box-shadow: var(--glow-soft);
         }
         .browse-btn:hover { transform:translateY(-1px); }
 
@@ -300,6 +308,7 @@
         .upsell-card button {
             background:linear-gradient(135deg,#d946ef,#a21caf); color:white; border:none;
             padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:0.2s;
+            box-shadow: 0 3px 10px rgba(217,70,239,0.3);
         }
         .upsell-card button:hover { transform:scale(1.05); }
 
@@ -313,6 +322,7 @@
         .coupon-card button {
             background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; border:none;
             padding:10px 18px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; transition:0.2s;
+            box-shadow: 0 3px 12px rgba(245,158,11,0.3);
         }
         .coupon-card button.applied { background:var(--success); }
         .coupon-card button:hover { transform:translateY(-1px); }
@@ -358,17 +368,19 @@
             font-size:14px; font-weight:600; outline:none; transition:0.3s;
         }
         .booking-form input:focus, .booking-form textarea:focus { border-color:var(--primary); }
+        /* CONFIRM BOOKING — soft gradient + glow, no cut edges */
         .btn-book {
             width:100%; padding:16px; border-radius:30px;
-            background:linear-gradient(135deg,var(--primary),var(--accent));
+            background: var(--grad-soft);
             color:#fff; border:none; font-weight:800; font-size:16px; cursor:pointer;
             display:flex; align-items:center; justify-content:center; gap:10px;
             transition:all 0.3s ease;
+            box-shadow: var(--glow-soft);
         }
-        .btn-book:hover { transform:translateY(-2px); }
-        .btn-book:disabled { background:var(--border); color:var(--text-muted); transform:none; cursor:not-allowed; }
+        .btn-book:hover { transform:translateY(-2px); box-shadow: 0 8px 22px rgba(56,189,248,0.45); }
+        .btn-book:disabled { background:var(--border); color:var(--text-muted); box-shadow:none; transform:none; cursor:not-allowed; }
 
-        /* TIME SLOTS — soft cards */
+        /* TIME SLOTS */
         .time-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
         .time-pill {
             position:relative; display:flex; flex-direction:column; align-items:center; gap:4px;
@@ -382,8 +394,8 @@
         }
         .time-pill .tp-label { font-size:12px; font-weight:800; color:var(--text); }
         .time-pill .tp-time { font-size:10px; font-weight:700; color:var(--text-muted); }
-        .time-pill.active { border-color:var(--primary); background:var(--accent-light); box-shadow:0 3px 12px rgba(14,165,233,0.15); }
-        .time-pill.active .tp-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; }
+        .time-pill.active { border-color:var(--primary); background:var(--accent-light); box-shadow:0 3px 12px rgba(56,189,248,0.25); }
+        .time-pill.active .tp-icon { background: var(--grad-soft); color:#fff; }
         .time-pill.active::after {
             content:'\f00c'; font-family:"Font Awesome 6 Free"; font-weight:900;
             position:absolute; top:6px; right:8px; font-size:10px; color:var(--primary);
@@ -404,13 +416,13 @@
         }
         .edit-link:hover { background:rgba(14,165,233,0.15); }
 
-        /* MOBILE CART BAR */
+        /* MOBILE CART BAR — soft gradient */
         .mobile-cart-bar {
             position:fixed; bottom:0; left:0; right:0; z-index:240;
             display:none; justify-content:space-between; align-items:center;
-            background:linear-gradient(135deg,var(--primary),var(--accent));
+            background: var(--grad-soft);
             color:#fff; padding:15px 20px; padding-bottom:calc(15px + env(safe-area-inset-bottom));
-            box-shadow:0 -8px 24px rgba(99,102,241,0.35); cursor:pointer;
+            box-shadow:0 -8px 24px rgba(56,189,248,0.35); cursor:pointer;
             transform: translateZ(0); backface-visibility: hidden;
         }
         .mobile-cart-bar .mcb-left { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
@@ -452,17 +464,18 @@
         }
         .auth-input:focus { border-color:var(--primary); }
         .btn-primary-full {
-            width:100%; background:linear-gradient(135deg,var(--primary),var(--accent));
+            width:100%; background: var(--grad-soft);
             color:#fff; border:none; padding:14px; border-radius:30px; font-size:15px; font-weight:800;
             cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
             transition:0.3s; text-decoration:none;
+            box-shadow: var(--glow-soft);
         }
         .btn-primary-full:hover { transform:translateY(-1px); }
 
         /* SUCCESS MODAL */
         .success-hero {
             position:relative; overflow:hidden;
-            background:linear-gradient(135deg,var(--primary),var(--accent));
+            background: var(--grad-soft);
             color:#fff; padding:32px 24px; border-radius:20px; margin:-10px -10px 20px;
         }
         .success-hero::before { content:''; position:absolute; top:-30px; right:-25px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.12); }
@@ -738,6 +751,14 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
+        // ====== DETERMINISTIC DATE (no locale dependency) ======
+        function todayISO() {
+            const d = new Date();
+            return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+        }
+
+        let sheetOpenTime = 0;
+
         // ====== STATE ======
         const STATE = {
             categories: {
@@ -817,7 +838,6 @@
                 });
                 document.getElementById('bookingForm').addEventListener('submit', (e) => this.Order.submit(e));
 
-                // FIX: change + input dono — har date change par slots recompute
                 const dateInput = document.getElementById('pickupDate');
                 dateInput.addEventListener('change', () => this.UI.onDateChange());
                 dateInput.addEventListener('input', () => this.UI.onDateChange());
@@ -911,13 +931,15 @@
                     sheet.classList.add('mobile-open');
                     overlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
+                    sheetOpenTime = Date.now();
                     history.pushState({ mobileCheckout: true }, '', '#cart');
                 },
-                // FIX: fill:'forwards' — koi snap-back frame nahi, zero flick
                 closeMobileCheckout: function(skipAnim) {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
                     if (!sheet.classList.contains('mobile-open')) return;
+                    // FIX: ghost-click guard — open hote hi 500ms tak close ignore
+                    if (!skipAnim && Date.now() - sheetOpenTime < 500) return;
                     const finalize = () => {
                         sheet.style.transform = '';
                         overlay.style.opacity = '';
@@ -1045,7 +1067,7 @@
                         { l: 'Evening', t: '6 PM – 9 PM', v: 'Evening (6-9)', endHr: 21, icon: 'fa-moon' }
                     ];
 
-                    const todayStr = new Date().toLocaleDateString('en-CA');
+                    const todayStr = todayISO();
                     const isToday = (dateVal === todayStr);
                     const isPastDate = dateVal < todayStr;
                     const curHr = new Date().getHours();
@@ -1078,7 +1100,6 @@
                         container.appendChild(pill);
                     });
 
-                    // Soft messages — dono cases
                     if (availableCount === 0 && isToday) {
                         note.textContent = '🌙 Today\'s pickups are complete — please choose tomorrow.';
                         note.style.color = 'var(--text-muted)';
@@ -1492,7 +1513,7 @@
                     if (!STATE.selectedTimeSlot) { App.showToast('Select a time slot','warning'); return; }
 
                     const dateVal = document.getElementById('pickupDate').value;
-                    const todayStr = new Date().toLocaleDateString('en-CA');
+                    const todayStr = todayISO();
                     if (dateVal < todayStr) { App.showToast('Cannot book for past date','error'); return; }
                     if (dateVal === todayStr && STATE.selectedSlotEndHr !== null && new Date().getHours() >= STATE.selectedSlotEndHr) {
                         App.showToast('Selected time slot has passed. Choose another.','error');
@@ -1661,8 +1682,8 @@
         App.init();
         auth.onAuthStateChanged(user => App.Auth.handleStateChange(user));
 
-        document.getElementById('pickupDate').min = new Date().toLocaleDateString('en-CA');
-        document.getElementById('pickupDate').value = new Date().toLocaleDateString('en-CA');
+        document.getElementById('pickupDate').min = todayISO();
+        document.getElementById('pickupDate').value = todayISO();
     </script>
 </body>
 </html>
