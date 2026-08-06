@@ -56,7 +56,7 @@
             --gold: #fbbf24;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1.6; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1.6; min-height: 100vh; transition: background 0.3s, color 0.3s; }
         button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; outline: none; font-family: inherit; }
 
         [data-theme="dark"] ::placeholder { color: var(--text-muted); opacity: 1; }
@@ -140,7 +140,7 @@
         }
         .repeat-card button:hover { transform: translateY(-1px); }
 
-        /* STICKY SEARCH + CATEGORIES */
+        /* STICKY SEARCH */
         .sticky-catalog-nav {
             position: sticky; top: var(--header-height); z-index: 50;
             background: var(--bg); padding: 12px 0 2px; margin-bottom: 6px;
@@ -165,21 +165,24 @@
         }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
-        /* CATEGORY PILLS — naya soft design (no gradient, no shadow) */
-        .category-pills { display:flex; gap:10px; overflow-x:auto; padding:6px 10px 16px; scrollbar-width:none; }
+        /* CATEGORY TABS — underline style (no clipping, clean) */
+        .category-pills { display:flex; gap:2px; overflow-x:auto; padding:4px 6px 10px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
         .pill {
-            padding:10px 20px; background:var(--surface); border:1.5px solid var(--border);
-            border-radius:30px; font-size:13px; font-weight:700; color:var(--text-muted);
-            cursor:pointer; white-space:nowrap; transition:0.3s;
-            display:flex; align-items:center; gap:8px;
+            padding:10px 16px; border:none; background:transparent; border-radius:12px;
+            font-size:13px; font-weight:700; color:var(--text-muted);
+            cursor:pointer; white-space:nowrap; transition:0.25s;
+            display:flex; align-items:center; gap:8px; position:relative;
         }
-        .pill:hover { border-color: var(--primary); color: var(--primary); transform:translateY(-1px); }
-        .pill.active {
-            background: var(--accent-light);
-            color: var(--primary);
-            border-color: var(--primary);
+        .pill i { font-size:14px; }
+        .pill::after {
+            content:''; position:absolute; left:16px; right:16px; bottom:2px; height:3px;
+            border-radius:3px; background:linear-gradient(90deg,var(--primary),var(--accent));
+            transform:scaleX(0); transition:transform 0.25s ease;
         }
+        .pill:hover { color:var(--primary); }
+        .pill.active { color:var(--primary); }
+        .pill.active::after { transform:scaleX(1); }
 
         /* ITEM GRID */
         .items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(165px,1fr)); gap:14px; }
@@ -195,6 +198,13 @@
             background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12));
             color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:19px;
         }
+        /* COMBO — no colorful box, themed tag only */
+        .combo-tag {
+            display:flex; align-items:center; gap:6px;
+            font-size:11px; font-weight:800; color:var(--accent);
+            letter-spacing:0.5px; text-transform:uppercase; min-height:46px;
+        }
+        .combo-tag i { font-size:16px; }
         .save-tag {
             position:absolute; top:12px; right:12px;
             background:rgba(16,185,129,0.12); color:var(--success);
@@ -242,13 +252,9 @@
             background:var(--surface); border-radius:22px; padding:24px;
             box-shadow:var(--shadow); border:1px solid var(--border);
             position:sticky; top: 84px; overscroll-behavior: contain;
+            transform: translateZ(0); will-change: transform;
         }
         .sheet-handle { display:none; width:48px; height:5px; border-radius:5px; background:var(--border); margin:0 auto 14px; }
-        .checkout-sidebar.closing { animation: slideDown 0.25s ease forwards; }
-        @keyframes slideDown { to { transform: translateY(100%); } }
-        .mobile-overlay.closing { backdrop-filter:none; animation: fadeOut 0.25s ease forwards; }
-        @keyframes fadeOut { to { opacity:0; } }
-
         .panel-title {
             font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px;
             justify-content:space-between;
@@ -365,28 +371,27 @@
         .btn-book:hover { transform:translateY(-2px); }
         .btn-book:disabled { background:var(--border); color:var(--text-muted); transform:none; cursor:not-allowed; }
 
-        /* TIME SLOTS — naya soft card design */
+        /* TIME SLOTS — soft cards with icon circle + check badge */
         .time-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
         .time-pill {
-            display:flex; flex-direction:column; align-items:center; gap:3px;
-            padding:12px 6px; border-radius:14px; background:var(--surface);
-            border:1.5px solid var(--border); cursor:pointer; transition:0.3s;
-            color:var(--text-secondary); text-align:center;
+            position:relative; display:flex; flex-direction:column; align-items:center; gap:4px;
+            padding:12px 6px; border-radius:16px; background:var(--surface);
+            border:1.5px solid var(--border); cursor:pointer; transition:0.25s; text-align:center;
         }
-        .time-pill i {
-            width:30px; height:30px; border-radius:50%;
+        .time-pill .tp-icon {
+            width:34px; height:34px; border-radius:50%;
             background:var(--accent-light); color:var(--primary);
-            display:flex; align-items:center; justify-content:center;
-            font-size:13px; margin-bottom:4px; transition:0.3s;
+            display:flex; align-items:center; justify-content:center; font-size:14px; transition:0.25s;
         }
-        .time-pill .tp-label { font-size:12px; font-weight:800; }
+        .time-pill .tp-label { font-size:12px; font-weight:800; color:var(--text); }
         .time-pill .tp-time { font-size:10px; font-weight:700; color:var(--text-muted); }
-        .time-pill.active { border-color:var(--primary); background:var(--accent-light); }
-        .time-pill.active i { background:var(--primary); color:#fff; }
-        .time-pill.active .tp-label { color:var(--primary); }
-        .time-pill.active .tp-time { color:var(--primary); }
+        .time-pill.active { border-color:var(--primary); background:var(--accent-light); box-shadow:0 3px 12px rgba(14,165,233,0.15); }
+        .time-pill.active .tp-icon { background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; }
+        .time-pill.active::after {
+            content:'\f00c'; font-family:"Font Awesome 6 Free"; font-weight:900;
+            position:absolute; top:6px; right:8px; font-size:10px; color:var(--primary);
+        }
         .time-pill.disabled { opacity:0.4; pointer-events:none; }
-        .time-pill.disabled i { background:var(--border); color:var(--text-muted); }
         .time-slot-note { font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600; }
 
         .delivery-card {
@@ -506,6 +511,13 @@
             .sheet-handle { display:block; }
             .mobile-overlay.active { display:block; }
         }
+
+        /* SMOOTH CLOSE ANIMATIONS (defined after media so they win) */
+        .checkout-sidebar.closing { animation: slideDown 0.25s ease forwards; }
+        .mobile-overlay.closing { animation: fadeOut 0.25s ease forwards; }
+        @keyframes slideDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
+        @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+
         @media (max-width:768px) {
             header { padding: 6px 4%; }
             .logo-main { font-size: 1.8rem; }
@@ -738,8 +750,8 @@
         const STATE = {
             categories: {
                 combos: [
-                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, hideIcon:true },
-                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, hideIcon:true }
+                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-gem' },
+                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-gem' }
                 ],
                 mens: [
                     { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80, icon:'fa-tshirt' },
@@ -794,7 +806,7 @@
         };
 
         // ====== APP MODULE ======
-        const APP = {
+        const App = {
             init: function() {
                 this.UI.applyTheme(STATE.theme);
                 this.UI.updateTimeSlots();
@@ -815,8 +827,10 @@
 
                 window.addEventListener('popstate', (e) => {
                     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-                    document.getElementById('checkoutSidebar').classList.remove('mobile-open','closing');
-                    document.getElementById('mobileOverlay').classList.remove('active','closing');
+                    document.getElementById('checkoutSidebar').classList.remove('mobile-open');
+                    document.getElementById('checkoutSidebar').classList.remove('closing');
+                    document.getElementById('mobileOverlay').classList.remove('active');
+                    document.getElementById('mobileOverlay').classList.remove('closing');
                     document.body.style.overflow = '';
                     if (e.state?.modal) {
                         document.getElementById(e.state.modal).classList.add('active');
@@ -875,14 +889,14 @@
                     else document.getElementById('checkoutSidebar').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 },
                 browseItems: function() {
-                    this.closeMobileCheckout(true);
+                    this.closeMobileCheckout();
                     document.getElementById('catalogGrid').scrollIntoView({ behavior:'smooth', block:'start' });
                 },
                 openModal: function(id) {
                     document.getElementById(id).classList.add('active');
                     document.body.style.overflow = 'hidden';
                     history.pushState({ modal: id }, '', '#' + id);
-                    if (id === 'authModal' && !APP.Auth.recaptchaVerifier) APP.Auth.initRecaptcha();
+                    if (id === 'authModal' && !App.Auth.recaptchaVerifier) App.Auth.initRecaptcha();
                 },
                 closeModal: function(id) {
                     if (history.state?.modal === id) history.back();
@@ -896,22 +910,26 @@
                     const overlay = document.getElementById('mobileOverlay');
                     sheet.classList.remove('closing');
                     overlay.classList.remove('closing');
+                    overlay.style.opacity = '';
                     sheet.classList.add('mobile-open');
                     overlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                     history.pushState({ mobileCheckout: true }, '', '#cart');
                 },
-                // SMOOTH CSS-BASED CLOSE — no flicker
+                // SMOOTH CLOSE: CSS class animation, no flicker
                 closeMobileCheckout: function(skipAnim) {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
                     if (!sheet.classList.contains('mobile-open')) return;
                     const finalize = () => {
-                        sheet.classList.remove('mobile-open','closing');
-                        overlay.classList.remove('active','closing');
-                        sheet.style.transform = ''; sheet.style.transition = '';
-                        document.body.style.overflow = '';
+                        sheet.classList.remove('closing');
+                        overlay.classList.remove('closing');
                         if (history.state?.mobileCheckout) history.back();
+                        else {
+                            sheet.classList.remove('mobile-open');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }
                     };
                     if (skipAnim) { finalize(); return; }
                     sheet.classList.add('closing');
@@ -920,7 +938,6 @@
                 },
                 initSheetSwipe: function() {
                     const sheet = document.getElementById('checkoutSidebar');
-                    const overlay = document.getElementById('mobileOverlay');
                     let startY = null, curDy = 0, tracking = false;
                     sheet.addEventListener('touchstart', (e) => {
                         if (window.innerWidth > 1024 || !sheet.classList.contains('mobile-open')) { tracking = false; return; }
@@ -943,21 +960,11 @@
                     sheet.addEventListener('touchend', () => {
                         if (!tracking) { curDy = 0; return; }
                         tracking = false;
-                        if (curDy > 120) {
-                            sheet.style.transition = '';
-                            sheet.style.transform = '';
-                            sheet.classList.add('closing');
-                            overlay.classList.add('closing');
-                            setTimeout(() => {
-                                sheet.classList.remove('closing');
-                                overlay.classList.remove('closing');
-                                APP.UI.closeMobileCheckout(true);
-                            }, 250);
-                        } else {
-                            sheet.style.transition = 'transform 0.2s ease';
-                            sheet.style.transform = '';
-                            setTimeout(() => { sheet.style.transition = ''; }, 220);
-                        }
+                        const shouldClose = curDy > 120;
+                        sheet.style.transition = 'transform 0.2s ease';
+                        sheet.style.transform = '';
+                        setTimeout(() => { sheet.style.transition = ''; }, 220);
+                        if (shouldClose) setTimeout(() => App.UI.closeMobileCheckout(), 60);
                         curDy = 0;
                     });
                 },
@@ -981,7 +988,7 @@
                         p.classList.toggle('active', p.dataset.cat === cat);
                     });
                 },
-                // FADE-ONLY switch — screen kabhi shift nahi hogi
+                // FADE ONLY — screen nahi hilti
                 goCategory: function(dir) {
                     const keys = Object.keys(STATE.categories).filter(k => k !== 'upsell');
                     const idx = keys.indexOf(STATE.currentCat);
@@ -992,10 +999,10 @@
                         STATE.currentCat = next;
                         this.setActivePill(next);
                         this.renderItems(document.getElementById('itemSearch').value);
-                        if (grid.animate) grid.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: 'ease' });
+                        if (grid.animate) grid.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: 'ease' });
                     };
                     if (grid.animate) {
-                        grid.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: 'ease' }).onfinish = doSwitch;
+                        grid.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: 'ease' }).onfinish = doSwitch;
                     } else doSwitch();
                 },
                 clearSearch: function() {
@@ -1006,7 +1013,7 @@
                 },
                 onDateChange: function() {
                     this.updateTimeSlots();
-                    APP.Cart.updateSummary();
+                    App.Cart.updateSummary();
                 },
                 updateTimeSlots: function() {
                     const container = document.getElementById('timeSlotPills');
@@ -1038,7 +1045,7 @@
                         const pill = document.createElement('div');
                         const isDisabled = isToday && curHr >= s.endHr;
                         pill.className = `time-pill ${isDisabled ? 'disabled' : ''}`;
-                        pill.innerHTML = `<i class="fas ${s.icon}"></i><span class="tp-label">${s.l}</span><span class="tp-time">${s.t}</span>`;
+                        pill.innerHTML = `<span class="tp-icon"><i class="fas ${s.icon}"></i></span><span class="tp-label">${s.l}</span><span class="tp-time">${s.t}</span>`;
                         if (!isDisabled) {
                             availableCount++;
                             if (STATE.selectedTimeSlot === s.v) pill.classList.add('active');
@@ -1079,7 +1086,7 @@
                         const pill = document.createElement('div');
                         pill.className = `pill ${cat === STATE.currentCat ? 'active' : ''}`;
                         pill.dataset.cat = cat;
-                        pill.innerHTML = `<i class="fas ${STATE.categories[cat][0]?.icon || 'fa-tags'}"></i> ${STATE.catNames[cat]}`;
+                        pill.innerHTML = `<i class="fas ${STATE.categories[cat][0]?.icon || 'fa-tshirt'}"></i> ${STATE.catNames[cat]}`;
                         pill.onclick = () => {
                             STATE.currentCat = cat;
                             this.renderCategories();
@@ -1097,12 +1104,12 @@
                 },
                 buildAddControl: function(item, qty) {
                     if (qty === 0) {
-                        return `<div id="addctl_${item.id}"><button class="add-btn" onclick="APP.Cart.updateQty('${item.id}', 1)">ADD <i class="fas fa-plus"></i></button></div>`;
+                        return `<div id="addctl_${item.id}"><button class="add-btn" onclick="App.Cart.updateQty('${item.id}', 1)">ADD <i class="fas fa-plus"></i></button></div>`;
                     }
                     return `<div id="addctl_${item.id}"><div class="stepper">
-                        <button class="step-btn" onclick="APP.Cart.updateQty('${item.id}', -1)"><i class="fas fa-minus"></i></button>
+                        <button class="step-btn" onclick="App.Cart.updateQty('${item.id}', -1)"><i class="fas fa-minus"></i></button>
                         <span class="step-num">${qty}</span>
-                        <button class="step-btn" onclick="APP.Cart.updateQty('${item.id}', 1)"><i class="fas fa-plus"></i></button>
+                        <button class="step-btn" onclick="App.Cart.updateQty('${item.id}', 1)"><i class="fas fa-plus"></i></button>
                     </div></div>`;
                 },
                 renderAddControl: function(id) {
@@ -1137,7 +1144,10 @@
                     items.forEach((item, idx) => {
                         const qty = STATE.bag[item.id] || 0;
                         const saveAmt = item.originalPrice ? (item.originalPrice - item.price) : 0;
-                        const iconHtml = item.hideIcon ? '' : `<div class="item-icon"><i class="fas ${item.icon}"></i></div>`;
+                        const isCombo = item.id.startsWith('combo-');
+                        const iconHtml = isCombo
+                            ? `<div class="combo-tag"><i class="fas fa-gem"></i> Combo Pack</div>`
+                            : `<div class="item-icon"><i class="fas ${item.icon}"></i></div>`;
                         const card = document.createElement('div');
                         card.className = 'item-card';
                         card.style.animation = `fadeUp 0.3s ease both`;
@@ -1145,7 +1155,7 @@
                         card.innerHTML = `
                             ${saveAmt > 0 ? `<span class="save-tag">Save ₹${saveAmt}</span>` : ''}
                             ${iconHtml}
-                            <div class="item-name">${APP.sanitizeHTML(item.name)}</div>
+                            <div class="item-name">${App.sanitizeHTML(item.name)}</div>
                             <div class="item-price-row">
                                 ${item.price > 0 ? `<span class="item-price">₹${item.price}</span>` : '<span class="item-price">₹—</span>'}
                                 ${item.originalPrice ? `<span class="item-original-price">₹${item.originalPrice}</span>` : ''}
@@ -1161,25 +1171,25 @@
                             <div class="delivery-card">
                                 <div style="flex:1; min-width:0;">
                                     <strong style="font-size:14px;">Delivering to:</strong><br>
-                                    <span style="font-size:13px; font-weight:700;">${APP.sanitizeHTML(STATE.userProfile.name)}, ${APP.sanitizeHTML(STATE.userProfile.phone)}</span><br>
-                                    <span style="font-size:12px; color:var(--text-muted);">${APP.sanitizeHTML(STATE.userProfile.address.substring(0,50))}...</span>
+                                    <span style="font-size:13px; font-weight:700;">${App.sanitizeHTML(STATE.userProfile.name)}, ${App.sanitizeHTML(STATE.userProfile.phone)}</span><br>
+                                    <span style="font-size:12px; color:var(--text-muted);">${App.sanitizeHTML(STATE.userProfile.address.substring(0,50))}...</span>
                                 </div>
-                                <span class="edit-link" onclick="STATE.isEditingFields = true; APP.UI.renderCustomerInfo();"><i class="fas fa-edit"></i> Edit</span>
+                                <span class="edit-link" onclick="STATE.isEditingFields = true; App.UI.renderCustomerInfo();"><i class="fas fa-edit"></i> Edit</span>
                             </div>`;
                     } else {
                         section.innerHTML = `
                             <div style="display:flex; gap:8px;">
-                                <div class="form-group" style="flex:1;"><label>Name *</label><input type="text" id="custName" required value="${APP.sanitizeHTML(STATE.userProfile.name||'')}" placeholder="Full Name" /></div>
-                                <div class="form-group" style="flex:1;"><label>Mobile *</label><input type="tel" id="custPhone" pattern="[0-9]{10}" maxlength="10" required value="${APP.sanitizeHTML(STATE.userProfile.phone||'')}" placeholder="10 Digits" /></div>
+                                <div class="form-group" style="flex:1;"><label>Name *</label><input type="text" id="custName" required value="${App.sanitizeHTML(STATE.userProfile.name||'')}" placeholder="Full Name" /></div>
+                                <div class="form-group" style="flex:1;"><label>Mobile *</label><input type="tel" id="custPhone" pattern="[0-9]{10}" maxlength="10" required value="${App.sanitizeHTML(STATE.userProfile.phone||'')}" placeholder="10 Digits" /></div>
                             </div>
                             <div class="form-group">
                                 <label style="display:flex; justify-content:space-between; align-items:center;">
                                     Address *
-                                    <button type="button" onclick="APP.Cart.getGPS()" style="background:none; border:none; color:var(--primary); font-weight:800; cursor:pointer; font-size:11px;">
+                                    <button type="button" onclick="App.Cart.getGPS()" style="background:none; border:none; color:var(--primary); font-weight:800; cursor:pointer; font-size:11px;">
                                         <i class="fas fa-location-arrow"></i> Use GPS
                                     </button>
                                 </label>
-                                <textarea id="custAddress" rows="2" required minlength="20" placeholder="Min 20 characters...">${APP.sanitizeHTML(STATE.userProfile.address||'')}</textarea>
+                                <textarea id="custAddress" rows="2" required minlength="20" placeholder="Min 20 characters...">${App.sanitizeHTML(STATE.userProfile.address||'')}</textarea>
                             </div>`;
                     }
                 }
@@ -1191,16 +1201,16 @@
                     if (STATE.bag[id] <= 0) delete STATE.bag[id];
                     localStorage.setItem('pdc_cart', JSON.stringify(STATE.bag));
                     if(delta > 0 && navigator.vibrate) navigator.vibrate(40);
-                    APP.UI.renderAddControl(id);
+                    App.UI.renderAddControl(id);
                     this.updateSummary();
                 },
                 clearBag: function() {
                     if (!Object.keys(STATE.bag).length) return;
                     STATE.bag = {};
                     localStorage.removeItem('pdc_cart');
-                    APP.UI.renderItems(document.getElementById('itemSearch').value);
+                    App.UI.renderItems(document.getElementById('itemSearch').value);
                     this.updateSummary();
-                    APP.showToast('Bag cleared','info');
+                    App.showToast('Bag cleared','info');
                 },
                 renderSmartUpsell: function(subtotal) {
                     const container = document.getElementById('upsellContainer');
@@ -1217,7 +1227,7 @@
                                     <strong style="color:${triggeredUpsell.color};"><i class="fas ${offerDetails.icon}"></i> ${triggeredUpsell.text}</strong><br>
                                     <span style="color:var(--text-muted); font-size:12px;">Just ₹${offerDetails.price} extra</span>
                                 </div>
-                                <button style="background:${triggeredUpsell.color};" onclick="APP.Cart.updateQty('${triggeredUpsell.offerId}', 1); APP.showToast('Added successfully!','success');">Add +</button>
+                                <button style="background:${triggeredUpsell.color};" onclick="App.Cart.updateQty('${triggeredUpsell.offerId}', 1); App.showToast('Added successfully!','success');">Add +</button>
                             </div>`;
                         container.style.display = 'flex';
                     } else container.style.display = 'none';
@@ -1236,13 +1246,13 @@
                             html += `
                                 <div class="bag-row">
                                     <div class="bag-row-left">
-                                        <div class="bag-row-icon"><i class="fas ${found.icon || 'fa-box' }"></i></div>
-                                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${APP.sanitizeHTML(found.name)}</span>
+                                        <div class="bag-row-icon"><i class="fas ${found.icon}"></i></div>
+                                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${App.sanitizeHTML(found.name)}</span>
                                     </div>
                                     <div class="bag-qty-control">
-                                        <button class="bag-qty-btn" onclick="APP.Cart.updateQty('${id}', -1)"><i class="fas fa-minus"></i></button>
+                                        <button class="bag-qty-btn" onclick="App.Cart.updateQty('${id}', -1)"><i class="fas fa-minus"></i></button>
                                         <span>${qty}</span>
-                                        <button class="bag-qty-btn" onclick="APP.Cart.updateQty('${id}', 1)"><i class="fas fa-plus"></i></button>
+                                        <button class="bag-qty-btn" onclick="App.Cart.updateQty('${id}', 1)"><i class="fas fa-plus"></i></button>
                                     </div>
                                     <span class="bag-row-price">₹${itemTotal}</span>
                                 </div>`;
@@ -1305,14 +1315,14 @@
                     }
                 },
                 applyPromoCode: function() {
-                    if (localStorage.getItem('pdc_first_order_used')) return APP.showToast('Valid for first order only.','error');
+                    if (localStorage.getItem('pdc_first_order_used')) return App.showToast('Valid for first order only.','error');
                     if (STATE.appliedPromo === 'PARTH20') return;
                     STATE.appliedPromo = 'PARTH20';
                     const btn = document.getElementById('applyCouponBtn');
                     btn.textContent = '✔ Applied';
                     btn.classList.add('applied');
                     this.updateSummary();
-                    APP.showToast('Promo applied!','success');
+                    App.showToast('Promo applied!','success');
                 },
                 repeatLastOrder: function() {
                     if (!STATE.lastOrderCache) return;
@@ -1326,26 +1336,26 @@
                         if(fId) STATE.bag[fId] = qty;
                     }
                     localStorage.setItem('pdc_cart', JSON.stringify(STATE.bag));
-                    APP.UI.renderItems(document.getElementById('itemSearch').value);
+                    App.UI.renderItems(document.getElementById('itemSearch').value);
                     this.updateSummary();
-                    APP.showToast('Previous bag loaded!','success');
+                    App.showToast('Previous bag loaded!','success');
                 },
                 getGPS: function() {
-                    APP.showToast('Fetching GPS location...','info');
+                    App.showToast('Fetching GPS location...','info');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(pos => {
                             const addr = document.getElementById('custAddress');
                             if (addr) {
                                 const gpsLink = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
                                 if (!addr.value.includes('GPS:')) addr.value += (addr.value ? ' ' : '') + `(GPS: ${gpsLink})`;
-                                APP.showToast('GPS location added!','success');
+                                App.showToast('GPS location added!','success');
                             }
                         }, (err) => {
-                            if (err.code === 1) APP.showToast('Location permission denied.','error');
-                            else if (err.code === 2) APP.showToast('Location unavailable.','error');
-                            else APP.showToast('GPS timeout. Try again.','error');
+                            if (err.code === 1) App.showToast('Location permission denied.','error');
+                            else if (err.code === 2) App.showToast('Location unavailable.','error');
+                            else App.showToast('GPS timeout. Try again.','error');
                         }, { enableHighAccuracy: true, timeout: 10000 });
-                    } else APP.showToast('GPS not supported on this device.','error');
+                    } else App.showToast('GPS not supported on this device.','error');
                 }
             },
 
@@ -1358,32 +1368,32 @@
                 },
                 signInWithGoogle: function() {
                     auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(() => {
-                        APP.showToast('Logged in!','success');
-                        APP.UI.closeModal('authModal');
-                    }).catch(e => APP.showToast(e.message,'error'));
+                        App.showToast('Logged in!','success');
+                        App.UI.closeModal('authModal');
+                    }).catch(e => App.showToast(e.message,'error'));
                 },
                 sendOTP: function() {
                     const num = document.getElementById('phoneInput').value;
-                    if (num.length !== 10) return APP.showToast('Enter 10 digits','warning');
+                    if (num.length !== 10) return App.showToast('Enter 10 digits','warning');
                     document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                     auth.signInWithPhoneNumber('+91'+num, this.recaptchaVerifier).then(res => {
                         this.confirmationResult = res;
                         document.getElementById('phoneAuthSection').style.display = 'none';
                         document.getElementById('otpSection').style.display = 'block';
-                        APP.showToast('OTP sent!','success');
+                        App.showToast('OTP sent!','success');
                     }).catch(err => {
-                        APP.showToast('Error: '+err.message,'error');
+                        App.showToast('Error: '+err.message,'error');
                         document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP';
                         if(this.recaptchaVerifier) { this.recaptchaVerifier.clear(); this.initRecaptcha(); }
                     });
                 },
                 verifyOTP: function() {
                     const code = document.getElementById('otpInput').value;
-                    if (code.length !== 6) return APP.showToast('Enter 6 digits','warning');
+                    if (code.length !== 6) return App.showToast('Enter 6 digits','warning');
                     this.confirmationResult.confirm(code).then(() => {
-                        APP.showToast('Verified!','success');
-                        APP.UI.closeModal('authModal');
-                    }).catch(() => APP.showToast('Invalid OTP','error'));
+                        App.showToast('Verified!','success');
+                        App.UI.closeModal('authModal');
+                    }).catch(() => App.showToast('Invalid OTP','error'));
                 },
                 handleStateChange: function(user) {
                     const loginBtn = document.getElementById('loginBtn');
@@ -1405,18 +1415,18 @@
                                     });
                                 }
                             }
-                            APP.UI.renderCustomerInfo();
-                        }).catch(() => APP.UI.renderCustomerInfo());
-                        loginBtn.onclick = () => APP.showToast(`Logged in as ${firstName}`,'info');
+                            App.UI.renderCustomerInfo();
+                        }).catch(() => App.UI.renderCustomerInfo());
+                        loginBtn.onclick = () => App.showToast(`Logged in as ${firstName}`,'info');
                     } else {
                         STATE.isLoggedIn = false;
                         STATE.userProfile = {};
                         loginBtn.innerHTML = `<i class="fas fa-user-circle"></i>`;
                         loginBtn.title = 'Login';
-                        loginBtn.onclick = () => APP.UI.openModal('authModal');
+                        loginBtn.onclick = () => App.UI.openModal('authModal');
                         document.getElementById('repeatCard').style.display = 'none';
                         STATE.isEditingFields = false;
-                        APP.UI.renderCustomerInfo();
+                        App.UI.renderCustomerInfo();
                     }
                 }
             },
@@ -1443,16 +1453,16 @@
                             });
                         }
                         if (changed) {
-                            APP.UI.renderItems(document.getElementById('itemSearch').value);
-                            APP.Cart.updateSummary();
+                            App.UI.renderItems(document.getElementById('itemSearch').value);
+                            App.Cart.updateSummary();
                         }
                     }).catch(()=>{});
                 },
                 submit: async function(e) {
                     e.preventDefault();
                     if (!auth.currentUser) {
-                        APP.showToast('Login to book.','warning');
-                        APP.UI.openModal('authModal');
+                        App.showToast('Login to book.','warning');
+                        App.UI.openModal('authModal');
                         return;
                     }
 
@@ -1460,18 +1470,18 @@
                     let phone = STATE.isLoggedIn && !STATE.isEditingFields && STATE.userProfile.phone ? STATE.userProfile.phone : document.getElementById('custPhone')?.value.trim();
                     let address = STATE.isLoggedIn && !STATE.isEditingFields && STATE.userProfile.address ? STATE.userProfile.address : document.getElementById('custAddress')?.value.trim();
 
-                    if (!name || !phone || !address) { APP.showToast('Fill all details','warning'); return; }
-                    if (!/^[a-zA-Z\s]{3,50}$/.test(name)) { APP.showToast('Valid name required','error'); return; }
-                    if (phone.length !== 10 || !/^\d{10}$/.test(phone)) { APP.showToast('Valid 10-digit mobile required','error'); return; }
-                    if (address.length < 20) { APP.showToast('Address must be min 20 chars','error'); return; }
-                    if (!STATE.selectedTimeSlot) { APP.showToast('Select a time slot','warning'); return; }
+                    if (!name || !phone || !address) { App.showToast('Fill all details','warning'); return; }
+                    if (!/^[a-zA-Z\s]{3,50}$/.test(name)) { App.showToast('Valid name required','error'); return; }
+                    if (phone.length !== 10 || !/^\d{10}$/.test(phone)) { App.showToast('Valid 10-digit mobile required','error'); return; }
+                    if (address.length < 20) { App.showToast('Address must be min 20 chars','error'); return; }
+                    if (!STATE.selectedTimeSlot) { App.showToast('Select a time slot','warning'); return; }
 
                     const dateVal = document.getElementById('pickupDate').value;
                     const todayStr = new Date().toLocaleDateString('en-CA');
-                    if (dateVal < todayStr) { APP.showToast('Cannot book for past date','error'); return; }
+                    if (dateVal < todayStr) { App.showToast('Cannot book for past date','error'); return; }
                     if (dateVal === todayStr && STATE.selectedSlotEndHr !== null && new Date().getHours() >= STATE.selectedSlotEndHr) {
-                        APP.showToast('Selected time slot has passed. Choose another.','error');
-                        APP.UI.updateTimeSlots();
+                        App.showToast('Selected time slot has passed. Choose another.','error');
+                        App.UI.updateTimeSlots();
                         return;
                     }
 
@@ -1481,13 +1491,13 @@
                         for (let cat in STATE.categories) { f = STATE.categories[cat].find(i=>i.id===id); if(f) break; }
                         if (f) { orderItems[f.name] = qty; subtotal += (f.price||0)*qty; }
                     }
-                    if (subtotal<300) { APP.showToast('Min ₹300 required','error'); return; }
+                    if (subtotal<300) { App.showToast('Min ₹300 required','error'); return; }
 
                     const btn = document.getElementById('submitBooking');
                     btn.innerHTML = '<span class="skeleton" style="display:inline-block; width:100px; height:20px;"></span>';
                     btn.disabled = true;
 
-                    const specialInst = APP.sanitizeHTML(document.getElementById('specialInst').value);
+                    const specialInst = App.sanitizeHTML(document.getElementById('specialInst').value);
                     const isExpress = document.getElementById('expressToggle').checked;
                     const discount = parseInt(document.getElementById('discountAmount').textContent.replace('-₹',''))||0;
                     const total = parseInt(document.getElementById('totalAmount').textContent.replace('₹',''));
@@ -1495,6 +1505,7 @@
                     const pickupDate = document.getElementById('pickupDate').value;
                     const timeSlot = STATE.selectedTimeSlot;
 
+                    // ESTD + aliases for Google Sheets
                     const estDate = new Date(pickupDate);
                     estDate.setDate(estDate.getDate() + (isExpress ? 1 : 3));
                     const estd = estDate.toISOString().split('T')[0];
@@ -1503,16 +1514,17 @@
                     const orderData = {
                         orderId,
                         uid: auth.currentUser.uid,
-                        customerName: APP.sanitizeHTML(name),
-                        name: APP.sanitizeHTML(name),
+                        customerName: App.sanitizeHTML(name),
+                        name: App.sanitizeHTML(name),
                         phone,
-                        address: APP.sanitizeHTML(address),
+                        address: App.sanitizeHTML(address),
                         pickupDate,
                         timeSlot,
                         estd,
+                        estdTime: estd,
                         estimatedDelivery: estd,
                         deliveryDate: estd,
-                        estDelivery: estd,
+                        ESTD: estd,
                         itemsList,
                         specialInst,
                         items: orderItems,
@@ -1545,9 +1557,9 @@
                         STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
 
-                        APP.UI.updateTimeSlots();
-                        APP.UI.renderItems();
-                        APP.Cart.updateSummary();
+                        App.UI.updateTimeSlots();
+                        App.UI.renderItems();
+                        App.Cart.updateSummary();
 
                         document.getElementById('successOrderId').textContent = orderId;
                         STATE.lastBookedOrderId = orderId;
@@ -1557,7 +1569,7 @@
 
                         document.getElementById('successDetails').innerHTML = `
                             <div class="success-detail-row"><span class="label">Pickup Date</span><span class="value">${pickupDateStr}</span></div>
-                            <div class="success-detail-row"><span class="label">Time Slot</span><span class="value">${APP.sanitizeHTML(timeSlot)}</span></div>
+                            <div class="success-detail-row"><span class="label">Time Slot</span><span class="value">${App.sanitizeHTML(timeSlot)}</span></div>
                             <div class="success-detail-row"><span class="label">Est. Delivery</span><span class="value highlight">${estDateStr}</span></div>
                             <div class="success-detail-row"><span class="label">Total Amount</span><span class="value highlight">₹${total}</span></div>
                             ${isExpress ? `<div class="success-detail-row"><span class="label">Express</span><span class="value" style="color:var(--gold);">⚡ 24-Hr</span></div>` : ''}
@@ -1567,11 +1579,11 @@
                             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 99999 });
                         }
 
-                        APP.UI.openModal('successOverlay');
+                        App.UI.openModal('successOverlay');
                         document.getElementById('couponCard').style.display = 'none';
                     } catch(err) {
                         console.error(err);
-                        APP.showToast('Booking failed. Check connection.','error');
+                        App.showToast('Booking failed. Check connection.','error');
                     } finally {
                         btn.innerHTML = 'Confirm Booking <i class="fas fa-check-circle"></i>';
                         btn.disabled = false;
@@ -1580,12 +1592,12 @@
                 downloadInvoice: function() {
                     const id = STATE.lastBookedOrderId;
                     if(!id) return;
-                    APP.showToast('Generating PDF Invoice...', 'info');
+                    App.showToast('Generating PDF Invoice...', 'info');
                     db.ref('orders/'+id).once('value').then(snap => {
                         const o = snap.val();
                         let itemsHTML = '';
                         for (let k in o.items) {
-                            itemsHTML += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${APP.sanitizeHTML(k)}</td><td style="text-align:right; font-weight:bold;">x${o.items[k]}</td></tr>`;
+                            itemsHTML += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${App.sanitizeHTML(k)}</td><td style="text-align:right; font-weight:bold;">x${o.items[k]}</td></tr>`;
                         }
                         const element = document.createElement('div');
                         element.innerHTML = `
@@ -1601,9 +1613,9 @@
                                 </div>
                                 <div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:11px;">
                                     <div style="font-size:10px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;">Billed To</div>
-                                    <div style="font-weight:800; font-size:13px;">${APP.sanitizeHTML(o.customerName || o.name || 'Customer')}</div>
-                                    <div style="color:#334155;">📞 ${APP.sanitizeHTML(o.phone || '—')}</div>
-                                    <div style="color:#334155;">📍 ${APP.sanitizeHTML(o.address || 'Not provided')}</div>
+                                    <div style="font-weight:800; font-size:13px;">${App.sanitizeHTML(o.customerName || o.name || 'Customer')}</div>
+                                    <div style="color:#334155;">📞 ${App.sanitizeHTML(o.phone || '—')}</div>
+                                    <div style="color:#334155;">📍 ${App.sanitizeHTML(o.address || 'Not provided')}</div>
                                 </div>
                                 <h3 style="font-size:14px; margin-bottom:8px;">Garments</h3>
                                 <table style="width:100%; border-collapse:collapse; font-size:12px; font-weight:600;">${itemsHTML}</table>
@@ -1625,15 +1637,15 @@
                             image: { type: 'jpeg', quality: 0.98 },
                             html2canvas: { scale: 2 },
                             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                        }).from(element).save().then(() => APP.showToast('Invoice Downloaded!', 'success'));
+                        }).from(element).save().then(() => App.showToast('Invoice Downloaded!', 'success'));
                     });
                 }
             }
         };
 
         // Initialize
-        APP.init();
-        auth.onAuthStateChanged(user => APP.Auth.handleStateChange(user));
+        App.init();
+        auth.onAuthStateChanged(user => App.Auth.handleStateChange(user));
 
         document.getElementById('pickupDate').min = new Date().toLocaleDateString('en-CA');
         document.getElementById('pickupDate').value = new Date().toLocaleDateString('en-CA');
