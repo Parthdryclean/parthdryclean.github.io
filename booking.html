@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- ParthbookGen5 -->
+<!-- ParthbookGen6 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup in Lucknow.">
+    <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
@@ -67,16 +67,15 @@
         [data-theme="dark"] .booking-form textarea,
         [data-theme="dark"] .booking-form select { background: #0f172a; color: var(--text); }
         [data-theme="dark"] .btn-google { background: #1e293b; color: var(--text); border-color: var(--border); }
-        [data-theme="dark"] .whatsapp-tooltip { background: var(--surface); color: var(--text); }
+        [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
 
-        /* HEADER (premium) */
+        /* HEADER */
         header {
             background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
             padding: 8px 5%; display:flex; align-items:center; justify-content:space-between;
             border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
             min-height: var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,0.03);
         }
-        [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
         .logo { display:flex; align-items:center; gap:0; text-decoration:none; flex-shrink:0; }
         .logo-text-wrapper { display:flex; flex-direction:column; line-height:1; }
         .logo-row { display:flex; align-items:baseline; gap:6px; position:relative; }
@@ -110,7 +109,7 @@
         .banner {
             position: relative; overflow: hidden;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            color:#fff; padding:28px 28px; border-radius:22px; margin-bottom:22px;
+            color:#fff; padding:30px 32px; border-radius:22px; margin-bottom:22px;
             box-shadow: 0 12px 30px rgba(99,102,241,0.30);
         }
         .banner::before {
@@ -124,9 +123,9 @@
             background:rgba(255,255,255,0.08);
         }
         .banner-content { position: relative; z-index: 1; display:flex; justify-content:space-between; align-items:center; }
-        .banner h2 { font-size:24px; font-weight:800; margin-bottom:4px; }
-        .banner p { font-size:13px; font-weight:600; opacity:0.9; }
-        .banner-icon { font-size:48px; opacity:0.3; }
+        .banner h2 { font-size:26px; font-weight:800; margin-bottom:4px; }
+        .banner p { font-size:13px; font-weight:600; opacity:0.95; }
+        .banner-icon { font-size:52px; opacity:0.4; }
         .banner-sparkle { position: absolute; right: 24px; bottom: 10px; font-size: 54px; color: rgba(255,255,255,0.15); transform: rotate(-10deg); pointer-events: none; z-index: 0; }
 
         /* REPEAT CARD */
@@ -137,23 +136,33 @@
         }
         .repeat-card button {
             background: linear-gradient(135deg, var(--success), #059669); color:#fff; border:none;
-            padding:8px 18px; border-radius:20px; font-weight:800; cursor:pointer;
+            padding:9px 20px; border-radius:30px; font-weight:800; cursor:pointer; font-size:13px;
             box-shadow: 0 4px 12px rgba(16,185,129,0.3); transition: 0.2s;
         }
-        .repeat-card button:hover { transform: translateY(-1px); }
+        .repeat-card button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
 
-        /* SEARCH */
-        .search-box { position:relative; margin-bottom:18px; }
-        .search-box i { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:16px; }
+        /* SEARCH BAR (like pricing section) */
+        .search-box { position:relative; margin-bottom:18px; max-width:100%; }
+        .search-box i.fa-search { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:17px; pointer-events:none; }
         .search-input {
-            width:100%; padding:16px 20px 16px 48px; background:var(--surface);
-            border:2px solid var(--border); border-radius:30px; color:var(--text);
-            font-size:14px; font-weight:600; outline:none; box-shadow:var(--shadow-sm);
-            transition:0.3s;
+            width:100%; padding:15px 52px 15px 48px;
+            border-radius:30px; border:2px solid var(--border);
+            background: var(--surface); color: var(--text);
+            font-size:14px; font-weight:600; outline:none;
+            box-shadow:var(--shadow-sm); transition:0.3s;
         }
-        .search-input:focus { border-color:var(--primary); box-shadow: 0 4px 15px rgba(14,165,233,0.15); }
+        .search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
+        .search-clear-btn {
+            position:absolute; right:12px; top:50%; transform:translateY(-50%);
+            width:32px; height:32px; border-radius:50%;
+            background:var(--bg); border:1px solid var(--border);
+            color:var(--text-muted); font-size:14px; cursor:pointer;
+            display:none; align-items:center; justify-content:center;
+            transition:.2s; z-index:3; line-height:1;
+        }
+        .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
-        /* CATEGORY PILLS (with glow) */
+        /* CATEGORY PILLS */
         .category-pills { display:flex; gap:10px; overflow-x:auto; padding:12px 6px 18px; margin-bottom:18px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
         .pill {
@@ -215,7 +224,7 @@
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); grid-column: 1 / -1; }
         .empty-state i { font-size: 48px; color: var(--border); margin-bottom: 12px; display: block; }
 
-        /* CHECKOUT SIDEBAR (Premium) */
+        /* CHECKOUT SIDEBAR */
         .checkout-sidebar {
             background:var(--surface); border-radius:22px; padding:24px;
             box-shadow:var(--shadow); border:1px solid var(--border);
@@ -323,7 +332,7 @@
             border-color:var(--primary); box-shadow: 0 4px 14px rgba(14,165,233,0.15);
         }
         .btn-book {
-            width:100%; padding:16px; border-radius:14px;
+            width:100%; padding:16px; border-radius:30px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color:#fff; border:none; font-weight:800; font-size:16px;
             cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
@@ -335,17 +344,18 @@
 
         .time-pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
         .time-pill {
-            padding:11px 18px; border-radius:50px; background:var(--surface);
+            padding:11px 18px; border-radius:30px; background:var(--surface);
             border:1.5px solid var(--border); font-size:12px; font-weight:800;
             cursor:pointer; transition:0.3s; color:var(--text-muted);
         }
-        .time-pill:hover { border-color: var(--primary); color: var(--primary); }
+        .time-pill:hover:not(.disabled) { border-color: var(--primary); color: var(--primary); }
         .time-pill.active {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color:#fff; border-color:transparent;
             box-shadow: 0 4px 15px rgba(14,165,233,0.3);
         }
-        .time-pill.disabled { opacity:0.4; pointer-events:none; text-decoration:line-through; }
+        .time-pill.disabled { opacity:0.35; pointer-events:none; text-decoration:line-through; background:var(--border); }
+        .time-slot-note { font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600; }
 
         .delivery-card {
             background:var(--bg); border:1.5px solid var(--primary); border-radius:14px;
@@ -382,12 +392,12 @@
         .mobile-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:250; }
         .mobile-overlay.active { display:block; animation:fadeIn 0.3s ease; }
 
-        /* MODALS (Premium) */
+        /* MODALS */
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:1000; padding:16px; }
         .modal-overlay.active { display:flex; animation:fadeIn 0.3s ease; }
         .modal-box {
             background:rgba(255,255,255,0.95); backdrop-filter:blur(20px);
-            border-radius:24px; padding:35px 30px; max-width:420px; width:100%;
+            border-radius:24px; padding:35px 30px; max-width:440px; width:100%;
             position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.25);
             border:1px solid rgba(255,255,255,0.3); text-align:center;
             max-height:90vh; overflow-y:auto;
@@ -424,10 +434,10 @@
 
         /* PREMIUM SUCCESS MODAL */
         .success-hero {
-            position: relative;
+            position: relative; overflow: hidden;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: #fff; padding: 30px 24px; border-radius: 20px;
-            margin: -10px -10px 20px; overflow: hidden;
+            color: #fff; padding: 32px 24px; border-radius: 20px;
+            margin: -10px -10px 20px;
         }
         .success-hero::before {
             content:''; position:absolute; top:-30px; right:-25px;
@@ -440,33 +450,48 @@
             background:rgba(255,255,255,0.08);
         }
         .success-hero-icon {
-            width:70px; height:70px; border-radius:50%;
+            width:74px; height:74px; border-radius:50%;
             background:rgba(255,255,255,0.25);
             display:flex; align-items:center; justify-content:center;
-            margin: 0 auto 16px; font-size: 34px;
+            margin: 0 auto 16px; font-size: 36px;
             border: 3px solid rgba(255,255,255,0.4);
             position: relative; z-index: 1;
         }
         .success-hero h2 { font-size: 24px; font-weight: 800; margin-bottom: 6px; position: relative; z-index: 1; }
         .success-hero p { font-size: 14px; opacity: 0.95; font-weight: 600; position: relative; z-index: 1; }
         .success-sparkle { position: absolute; right: 20px; bottom: 15px; font-size: 42px; color: rgba(255,255,255,0.18); transform: rotate(-10deg); pointer-events: none; }
+        
+        .success-details-card {
+            background:var(--bg); border:1.5px solid var(--border);
+            border-radius:14px; padding:18px; margin-bottom:16px; text-align:left;
+        }
+        .success-detail-row {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:8px 0; border-bottom:1px dashed var(--border);
+            font-size:13px; font-weight:600;
+        }
+        .success-detail-row:last-child { border-bottom:none; }
+        .success-detail-row .label { color:var(--text-muted); font-weight:700; }
+        .success-detail-row .value { font-weight:800; color:var(--text); }
+        .success-detail-row .value.highlight { color:var(--primary); font-size:15px; }
+        
         .success-order-box {
             background:var(--bg); border:1.5px dashed var(--success);
-            border-radius:14px; padding:18px; margin-bottom:18px; text-align:center;
+            border-radius:14px; padding:16px; margin-bottom:16px; text-align:center;
         }
         .success-order-box .label {
             font-size:10px; color:var(--text-muted); font-weight:800;
             letter-spacing:1px; text-transform:uppercase;
         }
         .success-order-box .order-id {
-            font-size:24px; color:var(--primary); font-weight:800;
+            font-size:22px; color:var(--primary); font-weight:800;
             margin-top: 4px; letter-spacing: 1px;
         }
         .success-actions { display:flex; gap:10px; }
-        .success-actions .btn-primary-full { flex:1; font-size:13px; padding: 12px; }
+        .success-actions .btn-primary-full { flex:1; font-size:13px; padding: 13px; border-radius:30px; }
         .success-actions .btn-secondary {
             flex:1; background:var(--surface); color:var(--text);
-            border:1.5px solid var(--border); padding:12px; border-radius:12px;
+            border:1.5px solid var(--border); padding:13px; border-radius:30px;
             font-size:13px; font-weight:800; cursor:pointer; text-decoration: none;
             display:flex; align-items:center; justify-content:center; gap:6px;
             transition: 0.2s; font-family: 'Outfit', sans-serif;
@@ -484,7 +509,7 @@
             .logo-tagline { font-size: 9px; }
             .items-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
             .item-card { padding: 14px; }
-            .banner { padding: 22px 20px; }
+            .banner { padding: 24px 20px; }
             .banner h2 { font-size: 20px; }
             .banner-sparkle { font-size: 40px; right: 16px; bottom: 8px; }
             .checkout-sidebar {
@@ -526,10 +551,10 @@
             <div class="banner">
                 <div class="banner-content">
                     <div>
-                        <h2>Build Your Laundry Bag</h2>
-                        <p>Select garments · Min ₹300 for free pickup</p>
+                        <h2>Premium Care at Your Doorstep</h2>
+                        <p>✨ Free Pickup & Free Delivery · Min order ₹300</p>
                     </div>
-                    <i class="fas fa-tshirt banner-icon"></i>
+                    <i class="fas fa-wand-magic-sparkles banner-icon"></i>
                 </div>
                 <span class="banner-sparkle">✦</span>
             </div>
@@ -541,7 +566,8 @@
             
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" class="search-input" id="itemSearch" placeholder="Search for clothes..." />
+                <input type="text" class="search-input" id="itemSearch" placeholder="Search garments... e.g. Shirt, Saree, Jacket" />
+                <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="App.UI.clearSearch()" aria-label="Clear search"><i class="fas fa-times"></i></button>
             </div>
             
             <div class="category-pills" id="categoryPills"></div>
@@ -553,7 +579,7 @@
             
             <div class="free-delivery-bar">
                 <div class="progress-track"><div class="progress-fill" id="deliveryProgress"></div></div>
-                <p id="deliveryStatusText">Add ₹300 for FREE Pickup</p>
+                <p id="deliveryStatusText">Add ₹300 for FREE Pickup & Delivery</p>
             </div>
 
             <div class="bag-items" id="bagItemsSummary"></div>
@@ -597,12 +623,13 @@
             <form class="booking-form" id="bookingForm">
                 <div class="form-group">
                     <label>Pickup Date *</label>
-                    <input type="date" id="pickupDate" required onchange="App.UI.updateTimeSlots()" />
+                    <input type="date" id="pickupDate" required onchange="App.UI.onDateChange()" />
                 </div>
                 <div class="form-group">
                     <label>Time Slot *</label>
                     <div class="time-pills" id="timeSlotPills"></div>
                     <input type="hidden" id="selectedTimeSlot" required />
+                    <p class="time-slot-note" id="timeSlotNote"></p>
                 </div>
                 
                 <div id="customerInfoSection">
@@ -656,14 +683,18 @@
             
             <div class="success-hero">
                 <div class="success-hero-icon"><i class="fas fa-check"></i></div>
-                <h2>Order Booked!</h2>
-                <p>Our delivery partner will pick up on time.</p>
+                <h2>Order Confirmed!</h2>
+                <p>Your clothes will be picked up on time.</p>
                 <span class="success-sparkle">✦</span>
             </div>
 
             <div class="success-order-box">
                 <span class="label">Order ID</span>
                 <div class="order-id" id="successOrderId">PDC-XXXX</div>
+            </div>
+
+            <div class="success-details-card" id="successDetails">
+                <!-- Dynamic content -->
             </div>
 
             <div class="success-actions">
@@ -741,8 +772,10 @@
             isLoggedIn: false,
             lastOrderCache: null,
             selectedTimeSlot: '',
+            selectedSlotHour: null,
             isEditingFields: false,
             lastBookedOrderId: null,
+            lastOrderData: null,
             theme: localStorage.getItem('pdc_theme') || 'light'
         };
 
@@ -759,7 +792,11 @@
                     document.getElementById('couponCard').style.display = 'flex';
                 }
 
-                document.getElementById('itemSearch').addEventListener('input', (e) => this.UI.renderItems(e.target.value));
+                document.getElementById('itemSearch').addEventListener('input', (e) => {
+                    const val = e.target.value;
+                    document.getElementById('searchClearBtn').style.display = val ? 'flex' : 'none';
+                    this.UI.renderItems(val);
+                });
                 document.getElementById('bookingForm').addEventListener('submit', (e) => this.Order.submit(e));
                 
                 window.addEventListener('popstate', (e) => {
@@ -772,6 +809,9 @@
                         document.getElementById('mobileOverlay').classList.add('active');
                     }
                 });
+
+                // Auto-refresh time slots every minute to keep validation accurate
+                setInterval(() => this.UI.updateTimeSlots(), 60000);
             },
 
             sanitizeHTML: function(str) {
@@ -783,7 +823,10 @@
 
             showToast: function(msg, type='info') {
                 const container = document.getElementById('toastContainer');
-                if(container.childElementCount >= 3) container.removeChild(container.firstChild);
+                // Remove all existing toasts to prevent spam
+                while(container.childElementCount >= 2) {
+                    container.removeChild(container.firstChild);
+                }
                 const t = document.createElement('div');
                 t.style.cssText = `padding:12px 16px; border-radius:12px; background:var(--surface); color:var(--text); box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; font-weight:700; border:1px solid var(--border); transition:0.3s ease;`;
                 const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
@@ -837,36 +880,95 @@
                         document.body.style.overflow = '';
                     }
                 },
+                clearSearch: function() {
+                    document.getElementById('itemSearch').value = '';
+                    document.getElementById('searchClearBtn').style.display = 'none';
+                    this.renderItems();
+                    document.getElementById('itemSearch').focus();
+                },
+                onDateChange: function() {
+                    this.updateTimeSlots();
+                    App.Cart.updateSummary(); // FIX: Update ESTD when date changes
+                },
                 updateTimeSlots: function() {
                     const container = document.getElementById('timeSlotPills');
                     const dateVal = document.getElementById('pickupDate').value;
+                    const note = document.getElementById('timeSlotNote');
                     container.innerHTML = '';
+                    
                     const slots = [
-                        { l: '🌅 9 AM - 12 PM', v: 'Morning (9-12)', h: 12 },
-                        { l: '☀️ 1 PM - 5 PM', v: 'Afternoon (1-5)', h: 17 },
-                        { l: '🌙 6 PM - 9 PM', v: 'Evening (6-9)', h: 21 }
+                        { l: '🌅 9 AM - 12 PM', v: 'Morning (9-12)', startHr: 9, endHr: 12 },
+                        { l: '☀️ 1 PM - 5 PM', v: 'Afternoon (1-5)', startHr: 13, endHr: 17 },
+                        { l: '🌙 6 PM - 9 PM', v: 'Evening (6-9)', startHr: 18, endHr: 21 }
                     ];
                     
                     const isToday = (dateVal === new Date().toLocaleDateString('en-CA'));
+                    const isPastDate = dateVal < new Date().toLocaleDateString('en-CA');
                     const curHr = new Date().getHours();
+                    
+                    if (isPastDate) {
+                        note.textContent = '⚠️ Past date selected. Please choose today or future date.';
+                        note.style.color = 'var(--danger)';
+                        STATE.selectedTimeSlot = '';
+                        STATE.selectedSlotHour = null;
+                        document.getElementById('selectedTimeSlot').value = '';
+                        return;
+                    }
+                    
+                    let allDisabled = true;
+                    let availableCount = 0;
                     
                     slots.forEach(s => {
                         const pill = document.createElement('div');
-                        pill.className = `time-pill ${(isToday && curHr >= s.h) ? 'disabled' : ''}`;
+                        let isDisabled = false;
+                        
+                        if (isToday && curHr >= s.startHr) {
+                            isDisabled = true;
+                        }
+                        
+                        pill.className = `time-pill ${isDisabled ? 'disabled' : ''}`;
                         pill.textContent = s.l;
-                        if(!pill.classList.contains('disabled')) {
+                        
+                        if (!isDisabled) {
+                            allDisabled = false;
+                            availableCount++;
+                            // Check if this was previously selected
+                            if (STATE.selectedTimeSlot === s.v) {
+                                pill.classList.add('active');
+                            }
                             pill.onclick = () => {
                                 document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
                                 pill.classList.add('active');
                                 STATE.selectedTimeSlot = s.v;
+                                STATE.selectedSlotHour = s.startHr;
                                 document.getElementById('selectedTimeSlot').value = s.v;
                             };
                         }
                         container.appendChild(pill);
                     });
-                    if (!document.querySelector('.time-pill.active')) {
+                    
+                    if (allDisabled && isToday) {
+                        note.textContent = '⚠️ All slots passed for today. Please select tomorrow.';
+                        note.style.color = 'var(--danger)';
                         STATE.selectedTimeSlot = '';
+                        STATE.selectedSlotHour = null;
                         document.getElementById('selectedTimeSlot').value = '';
+                    } else if (isToday && availableCount < 3) {
+                        note.textContent = `ℹ️ ${availableCount} slot(s) remaining for today.`;
+                        note.style.color = 'var(--text-muted)';
+                    } else {
+                        note.textContent = '';
+                    }
+                    
+                    // Validate if previously selected slot is now disabled
+                    if (STATE.selectedTimeSlot && STATE.selectedSlotHour !== null) {
+                        const selectedSlot = slots.find(s => s.v === STATE.selectedTimeSlot);
+                        if (selectedSlot && isToday && curHr >= selectedSlot.startHr) {
+                            STATE.selectedTimeSlot = '';
+                            STATE.selectedSlotHour = null;
+                            document.getElementById('selectedTimeSlot').value = '';
+                            document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
+                        }
                     }
                 },
                 renderCategories: function() {
@@ -1032,10 +1134,10 @@
                     const statusText = document.getElementById('deliveryStatusText');
                     if (subtotal >= 300) {
                         progressFill.style.width = '100%';
-                        statusText.innerHTML = '<span style="color:var(--success);">🎉 FREE Pickup Unlocked</span>';
+                        statusText.innerHTML = '<span style="color:var(--success);">🎉 FREE Pickup & Delivery Unlocked</span>';
                     } else {
                         progressFill.style.width = `${(subtotal/300)*100}%`;
-                        statusText.innerHTML = `Add ₹${300 - subtotal} more for FREE Delivery`;
+                        statusText.innerHTML = `Add ₹${300 - subtotal} more for FREE Pickup & Delivery`;
                     }
 
                     document.getElementById('subtotal').textContent = `₹${subtotal}`;
@@ -1089,16 +1191,23 @@
                     App.showToast('Previous bag loaded!','success');
                 },
                 getGPS: function() {
-                    App.showToast('Fetching GPS...','info');
+                    App.showToast('Fetching GPS location...','info');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(pos => {
                             const addr = document.getElementById('custAddress');
                             if (addr) {
-                                addr.value += ` (GPS: https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude})`;
-                                App.showToast('GPS added!','success');
+                                const gpsLink = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                                if (!addr.value.includes('GPS:')) {
+                                    addr.value += (addr.value ? ' ' : '') + `(GPS: ${gpsLink})`;
+                                }
+                                App.showToast('GPS location added!','success');
                             }
-                        }, () => App.showToast('GPS denied/failed.','error'));
-                    } else App.showToast('GPS not supported.','error');
+                        }, (err) => {
+                            if (err.code === 1) App.showToast('Location permission denied.','error');
+                            else if (err.code === 2) App.showToast('Location unavailable.','error');
+                            else App.showToast('GPS timeout. Try again.','error');
+                        }, { enableHighAccuracy: true, timeout: 10000 });
+                    } else App.showToast('GPS not supported on this device.','error');
                 }
             },
 
@@ -1201,7 +1310,31 @@
                     if (!/^[a-zA-Z\s]{3,50}$/.test(name)) { App.showToast('Valid name required','error'); return; }
                     if (phone.length !== 10 || !/^\d{10}$/.test(phone)) { App.showToast('Valid 10-digit mobile required','error'); return; }
                     if (address.length < 20) { App.showToast('Address must be min 20 chars','error'); return; }
-                    if (!STATE.selectedTimeSlot) { App.showToast('Select a time slot','warning'); return; }
+                    
+                    // FIX: Validate time slot at submit time
+                    if (!STATE.selectedTimeSlot) {
+                        App.showToast('Select a time slot','warning');
+                        return;
+                    }
+                    
+                    // Double-check slot is still valid
+                    const dateVal = document.getElementById('pickupDate').value;
+                    const isToday = (dateVal === new Date().toLocaleDateString('en-CA'));
+                    const isPastDate = dateVal < new Date().toLocaleDateString('en-CA');
+                    
+                    if (isPastDate) {
+                        App.showToast('Cannot book for past date','error');
+                        return;
+                    }
+                    
+                    if (isToday && STATE.selectedSlotHour !== null) {
+                        const curHr = new Date().getHours();
+                        if (curHr >= STATE.selectedSlotHour) {
+                            App.showToast('Selected time slot has passed. Choose another.','error');
+                            App.UI.updateTimeSlots();
+                            return;
+                        }
+                    }
 
                     let orderItems = {}, subtotal = 0;
                     for (let [id,qty] of Object.entries(STATE.bag)) {
@@ -1226,6 +1359,7 @@
                     const discount = parseInt(document.getElementById('discountAmount').textContent.replace('-₹',''))||0;
                     const total = parseInt(document.getElementById('totalAmount').textContent.replace('₹',''));
                     const orderId = 'PDC-'+Math.random().toString(36).substring(2,8).toUpperCase();
+                    const pickupDate = document.getElementById('pickupDate').value;
                     
                     const orderData = {
                         orderId,
@@ -1234,7 +1368,7 @@
                         name: App.sanitizeHTML(name),
                         phone,
                         address: App.sanitizeHTML(address),
-                        pickupDate: document.getElementById('pickupDate').value,
+                        pickupDate,
                         timeSlot: STATE.selectedTimeSlot,
                         specialInst,
                         items: orderItems,
@@ -1267,6 +1401,7 @@
                         document.getElementById('expressToggle').checked = false;
                         document.getElementById('specialInst').value = '';
                         STATE.selectedTimeSlot = '';
+                        STATE.selectedSlotHour = null;
                         document.getElementById('selectedTimeSlot').value = '';
                         
                         App.UI.updateTimeSlots();
@@ -1275,6 +1410,33 @@
                         
                         document.getElementById('successOrderId').textContent = orderId;
                         STATE.lastBookedOrderId = orderId;
+                        STATE.lastOrderData = orderData;
+                        
+                        // Populate success details
+                        const estDate = new Date(pickupDate);
+                        estDate.setDate(estDate.getDate() + (isExpress ? 1 : 3));
+                        const estDateStr = estDate.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
+                        const pickupDateStr = new Date(pickupDate).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
+                        
+                        document.getElementById('successDetails').innerHTML = `
+                            <div class="success-detail-row">
+                                <span class="label">Pickup Date</span>
+                                <span class="value">${pickupDateStr}</span>
+                            </div>
+                            <div class="success-detail-row">
+                                <span class="label">Time Slot</span>
+                                <span class="value">${App.sanitizeHTML(STATE.selectedTimeSlot || orderData.timeSlot)}</span>
+                            </div>
+                            <div class="success-detail-row">
+                                <span class="label">Est. Delivery</span>
+                                <span class="value highlight">${estDateStr}</span>
+                            </div>
+                            <div class="success-detail-row">
+                                <span class="label">Total Amount</span>
+                                <span class="value highlight">₹${total}</span>
+                            </div>
+                            ${isExpress ? `<div class="success-detail-row"><span class="label">Express</span><span class="value" style="color:var(--gold);">⚡ 24-Hr</span></div>` : ''}
+                        `;
                         
                         if (typeof confetti === 'function') {
                             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 99999 });
