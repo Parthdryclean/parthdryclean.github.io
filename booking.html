@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthbookGen11 -->
+<!-- ParthbookGen12 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -165,7 +165,7 @@
         }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
-        /* CATEGORY TABS — underline style (no clipping, clean) */
+        /* CATEGORY TABS — underline style */
         .category-pills { display:flex; gap:2px; overflow-x:auto; padding:4px 6px 10px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
         .pill {
@@ -198,13 +198,6 @@
             background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12));
             color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:19px;
         }
-        /* COMBO — no colorful box, themed tag only */
-        .combo-tag {
-            display:flex; align-items:center; gap:6px;
-            font-size:11px; font-weight:800; color:var(--accent);
-            letter-spacing:0.5px; text-transform:uppercase; min-height:46px;
-        }
-        .combo-tag i { font-size:16px; }
         .save-tag {
             position:absolute; top:12px; right:12px;
             background:rgba(16,185,129,0.12); color:var(--success);
@@ -371,7 +364,7 @@
         .btn-book:hover { transform:translateY(-2px); }
         .btn-book:disabled { background:var(--border); color:var(--text-muted); transform:none; cursor:not-allowed; }
 
-        /* TIME SLOTS — soft cards with icon circle + check badge */
+        /* TIME SLOTS — soft cards */
         .time-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
         .time-pill {
             position:relative; display:flex; flex-direction:column; align-items:center; gap:4px;
@@ -511,13 +504,6 @@
             .sheet-handle { display:block; }
             .mobile-overlay.active { display:block; }
         }
-
-        /* SMOOTH CLOSE ANIMATIONS (defined after media so they win) */
-        .checkout-sidebar.closing { animation: slideDown 0.25s ease forwards; }
-        .mobile-overlay.closing { animation: fadeOut 0.25s ease forwards; }
-        @keyframes slideDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
-        @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
-
         @media (max-width:768px) {
             header { padding: 6px 4%; }
             .logo-main { font-size: 1.8rem; }
@@ -750,8 +736,8 @@
         const STATE = {
             categories: {
                 combos: [
-                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-gem' },
-                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-gem' }
+                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-box' },
+                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-box' }
                 ],
                 mens: [
                     { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80, icon:'fa-tshirt' },
@@ -787,7 +773,7 @@
                     { id:'upsell-pillow', name:'Pillow Cover Wash', price:20, icon:'fa-bed' }
                 ]
             },
-            catNames: { combos: "Combos 🎁", mens: "Men's", ladies: "Ladies", winterWomen: "Winter (F)", winterMen: "Winter (M)", festival: "Festival", iron: "Iron", home: "Home" },
+            catNames: { combos: "Combos", mens: "Men's", ladies: "Ladies", winterWomen: "Winter (F)", winterMen: "Winter (M)", festival: "Festival", iron: "Iron", home: "Home" },
             upsellRules: [
                 { triggerId: 'fest-coat-pant', offerId: 'upsell-tie', text: 'Add Premium Tie Wash?', color: '#d946ef' },
                 { triggerId: 'home-blanket-double', offerId: 'upsell-pillow', text: 'Wash Pillow Covers too?', color: '#0ea5e9' }
@@ -827,18 +813,20 @@
 
                 window.addEventListener('popstate', (e) => {
                     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-                    document.getElementById('checkoutSidebar').classList.remove('mobile-open');
-                    document.getElementById('checkoutSidebar').classList.remove('closing');
-                    document.getElementById('mobileOverlay').classList.remove('active');
-                    document.getElementById('mobileOverlay').classList.remove('closing');
+                    const sheet = document.getElementById('checkoutSidebar');
+                    const overlay = document.getElementById('mobileOverlay');
+                    sheet.classList.remove('mobile-open');
+                    overlay.classList.remove('active');
+                    sheet.style.transform = '';
+                    overlay.style.opacity = '';
                     document.body.style.overflow = '';
                     if (e.state?.modal) {
                         document.getElementById(e.state.modal).classList.add('active');
                         document.body.style.overflow = 'hidden';
                     }
                     if (e.state?.mobileCheckout) {
-                        document.getElementById('checkoutSidebar').classList.add('mobile-open');
-                        document.getElementById('mobileOverlay').classList.add('active');
+                        sheet.classList.add('mobile-open');
+                        overlay.classList.add('active');
                         document.body.style.overflow = 'hidden';
                     }
                 });
@@ -874,7 +862,6 @@
                     this.applyTheme(STATE.theme);
                     localStorage.setItem('pdc_theme', STATE.theme);
                 },
-                // INDEX JESA: day = moon, dark = BLUE sun
                 applyTheme: function(theme) {
                     if(theme === 'dark') {
                         document.documentElement.setAttribute('data-theme', 'dark');
@@ -908,22 +895,20 @@
                 openMobileCheckout: function() {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
-                    sheet.classList.remove('closing');
-                    overlay.classList.remove('closing');
+                    sheet.style.transform = '';
                     overlay.style.opacity = '';
                     sheet.classList.add('mobile-open');
                     overlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                     history.pushState({ mobileCheckout: true }, '', '#cart');
                 },
-                // SMOOTH CLOSE: CSS class animation, no flicker
                 closeMobileCheckout: function(skipAnim) {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
                     if (!sheet.classList.contains('mobile-open')) return;
                     const finalize = () => {
-                        sheet.classList.remove('closing');
-                        overlay.classList.remove('closing');
+                        sheet.style.transform = '';
+                        overlay.style.opacity = '';
                         if (history.state?.mobileCheckout) history.back();
                         else {
                             sheet.classList.remove('mobile-open');
@@ -931,40 +916,66 @@
                             document.body.style.overflow = '';
                         }
                     };
-                    if (skipAnim) { finalize(); return; }
-                    sheet.classList.add('closing');
-                    overlay.classList.add('closing');
-                    setTimeout(finalize, 260);
+                    if (skipAnim || !sheet.animate) { finalize(); return; }
+                    sheet.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }], { duration: 230, easing: 'cubic-bezier(0.4,0,0.6,1)' });
+                    overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 230, easing: 'ease' });
+                    setTimeout(finalize, 240);
                 },
+                // SMOOTH SHEET SWIPE: finger-follow drag, resistance, spring-back
                 initSheetSwipe: function() {
                     const sheet = document.getElementById('checkoutSidebar');
-                    let startY = null, curDy = 0, tracking = false;
+                    const overlay = document.getElementById('mobileOverlay');
+                    let startY = 0, curDy = 0, tracking = false;
+
                     sheet.addEventListener('touchstart', (e) => {
                         if (window.innerWidth > 1024 || !sheet.classList.contains('mobile-open')) { tracking = false; return; }
-                        if (sheet.scrollTop <= 5) { startY = e.touches[0].clientY; tracking = true; }
+                        if (sheet.scrollTop <= 1) { startY = e.touches[0].clientY; curDy = 0; tracking = true; }
                         else tracking = false;
                     }, { passive: true });
+
                     sheet.addEventListener('touchmove', (e) => {
                         if (!tracking) return;
-                        curDy = e.touches[0].clientY - startY;
-                        if (curDy > 0) {
-                            sheet.style.transition = 'none';
-                            sheet.style.transform = `translateY(${curDy}px)`;
+                        const dy = e.touches[0].clientY - startY;
+                        if (dy > 0) {
+                            curDy = dy;
+                            sheet.style.transform = `translateY(${dy * 0.6}px)`;
+                            overlay.style.opacity = String(Math.max(0, 1 - dy / 500));
                         } else {
+                            // upar drag = native scroll, koi interference nahi
                             tracking = false;
-                            sheet.style.transition = 'transform 0.2s ease';
                             sheet.style.transform = '';
-                            setTimeout(() => { sheet.style.transition = ''; }, 220);
+                            overlay.style.opacity = '';
                         }
                     }, { passive: true });
+
                     sheet.addEventListener('touchend', () => {
-                        if (!tracking) { curDy = 0; return; }
+                        if (!tracking) return;
                         tracking = false;
-                        const shouldClose = curDy > 120;
-                        sheet.style.transition = 'transform 0.2s ease';
-                        sheet.style.transform = '';
-                        setTimeout(() => { sheet.style.transition = ''; }, 220);
-                        if (shouldClose) setTimeout(() => App.UI.closeMobileCheckout(), 60);
+                        const dragged = curDy * 0.6;
+                        if (curDy > 90) {
+                            // wahin se smooth slide-down close
+                            sheet.style.transform = '';
+                            overlay.style.opacity = '';
+                            if (sheet.animate) {
+                                const a1 = sheet.animate(
+                                    [{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(100%)' }],
+                                    { duration: 220, easing: 'cubic-bezier(0.4,0,0.6,1)' }
+                                );
+                                overlay.animate([{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 0 }], { duration: 220, easing: 'ease' });
+                                a1.onfinish = () => App.UI.closeMobileCheckout(true);
+                            } else {
+                                App.UI.closeMobileCheckout(true);
+                            }
+                        } else if (curDy > 0) {
+                            // smooth spring-back
+                            if (sheet.animate) {
+                                sheet.animate([{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(0)' }], { duration: 200, easing: 'ease-out' });
+                                overlay.animate([{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 1 }], { duration: 200, easing: 'ease' });
+                            } else {
+                                sheet.style.transform = '';
+                                overlay.style.opacity = '';
+                            }
+                        }
                         curDy = 0;
                     });
                 },
@@ -988,7 +999,6 @@
                         p.classList.toggle('active', p.dataset.cat === cat);
                     });
                 },
-                // FADE ONLY — screen nahi hilti
                 goCategory: function(dir) {
                     const keys = Object.keys(STATE.categories).filter(k => k !== 'upsell');
                     const idx = keys.indexOf(STATE.currentCat);
@@ -1144,17 +1154,13 @@
                     items.forEach((item, idx) => {
                         const qty = STATE.bag[item.id] || 0;
                         const saveAmt = item.originalPrice ? (item.originalPrice - item.price) : 0;
-                        const isCombo = item.id.startsWith('combo-');
-                        const iconHtml = isCombo
-                            ? `<div class="combo-tag"><i class="fas fa-gem"></i> Combo Pack</div>`
-                            : `<div class="item-icon"><i class="fas ${item.icon}"></i></div>`;
                         const card = document.createElement('div');
                         card.className = 'item-card';
                         card.style.animation = `fadeUp 0.3s ease both`;
                         card.style.animationDelay = `${idx * 0.04}s`;
                         card.innerHTML = `
                             ${saveAmt > 0 ? `<span class="save-tag">Save ₹${saveAmt}</span>` : ''}
-                            ${iconHtml}
+                            <div class="item-icon"><i class="fas ${item.icon}"></i></div>
                             <div class="item-name">${App.sanitizeHTML(item.name)}</div>
                             <div class="item-price-row">
                                 ${item.price > 0 ? `<span class="item-price">₹${item.price}</span>` : '<span class="item-price">₹—</span>'}
@@ -1505,7 +1511,6 @@
                     const pickupDate = document.getElementById('pickupDate').value;
                     const timeSlot = STATE.selectedTimeSlot;
 
-                    // ESTD + aliases for Google Sheets
                     const estDate = new Date(pickupDate);
                     estDate.setDate(estDate.getDate() + (isExpress ? 1 : 3));
                     const estd = estDate.toISOString().split('T')[0];
