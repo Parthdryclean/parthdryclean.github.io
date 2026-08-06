@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+<!-- ParthadminGen2 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel · Parth Dry Clean</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -13,7 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <style>
-        /* ========== ROOT ========== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --primary: #0ea5e9;
@@ -38,12 +38,16 @@
 
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
 
-        /* ========== SIDEBAR ========== */
+        /* SIDEBAR */
         .sidebar { width: 260px; background: var(--card); border-right: 1px solid var(--border); min-height: 100vh; padding: 24px 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; flex-shrink: 0; transition: var(--transition); z-index: 100; }
         .sidebar .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-        .sidebar .brand img { height: 40px; width: auto; }
-        .sidebar .brand h1 { font-size: 18px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sidebar .brand span { font-size: 10px; color: var(--text-muted); display: block; -webkit-text-fill-color: var(--text-muted); font-weight: 400; margin-top: -2px; }
+        .sidebar .brand-logo {
+            font-family: 'Pacifico', cursive; font-size: 1.6rem; font-weight: 400;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; line-height: 1.3;
+        }
+        .sidebar .brand-sub { font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.3px; text-transform: uppercase; margin-top: 2px; }
 
         .sidebar .nav-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--radius-sm); color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 14px; transition: var(--transition); cursor: pointer; margin-bottom: 4px; position: relative; }
         .sidebar .nav-item i { width: 20px; font-size: 16px; text-align: center; }
@@ -60,17 +64,17 @@
         .sidebar .user-section .logout-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 13px; transition: var(--transition); font-family: inherit; width: 100%; margin-top: 12px; }
         .sidebar .user-section .logout-btn:hover { background: #fee2e2; border-color: #ef4444; color: #ef4444; }
 
-        /* ========== MAIN CONTENT ========== */
+        /* MAIN */
         .main { flex: 1; padding: 28px 32px 40px; min-width: 0; }
 
-        /* ========== TOP BAR ========== */
+        /* TOPBAR */
         .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
         .topbar .page-title h2 { font-size: 24px; font-weight: 700; }
         .topbar .page-title p { color: var(--text-muted); font-size: 14px; margin-top: 2px; }
         .topbar .actions { display: flex; gap: 10px; align-items: center; }
         .menu-toggle { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text); padding: 4px; }
 
-        /* ========== STATS CARDS ========== */
+        /* STATS */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 32px; }
         .stat-card { background: var(--card); border-radius: var(--radius); padding: 22px 24px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: var(--transition); position: relative; overflow: hidden; }
         .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
@@ -83,7 +87,7 @@
         .stat-card .num { font-size: 30px; font-weight: 800; line-height: 1.2; }
         .stat-card .label { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
 
-        /* ========== TABS ========== */
+        /* TABS */
         .tabs { display: flex; gap: 4px; background: var(--card); padding: 4px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
         .tabs button { padding: 10px 22px; border-radius: var(--radius-sm); border: none; background: transparent; font-weight: 600; font-size: 13px; cursor: pointer; font-family: inherit; color: var(--text-muted); transition: var(--transition); display: flex; align-items: center; gap: 8px; }
         .tabs button:hover { background: var(--bg); color: var(--text); }
@@ -92,25 +96,24 @@
         .tab-content.active { display: block; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-        /* ========== TABLE ========== */
+        /* TABLE */
         .table-wrapper { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
         .table-wrapper .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .table-wrapper .table-header h3 { font-size: 16px; font-weight: 600; }
-        .table-wrapper .table-header .actions { display: flex; gap: 8px; }
+        .table-wrapper .table-header .actions { display: flex; gap: 8px; align-items: center; }
         .table-wrapper .table-header .actions button { padding: 6px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: transparent; font-weight: 600; font-size: 12px; cursor: pointer; transition: var(--transition); font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
         .table-wrapper .table-header .actions button:hover { background: var(--primary-bg); border-color: var(--primary); color: var(--primary); }
         .table-wrapper .table-header .actions button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
 
         .table-scroll { overflow-x: auto; padding: 0 4px 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1000px; } /* Increased min-width for extra columns */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1000px; }
         th { text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; background: #fafbfc; }
         td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: var(--primary-bg); }
 
-        /* Dynamic Row Colors */
-        .row-urgent { background-color: #fef9c3 !important; } /* Yellow for today */
-        .row-overdue { background-color: #fee2e2 !important; } /* Red for past */
+        .row-urgent { background-color: #fef9c3 !important; }
+        .row-overdue { background-color: #fee2e2 !important; }
 
         .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: capitalize; }
         .status-badge .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
@@ -134,17 +137,16 @@
 
         .action-cell { display: flex; flex-direction: column; gap: 6px; }
 
-        /* ITEM BADGES IN TABLE */
         .item-badge { display: inline-block; background: var(--primary-bg); border: 1px solid var(--primary-light); color: var(--primary-dark); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; margin: 2px; }
 
-        /* ========== REMINDER ========== */
+        /* REMINDER */
         .reminder-box { background: #fef3c7; border: 1px solid #f59e0b; border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; display: none; }
         .reminder-box.active { display: block; }
         .reminder-box h4 { color: #d97706; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .reminder-box ul { list-style: none; padding: 0; }
         .reminder-box li { padding: 4px 0; font-size: 13px; border-bottom: 1px dashed #fcd34d; }
 
-        /* ========== DELIVERY BOYS ========== */
+        /* DELIVERY BOYS */
         .db-form { display: flex; gap: 12px; flex-wrap: wrap; background: var(--card); padding: 18px 20px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); align-items: flex-end; margin-bottom: 20px; }
         .db-form .form-group { flex: 1; min-width: 150px; }
         .db-form .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
@@ -157,7 +159,7 @@
         .db-item .info .phone { color: var(--text-muted); font-size: 13px; }
         .db-item .btn-del { padding: 4px 16px; border-radius: 30px; border: 1px solid #ef4444; background: transparent; color: #ef4444; cursor: pointer; font-size: 12px; font-weight: 600; }
 
-        /* ========== PRICE EDITOR (NEW UI) ========== */
+        /* PRICE EDITOR */
         .price-editor { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 24px; display: flex; flex-direction: column; height: 70vh; }
         .price-editor h3 { font-size: 18px; margin-bottom: 4px; }
         .price-editor p { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
@@ -176,7 +178,7 @@
         .price-editor .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14,165,233,0.30); }
         .price-editor .msg { font-weight: 600; font-size: 14px; }
 
-        /* ========== LOGIN ========== */
+        /* LOGIN */
         .login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #e6f7f5 100%); padding: 20px; width: 100%; }
         .login-box { background: var(--card); padding: 48px 36px; border-radius: 24px; max-width: 400px; width: 100%; box-shadow: var(--shadow-lg); text-align: center; border: 1px solid var(--border); }
         .login-box .lock-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--primary-bg); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; color: var(--primary); }
@@ -192,6 +194,14 @@
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
         .empty-state i { font-size: 48px; opacity: 0.3; margin-bottom: 12px; display: block; }
 
+        .connection-status {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+        }
+        .connection-status.connected { background: #d1fae5; color: #059669; }
+        .connection-status.connecting { background: #fef3c7; color: #d97706; }
+        .connection-status.disconnected { background: #fee2e2; color: #dc2626; }
+
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; min-height: auto; height: auto; padding: 16px 20px; position: relative; border-right: none; border-bottom: 1px solid var(--border); display: none; }
@@ -199,19 +209,16 @@
             .menu-toggle { display: block; }
             .main { padding: 16px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .report-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar" id="sidebar">
         <div class="brand">
-            <img src="https://i.ibb.co/bg5hn6SY/file-00000000087c820892dd0971bf2cbf6.png" alt="Logo" />
             <div>
-                <h1>Parth Dry Clean</h1>
-                <span>Admin Dashboard</span>
+                <div class="brand-logo">Parth</div>
+                <div class="brand-sub">Admin Panel</div>
             </div>
         </div>
 
@@ -230,14 +237,16 @@
                     <div class="email" id="adminEmailDisplay">admin@parthdryclean.com</div>
                 </div>
             </div>
+            <div style="margin-top: 12px; text-align: center;">
+                <span class="connection-status connecting" id="connectionStatus">
+                    <i class="fas fa-circle-notch fa-spin"></i> Connecting...
+                </span>
+            </div>
             <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </aside>
 
-    <!-- ===== MAIN ===== -->
     <main class="main">
-
-        <!-- ===== TOPBAR ===== -->
         <div class="topbar">
             <div class="page-title">
                 <h2>📋 Orders</h2>
@@ -248,7 +257,6 @@
             </div>
         </div>
 
-        <!-- ===== LOGIN SCREEN ===== -->
         <div class="login-screen" id="loginScreen" style="display:none;">
             <div class="login-box">
                 <div class="lock-icon"><i class="fas fa-lock"></i></div>
@@ -267,10 +275,7 @@
             </div>
         </div>
 
-        <!-- ===== DASHBOARD ===== -->
         <div class="dashboard active" id="dashboard">
-
-            <!-- Stats -->
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
                     <div class="stat-icon blue"><i class="fas fa-shopping-bag"></i></div>
@@ -299,7 +304,6 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
             <div class="tabs" id="tabs">
                 <button class="active" data-tab="orders"><i class="fas fa-box"></i> Orders</button>
                 <button data-tab="deliveryboys"><i class="fas fa-truck"></i> Delivery Boys</button>
@@ -307,7 +311,6 @@
                 <button data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</button>
             </div>
 
-            <!-- ===== TAB: ORDERS ===== -->
             <div class="tab-content active" id="tab-orders">
                 <div class="reminder-box" id="reminderBox">
                     <h4><i class="fas fa-bell"></i> Tomorrow's Deliveries</h4>
@@ -344,7 +347,6 @@
                 </div>
             </div>
 
-            <!-- ===== TAB: DELIVERY BOYS ===== -->
             <div class="tab-content" id="tab-deliveryboys">
                 <div class="db-form">
                     <div class="form-group">
@@ -362,7 +364,6 @@
                 </div>
             </div>
 
-            <!-- ===== TAB: SERVICES (PRICE EDITOR) ===== -->
             <div class="tab-content" id="tab-services">
                 <div class="price-editor">
                     <div>
@@ -381,9 +382,8 @@
                 </div>
             </div>
 
-            <!-- ===== TAB: REPORTS ===== -->
             <div class="tab-content" id="tab-reports">
-                <div class="report-grid" id="reportGrid">
+                <div class="stats-grid" id="reportGrid">
                     <div class="stat-card">
                         <div class="stat-icon blue"><i class="fas fa-shopping-bag"></i></div>
                         <div class="num" id="repTotal">0</div>
@@ -407,14 +407,10 @@
                 </div>
                 <p style="color:var(--text-muted);font-size:13px;margin-top:8px;"><i class="fas fa-info-circle"></i> Revenue calculated from <strong>Delivered</strong> orders only.</p>
             </div>
-
         </div>
     </main>
 
     <script>
-        // ============================================================
-        // FIREBASE CONFIG
-        // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
             authDomain: "parth-dry-clean.firebaseapp.com",
@@ -427,9 +423,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ============================================================
-        // DOM REFS
-        // ============================================================
         const sidebar = document.getElementById('sidebar');
         const menuToggle = document.getElementById('menuToggle');
         const loginScreen = document.getElementById('loginScreen');
@@ -446,6 +439,7 @@
         const reminderBox = document.getElementById('reminderBox');
         const reminderList = document.getElementById('reminderList');
         const orderBadge = document.getElementById('orderBadge');
+        const connectionStatus = document.getElementById('connectionStatus');
 
         let globalOrdersSnap = null;
         let cachedBoys = [];
@@ -453,49 +447,167 @@
         let blinkInterval;
         let isBlinking = false;
         let knownOrderCount = -1;
+        let ordersListenerActive = false;
+        let boysListenerActive = false;
 
         const notifSound = new Audio('https://www.soundjay.com/buttons/sounds/button-14a.mp3');
 
-        // ============================================================
-        // SIDEBAR TOGGLE & AUTH
-        // ============================================================
         menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
         document.addEventListener('click', (e) => { if (window.innerWidth <= 768) { if (!sidebar.contains(e.target) && e.target !== menuToggle) sidebar.classList.remove('open'); } });
 
+        // ROBUST AUTH STATE HANDLING
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                loginScreen.style.display = 'none'; dashboard.classList.add('active');
+                loginScreen.style.display = 'none';
+                dashboard.classList.add('active');
                 const name = user.displayName || user.email?.split('@')[0] || 'Admin';
                 adminName.textContent = name.charAt(0).toUpperCase() + name.slice(1);
                 adminEmailDisplay.textContent = user.email || 'admin@parthdryclean.com';
-                loadDashboard();
+                
+                // Always ensure listeners are active
+                ensureListenersActive();
             } else {
-                loginScreen.style.display = 'flex'; dashboard.classList.remove('active');
-                db.ref('orders').off(); db.ref('delivery_boys').off();
+                loginScreen.style.display = 'flex';
+                dashboard.classList.remove('active');
+                // Don't detach listeners here - let them reconnect on next auth
             }
         });
+
+        function ensureListenersActive() {
+            if (!ordersListenerActive) {
+                initOrdersListener();
+            }
+            if (!boysListenerActive) {
+                initBoysListener();
+            }
+            loadPriceEditor();
+        }
+
+        function initOrdersListener() {
+            if (ordersListenerActive) return;
+            
+            updateConnectionStatus('connecting');
+            
+            const ordersRef = db.ref('orders');
+            ordersRef.on('value', snap => {
+                globalOrdersSnap = snap;
+                ordersListenerActive = true;
+                updateConnectionStatus('connected');
+                
+                updateStatsFromSnapshot(snap);
+                updateReportsFromSnapshot(snap);
+                
+                const currentCount = snap.numChildren();
+                if (knownOrderCount !== -1 && currentCount > knownOrderCount) {
+                    notifSound.play().catch(()=>{});
+                    if(!isBlinking && document.hidden) {
+                        isBlinking = true;
+                        blinkInterval = setInterval(() => {
+                            document.title = document.title === originalTitle ? "🔴 New Order!" : originalTitle;
+                        }, 1000);
+                    }
+                }
+                knownOrderCount = currentCount;
+
+                if (document.getElementById('tab-orders').classList.contains('active')) {
+                    renderOrders(snap);
+                }
+            }, error => {
+                console.error('Orders listener error:', error);
+                ordersListenerActive = false;
+                updateConnectionStatus('disconnected');
+                
+                // Retry after 3 seconds
+                setTimeout(() => {
+                    if (firebase.auth().currentUser) {
+                        initOrdersListener();
+                    }
+                }, 3000);
+            });
+        }
+
+        function initBoysListener() {
+            if (boysListenerActive) return;
+            
+            const boysRef = db.ref('delivery_boys');
+            boysRef.on('value', snap => {
+                cachedBoys = [];
+                boysListenerActive = true;
+                
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        const bData = c.val();
+                        if (bData && typeof bData === 'object') {
+                            cachedBoys.push({ id: c.key, ...bData });
+                        }
+                    });
+                }
+                
+                if (document.getElementById('tab-deliveryboys').classList.contains('active')) {
+                    renderDeliveryBoys();
+                }
+                if (document.getElementById('tab-orders').classList.contains('active') && globalOrdersSnap) {
+                    renderOrders(globalOrdersSnap);
+                }
+            }, error => {
+                console.error('Boys listener error:', error);
+                boysListenerActive = false;
+                
+                // Retry after 3 seconds
+                setTimeout(() => {
+                    if (firebase.auth().currentUser) {
+                        initBoysListener();
+                    }
+                }, 3000);
+            });
+        }
+
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            if (!statusEl) return;
+            
+            statusEl.className = 'connection-status ' + status;
+            
+            if (status === 'connected') {
+                statusEl.innerHTML = '<i class="fas fa-circle"></i> Connected';
+            } else if (status === 'connecting') {
+                statusEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Connecting...';
+            } else {
+                statusEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Disconnected';
+            }
+        }
 
         loginBtn.addEventListener('click', () => {
             loginError.style.display = 'none';
             firebase.auth().signInWithEmailAndPassword(adminEmailInput.value.trim(), adminPassInput.value.trim()).catch(() => loginError.style.display = 'block');
         });
         adminPassInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); });
-        logoutBtn.addEventListener('click', () => firebase.auth().signOut());
+        logoutBtn.addEventListener('click', () => {
+            // Detach listeners on logout
+            if (ordersListenerActive) {
+                db.ref('orders').off();
+                ordersListenerActive = false;
+            }
+            if (boysListenerActive) {
+                db.ref('delivery_boys').off();
+                boysListenerActive = false;
+            }
+            firebase.auth().signOut();
+        });
 
-        // ============================================================
-        // TABS NAVIGATION
-        // ============================================================
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                item.classList.add('active'); switchTab(item.dataset.tab);
+                item.classList.add('active');
+                switchTab(item.dataset.tab);
                 if (window.innerWidth <= 768) sidebar.classList.remove('open');
             });
         });
         document.querySelectorAll('.tabs button').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active'); switchTab(btn.dataset.tab);
+                btn.classList.add('active');
+                switchTab(btn.dataset.tab);
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.tab === btn.dataset.tab));
             });
         });
@@ -509,60 +621,41 @@
             if (tab === 'services') loadPriceEditor();
         }
 
-        function loadDashboard() { initLiveListeners(); loadPriceEditor(); }
+        window.addEventListener('focus', () => {
+            clearInterval(blinkInterval);
+            document.title = originalTitle;
+            isBlinking = false;
+        });
 
-        // ============================================================
-        // LIVE LISTENERS + TAB NOTIFICATION
-        // ============================================================
-        window.addEventListener('focus', () => { clearInterval(blinkInterval); document.title = originalTitle; isBlinking = false; });
-
-        function initLiveListeners() {
-            db.ref('orders').on('value', snap => {
-                globalOrdersSnap = snap;
-                updateStatsFromSnapshot(snap);
-                updateReportsFromSnapshot(snap);
-                
-                const currentCount = snap.numChildren();
-                if (knownOrderCount !== -1 && currentCount > knownOrderCount) {
-                    notifSound.play().catch(()=>{});
-                    if(!isBlinking && document.hidden) {
-                        isBlinking = true;
-                        blinkInterval = setInterval(() => { document.title = document.title === originalTitle ? "🔴 New Order!" : originalTitle; }, 1000);
-                    }
-                }
-                knownOrderCount = currentCount;
-
-                if (document.getElementById('tab-orders').classList.contains('active')) renderOrders(snap);
-            });
-
-            db.ref('delivery_boys').on('value', snap => {
-                cachedBoys = [];
-                if (snap.exists()) snap.forEach(c => { const bData = c.val(); if (bData && typeof bData === 'object') cachedBoys.push({ id: c.key, ...bData }); });
-                if (document.getElementById('tab-deliveryboys').classList.contains('active')) renderDeliveryBoys();
-                if (document.getElementById('tab-orders').classList.contains('active') && globalOrdersSnap) renderOrders(globalOrdersSnap);
-            });
-        }
-
-        // ============================================================
-        // RENDER ORDERS WITH URGENT HIGHLIGHTS & ITEMS LIST
-        // ============================================================
         function renderOrders(snapshot) {
             try {
-                if (!snapshot || !snapshot.exists()) { ordersBody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-inbox"></i><h4>No orders yet</h4></div></td></tr>`; return; }
+                if (!snapshot || !snapshot.exists()) {
+                    ordersBody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-inbox"></i><h4>No orders yet</h4></div></td></tr>`;
+                    return;
+                }
                 
-                const orders = []; snapshot.forEach(c => { const val = c.val(); if (val && typeof val === 'object') orders.push({ id: c.key, ...val }); });
+                const orders = [];
+                snapshot.forEach(c => {
+                    const val = c.val();
+                    if (val && typeof val === 'object') {
+                        orders.push({ id: c.key, ...val });
+                    }
+                });
                 orders.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                 const boys = Array.isArray(cachedBoys) ? cachedBoys : [];
-                if (orders.length === 0) { ordersBody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-inbox"></i><h4>No valid orders</h4></div></td></tr>`; return; }
+                if (orders.length === 0) {
+                    ordersBody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-inbox"></i><h4>No valid orders</h4></div></td></tr>`;
+                    return;
+                }
 
                 const todayStr = new Date().toISOString().split('T')[0];
 
                 ordersBody.innerHTML = orders.map(o => {
                     if (!o) return '';
-                    const assigned = o.assigned_to || ''; const isAssigned = assigned !== '';
+                    const assigned = o.assigned_to || '';
+                    const isAssigned = assigned !== '';
                     const displayStatus = String(o.status || 'pending').toLowerCase();
-                    const statusClass = displayStatus.replace('express-', '');
                     
                     const isToday = o.pickupDate === todayStr;
                     const isPast = o.pickupDate < todayStr && o.pickupDate !== 'Not specified';
@@ -572,22 +665,23 @@
                         else if(isToday) rowClass = "row-urgent";
                     }
 
-                    // Create Items Badges
                     const itemsHtml = Object.entries(o.items || {}).map(([k,v]) => 
                         `<span class="item-badge">${getItemDisplayName(k)} x${v}</span>`
                     ).join('');
 
                     return `<tr class="${rowClass}">
                         <td><strong style="color:var(--primary);">${o.orderId || o.id}</strong></td>
-                        <td><strong>${o.name || 'N/A'}</strong><br><span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-phone-alt"></i> ${o.phone || ''}</span><br><span style="font-size:10px;"><i class="fas fa-map-marker-alt"></i> ${o.address || ''}</span></td>
+                        <td><strong>${o.customerName || o.name || 'N/A'}</strong><br><span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-phone-alt"></i> ${o.phone || ''}</span><br><span style="font-size:10px;"><i class="fas fa-map-marker-alt"></i> ${o.address || ''}</span></td>
                         <td><span style="font-weight:700;font-size:12px;color:var(--text);">${o.pickupDate}</span><br><span style="font-size:11px;color:var(--text-muted);"><i class="fas fa-clock"></i> ${o.timeSlot || ''}</span></td>
                         <td style="max-width: 220px;">${itemsHtml || '<span style="color:var(--text-muted);font-size:11px;">No Items</span>'}</td>
                         <td><strong style="font-size:14px;">₹${Number(o.total) || 0}</strong></td>
                         <td>
                             <select onchange="updateStatus('${o.id}', this.value)" style="margin-bottom:4px; font-weight:600;">
-                                <option value="pending" ${displayStatus === 'pending' || displayStatus === 'express-pending' ? 'selected' : ''}>Pending</option>
+                                <option value="pending" ${displayStatus === 'pending' ? 'selected' : ''}>Pending</option>
                                 <option value="picked_up" ${displayStatus === 'picked_up' ? 'selected' : ''}>Picked Up</option>
                                 <option value="processing" ${displayStatus === 'processing' ? 'selected' : ''}>Processing</option>
+                                <option value="quality_check" ${displayStatus === 'quality_check' ? 'selected' : ''}>Quality Check</option>
+                                <option value="out_for_delivery" ${displayStatus === 'out_for_delivery' ? 'selected' : ''}>Out for Delivery</option>
                                 <option value="delivered" ${displayStatus === 'delivered' ? 'selected' : ''}>Delivered</option>
                                 <option value="cancelled" ${displayStatus === 'cancelled' ? 'selected' : ''}>Cancel</option>
                             </select>
@@ -607,19 +701,18 @@
                         </td>
                     </tr>`;
                 }).join('');
-            } catch (error) { console.error("Error Rendering Orders:", error); }
+            } catch (error) {
+                console.error("Error Rendering Orders:", error);
+            }
         }
 
-        // ============================================================
-        // THERMAL CHIT & WHATSAPP BOY ACTIONS
-        // ============================================================
         window.sendToDeliveryBoy = function(id) {
             const o = globalOrdersSnap.val()[id];
             const boyPhone = document.getElementById('assign_' + id).value;
             if(!boyPhone) { alert("Please assign a delivery boy first!"); return; }
             const mapLink = `https://maps.google.com/?q=${encodeURIComponent(o.address)}`;
             const itemsList = Object.entries(o.items || {}).map(([k,v]) => `${getItemDisplayName(k)} x${v}`).join(', ');
-            const msg = `*New Pickup/Delivery* 🛵\n\n*Order:* ${o.orderId}\n*Name:* ${o.name}\n*Phone:* ${o.phone}\n*Time:* ${o.pickupDate} (${o.timeSlot})\n*Items:* ${itemsList}\n*Bill:* ₹${o.total}\n\n*Location Map:* ${mapLink}`;
+            const msg = `*New Pickup/Delivery* 🛵\n\n*Order:* ${o.orderId}\n*Name:* ${o.customerName || o.name}\n*Phone:* ${o.phone}\n*Time:* ${o.pickupDate} (${o.timeSlot})\n*Items:* ${itemsList}\n*Bill:* ₹${o.total}\n\n*Location Map:* ${mapLink}`;
             window.open(`https://wa.me/91${boyPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -637,7 +730,7 @@
                 <h2>Parth Dry Clean</h2>
                 <div class="dashed"></div>
                 <b>ID:</b> ${o.orderId}<br>
-                <b>Name:</b> ${o.name}<br>
+                <b>Name:</b> ${o.customerName || o.name}<br>
                 <b>Phone:</b> ${o.phone}<br>
                 <b>Pickup:</b> ${o.pickupDate}<br>
                 <div class="dashed"></div>
@@ -650,57 +743,132 @@
         };
 
         function getItemDisplayName(key) {
-            const map = { 'reg-pant': 'Pant', 'reg-shirt': 'Shirt', 'reg-kurta': 'Kurta', 'reg-tshirt': 'T-Shirt', 'reg-dhoti': 'Dhoti', 'win-sweater-half': 'Sweater (Half)', 'win-sweater-full': 'Sweater (Full)', 'win-tshirt-wool': 'T-Shirt (Woollen)', 'win-shawl': 'Shawl', 'win-cardigan': 'Cardigan', 'sui-coat': 'Coat', 'sui-coat-pant': 'Coat Pant', 'sui-coat-long': 'Coat Long', 'sui-safari-suit': 'Safari Suit', 'sui-safari-coat': 'Safari Coat', 'sui-suit2': 'Suit (2 Piece)', 'sui-suit3': 'Suit (3 Piece)', 'sui-suit2-blazer': 'Suit (2 Pc + Blazer)', 'sui-suit3-blazer': 'Suit (3 Pc + Blazer)', 'eth-kurta-pajama': 'Kurta Pajama (Set)', 'eth-sherwani': 'Sherwani', 'jac-half': 'Jacket (Half)', 'jac-full': 'Jacket (Full)', 'hom-blanket-single': 'Blanket (Single)', 'hom-blanket-double': 'Blanket (Double)', 'hom-helmet': 'Helmet', 'hom-bag': 'Ladies Bag', 'var-saree': 'Saree Dry Clean', 'var-trolley': 'Trolley Bag', 'var-lehenga': 'Lehenga (3 Piece)', 'var-gagra': 'Gagra', 'var-gown': 'Gown', 'var-jents': 'Jents Wear', 'stm-saree-blouse': 'Saree + Blouse', 'stm-coat': 'Coat', 'stm-coat-pant': 'Coat Pant', 'stm-lehenga': 'Lehenga', 'stm-dupatta': 'Dupatta', 'stm-ladies-suit': 'Ladies Suit (3 Piece)', 'add-starch': 'Saree Starch', 'add-blouse': 'Blouse' };
+            const map = {
+                'Shirt': 'Shirt', 'Pant': 'Pant', 'Kurta': 'Kurta', 'T-Shirt': 'T-Shirt',
+                'Sweater': 'Sweater', 'Jacket': 'Jacket', 'Saree': 'Saree',
+                'Lehenga (3 Pc)': 'Lehenga', 'Coat Pant': 'Coat Pant', 'Sherwani': 'Sherwani',
+                'Blanket (Double)': 'Blanket (Double)', 'Blanket (Single)': 'Blanket (Single)'
+            };
             return map[key] || key;
         }
 
-        // ============================================================
-        // STATS & REPORTS
-        // ============================================================
         function updateStatsFromSnapshot(snapshot) {
             try {
-                if (!snapshot || !snapshot.exists()) { setStats(0,0,0,0,0); return; }
+                if (!snapshot || !snapshot.exists()) {
+                    setStats(0,0,0,0,0);
+                    return;
+                }
                 let total = 0, pending = 0, processing = 0, deliveredCount = 0, revenue = 0;
-                snapshot.forEach(c => { const o = c.val(); if (o && typeof o === 'object') { total++; const stat = String(o.status || 'pending').toLowerCase(); if (stat === 'pending' || stat === 'express-pending') pending++; else if (stat === 'processing') processing++; else if (stat === 'delivered') { deliveredCount++; revenue += (Number(o.total) || 0); } } });
+                snapshot.forEach(c => {
+                    const o = c.val();
+                    if (o && typeof o === 'object') {
+                        total++;
+                        const stat = String(o.status || 'pending').toLowerCase();
+                        if (stat === 'pending') pending++;
+                        else if (stat === 'processing' || stat === 'picked_up' || stat === 'quality_check') processing++;
+                        else if (stat === 'delivered') {
+                            deliveredCount++;
+                            revenue += (Number(o.total) || 0);
+                        }
+                    }
+                });
                 setStats(total, pending, processing, deliveredCount, revenue);
-            } catch (e) { console.error("Error in updateStats:", e); }
+            } catch (e) {
+                console.error("Error in updateStats:", e);
+            }
         }
-        function setStats(t, p, pr, d, r) { document.getElementById('statTotal').textContent=t; document.getElementById('statPending').textContent=p; document.getElementById('statProcessing').textContent=pr; document.getElementById('statDelivered').textContent=d; document.getElementById('statRevenue').textContent='₹'+r; orderBadge.textContent=p; }
+
+        function setStats(t, p, pr, d, r) {
+            document.getElementById('statTotal').textContent = t;
+            document.getElementById('statPending').textContent = p;
+            document.getElementById('statProcessing').textContent = pr;
+            document.getElementById('statDelivered').textContent = d;
+            document.getElementById('statRevenue').textContent = '₹' + r;
+            orderBadge.textContent = p;
+        }
         
         function updateReportsFromSnapshot(snapshot) {
             try {
-                if (!snapshot || !snapshot.exists()) { setReport(0,0,0,0); return; }
+                if (!snapshot || !snapshot.exists()) {
+                    setReport(0,0,0,0);
+                    return;
+                }
                 let total = 0, pending = 0, revenue = 0, discount = 0;
-                snapshot.forEach(c => { const o = c.val(); if (o && typeof o === 'object') { total++; const stat = String(o.status || 'pending').toLowerCase(); if (stat !== 'delivered' && stat !== 'cancelled') pending++; if (stat === 'delivered') { revenue += (Number(o.total) || 0); discount += (Number(o.discount) || 0); } } });
+                snapshot.forEach(c => {
+                    const o = c.val();
+                    if (o && typeof o === 'object') {
+                        total++;
+                        const stat = String(o.status || 'pending').toLowerCase();
+                        if (stat !== 'delivered' && stat !== 'cancelled') pending++;
+                        if (stat === 'delivered') {
+                            revenue += (Number(o.total) || 0);
+                            discount += (Number(o.discount) || 0);
+                        }
+                    }
+                });
                 setReport(total, pending, revenue, discount);
-            } catch(e) { console.error("Error in updateReports:", e); }
+            } catch(e) {
+                console.error("Error in updateReports:", e);
+            }
         }
-        function setReport(t, p, r, d) { document.getElementById('repTotal').textContent=t; document.getElementById('repPending').textContent=p; document.getElementById('repRevenue').textContent='₹'+r; document.getElementById('repDiscount').textContent='₹'+d; }
 
-        window.assignOrder = function(orderId) { const select = document.getElementById('assign_' + orderId); if (!select) return; db.ref('orders/' + orderId).update({ assigned_to: select.value }); };
-        window.updateStatus = function(orderId, status) { db.ref('orders/' + orderId).update({ status }); };
+        function setReport(t, p, r, d) {
+            document.getElementById('repTotal').textContent = t;
+            document.getElementById('repPending').textContent = p;
+            document.getElementById('repRevenue').textContent = '₹' + r;
+            document.getElementById('repDiscount').textContent = '₹' + d;
+        }
 
-        // Delivery Boys
+        window.assignOrder = function(orderId) {
+            const select = document.getElementById('assign_' + orderId);
+            if (!select) return;
+            db.ref('orders/' + orderId).update({ assigned_to: select.value });
+        };
+
+        window.updateStatus = function(orderId, status) {
+            db.ref('orders/' + orderId).update({ status });
+        };
+
         function renderDeliveryBoys() {
-            const container = document.getElementById('dbList'); if (cachedBoys.length === 0) { container.innerHTML = `<div class="empty-state"><i class="fas fa-truck"></i><h4>No delivery boys</h4></div>`; return; }
-            container.innerHTML = cachedBoys.map(b => `<div class="db-item"><div class="info"><span class="name"><i class="fas fa-user-circle"></i> ${b.name}</span><span class="phone"><i class="fas fa-phone-alt"></i> ${b.phone}</span></div><button class="btn-del" onclick="deleteDb('${b.id}')"><i class="fas fa-trash-alt"></i> Delete</button></div>`).join('');
+            const container = document.getElementById('dbList');
+            if (cachedBoys.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-truck"></i><h4>No delivery boys</h4></div>`;
+                return;
+            }
+            container.innerHTML = cachedBoys.map(b => `
+                <div class="db-item">
+                    <div class="info">
+                        <span class="name"><i class="fas fa-user-circle"></i> ${b.name}</span>
+                        <span class="phone"><i class="fas fa-phone-alt"></i> ${b.phone}</span>
+                    </div>
+                    <button class="btn-del" onclick="deleteDb('${b.id}')"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            `).join('');
         }
-        window.deleteDb = function(id) { if(confirm('Delete?')) db.ref('delivery_boys/' + id).remove(); };
-        document.getElementById('addDbBtn').addEventListener('click', () => { const name = document.getElementById('dbName').value.trim(); const phone = document.getElementById('dbPhone').value.trim(); if(name && /^[0-9]{10}$/.test(phone)) { db.ref('delivery_boys').push({name, phone, total_deliveries:0}); document.getElementById('dbName').value=''; document.getElementById('dbPhone').value=''; } });
+
+        window.deleteDb = function(id) {
+            if(confirm('Delete?')) db.ref('delivery_boys/' + id).remove();
+        };
+
+        document.getElementById('addDbBtn').addEventListener('click', () => {
+            const name = document.getElementById('dbName').value.trim();
+            const phone = document.getElementById('dbPhone').value.trim();
+            if(name && /^[0-9]{10}$/.test(phone)) {
+                db.ref('delivery_boys').push({name, phone, total_deliveries:0});
+                document.getElementById('dbName').value = '';
+                document.getElementById('dbPhone').value = '';
+            }
+        });
         
-        // ============================================================
-        // PRICE EDITOR (NEW VISUAL UI)
-        // ============================================================
         const defaultPricesData = {
-            "Regular Wear": { "Pant": 60, "Shirt": 60, "Kurta": 60, "T-Shirt": 60, "Dhoti": 80 },
-            "Winter Wear": { "Sweater (Half)": 120, "Sweater (Full)": 150, "T-Shirt (Woollen)": 140, "Shawl": 180, "Cardigan": 180 },
-            "Suits & Formal": { "Coat": 250, "Coat Pant": 350, "Coat Long": 300, "Safari Suit": 180, "Safari Coat": 150, "Suit (2 Piece)": 120, "Suit (3 Piece)": 180, "Suit (2 Pc + Blazer)": 200, "Suit (3 Pc + Blazer)": 300 },
-            "Ethnic Wear": { "Kurta Pajama (Set)": 300, "Sherwani": 350 },
-            "Jackets": { "Jacket (Half)": 200, "Jacket (Full)": 250 },
-            "Home & Travel": { "Blanket (Single)": 300, "Blanket (Double)": 350, "Helmet": "150-200", "Ladies Bag": 150 },
-            "Variable Price": { "Saree Dry Clean": "200-400", "Trolley Bag": "300-400", "Lehenga (3 Piece)": "400-2000", "Gagra": "250-400", "Gown": "250-500", "Jents Wear": "200-300" },
-            "Steam Press": { "Saree + Blouse": 80, "Coat": 80, "Coat Pant": 80, "Lehenga": 400, "Dupatta": 40, "Ladies Suit (3 Piece)": 60 },
-            "Additional": { "Saree Starch": 50, "Blouse": "Free" }
+            "Combos": { "Winter Wardrobe (3 Jackets + 2 Sweaters)": 999, "Couples Party Wear (1 Saree + 1 Suit)": 499 },
+            "Men's Wear": { "Shirt": 60, "Pant": 60, "Kurta": 60, "Jeans": 0 },
+            "Ladies Wear": { "Ladies Kurta": 60, "Jeans": 0 },
+            "Winter (Women)": { "Sweater": 150, "Jacket": 250 },
+            "Winter (Men)": { "Sweater": 150, "Jacket": 250 },
+            "Festival": { "Saree": 200, "Lehenga (3 Pc)": 400, "Coat Pant": 350 },
+            "Iron": { "Iron Shirt": 20 },
+            "Home & Travel": { "Blanket (Double)": 350 }
         };
 
         function loadPriceEditor() {
@@ -741,7 +909,7 @@
                 const item = input.getAttribute('data-item');
                 let val = input.value.trim();
                 
-                if (!isNaN(val) && val !== '') val = Number(val); // Convert to number if it's a pure number
+                if (!isNaN(val) && val !== '') val = Number(val);
                 
                 if (!newData[cat]) newData[cat] = {};
                 newData[cat][item] = val;
