@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- ParthbookGen16 -->
+<!-- ParthbookGen17 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen16" />
+    <meta name="app-version" content="ParthbookGen17" />
     <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
 
@@ -740,7 +740,7 @@
     </div>
 
     <script>
-        console.log('🧺 ParthbookGen16 live');
+        console.log('🧺 ParthbookGen17 live');
 
         // ====== FIREBASE ======
         const firebaseConfig = {
@@ -756,7 +756,6 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // ====== DETERMINISTIC DATE ======
         function todayISO() {
             const d = new Date();
             return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -764,7 +763,6 @@
 
         let sheetOpenTime = 0;
 
-        // ====== STATE ======
         const STATE = {
             categories: {
                 combos: [
@@ -823,7 +821,6 @@
             theme: localStorage.getItem('pdc_theme') || 'light'
         };
 
-        // ====== APP MODULE ======
         const App = {
             init: function() {
                 this.UI.applyTheme(STATE.theme);
@@ -882,6 +879,10 @@
             },
 
             UI: {
+                // FIX: animation references store + cancel
+                sheetCloseAnim: null,
+                overlayCloseAnim: null,
+
                 toggleTheme: function() {
                     STATE.theme = STATE.theme === 'light' ? 'dark' : 'light';
                     this.applyTheme(STATE.theme);
@@ -917,10 +918,12 @@
                         if (!document.querySelector('.modal-overlay.active')) document.body.style.overflow = '';
                     }
                 },
-                // FIX: NO history manipulation — no race, no flick
+                // FIX: open par purani animations CANCEL
                 openMobileCheckout: function() {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
+                    if (this.sheetCloseAnim) { this.sheetCloseAnim.cancel(); this.sheetCloseAnim = null; }
+                    if (this.overlayCloseAnim) { this.overlayCloseAnim.cancel(); this.overlayCloseAnim = null; }
                     sheet.style.transform = '';
                     overlay.style.opacity = '';
                     sheet.classList.add('mobile-open');
@@ -928,22 +931,34 @@
                     document.body.style.overflow = 'hidden';
                     sheetOpenTime = Date.now();
                 },
+                // FIX: close par animation cancel on finish
+                finalizeClose: function() {
+                    const sheet = document.getElementById('checkoutSidebar');
+                    const overlay = document.getElementById('mobileOverlay');
+                    if (this.sheetCloseAnim) { this.sheetCloseAnim.cancel(); this.sheetCloseAnim = null; }
+                    if (this.overlayCloseAnim) { this.overlayCloseAnim.cancel(); this.overlayCloseAnim = null; }
+                    sheet.classList.remove('mobile-open');
+                    overlay.classList.remove('active');
+                    sheet.style.transform = '';
+                    overlay.style.opacity = '';
+                    document.body.style.overflow = '';
+                },
                 closeMobileCheckout: function(skipAnim) {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
                     if (!sheet.classList.contains('mobile-open')) return;
                     if (!skipAnim && Date.now() - sheetOpenTime < 500) return;
-                    const finalize = () => {
-                        sheet.classList.remove('mobile-open');
-                        overlay.classList.remove('active');
-                        sheet.style.transform = '';
-                        overlay.style.opacity = '';
-                        document.body.style.overflow = '';
-                    };
-                    if (skipAnim || !sheet.animate) { finalize(); return; }
-                    sheet.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }], { duration: 230, easing: 'cubic-bezier(0.4,0,0.6,1)', fill: 'forwards' });
-                    overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 230, easing: 'ease', fill: 'forwards' });
-                    setTimeout(finalize, 240);
+                    if (!skipAnim && this.sheetCloseAnim && this.sheetCloseAnim.playState === 'running') return;
+                    if (skipAnim || !sheet.animate) { this.finalizeClose(); return; }
+                    this.sheetCloseAnim = sheet.animate(
+                        [{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }],
+                        { duration: 230, easing: 'cubic-bezier(0.4,0,0.6,1)', fill: 'forwards' }
+                    );
+                    this.overlayCloseAnim = overlay.animate(
+                        [{ opacity: 1 }, { opacity: 0 }],
+                        { duration: 230, easing: 'ease', fill: 'forwards' }
+                    );
+                    this.sheetCloseAnim.onfinish = () => this.finalizeClose();
                 },
                 initSheetSwipe: function() {
                     const sheet = document.getElementById('checkoutSidebar');
@@ -977,16 +992,15 @@
                         if (curDy > 90) {
                             sheet.style.transform = '';
                             overlay.style.opacity = '';
-                            if (sheet.animate) {
-                                const a1 = sheet.animate(
-                                    [{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(100%)' }],
-                                    { duration: 220, easing: 'cubic-bezier(0.4,0,0.6,1)', fill: 'forwards' }
-                                );
-                                overlay.animate([{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 0 }], { duration: 220, easing: 'ease', fill: 'forwards' });
-                                a1.onfinish = () => App.UI.closeMobileCheckout(true);
-                            } else {
-                                App.UI.closeMobileCheckout(true);
-                            }
+                            this.sheetCloseAnim = sheet.animate(
+                                [{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(100%)' }],
+                                { duration: 220, easing: 'cubic-bezier(0.4,0,0.6,1)', fill: 'forwards' }
+                            );
+                            this.overlayCloseAnim = overlay.animate(
+                                [{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 0 }],
+                                { duration: 220, easing: 'ease', fill: 'forwards' }
+                            );
+                            this.sheetCloseAnim.onfinish = () => this.finalizeClose();
                         } else if (curDy > 0) {
                             if (sheet.animate) {
                                 sheet.animate([{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(0)' }], { duration: 200, easing: 'ease-out' });
@@ -1051,7 +1065,6 @@
                     const note = document.getElementById('timeSlotNote');
                     container.innerHTML = '';
 
-                    // FIX: khali date = today
                     if (!dateInputEl.value) dateInputEl.value = todayISO();
                     const dateVal = dateInputEl.value;
 
@@ -1672,7 +1685,7 @@
             }
         };
 
-        // ====== INIT ORDER (FIX: date PEHLE, init BAAD me) ======
+        // ====== INIT (date PEHLE, init BAAD) ======
         document.getElementById('pickupDate').min = todayISO();
         document.getElementById('pickupDate').value = todayISO();
 
