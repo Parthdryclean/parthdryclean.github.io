@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen5.9 -->
+<!-- ParthindexGen6.0 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -91,7 +91,7 @@
         [data-theme="dark"] ::placeholder { color:var(--text-muted); opacity:1; }
         [data-theme="dark"] .care-hint { background:var(--surface); }
         [data-theme="dark"] .step-dot { background:#0f172a; }
-        [data-theme="dark"] .modal-box .btn-logout { background:#3b1519 !important; border-color:#7f1d1d !important; color:#fca5a5 !important; }
+        [data-theme="dark"] .btn-logout-row { background:#3b1519; border-color:#7f1d1d; color:#fca5a5; }
 
         /* HEADER */
         header {
@@ -285,7 +285,7 @@
         .pill-status.status-quality_check { color:var(--success); }
         .pill-status.status-out_for_delivery { color:var(--primary-dark); }
 
-        /* NEW: CUTE SPARKLE (replaces LIVE badge) */
+        /* CUTE SPARKLE */
         .care-sparkle {
             flex-shrink:0; font-size:1.25rem; line-height:1;
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -478,18 +478,32 @@
         .history-empty .care-btn { margin-top:14px; }
         #orderHistoryList { overscroll-behavior: contain; }
 
-        /* ===== MY ACCOUNT (UPGRADED) ===== */
+        /* ===== MY ACCOUNT (PREMIUM v2) ===== */
         .profile-header {
-            display:flex; align-items:center; gap:14px;
-            text-align:left; margin-bottom:18px;
+            display:flex; align-items:center; gap:16px;
+            text-align:left; margin-bottom:20px;
+        }
+        .profile-avatar-wrap {
+            position:relative; flex-shrink:0;
+            width:72px; height:72px; border-radius:50%;
+            padding:3px;
+            background:linear-gradient(135deg,var(--primary),var(--accent),var(--gold));
+            box-shadow:0 8px 22px rgba(99,102,241,.32);
         }
         .profile-avatar {
-            width:64px; height:64px; border-radius:50%;
+            width:100%; height:100%; border-radius:50%;
             background:linear-gradient(135deg,var(--primary),var(--accent));
             color:#fff; display:flex; align-items:center; justify-content:center;
-            font-size:24px; font-weight:800; flex-shrink:0;
-            box-shadow:0 8px 20px rgba(99,102,241,.3);
+            font-size:26px; font-weight:800;
             border:3px solid var(--surface);
+        }
+        .avatar-crown {
+            position:absolute; top:-5px; right:-5px;
+            width:27px; height:27px; border-radius:50%;
+            background:linear-gradient(135deg,#f59e0b,#f97316);
+            color:#fff; display:flex; align-items:center; justify-content:center;
+            font-size:11px; border:2px solid var(--surface);
+            box-shadow:0 4px 10px rgba(245,158,11,.4);
         }
         .profile-header-info { flex:1; min-width:0; }
         .profile-header-info h3 {
@@ -499,19 +513,45 @@
         .profile-header-info p {
             font-size:12px; color:var(--text-muted); font-weight:600;
             white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+            margin-bottom:2px;
         }
-        .profile-stats { display:flex; gap:10px; margin-bottom:20px; }
+        .member-pill {
+            display:inline-flex; align-items:center; gap:5px;
+            background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(249,115,22,.15));
+            color:var(--gold); border:1px solid rgba(245,158,11,.35);
+            padding:3px 10px; border-radius:999px;
+            font-size:10px; font-weight:800; margin-top:5px;
+            letter-spacing:.4px; text-transform:uppercase;
+        }
+        .member-pill i { font-size:9px; }
+        .profile-stats { display:flex; gap:12px; margin-bottom:20px; }
         .profile-stat {
             flex:1; background:var(--bg); border:1px solid var(--border);
-            border-radius:14px; padding:12px 8px;
+            border-radius:16px; padding:16px 10px; text-align:center;
+            transition:.2s;
         }
-        .profile-stat .stat-value {
-            font-size:17px; font-weight:800; color:var(--primary);
+        .profile-stat:hover { border-color:var(--primary); transform:translateY(-2px); }
+        .profile-stat .stat-icon {
+            width:38px; height:38px; margin:0 auto 8px;
+            border-radius:12px;
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            color:#fff; display:flex; align-items:center; justify-content:center;
+            font-size:16px;
+            box-shadow:0 6px 14px rgba(99,102,241,.25);
         }
+        .profile-stat .stat-value { font-size:20px; font-weight:800; color:var(--text); }
         .profile-stat .stat-label {
-            font-size:9px; font-weight:800; color:var(--text-muted);
+            font-size:10px; font-weight:800; color:var(--text-muted);
             text-transform:uppercase; letter-spacing:.4px; margin-top:2px;
         }
+        .profile-section-label {
+            display:flex; align-items:center; gap:8px;
+            font-size:11px; font-weight:800; color:var(--text-muted);
+            text-transform:uppercase; letter-spacing:.6px;
+            margin:4px 0 12px; padding-bottom:8px;
+            border-bottom:1px dashed var(--border);
+        }
+        .profile-section-label i { color:var(--primary); }
         .profile-field { position:relative; margin-bottom:14px; }
         .profile-field > i {
             position:absolute; left:14px; top:50%; transform:translateY(-50%);
@@ -529,6 +569,15 @@
         .profile-field input:focus,
         .profile-field textarea:focus { border-color:var(--primary); }
         .profile-field input[readonly] { opacity:.65; }
+        .profile-quick-actions { display:flex; gap:10px; margin-top:12px; }
+        .profile-quick-actions .care-btn { flex:1; padding:13px 16px; }
+        .btn-logout-row {
+            flex:1; background:#fef2f2; color:var(--danger); border:1px solid #fca5a5;
+            padding:13px 16px; border-radius:999px; font-size:12px; font-weight:800; cursor:pointer;
+            display:inline-flex; align-items:center; justify-content:center; gap:7px;
+            font-family:'Outfit'; transition:.2s;
+        }
+        .btn-logout-row:hover { background:#fee2e2; transform:translateY(-1px); }
 
         /* HERO */
         .hero { display:flex; align-items:center; justify-content:space-between; padding:50px 5%; gap:40px; flex-wrap:wrap; }
@@ -636,8 +685,8 @@
         .pricing-chips-wrapper { display:flex; gap:10px; max-width:700px; margin:0 auto 20px; overflow-x:auto; padding-bottom:10px; scrollbar-width: none; }
         .pricing-chips-wrapper::-webkit-scrollbar { display:none; }
         .price-chip { white-space:nowrap; padding:10px 20px; border-radius:30px; background:var(--surface); border:1.5px solid var(--border); font-size:14px; font-weight:700; color:var(--text-muted); cursor:pointer; transition:0.3s; font-family:'Outfit'; }
-        /* FIXED: clean active style, no outer glow box */
-        .price-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:none; }
+        /* GLOW wapas — same as fabric pills */
+        .price-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.3); }
         .price-category-group { max-width:700px; margin:0 auto 20px; background:var(--surface); border-radius:16px; border:1px solid var(--border); padding:0 24px; box-shadow:var(--shadow); transition:0.3s; }
         .category-group-title { font-size:18px; color:var(--primary); padding:20px 0 10px; border-bottom:1px solid var(--border); margin-bottom:10px; font-weight:800; display:flex; align-items:center; gap:8px;}
         .price-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px dashed var(--border); transition:0.2s; }
@@ -801,8 +850,11 @@
             .step-label { font-size:8.5px; }
             .care-card-actions .care-btn { flex:1; }
             .care-hint { right:4%; }
-            .profile-stats { gap:6px; }
-            .profile-stat .stat-value { font-size:15px; }
+
+            /* My Account Mobile */
+            .profile-stats { gap:8px; }
+            .profile-stat .stat-value { font-size:17px; }
+            .profile-quick-actions { flex-direction:column; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
     </style>
@@ -843,7 +895,7 @@
     </header>
 
     <div class="trust-bar-wrapper">
-        <div class="trust-bar-track">
+        <div class="trust-bar-track" id="trustBarTrack">
             <div class="trust-item"><i class="fas fa-truck"></i> Free Pickup & Delivery</div>
             <div class="trust-item"><i class="fas fa-clock"></i> 48-72 Hr Turnaround</div>
             <div class="trust-item"><i class="fas fa-shield-alt"></i> 100% Garment Safety</div>
@@ -857,7 +909,7 @@
         </div>
     </div>
 
-    <!-- PREMIUM LIVE CARE STRIP (sparkle instead of LIVE badge) -->
+    <!-- PREMIUM LIVE CARE STRIP -->
     <div class="active-care-strip" id="activeOrderBar" onclick="toggleActiveOrders()" aria-live="polite">
         <div class="active-care-left">
             <span class="live-care-dot"></span>
@@ -1114,33 +1166,37 @@
         </div>
     </div>
 
-    <!-- Profile Modal (UPGRADED) -->
+    <!-- Profile Modal (PREMIUM v2) -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
             <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
 
             <div class="profile-header">
-                <div class="profile-avatar" id="profAvatar">U</div>
+                <div class="profile-avatar-wrap">
+                    <div class="profile-avatar" id="profAvatar">U</div>
+                    <div class="avatar-crown"><i class="fas fa-crown"></i></div>
+                </div>
                 <div class="profile-header-info">
                     <h3 id="profNameDisplay">User</h3>
                     <p id="profEmailDisplay">—</p>
+                    <span class="member-pill"><i class="fas fa-crown"></i> Premium Member</span>
                 </div>
             </div>
 
             <div class="profile-stats">
                 <div class="profile-stat">
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
                     <div class="stat-value" id="statOrders">0</div>
                     <div class="stat-label">Total Orders</div>
                 </div>
                 <div class="profile-stat">
+                    <div class="stat-icon"><i class="fas fa-tshirt"></i></div>
                     <div class="stat-value" id="statItems">0</div>
                     <div class="stat-label">Items Cleaned</div>
                 </div>
-                <div class="profile-stat">
-                    <div class="stat-value" id="statSpent">₹0</div>
-                    <div class="stat-label">Total Spent</div>
-                </div>
             </div>
+
+            <div class="profile-section-label"><i class="fas fa-address-card"></i> Contact Details</div>
 
             <div class="profile-field">
                 <i class="fas fa-user"></i>
@@ -1160,7 +1216,11 @@
             </div>
 
             <button type="button" class="btn-primary-full" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
-            <button type="button" class="btn-logout" onclick="logoutUser()" style="width:100%; background:#fef2f2; color:var(--danger); border:1px solid #fca5a5; padding:14px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; margin-top:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Outfit'; transition:0.2s;"><i class="fas fa-power-off"></i> Logout Securely</button>
+
+            <div class="profile-quick-actions">
+                <button type="button" class="care-btn secondary" onclick="openModal('ordersModal'); loadOrderHistory();"><i class="fas fa-history"></i> My Orders</button>
+                <button type="button" class="btn-logout-row" onclick="logoutUser()"><i class="fas fa-power-off"></i> Logout</button>
+            </div>
         </div>
     </div>
 
@@ -1311,6 +1371,17 @@
             { key:'quality_check', label:'Quality Check', icon:'fa-circle-check' },
             { key:'out_for_delivery', label:'On the Way', icon:'fa-truck-fast' }
         ];
+
+        // ====== TRUST BAR CONTROL ======
+        function setTrustBarStatic(isStatic) {
+            const track = document.getElementById('trustBarTrack');
+            if (!track) return;
+            if (isStatic) {
+                track.style.animationPlayState = 'paused';
+            } else {
+                track.style.animationPlayState = '';
+            }
+        }
 
         // ====== SLIDER ======
         function updateSlider(val) {
@@ -1615,6 +1686,7 @@
                 if (active.length === 0) {
                     bar.style.display = 'none';
                     dropdown.classList.remove('open');
+                    setTrustBarStatic(false);
                     return;
                 }
 
@@ -1622,6 +1694,7 @@
                 countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`;
                 miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
                 dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
+                setTrustBarStatic(true);
                 maybeShowCareHint();
             });
 
@@ -1709,7 +1782,6 @@
             document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
             document.body.style.overflow = '';
 
-            // Active order dropdown bhi handle karo
             const dropdown = document.getElementById('activeOrderDropdown');
             if (!e.state || !e.state.careDropdown) {
                 if (dropdown) dropdown.classList.remove('open');
@@ -1762,6 +1834,7 @@
                 showToast('Logged out','info'); 
                 activeOrderListeners.forEach(ref => ref.off('value'));
                 activeOrderListeners = [];
+                setTrustBarStatic(false);
             }); 
         }
 
@@ -1777,19 +1850,17 @@
 
         function loadProfileStats(uid) {
             db.ref('orders').limitToLast(300).once('value').then(snap => {
-                let count = 0, items = 0, spent = 0;
+                let count = 0, items = 0;
                 snap.forEach(child => {
                     const o = child.val();
                     if (!o) return;
                     const orderUid = String(o.uid || o.userId || o.customerId || '');
                     if (orderUid !== uid) return;
                     count++;
-                    spent += Number(o.total || 0);
                     for (const k in (o.items || {})) items += Number(o.items[k] || 0);
                 });
                 document.getElementById('statOrders').textContent = count;
                 document.getElementById('statItems').textContent = items;
-                document.getElementById('statSpent').textContent = '₹' + spent;
             });
         }
 
@@ -1808,7 +1879,6 @@
                 const prof = pSnap.exists() ? pSnap.val() : {};
                 const profPhone = last10Digits(prof.phone);
 
-                // Smart fetch: uid / userId / customerId / phone sab se match karo
                 db.ref('orders').limitToLast(300).once('value').then(snap => {
                     const map = new Map();
 
@@ -2020,6 +2090,7 @@
                 document.getElementById('activeOrderDropdown').classList.remove('open');
                 activeOrderListeners.forEach(ref => ref.off('value'));
                 activeOrderListeners = [];
+                setTrustBarStatic(false);
             }
         });
 
