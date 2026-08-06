@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthbookGen7 -->
+<!-- ParthbookGen8 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -58,7 +58,6 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1.6; min-height: 100vh; transition: background 0.3s, color 0.3s; }
         button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; outline: none; font-family: inherit; }
-        :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
         [data-theme="dark"] ::placeholder { color: var(--text-muted); opacity: 1; }
         [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
@@ -137,7 +136,7 @@
         .repeat-card button {
             background: linear-gradient(135deg, var(--success), #059669); color:#fff; border:none;
             padding:9px 20px; border-radius:30px; font-weight:800; cursor:pointer; font-size:13px;
-            box-shadow: 0 4px 12px rgba(16,185,129,0.3); transition: 0.2s;
+            transition: 0.2s;
         }
         .repeat-card button:hover { transform: translateY(-1px); }
 
@@ -156,7 +155,7 @@
             font-size:14px; font-weight:600; outline:none;
             box-shadow:var(--shadow-sm); transition:0.3s;
         }
-        .search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
+        .search-input:focus { border-color:var(--primary); }
         .search-clear-btn {
             position:absolute; right:12px; top:50%; transform:translateY(-50%);
             width:32px; height:32px; border-radius:50%;
@@ -172,13 +171,12 @@
             padding:10px 20px; background:var(--surface); border:1.5px solid var(--border);
             border-radius:30px; font-size:13px; font-weight:700; color:var(--text-muted);
             cursor:pointer; white-space:nowrap; transition:0.3s;
-            display:flex; align-items:center; gap:8px; box-shadow:var(--shadow-sm);
+            display:flex; align-items:center; gap:8px;
         }
         .pill:hover { border-color: var(--primary); color: var(--primary); transform:translateY(-1px); }
         .pill.active {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color:#fff; border-color:transparent;
-            box-shadow: 0 4px 15px rgba(14,165,233,0.3);
         }
 
         /* ITEM GRID */
@@ -205,18 +203,18 @@
         .item-price { font-size:16px; font-weight:800; color:var(--primary); }
         .item-original-price { font-size:12px; color:var(--text-muted); text-decoration:line-through; font-weight:600; }
 
-        /* ADD BUTTON / STEPPER (Swiggy style) */
+        /* ADD / STEPPER — clean, no glow */
         .add-btn {
             width:100%; padding:9px 0; margin-top:auto; border-radius:30px;
             border:1.5px solid var(--primary); background:transparent; color:var(--primary);
             font-weight:800; font-size:12px; letter-spacing:.5px; cursor:pointer; transition:.2s;
             display:flex; align-items:center; justify-content:center; gap:6px;
         }
-        .add-btn:hover { background:var(--primary); color:#fff; box-shadow:0 4px 12px rgba(14,165,233,.3); }
+        .add-btn:hover { background:var(--primary); color:#fff; }
         .stepper {
             display:flex; align-items:center; justify-content:space-between; margin-top:auto;
             background:linear-gradient(135deg,var(--primary),var(--accent));
-            border-radius:30px; padding:4px; box-shadow:0 4px 12px rgba(99,102,241,.3);
+            border-radius:30px; padding:4px;
         }
         .step-btn {
             width:26px; height:26px; border-radius:50%; border:none;
@@ -243,18 +241,37 @@
             box-shadow:var(--shadow); border:1px solid var(--border);
             position:sticky; top: 84px;
         }
+        .sheet-handle { display:none; width:48px; height:5px; border-radius:5px; background:var(--border); margin:0 auto 14px; }
         .panel-title {
             font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px;
+            justify-content:space-between;
             margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border);
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .panel-title i { -webkit-text-fill-color: var(--primary); }
+        .panel-title .pt-left { display:flex; align-items:center; gap:10px; }
+        .panel-title .pt-left i { -webkit-text-fill-color: var(--primary); }
+        .panel-title .bag-count-label { font-size:12px; font-weight:700; -webkit-text-fill-color: var(--text-muted); }
+        .clear-bag-btn {
+            margin-left:auto; background:none; border:none; color:var(--danger);
+            font-size:14px; cursor:pointer; padding:6px 8px; border-radius:8px; transition:0.2s;
+            -webkit-text-fill-color: initial;
+        }
+        .clear-bag-btn:hover { background:rgba(239,68,68,0.1); }
 
         .free-delivery-bar { margin-bottom: 16px; }
         .progress-track { width:100%; height:8px; background:var(--border); border-radius:10px; overflow:hidden; margin-bottom:6px; }
-        .progress-fill { height:100%; background:linear-gradient(90deg,var(--success),#34d399); width:0%; transition:width 0.5s ease-out; box-shadow:0 2px 8px rgba(16,185,129,0.3); }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--success),#34d399); width:0%; transition:width 0.5s ease-out; }
         #deliveryStatusText { font-size:12px; font-weight:800; color:var(--text-muted); text-align:center; }
+
+        .empty-bag { text-align:center; padding:18px 0 8px; color:var(--text-muted); display:none; }
+        .empty-bag i { font-size:34px; opacity:.4; margin-bottom:8px; display:block; }
+        .empty-bag p { font-weight:700; font-size:13px; margin-bottom:10px; }
+        .browse-btn {
+            background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border:none;
+            padding:10px 22px; border-radius:30px; font-weight:800; font-size:12px; cursor:pointer; transition:.2s;
+        }
+        .browse-btn:hover { transform:translateY(-1px); }
 
         .bag-items { max-height:240px; overflow-y:auto; margin-bottom:16px; display:none; }
         .bag-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px dashed var(--border); font-size:13px; font-weight:600; }
@@ -273,7 +290,6 @@
         .upsell-card button {
             background:linear-gradient(135deg,#d946ef,#a21caf); color:white; border:none;
             padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:0.2s;
-            box-shadow:0 4px 12px rgba(217,70,239,0.3);
         }
         .upsell-card button:hover { transform:scale(1.05); }
 
@@ -286,8 +302,7 @@
         .coupon-card .offer-text strong { font-size:15px; display:block; color:#d97706; margin-bottom:2px; }
         .coupon-card button {
             background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; border:none;
-            padding:10px 18px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer;
-            box-shadow:0 4px 12px rgba(245,158,11,0.3); transition:0.2s;
+            padding:10px 18px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; transition:0.2s;
         }
         .coupon-card button.applied { background:var(--success); }
         .coupon-card button:hover { transform:translateY(-1px); }
@@ -330,18 +345,18 @@
         .booking-form input, .booking-form textarea {
             width:100%; padding:13px 16px; border-radius:12px;
             border:1.5px solid var(--border); background:var(--surface); color:var(--text);
-            font-size:14px; font-weight:600; outline:none; transition:0.3s; box-shadow:var(--shadow-sm);
+            font-size:14px; font-weight:600; outline:none; transition:0.3s;
         }
-        .booking-form input:focus, .booking-form textarea:focus { border-color:var(--primary); box-shadow:0 4px 14px rgba(14,165,233,0.15); }
+        .booking-form input:focus, .booking-form textarea:focus { border-color:var(--primary); }
         .btn-book {
             width:100%; padding:16px; border-radius:30px;
             background:linear-gradient(135deg,var(--primary),var(--accent));
             color:#fff; border:none; font-weight:800; font-size:16px; cursor:pointer;
             display:flex; align-items:center; justify-content:center; gap:10px;
-            transition:all 0.3s ease; box-shadow:0 8px 20px rgba(99,102,241,0.25);
+            transition:all 0.3s ease;
         }
-        .btn-book:hover { transform:translateY(-2px); box-shadow:0 12px 26px rgba(99,102,241,0.35); }
-        .btn-book:disabled { background:var(--border); color:var(--text-muted); box-shadow:none; transform:none; cursor:not-allowed; }
+        .btn-book:hover { transform:translateY(-2px); }
+        .btn-book:disabled { background:var(--border); color:var(--text-muted); transform:none; cursor:not-allowed; }
 
         .time-pills { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
         .time-pill {
@@ -352,7 +367,7 @@
         .time-pill:hover:not(.disabled) { border-color:var(--primary); color:var(--primary); }
         .time-pill.active {
             background:linear-gradient(135deg,var(--primary),var(--accent));
-            color:#fff; border-color:transparent; box-shadow:0 4px 15px rgba(14,165,233,0.3);
+            color:#fff; border-color:transparent;
         }
         .time-pill.disabled { opacity:0.35; pointer-events:none; text-decoration:line-through; background:var(--border); }
         .time-slot-note { font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600; }
@@ -418,7 +433,7 @@
             width:100%; background:linear-gradient(135deg,var(--primary),var(--accent));
             color:#fff; border:none; padding:14px; border-radius:30px; font-size:15px; font-weight:800;
             cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
-            transition:0.3s; box-shadow:0 6px 16px rgba(99,102,241,0.25); text-decoration:none;
+            transition:0.3s; text-decoration:none;
         }
         .btn-primary-full:hover { transform:translateY(-1px); }
 
@@ -468,6 +483,7 @@
                 overflow-y:auto; top:auto;
             }
             .checkout-sidebar.mobile-open { display:block; animation:slideUp 0.3s ease; }
+            .sheet-handle { display:block; }
             .mobile-cart-bar { display:flex; }
             .mobile-overlay.active { display:block; }
         }
@@ -502,7 +518,7 @@
             </div>
         </a>
         <div class="header-actions">
-            <button class="icon-btn" id="themeToggleBtn" onclick="App.UI.toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+            <button class="icon-btn" id="themeToggleBtn" onclick="App.UI.toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-sun" style="color:var(--gold);"></i></button>
             <button class="icon-btn" onclick="App.UI.cartButtonAction()" title="My Bag">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="cart-count-badge" id="headerCartCount">0</span>
@@ -547,11 +563,21 @@
         </div>
 
         <div class="checkout-sidebar" id="checkoutSidebar">
-            <div class="panel-title"><i class="fas fa-shopping-bag"></i> Laundry Bag</div>
+            <div class="sheet-handle"></div>
+            <div class="panel-title">
+                <span class="pt-left"><i class="fas fa-shopping-bag"></i> Laundry Bag <span class="bag-count-label" id="bagCountLabel"></span></span>
+                <button type="button" class="clear-bag-btn" onclick="App.Cart.clearBag()" title="Clear bag"><i class="fas fa-trash-alt"></i></button>
+            </div>
 
             <div class="free-delivery-bar">
                 <div class="progress-track"><div class="progress-fill" id="deliveryProgress"></div></div>
                 <p id="deliveryStatusText">Add ₹300 for FREE Pickup & Delivery</p>
+            </div>
+
+            <div class="empty-bag" id="emptyBagState">
+                <i class="fas fa-basket-shopping"></i>
+                <p>Your bag is empty</p>
+                <button type="button" class="browse-btn" onclick="App.UI.browseItems()">Browse Items</button>
             </div>
 
             <div class="bag-items" id="bagItemsSummary"></div>
@@ -692,8 +718,8 @@
         const STATE = {
             categories: {
                 combos: [
-                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-box' },
-                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-box' }
+                    { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150, icon:'fa-gift' },
+                    { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550, icon:'fa-gift' }
                 ],
                 mens: [
                     { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80, icon:'fa-tshirt' },
@@ -741,7 +767,7 @@
             isLoggedIn: false,
             lastOrderCache: null,
             selectedTimeSlot: '',
-            selectedSlotHour: null,
+            selectedSlotEndHr: null,
             isEditingFields: false,
             lastBookedOrderId: null,
             theme: localStorage.getItem('pdc_theme') || 'light'
@@ -785,13 +811,15 @@
 
                 setInterval(() => this.UI.updateTimeSlots(), 60000);
                 this.Order.loadDynamicPrices();
+                this.UI.initSheetSwipe();
+                this.UI.initCatalogSwipe();
             },
 
             sanitizeHTML: function(str) {
                 if(!str) return '';
-                return String(str).replace(/[&<>"'/]/g, (match) => ({
+                return String(str).replace(/[&<>"']/]/g, (match) => ({
                     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', "/": '&#x2F;'
-                })[match]);
+                })[match] || match);
             },
 
             showToast: function(msg, type='info') {
@@ -815,15 +843,19 @@
                 applyTheme: function(theme) {
                     if(theme === 'dark') {
                         document.documentElement.setAttribute('data-theme', 'dark');
-                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-sun" style="color:var(--gold);"></i>';
+                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-moon"></i>';
                     } else {
                         document.documentElement.removeAttribute('data-theme');
-                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-moon"></i>';
+                        document.getElementById('themeToggleBtn').innerHTML = '<i class="fas fa-sun" style="color:var(--gold);"></i>';
                     }
                 },
                 cartButtonAction: function() {
                     if (window.innerWidth <= 1024) this.openMobileCheckout();
                     else document.getElementById('checkoutSidebar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                },
+                browseItems: function() {
+                    this.closeMobileCheckout();
+                    document.getElementById('catalogGrid').scrollIntoView({ behavior:'smooth', block:'start' });
                 },
                 openModal: function(id) {
                     document.getElementById(id).classList.add('active');
@@ -852,6 +884,70 @@
                         document.body.style.overflow = '';
                     }
                 },
+                // SWIPE DOWN TO CLOSE SHEET
+                initSheetSwipe: function() {
+                    const sheet = document.getElementById('checkoutSidebar');
+                    let startY = null, curDy = 0, tracking = false;
+                    sheet.addEventListener('touchstart', (e) => {
+                        if (window.innerWidth > 1024 || !sheet.classList.contains('mobile-open')) return;
+                        if (sheet.scrollTop <= 5) { startY = e.touches[0].clientY; tracking = true; }
+                        else tracking = false;
+                    }, { passive: true });
+                    sheet.addEventListener('touchmove', (e) => {
+                        if (!tracking) return;
+                        curDy = e.touches[0].clientY - startY;
+                        if (curDy > 0) {
+                            sheet.style.transition = 'none';
+                            sheet.style.transform = `translateY(${curDy}px)`;
+                        }
+                    }, { passive: true });
+                    sheet.addEventListener('touchend', () => {
+                        if (!tracking) return;
+                        tracking = false;
+                        sheet.style.transition = '';
+                        sheet.style.transform = '';
+                        if (curDy > 120) App.UI.closeMobileCheckout();
+                        curDy = 0;
+                    });
+                },
+                // SMOOTH SWIPE CATEGORIES
+                initCatalogSwipe: function() {
+                    const area = document.getElementById('catalogGrid');
+                    let sx = 0, sy = 0, active = false;
+                    area.addEventListener('touchstart', (e) => {
+                        sx = e.touches[0].clientX; sy = e.touches[0].clientY; active = true;
+                    }, { passive: true });
+                    area.addEventListener('touchend', (e) => {
+                        if (!active) return; active = false;
+                        const dx = e.changedTouches[0].clientX - sx;
+                        const dy = e.changedTouches[0].clientY - sy;
+                        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+                            this.goCategory(dx < 0 ? 1 : -1);
+                        }
+                    }, { passive: true });
+                },
+                goCategory: function(dir) {
+                    const keys = Object.keys(STATE.categories).filter(k => k !== 'upsell');
+                    const idx = keys.indexOf(STATE.currentCat);
+                    const next = keys[idx + dir];
+                    if (!next) return;
+                    const grid = document.getElementById('catalogGrid');
+                    const doSwitch = () => {
+                        STATE.currentCat = next;
+                        this.renderCategories();
+                        this.renderItems(document.getElementById('itemSearch').value);
+                        if (grid.animate) grid.animate(
+                            [{ opacity: 0, transform: `translateX(${40 * dir}px)` }, { opacity: 1, transform: 'translateX(0)' }],
+                            { duration: 200, easing: 'ease' }
+                        );
+                    };
+                    if (grid.animate) {
+                        grid.animate(
+                            [{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: `translateX(${-40 * dir}px)` }],
+                            { duration: 150, easing: 'ease' }
+                        ).onfinish = doSwitch;
+                    } else doSwitch();
+                },
                 clearSearch: function() {
                     document.getElementById('itemSearch').value = '';
                     document.getElementById('searchClearBtn').style.display = 'none';
@@ -862,6 +958,7 @@
                     this.updateTimeSlots();
                     App.Cart.updateSummary();
                 },
+                // SLOT LOGIC: available till END time
                 updateTimeSlots: function() {
                     const container = document.getElementById('timeSlotPills');
                     const dateVal = document.getElementById('pickupDate').value;
@@ -869,9 +966,9 @@
                     container.innerHTML = '';
 
                     const slots = [
-                        { l: '🌅 9 AM - 12 PM', v: 'Morning (9-12)', startHr: 9 },
-                        { l: '☀️ 1 PM - 5 PM', v: 'Afternoon (1-5)', startHr: 13 },
-                        { l: '🌙 6 PM - 9 PM', v: 'Evening (6-9)', startHr: 18 }
+                        { l: '🌅 9 AM - 12 PM', v: 'Morning (9-12)', endHr: 12 },
+                        { l: '☀️ 1 PM - 5 PM', v: 'Afternoon (1-5)', endHr: 17 },
+                        { l: '🌙 6 PM - 9 PM', v: 'Evening (6-9)', endHr: 21 }
                     ];
 
                     const todayStr = new Date().toLocaleDateString('en-CA');
@@ -882,7 +979,7 @@
                     if (isPastDate) {
                         note.textContent = '⚠️ Past date selected. Please choose today or a future date.';
                         note.style.color = 'var(--danger)';
-                        STATE.selectedTimeSlot = ''; STATE.selectedSlotHour = null;
+                        STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
                         return;
                     }
@@ -890,7 +987,7 @@
                     let availableCount = 0;
                     slots.forEach(s => {
                         const pill = document.createElement('div');
-                        const isDisabled = isToday && curHr >= s.startHr;
+                        const isDisabled = isToday && curHr >= s.endHr;
                         pill.className = `time-pill ${isDisabled ? 'disabled' : ''}`;
                         pill.textContent = s.l;
                         if (!isDisabled) {
@@ -900,7 +997,7 @@
                                 document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
                                 pill.classList.add('active');
                                 STATE.selectedTimeSlot = s.v;
-                                STATE.selectedSlotHour = s.startHr;
+                                STATE.selectedSlotEndHr = s.endHr;
                                 document.getElementById('selectedTimeSlot').value = s.v;
                             };
                         }
@@ -910,7 +1007,7 @@
                     if (availableCount === 0 && isToday) {
                         note.textContent = '⚠️ All slots passed for today. Please select tomorrow.';
                         note.style.color = 'var(--danger)';
-                        STATE.selectedTimeSlot = ''; STATE.selectedSlotHour = null;
+                        STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
                     } else if (isToday && availableCount < 3) {
                         note.textContent = `ℹ️ ${availableCount} slot(s) remaining for today.`;
@@ -919,8 +1016,8 @@
                         note.textContent = '';
                     }
 
-                    if (STATE.selectedTimeSlot && STATE.selectedSlotHour !== null && isToday && curHr >= STATE.selectedSlotHour) {
-                        STATE.selectedTimeSlot = ''; STATE.selectedSlotHour = null;
+                    if (STATE.selectedTimeSlot && STATE.selectedSlotEndHr !== null && isToday && curHr >= STATE.selectedSlotEndHr) {
+                        STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
                         document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('active'));
                     }
@@ -966,18 +1063,29 @@
                     for (let cat in STATE.categories) { item = STATE.categories[cat].find(i => i.id === id); if (item) break; }
                     if (item) el.outerHTML = this.buildAddControl(item, qty);
                 },
+                // GLOBAL SEARCH across all categories
                 renderItems: function(filterText = '') {
                     const grid = document.getElementById('catalogGrid');
                     grid.innerHTML = '';
-                    const items = STATE.categories[STATE.currentCat] || [];
-                    const filtered = items.filter(item => item.name.toLowerCase().includes(filterText.toLowerCase()));
+                    let items;
+                    if (filterText) {
+                        items = [];
+                        for (let cat in STATE.categories) {
+                            if (cat === 'upsell') continue;
+                            STATE.categories[cat].forEach(i => {
+                                if (i.name.toLowerCase().includes(filterText.toLowerCase())) items.push(i);
+                            });
+                        }
+                    } else {
+                        items = STATE.categories[STATE.currentCat] || [];
+                    }
 
-                    if(filtered.length === 0) {
+                    if(items.length === 0) {
                         grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3 style="font-weight:800; font-size:18px;">No items found</h3><p style="font-size:14px;">Try searching differently.</p></div>`;
                         return;
                     }
 
-                    filtered.forEach((item, idx) => {
+                    items.forEach((item, idx) => {
                         const qty = STATE.bag[item.id] || 0;
                         const saveAmt = item.originalPrice ? (item.originalPrice - item.price) : 0;
                         const card = document.createElement('div');
@@ -1036,6 +1144,15 @@
                     App.UI.renderAddControl(id);
                     this.updateSummary();
                 },
+                clearBag: function() {
+                    if (!Object.keys(STATE.bag).length) return;
+                    if (!confirm('Clear all items from bag?')) return;
+                    STATE.bag = {};
+                    localStorage.removeItem('pdc_cart');
+                    App.UI.renderItems(document.getElementById('itemSearch').value);
+                    this.updateSummary();
+                    App.showToast('Bag cleared','info');
+                },
                 renderSmartUpsell: function(subtotal) {
                     const container = document.getElementById('upsellContainer');
                     if (subtotal <= 0) { container.style.display = 'none'; return; }
@@ -1058,6 +1175,7 @@
                 },
                 updateSummary: function() {
                     const bagItemsCont = document.getElementById('bagItemsSummary');
+                    const emptyBag = document.getElementById('emptyBagState');
                     let html = '', subtotal = 0, totalItems = 0;
 
                     for (let [id, qty] of Object.entries(STATE.bag)) {
@@ -1083,8 +1201,9 @@
                     }
                     bagItemsCont.innerHTML = html;
                     bagItemsCont.style.display = totalItems > 0 ? 'block' : 'none';
+                    emptyBag.style.display = totalItems === 0 ? 'block' : 'none';
+                    document.getElementById('bagCountLabel').textContent = totalItems > 0 ? `• ${totalItems} item${totalItems === 1 ? '' : 's'}` : '';
 
-                    // Header badge + mobile bar
                     const headerBadge = document.getElementById('headerCartCount');
                     headerBadge.textContent = totalItems;
                     headerBadge.style.display = totalItems > 0 ? 'flex' : 'none';
@@ -1299,7 +1418,7 @@
                     const dateVal = document.getElementById('pickupDate').value;
                     const todayStr = new Date().toLocaleDateString('en-CA');
                     if (dateVal < todayStr) { App.showToast('Cannot book for past date','error'); return; }
-                    if (dateVal === todayStr && STATE.selectedSlotHour !== null && new Date().getHours() >= STATE.selectedSlotHour) {
+                    if (dateVal === todayStr && STATE.selectedSlotEndHr !== null && new Date().getHours() >= STATE.selectedSlotEndHr) {
                         App.showToast('Selected time slot has passed. Choose another.','error');
                         App.UI.updateTimeSlots();
                         return;
@@ -1362,7 +1481,7 @@
                         document.getElementById('pickupDate').value = todayStr;
                         document.getElementById('expressToggle').checked = false;
                         document.getElementById('specialInst').value = '';
-                        STATE.selectedTimeSlot = ''; STATE.selectedSlotHour = null;
+                        STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
 
                         App.UI.updateTimeSlots();
