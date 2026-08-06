@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthbookGen12 -->
+<!-- ParthbookGen13 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -66,6 +66,7 @@
         [data-theme="dark"] .booking-form textarea { background: #0f172a; color: var(--text); }
         [data-theme="dark"] .btn-google { background: #1e293b; color: var(--text); border-color: var(--border); }
         [data-theme="dark"] .sticky-catalog-nav { background: var(--bg); }
+        [data-theme="dark"] .category-pills-wrap::after { background: linear-gradient(90deg, transparent, var(--bg)); }
 
         /* HEADER */
         header {
@@ -165,24 +166,27 @@
         }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
-        /* CATEGORY TABS — underline style */
-        .category-pills { display:flex; gap:2px; overflow-x:auto; padding:4px 6px 10px; scrollbar-width:none; }
+        /* CATEGORY CHIPS — clear buttons + scroll fade hint */
+        .category-pills-wrap { position:relative; }
+        .category-pills-wrap::after {
+            content:''; position:absolute; right:0; top:0; bottom:8px; width:44px;
+            background:linear-gradient(90deg, transparent, var(--bg));
+            pointer-events:none; z-index:2;
+        }
+        .category-pills { display:flex; gap:8px; overflow-x:auto; padding:6px 4px 12px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
         .pill {
-            padding:10px 16px; border:none; background:transparent; border-radius:12px;
-            font-size:13px; font-weight:700; color:var(--text-muted);
+            padding:9px 16px; background:var(--surface); border:1.5px solid var(--border);
+            border-radius:30px; font-size:13px; font-weight:700; color:var(--text-muted);
             cursor:pointer; white-space:nowrap; transition:0.25s;
-            display:flex; align-items:center; gap:8px; position:relative;
+            display:flex; align-items:center; gap:8px;
         }
-        .pill i { font-size:14px; }
-        .pill::after {
-            content:''; position:absolute; left:16px; right:16px; bottom:2px; height:3px;
-            border-radius:3px; background:linear-gradient(90deg,var(--primary),var(--accent));
-            transform:scaleX(0); transition:transform 0.25s ease;
+        .pill i { font-size:13px; }
+        .pill:hover { border-color:var(--primary); color:var(--primary); }
+        .pill.active {
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            color:#fff; border-color:transparent;
         }
-        .pill:hover { color:var(--primary); }
-        .pill.active { color:var(--primary); }
-        .pill.active::after { transform:scaleX(1); }
 
         /* ITEM GRID */
         .items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(165px,1fr)); gap:14px; }
@@ -574,7 +578,9 @@
                     <input type="text" class="search-input" id="itemSearch" placeholder="Search garments... e.g. Shirt, Saree, Jacket" />
                     <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="App.UI.clearSearch()" aria-label="Clear search"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="category-pills" id="categoryPills"></div>
+                <div class="category-pills-wrap">
+                    <div class="category-pills" id="categoryPills"></div>
+                </div>
             </div>
 
             <div id="catalogGrid" class="items-grid"></div>
@@ -638,7 +644,7 @@
             <form class="booking-form" id="bookingForm">
                 <div class="form-group">
                     <label>Pickup Date *</label>
-                    <input type="date" id="pickupDate" required onchange="App.UI.onDateChange()" />
+                    <input type="date" id="pickupDate" required />
                 </div>
                 <div class="form-group">
                     <label>Time Slot *</label>
@@ -811,6 +817,11 @@
                 });
                 document.getElementById('bookingForm').addEventListener('submit', (e) => this.Order.submit(e));
 
+                // FIX: change + input dono — har date change par slots recompute
+                const dateInput = document.getElementById('pickupDate');
+                dateInput.addEventListener('change', () => this.UI.onDateChange());
+                dateInput.addEventListener('input', () => this.UI.onDateChange());
+
                 window.addEventListener('popstate', (e) => {
                     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
                     const sheet = document.getElementById('checkoutSidebar');
@@ -902,6 +913,7 @@
                     document.body.style.overflow = 'hidden';
                     history.pushState({ mobileCheckout: true }, '', '#cart');
                 },
+                // FIX: fill:'forwards' — koi snap-back frame nahi, zero flick
                 closeMobileCheckout: function(skipAnim) {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
@@ -917,11 +929,10 @@
                         }
                     };
                     if (skipAnim || !sheet.animate) { finalize(); return; }
-                    sheet.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }], { duration: 230, easing: 'cubic-bezier(0.4,0,0.6,1)' });
-                    overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 230, easing: 'ease' });
+                    sheet.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }], { duration: 230, easing: 'cubic-bezier(0.4,0,0.6,1)', fill: 'forwards' });
+                    overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 230, easing: 'ease', fill: 'forwards' });
                     setTimeout(finalize, 240);
                 },
-                // SMOOTH SHEET SWIPE: finger-follow drag, resistance, spring-back
                 initSheetSwipe: function() {
                     const sheet = document.getElementById('checkoutSidebar');
                     const overlay = document.getElementById('mobileOverlay');
@@ -941,7 +952,6 @@
                             sheet.style.transform = `translateY(${dy * 0.6}px)`;
                             overlay.style.opacity = String(Math.max(0, 1 - dy / 500));
                         } else {
-                            // upar drag = native scroll, koi interference nahi
                             tracking = false;
                             sheet.style.transform = '';
                             overlay.style.opacity = '';
@@ -953,21 +963,19 @@
                         tracking = false;
                         const dragged = curDy * 0.6;
                         if (curDy > 90) {
-                            // wahin se smooth slide-down close
                             sheet.style.transform = '';
                             overlay.style.opacity = '';
                             if (sheet.animate) {
                                 const a1 = sheet.animate(
                                     [{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(100%)' }],
-                                    { duration: 220, easing: 'cubic-bezier(0.4,0,0.6,1)' }
+                                    { duration: 220, easing: 'cubic-bezier(0.4,0,0.6,1)', fill: 'forwards' }
                                 );
-                                overlay.animate([{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 0 }], { duration: 220, easing: 'ease' });
+                                overlay.animate([{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 0 }], { duration: 220, easing: 'ease', fill: 'forwards' });
                                 a1.onfinish = () => App.UI.closeMobileCheckout(true);
                             } else {
                                 App.UI.closeMobileCheckout(true);
                             }
                         } else if (curDy > 0) {
-                            // smooth spring-back
                             if (sheet.animate) {
                                 sheet.animate([{ transform: `translateY(${dragged}px)` }, { transform: 'translateY(0)' }], { duration: 200, easing: 'ease-out' });
                                 overlay.animate([{ opacity: Math.max(0, 1 - curDy / 500) }, { opacity: 1 }], { duration: 200, easing: 'ease' });
@@ -1070,13 +1078,14 @@
                         container.appendChild(pill);
                     });
 
+                    // Soft messages — dono cases
                     if (availableCount === 0 && isToday) {
-                        note.textContent = '🌙 Today\'s slots are fully booked — please choose tomorrow.';
+                        note.textContent = '🌙 Today\'s pickups are complete — please choose tomorrow.';
                         note.style.color = 'var(--text-muted)';
                         STATE.selectedTimeSlot = ''; STATE.selectedSlotEndHr = null;
                         document.getElementById('selectedTimeSlot').value = '';
                     } else if (isToday && availableCount < 3) {
-                        note.textContent = `ℹ️ ${availableCount} slot(s) remaining for today.`;
+                        note.textContent = `ℹ️ Only ${availableCount} slot(s) available for today.`;
                         note.style.color = 'var(--text-muted)';
                     } else {
                         note.textContent = '';
