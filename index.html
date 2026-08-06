@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.0 -->
+<!-- ParthindexGen6.1 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -79,8 +79,6 @@
         /* ===== DARK MODE FIXES ===== */
         [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
         [data-theme="dark"] .auth-input { background:#0f172a; color:var(--text); }
-        [data-theme="dark"] .profile-field input,
-        [data-theme="dark"] .profile-field textarea { background:#0f172a; }
         [data-theme="dark"] .btn-google { background:#1e293b; color:var(--text); border-color:var(--border); }
         [data-theme="dark"] .btn-google:hover { background:rgba(14,165,233,0.08); }
         [data-theme="dark"] .whatsapp-tooltip { background:var(--surface); color:var(--text); border-color:var(--border); }
@@ -91,7 +89,6 @@
         [data-theme="dark"] ::placeholder { color:var(--text-muted); opacity:1; }
         [data-theme="dark"] .care-hint { background:var(--surface); }
         [data-theme="dark"] .step-dot { background:#0f172a; }
-        [data-theme="dark"] .btn-logout-row { background:#3b1519; border-color:#7f1d1d; color:#fca5a5; }
 
         /* HEADER */
         header {
@@ -285,7 +282,6 @@
         .pill-status.status-quality_check { color:var(--success); }
         .pill-status.status-out_for_delivery { color:var(--primary-dark); }
 
-        /* CUTE SPARKLE */
         .care-sparkle {
             flex-shrink:0; font-size:1.25rem; line-height:1;
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -300,7 +296,6 @@
             50% { opacity:1; transform: scale(1.3) rotate(20deg); }
         }
 
-        /* ONE-TIME HINT BUBBLE */
         .care-hint {
             position:absolute; top:calc(100% + 8px); right:5%;
             background:var(--surface); border:1px solid var(--border); color:var(--text);
@@ -478,106 +473,168 @@
         .history-empty .care-btn { margin-top:14px; }
         #orderHistoryList { overscroll-behavior: contain; }
 
-        /* ===== MY ACCOUNT (PREMIUM v2) ===== */
-        .profile-header {
-            display:flex; align-items:center; gap:16px;
-            text-align:left; margin-bottom:20px;
+        /* ===== MY ACCOUNT (PREMIUM REDESIGN — SPARKLE, NO CROWN) ===== */
+        .profile-hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 22px;
+            padding: 22px 20px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            color: #fff;
+            box-shadow: 0 12px 30px rgba(99,102,241,0.30);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-align: left;
+        }
+        .profile-hero::before {
+            content:'';
+            position:absolute; top:-45px; right:-35px;
+            width:150px; height:150px; border-radius:50%;
+            background:rgba(255,255,255,0.13);
+        }
+        .profile-hero::after {
+            content:'';
+            position:absolute; bottom:-55px; left:-25px;
+            width:130px; height:130px; border-radius:50%;
+            background:rgba(255,255,255,0.09);
+        }
+        .hero-sparkle-watermark {
+            position:absolute; right:18px; bottom:10px;
+            font-size:46px; color:rgba(255,255,255,0.16);
+            transform:rotate(-10deg);
+            pointer-events:none; z-index:0;
         }
         .profile-avatar-wrap {
-            position:relative; flex-shrink:0;
-            width:72px; height:72px; border-radius:50%;
+            position:relative; flex-shrink:0; z-index:1;
+            width:66px; height:66px; border-radius:50%;
+            background:rgba(255,255,255,0.28);
             padding:3px;
-            background:linear-gradient(135deg,var(--primary),var(--accent),var(--gold));
-            box-shadow:0 8px 22px rgba(99,102,241,.32);
         }
         .profile-avatar {
             width:100%; height:100%; border-radius:50%;
-            background:linear-gradient(135deg,var(--primary),var(--accent));
-            color:#fff; display:flex; align-items:center; justify-content:center;
-            font-size:26px; font-weight:800;
-            border:3px solid var(--surface);
+            background:#fff;
+            color:var(--accent);
+            display:flex; align-items:center; justify-content:center;
+            font-size:24px; font-weight:800;
         }
-        .avatar-crown {
-            position:absolute; top:-5px; right:-5px;
-            width:27px; height:27px; border-radius:50%;
+        .avatar-sparkle {
+            position:absolute; top:-4px; right:-4px;
+            width:26px; height:26px; border-radius:50%;
             background:linear-gradient(135deg,#f59e0b,#f97316);
             color:#fff; display:flex; align-items:center; justify-content:center;
-            font-size:11px; border:2px solid var(--surface);
-            box-shadow:0 4px 10px rgba(245,158,11,.4);
+            font-size:12px; font-weight:700;
+            border:2px solid #fff;
+            box-shadow:0 4px 10px rgba(245,158,11,.45);
+            z-index:2;
         }
-        .profile-header-info { flex:1; min-width:0; }
-        .profile-header-info h3 {
-            font-size:18px; font-weight:800; color:var(--text);
+        .profile-hero-info { flex:1; min-width:0; z-index:1; }
+        .profile-hero-info h3 {
+            font-size:18px; font-weight:800; color:#fff;
             white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
-        .profile-header-info p {
-            font-size:12px; color:var(--text-muted); font-weight:600;
+        .profile-hero-info p {
+            font-size:12px; color:rgba(255,255,255,0.85); font-weight:600;
             white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-            margin-bottom:2px;
+            margin:2px 0 8px;
         }
         .member-pill {
-            display:inline-flex; align-items:center; gap:5px;
-            background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(249,115,22,.15));
-            color:var(--gold); border:1px solid rgba(245,158,11,.35);
-            padding:3px 10px; border-radius:999px;
-            font-size:10px; font-weight:800; margin-top:5px;
-            letter-spacing:.4px; text-transform:uppercase;
+            display:inline-flex; align-items:center; gap:6px;
+            background:rgba(255,255,255,0.18);
+            border:1px solid rgba(255,255,255,0.35);
+            color:#fff; padding:4px 12px; border-radius:999px;
+            font-size:10px; font-weight:800; letter-spacing:.6px;
+            text-transform:uppercase;
         }
-        .member-pill i { font-size:9px; }
         .profile-stats { display:flex; gap:12px; margin-bottom:20px; }
         .profile-stat {
-            flex:1; background:var(--bg); border:1px solid var(--border);
-            border-radius:16px; padding:16px 10px; text-align:center;
-            transition:.2s;
+            flex:1; position:relative;
+            background:var(--surface); border:1px solid var(--border);
+            border-radius:18px; padding:16px 12px; text-align:center;
+            box-shadow:var(--shadow-sm);
+            overflow:hidden;
+            transition:.25s;
         }
-        .profile-stat:hover { border-color:var(--primary); transform:translateY(-2px); }
+        .profile-stat::before {
+            content:'';
+            position:absolute; top:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg,var(--primary),var(--accent));
+            opacity:0; transition:.25s;
+        }
+        .profile-stat:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+        .profile-stat:hover::before { opacity:1; }
         .profile-stat .stat-icon {
-            width:38px; height:38px; margin:0 auto 8px;
-            border-radius:12px;
-            background:linear-gradient(135deg,var(--primary),var(--accent));
-            color:#fff; display:flex; align-items:center; justify-content:center;
-            font-size:16px;
-            box-shadow:0 6px 14px rgba(99,102,241,.25);
+            width:40px; height:40px; margin:0 auto 10px;
+            border-radius:14px;
+            background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(99,102,241,.12));
+            color:var(--primary);
+            display:flex; align-items:center; justify-content:center;
+            font-size:17px;
         }
-        .profile-stat .stat-value { font-size:20px; font-weight:800; color:var(--text); }
+        .profile-stat .stat-value { font-size:22px; font-weight:800; color:var(--text); line-height:1.1; }
         .profile-stat .stat-label {
-            font-size:10px; font-weight:800; color:var(--text-muted);
-            text-transform:uppercase; letter-spacing:.4px; margin-top:2px;
+            font-size:9px; font-weight:800; color:var(--text-muted);
+            text-transform:uppercase; letter-spacing:.8px; margin-top:4px;
         }
         .profile-section-label {
-            display:flex; align-items:center; gap:8px;
-            font-size:11px; font-weight:800; color:var(--text-muted);
-            text-transform:uppercase; letter-spacing:.6px;
-            margin:4px 0 12px; padding-bottom:8px;
-            border-bottom:1px dashed var(--border);
+            display:flex; align-items:center; gap:10px;
+            font-size:12px; font-weight:800; color:var(--text);
+            margin:6px 0 14px;
         }
-        .profile-section-label i { color:var(--primary); }
-        .profile-field { position:relative; margin-bottom:14px; }
+        .profile-section-label .label-icon {
+            width:26px; height:26px; border-radius:9px;
+            background:linear-gradient(135deg,var(--primary),var(--accent));
+            color:#fff; display:flex; align-items:center; justify-content:center;
+            font-size:11px; box-shadow:0 4px 10px rgba(99,102,241,.25);
+            flex-shrink:0;
+        }
+        .profile-section-label .label-line {
+            flex:1; height:1px; background:var(--border);
+        }
+        .profile-field { position:relative; margin-bottom:12px; }
         .profile-field > i {
-            position:absolute; left:14px; top:50%; transform:translateY(-50%);
-            color:var(--text-muted); font-size:14px; pointer-events:none;
+            position:absolute; left:16px; top:50%; transform:translateY(-50%);
+            color:var(--primary); font-size:14px; pointer-events:none;
+            opacity:.85;
         }
-        .profile-field > i.area-icon { top:16px; transform:none; }
+        .profile-field > i.area-icon { top:18px; transform:none; }
         .profile-field input,
         .profile-field textarea {
-            width:100%; padding:13px 14px 13px 40px;
-            border-radius:12px; border:1.5px solid var(--border);
-            background:var(--bg); font-family:'Outfit'; font-size:14px;
+            width:100%; padding:14px 16px 14px 44px;
+            border-radius:14px; border:1.5px solid var(--border);
+            background:var(--surface); font-family:'Outfit'; font-size:14px;
             outline:none; font-weight:600; color:var(--text);
-            transition:border-color .2s; resize:none;
+            transition:all .2s; resize:none;
+            box-shadow:var(--shadow-sm);
         }
         .profile-field input:focus,
-        .profile-field textarea:focus { border-color:var(--primary); }
-        .profile-field input[readonly] { opacity:.65; }
-        .profile-quick-actions { display:flex; gap:10px; margin-top:12px; }
-        .profile-quick-actions .care-btn { flex:1; padding:13px 16px; }
-        .btn-logout-row {
-            flex:1; background:#fef2f2; color:var(--danger); border:1px solid #fca5a5;
-            padding:13px 16px; border-radius:999px; font-size:12px; font-weight:800; cursor:pointer;
-            display:inline-flex; align-items:center; justify-content:center; gap:7px;
-            font-family:'Outfit'; transition:.2s;
+        .profile-field textarea:focus {
+            border-color:var(--primary);
+            box-shadow:0 4px 14px rgba(14,165,233,.15);
         }
-        .btn-logout-row:hover { background:#fee2e2; transform:translateY(-1px); }
+        .profile-field input[readonly] { opacity:.6; }
+        #profileModal .btn-primary-full { padding:16px; border-radius:14px; font-size:15px; }
+        .profile-quick-actions { display:flex; gap:10px; margin-top:12px; }
+        .profile-action-btn {
+            flex:1; padding:14px 16px; border-radius:14px;
+            font-weight:800; font-size:13px; cursor:pointer;
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            font-family:'Outfit'; transition:.2s; text-decoration:none;
+            border:1.5px solid var(--border);
+        }
+        .profile-action-btn.orders { background:var(--surface); color:var(--text); }
+        .profile-action-btn.orders:hover {
+            border-color:var(--primary); color:var(--primary);
+            background:rgba(14,165,233,0.05);
+        }
+        .profile-action-btn.logout {
+            background:rgba(239,68,68,0.06); color:var(--danger);
+            border-color:rgba(239,68,68,0.25);
+        }
+        .profile-action-btn.logout:hover {
+            background:rgba(239,68,68,0.12); border-color:var(--danger);
+        }
 
         /* HERO */
         .hero { display:flex; align-items:center; justify-content:space-between; padding:50px 5%; gap:40px; flex-wrap:wrap; }
@@ -682,10 +739,10 @@
         .quick-pick-chip i { color: var(--primary); }
         .quick-pick-chip:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
         .quick-pick-chip:hover i { color: #fff; }
-        .pricing-chips-wrapper { display:flex; gap:10px; max-width:700px; margin:0 auto 20px; overflow-x:auto; padding-bottom:10px; scrollbar-width: none; }
+        /* FIXED: breathing space for smooth glow */
+        .pricing-chips-wrapper { display:flex; gap:10px; max-width:700px; margin:0 auto 20px; overflow-x:auto; padding:12px 6px 18px; scrollbar-width: none; }
         .pricing-chips-wrapper::-webkit-scrollbar { display:none; }
         .price-chip { white-space:nowrap; padding:10px 20px; border-radius:30px; background:var(--surface); border:1.5px solid var(--border); font-size:14px; font-weight:700; color:var(--text-muted); cursor:pointer; transition:0.3s; font-family:'Outfit'; }
-        /* GLOW wapas — same as fabric pills */
         .price-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.3); }
         .price-category-group { max-width:700px; margin:0 auto 20px; background:var(--surface); border-radius:16px; border:1px solid var(--border); padding:0 24px; box-shadow:var(--shadow); transition:0.3s; }
         .category-group-title { font-size:18px; color:var(--primary); padding:20px 0 10px; border-bottom:1px solid var(--border); margin-bottom:10px; font-weight:800; display:flex; align-items:center; gap:8px;}
@@ -840,7 +897,6 @@
                 font-size: 11px; padding: 6px 12px;
             }
 
-            /* Premium Care Strip Mobile */
             .active-care-strip { padding:8px 4%; gap:8px; }
             .active-care-label small { display:none; }
             .active-care-dropdown { top:calc(var(--header-height) + 52px); }
@@ -852,9 +908,11 @@
             .care-hint { right:4%; }
 
             /* My Account Mobile */
+            .profile-hero { padding:18px 16px; gap:12px; }
             .profile-stats { gap:8px; }
-            .profile-stat .stat-value { font-size:17px; }
-            .profile-quick-actions { flex-direction:column; }
+            .profile-stat .stat-value { font-size:18px; }
+            .profile-quick-actions { gap:8px; }
+            .profile-action-btn { padding:12px 10px; font-size:12px; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
     </style>
@@ -894,8 +952,8 @@
         </div>
     </header>
 
-    <div class="trust-bar-wrapper">
-        <div class="trust-bar-track" id="trustBarTrack">
+    <div class="trust-bar-wrapper" id="trustBarWrapper">
+        <div class="trust-bar-track">
             <div class="trust-item"><i class="fas fa-truck"></i> Free Pickup & Delivery</div>
             <div class="trust-item"><i class="fas fa-clock"></i> 48-72 Hr Turnaround</div>
             <div class="trust-item"><i class="fas fa-shield-alt"></i> 100% Garment Safety</div>
@@ -1166,21 +1224,22 @@
         </div>
     </div>
 
-    <!-- Profile Modal (PREMIUM v2) -->
+    <!-- Profile Modal (PREMIUM — SPARKLE THEME) -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
             <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
 
-            <div class="profile-header">
+            <div class="profile-hero">
                 <div class="profile-avatar-wrap">
                     <div class="profile-avatar" id="profAvatar">U</div>
-                    <div class="avatar-crown"><i class="fas fa-crown"></i></div>
+                    <div class="avatar-sparkle">✦</div>
                 </div>
-                <div class="profile-header-info">
+                <div class="profile-hero-info">
                     <h3 id="profNameDisplay">User</h3>
                     <p id="profEmailDisplay">—</p>
-                    <span class="member-pill"><i class="fas fa-crown"></i> Premium Member</span>
+                    <span class="member-pill">✦ Premium Member</span>
                 </div>
+                <span class="hero-sparkle-watermark">✦</span>
             </div>
 
             <div class="profile-stats">
@@ -1196,7 +1255,11 @@
                 </div>
             </div>
 
-            <div class="profile-section-label"><i class="fas fa-address-card"></i> Contact Details</div>
+            <div class="profile-section-label">
+                <span class="label-icon"><i class="fas fa-address-card"></i></span>
+                Contact Details
+                <span class="label-line"></span>
+            </div>
 
             <div class="profile-field">
                 <i class="fas fa-user"></i>
@@ -1218,8 +1281,8 @@
             <button type="button" class="btn-primary-full" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
 
             <div class="profile-quick-actions">
-                <button type="button" class="care-btn secondary" onclick="openModal('ordersModal'); loadOrderHistory();"><i class="fas fa-history"></i> My Orders</button>
-                <button type="button" class="btn-logout-row" onclick="logoutUser()"><i class="fas fa-power-off"></i> Logout</button>
+                <button type="button" class="profile-action-btn orders" onclick="openModal('ordersModal'); loadOrderHistory();"><i class="fas fa-history"></i> My Orders</button>
+                <button type="button" class="profile-action-btn logout" onclick="logoutUser()"><i class="fas fa-power-off"></i> Logout</button>
             </div>
         </div>
     </div>
@@ -1255,6 +1318,27 @@
         const sanitizeHTML = (str) => String(str || '').replace(/[<>"']/g, '');
         const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
         const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
+
+        // ====== USER CACHE (refresh flicker fix) ======
+        const USER_CACHE_KEY = 'pdc_cached_user';
+        function cacheUser(user) {
+            try {
+                localStorage.setItem(USER_CACHE_KEY, JSON.stringify({
+                    uid: user.uid,
+                    name: user.displayName || '',
+                    email: user.email || ''
+                }));
+            } catch(e) {}
+        }
+        function getCachedUser() {
+            try {
+                const raw = localStorage.getItem(USER_CACHE_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch(e) { return null; }
+        }
+        function clearCachedUser() {
+            try { localStorage.removeItem(USER_CACHE_KEY); } catch(e) {}
+        }
 
         // ====== GLOBAL VARS ======
         const categories = {
@@ -1331,7 +1415,6 @@
         let activeCategory = 'combos';
         let activeOrderListeners = [];
 
-        // Price lookup for invoice
         const priceLookup = (() => {
             const map = {};
             for (const cat in categories) {
@@ -1344,7 +1427,6 @@
             return (p && p > 0) ? p : null;
         }
 
-        // Status config
         const activeStatuses = ['pending','picked_up','processing','quality_check','out_for_delivery'];
         const statusLabels = {
             pending: 'Pickup Scheduled',
@@ -1372,15 +1454,42 @@
             { key:'out_for_delivery', label:'On the Way', icon:'fa-truck-fast' }
         ];
 
-        // ====== TRUST BAR CONTROL ======
-        function setTrustBarStatic(isStatic) {
-            const track = document.getElementById('trustBarTrack');
-            if (!track) return;
-            if (isStatic) {
-                track.style.animationPlayState = 'paused';
-            } else {
-                track.style.animationPlayState = '';
-            }
+        // ====== TRUST BAR: HIDE when active orders ======
+        function setTrustBarVisible(visible) {
+            const wrapper = document.getElementById('trustBarWrapper');
+            if (!wrapper) return;
+            wrapper.style.display = visible ? '' : 'none';
+        }
+
+        // ====== PERSONALIZED GREETING ======
+        function setTimeGreeting(userName) {
+            const hour = new Date().getHours();
+            const nm = userName ? `, ${sanitizeHTML(userName)}` : '';
+            let greeting;
+            if(hour >= 5 && hour < 12) greeting = `Good Morning${nm}! <span class='text-gradient'>Ready for Fresh Clothes?</span> ☀️`;
+            else if(hour >= 12 && hour < 17) greeting = `Good Afternoon${nm}! <span class='text-gradient'>Relax & Unwind</span> 🌤️`;
+            else if(hour >= 17 && hour < 22) greeting = `Good Evening${nm}! <span class='text-gradient'>Got Plans?</span> 🌙`;
+            else greeting = `Late Night${nm}? <span class='text-gradient'>We've Got You</span> 🦉`;
+            document.getElementById('dynamicGreeting').innerHTML = greeting;
+        }
+
+        // ====== AUTH UI HELPERS (flicker fix) ======
+        function applyLoggedInUI(displayName) {
+            const firstName = (displayName || 'User').split(' ')[0];
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${sanitizeHTML(firstName)}</span>`;
+            loginBtn.style.background = 'var(--accent)';
+            loginBtn.style.color = '#fff';
+            document.getElementById('myOrdersNavItem').style.display = 'block';
+            setTimeGreeting(firstName);
+        }
+        function applyLoggedOutUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
+            loginBtn.style.background = '';
+            loginBtn.style.color = '';
+            document.getElementById('myOrdersNavItem').style.display = 'none';
+            setTimeGreeting(null);
         }
 
         // ====== SLIDER ======
@@ -1686,7 +1795,7 @@
                 if (active.length === 0) {
                     bar.style.display = 'none';
                     dropdown.classList.remove('open');
-                    setTrustBarStatic(false);
+                    setTrustBarVisible(true);
                     return;
                 }
 
@@ -1694,14 +1803,13 @@
                 countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`;
                 miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
                 dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
-                setTrustBarStatic(true);
+                setTrustBarVisible(false);
                 maybeShowCareHint();
             });
 
             activeOrderListeners.push(ordersRef);
         }
 
-        // Open / Close with history support
         function toggleActiveOrders() {
             const dropdown = document.getElementById('activeOrderDropdown');
             if (dropdown.classList.contains('open')) closeActiveOrders();
@@ -1718,7 +1826,6 @@
             if (history.state && history.state.careDropdown) history.back();
         }
 
-        // Bahar click karne par band
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('activeOrderDropdown');
             const bar = document.getElementById('activeOrderBar');
@@ -1727,7 +1834,6 @@
             dropdown.classList.remove('open');
         });
 
-        // Escape se band
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const dropdown = document.getElementById('activeOrderDropdown');
@@ -1756,7 +1862,7 @@
             }
         })();
 
-        // ====== MODALS & SCROLL LOCK ======
+        // ====== MODALS ======
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1834,7 +1940,7 @@
                 showToast('Logged out','info'); 
                 activeOrderListeners.forEach(ref => ref.off('value'));
                 activeOrderListeners = [];
-                setTrustBarStatic(false);
+                setTrustBarVisible(true);
             }); 
         }
 
@@ -2066,10 +2172,8 @@
             const loginBtn = document.getElementById('loginBtn');
             const myOrdersItem = document.getElementById('myOrdersNavItem');
             if (user) {
-                const firstName = (user.displayName || 'User').split(' ')[0];
-                loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${firstName}</span>`;
-                loginBtn.style.background = 'var(--accent)'; loginBtn.style.color = '#fff';
-                myOrdersItem.style.display = 'block';
+                cacheUser(user);
+                applyLoggedInUI(user.displayName);
                 loginBtn.onclick = () => {
                     document.getElementById('profName').value = user.displayName || '';
                     document.getElementById('profEmail').value = user.email || '';
@@ -2082,15 +2186,15 @@
                 };
                 attachActiveOrderListener(user.uid);
             } else {
-                loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`;
-                loginBtn.style.background = ''; loginBtn.style.color = '';
+                clearCachedUser();
+                applyLoggedOutUI();
                 loginBtn.onclick = () => openModal('authModal');
                 myOrdersItem.style.display = 'none';
                 document.getElementById('activeOrderBar').style.display = 'none';
                 document.getElementById('activeOrderDropdown').classList.remove('open');
                 activeOrderListeners.forEach(ref => ref.off('value'));
                 activeOrderListeners = [];
-                setTrustBarStatic(false);
+                setTrustBarVisible(true);
             }
         });
 
@@ -2112,16 +2216,13 @@
         });
 
         // ====== INIT ======
-        function setTimeGreeting() {
-            const hour = new Date().getHours();
-            let greeting = "Your Clothes Deserve <span class='text-gradient'>Royal Treatment</span>";
-            if(hour >= 5 && hour < 12) greeting = "Good Morning! <span class='text-gradient'>Ready for Fresh Clothes?</span> ☀️";
-            else if(hour >= 12 && hour < 17) greeting = "Good Afternoon! <span class='text-gradient'>Relax & Unwind</span> 🌤️";
-            else if(hour >= 17 && hour < 22) greeting = "Good Evening! <span class='text-gradient'>Got Plans?</span> 🌙";
-            else greeting = "Late Night? <span class='text-gradient'>We've Got You</span> 🦉";
-            document.getElementById('dynamicGreeting').innerHTML = greeting;
+        // Refresh flicker fix: cache se turant logged-in UI
+        const cachedUser = getCachedUser();
+        if (cachedUser && cachedUser.name) {
+            applyLoggedInUI(cachedUser.name);
+        } else {
+            setTimeGreeting(null);
         }
-        setTimeGreeting();
 
         // WhatsApp tooltip: scroll par fold, sirf TOP par wapas
         const waTooltip = document.getElementById('waTooltip');
