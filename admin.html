@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen2 -->
+<!-- ParthadminGen3 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -469,7 +469,6 @@
             } else {
                 loginScreen.style.display = 'flex';
                 dashboard.classList.remove('active');
-                // Don't detach listeners here - let them reconnect on next auth
             }
         });
 
@@ -517,7 +516,6 @@
                 ordersListenerActive = false;
                 updateConnectionStatus('disconnected');
                 
-                // Retry after 3 seconds
                 setTimeout(() => {
                     if (firebase.auth().currentUser) {
                         initOrdersListener();
@@ -553,7 +551,6 @@
                 console.error('Boys listener error:', error);
                 boysListenerActive = false;
                 
-                // Retry after 3 seconds
                 setTimeout(() => {
                     if (firebase.auth().currentUser) {
                         initBoysListener();
@@ -583,7 +580,6 @@
         });
         adminPassInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); });
         logoutBtn.addEventListener('click', () => {
-            // Detach listeners on logout
             if (ordersListenerActive) {
                 db.ref('orders').off();
                 ordersListenerActive = false;
@@ -819,10 +815,15 @@
             document.getElementById('repDiscount').textContent = '₹' + d;
         }
 
+        // FIX: assigned_to_e164 bhi save karo (delivery panel rules ke liye)
         window.assignOrder = function(orderId) {
             const select = document.getElementById('assign_' + orderId);
             if (!select) return;
-            db.ref('orders/' + orderId).update({ assigned_to: select.value });
+            const phone = select.value;
+            db.ref('orders/' + orderId).update({
+                assigned_to: phone,
+                assigned_to_e164: phone ? '+91' + phone : ''
+            });
         };
 
         window.updateStatus = function(orderId, status) {
@@ -925,7 +926,7 @@
             });
         });
 
-        console.log('🧺 Parth Dry Clean Admin Panel Active!');
+        console.log('🧺 ParthadminGen3 Active!');
     </script>
 </body>
 </html>
