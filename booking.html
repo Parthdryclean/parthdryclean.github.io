@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- ParthbookGen19 -->
+<!-- ParthbookGen20 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen19" />
+    <meta name="app-version" content="ParthbookGen20" />
     <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
@@ -134,7 +134,6 @@
         .upsell-card button { background:linear-gradient(135deg,#d946ef,#a21caf); color:#fff; border:none; padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:.2s; }
         .upsell-card button:hover { transform:scale(1.05); }
 
-        /* COUPON CARD — SWIGGY/ ZOMATO STYLE */
         .coupon-card { background:rgba(245,158,11,.06); border:1.5px dashed var(--gold); border-radius:14px; padding:14px 16px; margin-bottom:16px; display:none; flex-direction:column; gap:10px; transition:.3s; }
         .coupon-card.active { display:flex; }
         .coupon-card .offer-header { display:flex; align-items:center; gap:10px; }
@@ -153,7 +152,6 @@
         .coupon-msg { font-size:11px; font-weight:700; margin-top:2px; min-height:14px; transition:.2s; }
         .coupon-msg.success { color:var(--success); }
         .coupon-msg.error { color:var(--danger); }
-        .coupon-hint-tag { display:inline-flex; align-items:center; gap:4px; background:rgba(16,185,129,.12); color:var(--success); padding:3px 8px; border-radius:6px; font-size:10px; font-weight:800; margin-top:4px; }
 
         .express-pill { display:flex; align-items:center; justify-content:space-between; background:rgba(14,165,233,.08); border:1.5px solid var(--primary); border-radius:14px; padding:12px 18px; margin-bottom:14px; font-weight:800; font-size:13px; color:var(--primary); }
         .toggle-switch { position:relative; display:inline-block; width:44px; height:24px; flex-shrink:0; }
@@ -324,7 +322,7 @@
             <div class="bag-items" id="bagItemsSummary"></div>
             <div id="upsellContainer" style="display:none;"></div>
 
-            <!-- ===== COUPON INPUT BOX (NEW) ===== -->
+            <!-- COUPON INPUT BOX -->
             <div class="coupon-card" id="couponCard">
                 <div class="offer-header">
                     <div class="coupon-icon"><i class="fas fa-ticket-alt"></i></div>
@@ -409,7 +407,7 @@
     </div>
 
     <script>
-        console.log('🧺 ParthbookGen19 live');
+        console.log('🧺 ParthbookGen20 live');
         const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.database();
@@ -592,53 +590,20 @@
                     const d=document.getElementById('pickupDate').value;
                     if(d){ let dt=new Date(d); dt.setDate(dt.getDate()+(isExpress?1:3)); document.getElementById('estDeliveryDate').textContent=dt.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); document.getElementById('estDeliveryBox').style.display='flex'; } },
 
-                // ===== COUPON APPLY (SWIGGY-STYLE INPUT) =====
                 applyPromoCode: function(){
                     const msg = document.getElementById('couponMsg');
                     const btn = document.getElementById('applyCouponBtn');
                     const input = document.getElementById('couponInput');
-
-                    // 1. Coupon disabled check
-                    if(!SETTINGS.couponEnabled){
-                        msg.textContent = '❌ Coupons are currently disabled';
-                        msg.className = 'coupon-msg error';
-                        return;
-                    }
-                    // 2. First order check
-                    if(localStorage.getItem('pdc_first_order_used')){
-                        msg.textContent = '⚠️ Valid for first order only';
-                        msg.className = 'coupon-msg error';
-                        return;
-                    }
-                    // 3. Already applied
-                    if(STATE.appliedPromo === SETTINGS.couponCode){
-                        msg.textContent = '✅ Coupon already applied!';
-                        msg.className = 'coupon-msg success';
-                        return;
-                    }
-                    // 4. Empty check
-                    const code = (input.value || '').trim().toUpperCase();
-                    if(!code){
-                        msg.textContent = '⚠️ Please enter a coupon code';
-                        msg.className = 'coupon-msg error';
-                        input.focus();
-                        return;
-                    }
-                    // 5. Validate
-                    if(code !== SETTINGS.couponCode){
-                        msg.textContent = '❌ Invalid coupon code. Please check and try again.';
-                        msg.className = 'coupon-msg error';
-                        if(input.animate){ input.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:300}); }
-                        return;
-                    }
-                    // 6. Apply
-                    STATE.appliedPromo = SETTINGS.couponCode;
-                    msg.innerHTML = `✅ <strong>${SETTINGS.couponCode}</strong> applied! ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
-                    msg.className = 'coupon-msg success';
-                    btn.textContent = '✓ Applied';
-                    btn.classList.add('applied');
-                    btn.disabled = true;
-                    input.disabled = true;
+                    if(!SETTINGS.couponEnabled){ msg.textContent='❌ Coupons are currently disabled'; msg.className='coupon-msg error'; return; }
+                    if(localStorage.getItem('pdc_first_order_used')){ msg.textContent='⚠️ Valid for first order only'; msg.className='coupon-msg error'; return; }
+                    if(STATE.appliedPromo===SETTINGS.couponCode){ msg.textContent='✅ Coupon already applied!'; msg.className='coupon-msg success'; return; }
+                    const code=(input.value||'').trim().toUpperCase();
+                    if(!code){ msg.textContent='⚠️ Please enter a coupon code'; msg.className='coupon-msg error'; input.focus(); return; }
+                    if(code!==SETTINGS.couponCode){ msg.textContent='❌ Invalid coupon code. Please check and try again.'; msg.className='coupon-msg error'; if(input.animate){ input.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:300}); } return; }
+                    STATE.appliedPromo=SETTINGS.couponCode;
+                    msg.innerHTML=`✅ <strong>${SETTINGS.couponCode}</strong> applied! ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
+                    msg.className='coupon-msg success';
+                    btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true;
                     this.updateSummary();
                     App.showToast(`Coupon applied! You save up to ₹${SETTINGS.couponMax}`,'success');
                 },
@@ -671,9 +636,8 @@
                         this.applySettings(); }).catch(()=>{}); },
                 applySettings: function(){
                     const cc=document.getElementById('couponCard');
-                    const firstUsed = localStorage.getItem('pdc_first_order_used');
-                    // Show coupon card ONLY if enabled AND not used first order
-                    if(SETTINGS.couponEnabled && !firstUsed){
+                    // FIX: Box hamesha dikhe jab couponEnabled (firstUsed check sirf Apply par)
+                    if(SETTINGS.couponEnabled){
                         cc.classList.add('active');
                         document.getElementById('couponDescText').textContent = `Use ${SETTINGS.couponCode} for ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
                     } else {
@@ -681,11 +645,9 @@
                     }
                     document.getElementById('expressLabel').innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`;
                     document.getElementById('bannerMin').textContent=SETTINGS.minOrder;
-                    // Reset applied promo if coupon got disabled
                     if(!SETTINGS.couponEnabled && STATE.appliedPromo){
-                        STATE.appliedPromo = null;
-                        const btn = document.getElementById('applyCouponBtn');
-                        const input = document.getElementById('couponInput');
+                        STATE.appliedPromo=null;
+                        const btn=document.getElementById('applyCouponBtn'); const input=document.getElementById('couponInput');
                         if(btn){ btn.textContent='Apply'; btn.classList.remove('applied'); btn.disabled=false; }
                         if(input){ input.value=''; input.disabled=false; }
                         document.getElementById('couponMsg').textContent='';
@@ -726,7 +688,7 @@
                         const estDateStr=estDate.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); const pickupDateStr=new Date(pickupDate).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
                         document.getElementById('successDetails').innerHTML=`<div class="success-detail-row"><span class="l">Pickup Date</span><span class="v">${pickupDateStr}</span></div><div class="success-detail-row"><span class="l">Time Slot</span><span class="v">${sanitizeHTML(timeSlot)}</span></div><div class="success-detail-row"><span class="l">Est. Delivery</span><span class="v highlight">${estDateStr}</span></div><div class="success-detail-row"><span class="l">Total Amount</span><span class="v highlight">₹${total}</span></div>${isExpress?`<div class="success-detail-row"><span class="l">Express</span><span class="v" style="color:var(--gold);">⚡ 24-Hr</span></div>`:''}`;
                         if(typeof confetti==='function')confetti({particleCount:150,spread:70,origin:{y:0.6},zIndex:99999});
-                        App.UI.openModal('successOverlay'); document.getElementById('couponCard').classList.remove('active');
+                        App.UI.openModal('successOverlay');
                     }catch(err){ console.error(err); App.showToast('Booking failed. Check connection.','error'); }
                     finally{ btn.innerHTML='Confirm Booking <i class="fas fa-check-circle"></i>'; btn.disabled=false; } },
                 downloadInvoice: function(){ const id=STATE.lastBookedOrderId; if(!id)return; App.showToast('Generating PDF Invoice...','info');
@@ -742,8 +704,6 @@
         auth.onAuthStateChanged(user=>App.Auth.handleStateChange(user));
         document.getElementById('pickupDate').min=todayISO();
         document.getElementById('pickupDate').value=todayISO();
-
-        // Enter key support for coupon input
         document.getElementById('couponInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); App.Cart.applyPromoCode(); } });
     </script>
 </body>
