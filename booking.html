@@ -1,174 +1,170 @@
 <!DOCTYPE html>
-<!-- ParthbookGen18 -->
+<!-- ParthbookGen19 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen18" />
+    <meta name="app-version" content="ParthbookGen19" />
     <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <style>
-        :root {
-            --bg: #f4f7fc; --surface: #ffffff; --text: #0f172a; --text-secondary: #334155; --text-muted: #475569;
-            --primary: #0ea5e9; --primary-dark: #0284c7; --accent: #6366f1; --accent-light: #eef2ff;
-            --success: #10b981; --gold: #f59e0b; --danger: #ef4444; --border: #e2e8f0;
-            --radius: 16px; --radius-sm: 12px; --shadow-sm: 0 2px 10px rgba(0,0,0,0.04); --shadow: 0 8px 30px rgba(0,0,0,0.06);
-            --transition: 0.25s ease; --header-height: 64px;
-            --grad-index: linear-gradient(135deg, var(--primary), var(--accent));
-            --glow-index: 0 8px 20px rgba(99,102,241,0.25); --glow-index-hover: 0 12px 24px rgba(99,102,241,0.35); --glow-pill: 0 4px 15px rgba(14,165,233,0.3);
-        }
-        [data-theme="dark"] {
-            --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --text-secondary: #cbd5e1; --text-muted: #94a3b8;
-            --primary: #38bdf8; --accent: #818cf8; --accent-light: #312e81; --border: #334155;
-            --shadow-sm: 0 2px 10px rgba(0,0,0,0.2); --shadow: 0 8px 30px rgba(0,0,0,0.3);
-            --success: #34d399; --danger: #f87171; --gold: #fbbf24;
-            --grad-index: linear-gradient(135deg, var(--primary), var(--accent));
-            --glow-index: 0 8px 20px rgba(99,102,241,0.25); --glow-index-hover: 0 12px 24px rgba(99,102,241,0.35); --glow-pill: 0 4px 15px rgba(14,165,233,0.3);
-        }
+        :root { --bg:#f4f7fc;--surface:#fff;--text:#0f172a;--text-secondary:#334155;--text-muted:#475569;--primary:#0ea5e9;--primary-dark:#0284c7;--accent:#6366f1;--accent-light:#eef2ff;--success:#10b981;--gold:#f59e0b;--danger:#ef4444;--border:#e2e8f0;--radius:16px;--radius-sm:12px;--shadow-sm:0 2px 10px rgba(0,0,0,.04);--shadow:0 8px 30px rgba(0,0,0,.06);--transition:.25s ease;--header-height:64px;--grad-index:linear-gradient(135deg,var(--primary),var(--accent));--glow-index:0 8px 20px rgba(99,102,241,.25);--glow-index-hover:0 12px 24px rgba(99,102,241,.35);--glow-pill:0 4px 15px rgba(14,165,233,.3); }
+        [data-theme="dark"] { --bg:#0f172a;--surface:#1e293b;--text:#f1f5f9;--text-secondary:#cbd5e1;--text-muted:#94a3b8;--primary:#38bdf8;--accent:#818cf8;--accent-light:#312e81;--border:#334155;--shadow-sm:0 2px 10px rgba(0,0,0,.2);--shadow:0 8px 30px rgba(0,0,0,.3);--success:#34d399;--danger:#f87171;--gold:#fbbf24; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1.6; min-height: 100vh; transition: background 0.3s, color 0.3s; }
-        button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; outline: none; font-family: inherit; }
-        [data-theme="dark"] ::placeholder { color: var(--text-muted); opacity: 1; }
-        [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
-        [data-theme="dark"] .auth-input, [data-theme="dark"] .booking-form input, [data-theme="dark"] .booking-form textarea { background: #0f172a; color: var(--text); }
-        [data-theme="dark"] .btn-google { background: #1e293b; color: var(--text); border-color: var(--border); }
-        [data-theme="dark"] .sticky-catalog-nav { background: var(--bg); }
+        body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; line-height:1.6; min-height:100vh; transition:background .3s,color .3s; }
+        button,a,input,textarea,select { -webkit-tap-highlight-color:transparent; outline:none; font-family:inherit; }
+        [data-theme="dark"] ::placeholder { color:var(--text-muted); opacity:1; }
+        [data-theme="dark"] header { background:rgba(15,23,42,.88); }
+        [data-theme="dark"] .auth-input,[data-theme="dark"] .booking-form input,[data-theme="dark"] .booking-form textarea { background:#0f172a; color:var(--text); }
+        [data-theme="dark"] .btn-google { background:#1e293b; color:var(--text); border-color:var(--border); }
+        [data-theme="dark"] .sticky-catalog-nav { background:var(--bg); }
 
-        header { background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); padding: 8px 5%; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; min-height: var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,0.03); }
+        header { background:rgba(255,255,255,.9); backdrop-filter:blur(20px); padding:8px 5%; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; min-height:var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,.03); }
         .logo { display:flex; align-items:center; text-decoration:none; flex-shrink:0; }
         .logo-text-wrapper { display:flex; flex-direction:column; line-height:1; }
         .logo-row { display:flex; align-items:baseline; gap:6px; position:relative; }
-        .logo-main { font-family: 'Pacifico', cursive; font-size: 2rem; font-weight: 400; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.3; }
-        .logo-row::after { content: '✦'; position: absolute; bottom: -8px; right: -20px; font-size: 1rem; -webkit-text-fill-color: var(--primary); color: var(--primary); animation: sparkle 2s infinite; }
-        @keyframes sparkle { 0%,100% { opacity:.6; transform:scale(1);} 50% { opacity:1; transform:scale(1.3);} }
-        .logo-sub { font-size: 1rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.3px; text-transform: uppercase; }
-        .logo-tagline { font-size:10px; font-weight:700; color:var(--text-muted); letter-spacing:0.5px; margin-top:2px; }
+        .logo-main { font-family:'Pacifico',cursive; font-size:2rem; font-weight:400; background:linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.3; }
+        .logo-row::after { content:'✦'; position:absolute; bottom:-8px; right:-20px; font-size:1rem; -webkit-text-fill-color:var(--primary); color:var(--primary); animation:sparkle 2s infinite; }
+        @keyframes sparkle { 0%,100%{opacity:.6;transform:scale(1);} 50%{opacity:1;transform:scale(1.3);} }
+        .logo-sub { font-size:1rem; font-weight:700; color:var(--text-muted); letter-spacing:.3px; text-transform:uppercase; }
+        .logo-tagline { font-size:10px; font-weight:700; color:var(--text-muted); letter-spacing:.5px; margin-top:2px; }
         .header-actions { display:flex; align-items:center; gap:10px; }
-        .icon-btn { background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:0.2s; position:relative; }
-        .icon-btn:hover { background: var(--accent-light); color: var(--primary); }
+        .icon-btn { background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition:.2s; position:relative; }
+        .icon-btn:hover { background:var(--accent-light); color:var(--primary); }
         .cart-count-badge { position:absolute; top:-2px; right:-2px; background:var(--danger); color:#fff; width:18px; height:18px; border-radius:50%; font-size:10px; font-weight:800; display:none; align-items:center; justify-content:center; border:2px solid var(--surface); }
         @keyframes cartBounce { 0%{transform:scale(1);} 40%{transform:scale(1.35);} 100%{transform:scale(1);} }
-        .cart-bounce { animation: cartBounce 0.4s ease; }
+        .cart-bounce { animation:cartBounce .4s ease; }
 
         .app-layout { display:grid; grid-template-columns:1fr 400px; gap:24px; max-width:1250px; margin:20px auto 90px; padding:0 20px; align-items:start; }
-        .catalog { min-width: 0; }
+        .catalog { min-width:0; }
 
-        .banner { position: relative; overflow: hidden; background: var(--grad-index); color:#fff; padding:28px 30px; border-radius:22px; margin-bottom:18px; box-shadow: var(--glow-index); }
-        .banner::before { content:''; position:absolute; top:-40px; right:-30px; width:150px; height:150px; border-radius:50%; background:rgba(255,255,255,0.12); }
-        .banner::after { content:''; position:absolute; bottom:-50px; left:-25px; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,0.08); }
-        .banner-content { position: relative; z-index: 1; display:flex; justify-content:space-between; align-items:center; gap:14px; }
+        .banner { position:relative; overflow:hidden; background:var(--grad-index); color:#fff; padding:28px 30px; border-radius:22px; margin-bottom:18px; box-shadow:var(--glow-index); }
+        .banner::before { content:''; position:absolute; top:-40px; right:-30px; width:150px; height:150px; border-radius:50%; background:rgba(255,255,255,.12); }
+        .banner::after { content:''; position:absolute; bottom:-50px; left:-25px; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,.08); }
+        .banner-content { position:relative; z-index:1; display:flex; justify-content:space-between; align-items:center; gap:14px; }
         .banner h2 { font-size:25px; font-weight:800; margin-bottom:4px; }
-        .banner p { font-size:13px; font-weight:600; opacity:0.95; }
+        .banner p { font-size:13px; font-weight:600; opacity:.95; }
         .banner-chips { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-        .banner-chip { background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3); padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800; }
-        .banner-icon { font-size:50px; opacity:0.4; flex-shrink:0; }
-        .banner-sparkle { position:absolute; right:24px; bottom:10px; font-size:54px; color:rgba(255,255,255,0.15); transform:rotate(-10deg); pointer-events:none; z-index:0; }
+        .banner-chip { background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800; }
+        .banner-icon { font-size:50px; opacity:.4; flex-shrink:0; }
+        .banner-sparkle { position:absolute; right:24px; bottom:10px; font-size:54px; color:rgba(255,255,255,.15); transform:rotate(-10deg); pointer-events:none; z-index:0; }
 
-        .repeat-card { background: rgba(16,185,129,0.08); border:1.5px solid var(--success); padding:13px 18px; border-radius:14px; margin-bottom:14px; display:none; justify-content:space-between; align-items:center; font-weight:700; color:var(--success); font-size:14px; }
-        .repeat-card button { background: linear-gradient(135deg, var(--success), #059669); color:#fff; border:none; padding:9px 20px; border-radius:30px; font-weight:800; cursor:pointer; font-size:13px; transition: 0.2s; }
-        .repeat-card button:hover { transform: translateY(-1px); }
+        .repeat-card { background:rgba(16,185,129,.08); border:1.5px solid var(--success); padding:13px 18px; border-radius:14px; margin-bottom:14px; display:none; justify-content:space-between; align-items:center; font-weight:700; color:var(--success); font-size:14px; }
+        .repeat-card button { background:linear-gradient(135deg,var(--success),#059669); color:#fff; border:none; padding:9px 20px; border-radius:30px; font-weight:800; cursor:pointer; font-size:13px; transition:.2s; }
+        .repeat-card button:hover { transform:translateY(-1px); }
 
-        .sticky-catalog-nav { position: sticky; top: var(--header-height); z-index: 50; background: var(--bg); padding: 12px 0 2px; margin-bottom: 6px; transition: background 0.3s; }
+        .sticky-catalog-nav { position:sticky; top:var(--header-height); z-index:50; background:var(--bg); padding:12px 0 2px; margin-bottom:6px; transition:background .3s; }
         .search-box { position:relative; margin-bottom:12px; }
         .search-box i.fa-search { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:16px; pointer-events:none; }
-        .search-input { width:100%; padding:14px 52px 14px 48px; border-radius:30px; border:2px solid var(--border); background: var(--surface); color: var(--text); font-size:14px; font-weight:600; outline:none; box-shadow:var(--shadow-sm); transition:0.3s; }
-        .search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
+        .search-input { width:100%; padding:14px 52px 14px 48px; border-radius:30px; border:2px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; font-weight:600; outline:none; box-shadow:var(--shadow-sm); transition:.3s; }
+        .search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,.15); }
         .search-clear-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--bg); border:1px solid var(--border); color:var(--text-muted); font-size:13px; cursor:pointer; display:none; align-items:center; justify-content:center; transition:.2s; z-index:3; }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
 
         .category-pills-wrap { position:relative; }
-        .category-pills-wrap::after { content:''; position:absolute; right:0; top:0; bottom:8px; width:44px; background:linear-gradient(90deg, transparent, var(--bg)); pointer-events:none; z-index:2; }
+        .category-pills-wrap::after { content:''; position:absolute; right:0; top:0; bottom:8px; width:44px; background:linear-gradient(90deg,transparent,var(--bg)); pointer-events:none; z-index:2; }
         .category-pills { display:flex; gap:10px; overflow-x:auto; padding:6px 10px 16px; scrollbar-width:none; }
         .category-pills::-webkit-scrollbar { display:none; }
-        .pill { padding:10px 18px; background:var(--surface); border:1.5px solid var(--border); border-radius:30px; font-size:13px; font-weight:700; color:var(--text-muted); cursor:pointer; white-space:nowrap; transition:0.3s; display:flex; align-items:center; gap:8px; }
+        .pill { padding:10px 18px; background:var(--surface); border:1.5px solid var(--border); border-radius:30px; font-size:13px; font-weight:700; color:var(--text-muted); cursor:pointer; white-space:nowrap; transition:.3s; display:flex; align-items:center; gap:8px; }
         .pill i { font-size:13px; }
         .pill:hover { border-color:var(--primary); color:var(--primary); }
-        .pill.active { background: var(--primary); color:#fff; border-color:var(--primary); box-shadow: var(--glow-pill); }
+        .pill.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:var(--glow-pill); }
 
-        .items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(165px,1fr)); gap:14px; }
-        .item-card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:8px; box-shadow:var(--shadow-sm); transition:all 0.25s ease; position:relative; }
+        .items-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); gap:14px; }
+        .item-card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:8px; box-shadow:var(--shadow-sm); transition:all .25s ease; position:relative; }
         .item-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--primary); }
-        @keyframes fadeUp { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
-        .item-icon { width:46px; height:46px; border-radius:14px; background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12)); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:19px; }
-        .save-tag { position:absolute; top:12px; right:12px; background:rgba(16,185,129,0.12); color:var(--success); font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+        .item-icon { width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(99,102,241,.12)); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:19px; }
+        .save-tag { position:absolute; top:12px; right:12px; background:rgba(16,185,129,.12); color:var(--success); font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; }
         .item-name { font-weight:800; font-size:14px; color:var(--text); line-height:1.3; min-height:36px; }
         .item-price-row { display:flex; align-items:baseline; gap:6px; }
         .item-price { font-size:16px; font-weight:800; color:var(--primary); }
         .item-original-price { font-size:12px; color:var(--text-muted); text-decoration:line-through; font-weight:600; }
 
         .add-btn { width:100%; padding:9px 0; margin-top:auto; border-radius:30px; border:1.5px solid var(--primary); background:transparent; color:var(--primary); font-weight:800; font-size:12px; letter-spacing:.5px; cursor:pointer; transition:.2s; display:flex; align-items:center; justify-content:center; gap:6px; }
-        .add-btn:hover { background:var(--primary); color:#fff; box-shadow: var(--glow-pill); }
-        .stepper { display:flex; align-items:center; justify-content:space-between; margin-top:auto; background: var(--grad-index); border-radius:30px; padding:4px; box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
-        .step-btn { width:26px; height:26px; border-radius:50%; border:none; background:rgba(255,255,255,0.2); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; transition:.2s; }
-        .step-btn:hover { background:rgba(255,255,255,0.35); }
+        .add-btn:hover { background:var(--primary); color:#fff; box-shadow:var(--glow-pill); }
+        .stepper { display:flex; align-items:center; justify-content:space-between; margin-top:auto; background:var(--grad-index); border-radius:30px; padding:4px; box-shadow:0 4px 12px rgba(99,102,241,.3); }
+        .step-btn { width:26px; height:26px; border-radius:50%; border:none; background:rgba(255,255,255,.2); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; transition:.2s; }
+        .step-btn:hover { background:rgba(255,255,255,.35); }
         .step-num { color:#fff; font-weight:800; font-size:14px; min-width:20px; text-align:center; }
 
-        .skeleton { background: var(--border); background: linear-gradient(110deg, var(--border) 8%, var(--surface) 18%, var(--border) 33%); background-size: 200% 100%; animation: 1.5s shimmer linear infinite; border-radius: 18px; }
-        @keyframes shimmer { to { background-position-x: -200%; } }
+        .skeleton { background:var(--border); background:linear-gradient(110deg,var(--border) 8%,var(--surface) 18%,var(--border) 33%); background-size:200% 100%; animation:1.5s shimmer linear infinite; border-radius:18px; }
+        @keyframes shimmer { to { background-position-x:-200%; } }
         .empty-state { text-align:center; padding:50px 20px; color:var(--text-muted); grid-column:1/-1; }
         .empty-state i { font-size:48px; color:var(--border); margin-bottom:12px; display:block; }
 
-        .checkout-sidebar { background:var(--surface); border-radius:22px; padding:24px; box-shadow:var(--shadow); border:1px solid var(--border); position:sticky; top: 84px; overscroll-behavior: contain; transform: translateZ(0); will-change: transform; }
+        .checkout-sidebar { background:var(--surface); border-radius:22px; padding:24px; box-shadow:var(--shadow); border:1px solid var(--border); position:sticky; top:84px; overscroll-behavior:contain; transform:translateZ(0); will-change:transform; }
         .sheet-handle { display:none; width:48px; height:5px; border-radius:5px; background:var(--border); margin:0 auto 14px; }
-        .panel-title { font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px; justify-content:space-between; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border); background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .panel-title { font-size:20px; font-weight:800; display:flex; align-items:center; gap:10px; justify-content:space-between; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid var(--border); background:linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
         .panel-title .pt-left { display:flex; align-items:center; gap:10px; }
-        .panel-title .pt-left i { -webkit-text-fill-color: var(--primary); }
-        .panel-title .bag-count-label { font-size:12px; font-weight:700; -webkit-text-fill-color: var(--text-muted); }
-        .clear-bag-btn { margin-left:auto; background:none; border:none; color:var(--danger); font-size:14px; cursor:pointer; padding:6px 8px; border-radius:8px; transition:0.2s; -webkit-text-fill-color: initial; }
-        .clear-bag-btn:hover { background:rgba(239,68,68,0.1); }
+        .panel-title .pt-left i { -webkit-text-fill-color:var(--primary); }
+        .panel-title .bag-count-label { font-size:12px; font-weight:700; -webkit-text-fill-color:var(--text-muted); }
+        .clear-bag-btn { margin-left:auto; background:none; border:none; color:var(--danger); font-size:14px; cursor:pointer; padding:6px 8px; border-radius:8px; transition:.2s; -webkit-text-fill-color:initial; }
+        .clear-bag-btn:hover { background:rgba(239,68,68,.1); }
 
-        .free-delivery-bar { margin-bottom: 16px; }
+        .free-delivery-bar { margin-bottom:16px; }
         .progress-track { width:100%; height:8px; background:var(--border); border-radius:10px; overflow:hidden; margin-bottom:6px; }
-        .progress-fill { height:100%; background:linear-gradient(90deg,var(--success),#34d399); width:0%; transition:width 0.5s ease-out; }
+        .progress-fill { height:100%; background:linear-gradient(90deg,var(--success),#34d399); width:0%; transition:width .5s ease-out; }
         #deliveryStatusText { font-size:12px; font-weight:800; color:var(--text-muted); text-align:center; }
 
         .empty-bag { text-align:center; padding:18px 0 8px; color:var(--text-muted); display:none; }
         .empty-bag i { font-size:34px; opacity:.4; margin-bottom:8px; display:block; }
         .empty-bag p { font-weight:700; font-size:13px; margin-bottom:10px; }
-        .browse-btn { background: var(--grad-index); color:#fff; border:none; padding:10px 22px; border-radius:30px; font-weight:800; font-size:12px; cursor:pointer; transition:.2s; box-shadow: var(--glow-index); }
-        .browse-btn:hover { transform:translateY(-1px); box-shadow: var(--glow-index-hover); }
+        .browse-btn { background:var(--grad-index); color:#fff; border:none; padding:10px 22px; border-radius:30px; font-weight:800; font-size:12px; cursor:pointer; transition:.2s; box-shadow:var(--glow-index); }
+        .browse-btn:hover { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
 
         .bag-items { max-height:240px; overflow-y:auto; margin-bottom:16px; display:none; }
         .bag-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px dashed var(--border); font-size:13px; font-weight:600; }
         .bag-row-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
-        .bag-row-icon { width:28px; height:28px; background:linear-gradient(135deg,rgba(14,165,233,0.12),rgba(99,102,241,0.12)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--primary); flex-shrink:0; }
+        .bag-row-icon { width:28px; height:28px; background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(99,102,241,.12)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--primary); flex-shrink:0; }
         .bag-qty-control { display:flex; align-items:center; gap:6px; margin-right:10px; }
-        .bag-qty-btn { width:24px; height:24px; border-radius:50%; background:var(--bg); border:1px solid var(--border); font-size:11px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s; color:var(--text); }
+        .bag-qty-btn { width:24px; height:24px; border-radius:50%; background:var(--bg); border:1px solid var(--border); font-size:11px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:.2s; color:var(--text); }
         .bag-qty-btn:hover { background:var(--primary); color:#fff; border-color:var(--primary); }
         .bag-row-price { font-weight:800; color:var(--text); min-width:50px; text-align:right; }
 
-        .upsell-card { background: rgba(217,70,239,0.08); border:1.5px dashed #e879f9; padding:14px; border-radius:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
-        .upsell-card button { background:linear-gradient(135deg,#d946ef,#a21caf); color:white; border:none; padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:0.2s; }
+        .upsell-card { background:rgba(217,70,239,.08); border:1.5px dashed #e879f9; padding:14px; border-radius:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+        .upsell-card button { background:linear-gradient(135deg,#d946ef,#a21caf); color:#fff; border:none; padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:.2s; }
         .upsell-card button:hover { transform:scale(1.05); }
 
-        .coupon-card { background: rgba(245,158,11,0.08); border:1.5px solid var(--gold); border-radius:14px; padding:15px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
-        .coupon-card .offer-text { font-size:13px; color:var(--text); font-weight:700; }
-        .coupon-card .offer-text strong { font-size:15px; display:block; color:#d97706; margin-bottom:2px; }
-        .coupon-card button { background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; border:none; padding:10px 18px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; transition:0.2s; }
-        .coupon-card button.applied { background:var(--success); }
-        .coupon-card button:hover { transform:translateY(-1px); }
+        /* COUPON CARD — SWIGGY/ ZOMATO STYLE */
+        .coupon-card { background:rgba(245,158,11,.06); border:1.5px dashed var(--gold); border-radius:14px; padding:14px 16px; margin-bottom:16px; display:none; flex-direction:column; gap:10px; transition:.3s; }
+        .coupon-card.active { display:flex; }
+        .coupon-card .offer-header { display:flex; align-items:center; gap:10px; }
+        .coupon-card .coupon-icon { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+        .coupon-card .offer-text { flex:1; }
+        .coupon-card .offer-text strong { font-size:13px; color:var(--text); font-weight:800; display:block; }
+        .coupon-card .offer-text span { font-size:11px; color:var(--text-muted); font-weight:600; }
+        .coupon-input-wrap { display:flex; gap:6px; }
+        .coupon-input-wrap input { flex:1; padding:11px 14px; border-radius:10px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-weight:700; font-family:inherit; outline:none; text-transform:uppercase; letter-spacing:.5px; transition:.2s; }
+        .coupon-input-wrap input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,233,.08); }
+        .coupon-input-wrap input:disabled { opacity:.6; background:var(--bg); cursor:not-allowed; }
+        .coupon-input-wrap button { padding:11px 20px; border-radius:10px; border:none; background:var(--grad-index); color:#fff; font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap; box-shadow:var(--glow-pill); transition:.2s; }
+        .coupon-input-wrap button:hover:not(:disabled) { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
+        .coupon-input-wrap button:disabled { background:var(--success); cursor:not-allowed; box-shadow:none; }
+        .coupon-input-wrap button.applied { background:linear-gradient(135deg,var(--success),#059669); }
+        .coupon-msg { font-size:11px; font-weight:700; margin-top:2px; min-height:14px; transition:.2s; }
+        .coupon-msg.success { color:var(--success); }
+        .coupon-msg.error { color:var(--danger); }
+        .coupon-hint-tag { display:inline-flex; align-items:center; gap:4px; background:rgba(16,185,129,.12); color:var(--success); padding:3px 8px; border-radius:6px; font-size:10px; font-weight:800; margin-top:4px; }
 
-        .express-pill { display:flex; align-items:center; justify-content:space-between; background:rgba(14,165,233,0.08); border:1.5px solid var(--primary); border-radius:14px; padding:12px 18px; margin-bottom:14px; font-weight:800; font-size:13px; color:var(--primary); }
+        .express-pill { display:flex; align-items:center; justify-content:space-between; background:rgba(14,165,233,.08); border:1.5px solid var(--primary); border-radius:14px; padding:12px 18px; margin-bottom:14px; font-weight:800; font-size:13px; color:var(--primary); }
         .toggle-switch { position:relative; display:inline-block; width:44px; height:24px; flex-shrink:0; }
         .toggle-switch input { opacity:0; width:0; height:0; }
-        .slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:var(--border); transition:0.3s; border-radius:34px; }
-        .slider:before { position:absolute; content:""; height:20px; width:20px; left:2px; bottom:2px; background-color:white; transition:0.3s; border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,0.15); }
-        input:checked + .slider { background-color:var(--primary); }
-        input:checked + .slider:before { transform:translateX(20px); }
+        .slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:var(--border); transition:.3s; border-radius:34px; }
+        .slider:before { position:absolute; content:""; height:20px; width:20px; left:2px; bottom:2px; background-color:#fff; transition:.3s; border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,.15); }
+        input:checked+.slider { background-color:var(--primary); }
+        input:checked+.slider:before { transform:translateX(20px); }
 
-        .min-alert { background:rgba(239,68,68,0.08); color:var(--danger); padding:12px 16px; border-radius:12px; font-weight:800; font-size:13px; margin-bottom:14px; display:none; border:1.5px solid var(--danger); }
-        .est-box { background:rgba(16,185,129,0.08); border:1.5px solid var(--success); border-radius:14px; padding:14px; margin-bottom:14px; display:none; align-items:center; gap:12px; font-weight:700; color:var(--success); }
+        .min-alert { background:rgba(239,68,68,.08); color:var(--danger); padding:12px 16px; border-radius:12px; font-weight:800; font-size:13px; margin-bottom:14px; display:none; border:1.5px solid var(--danger); }
+        .est-box { background:rgba(16,185,129,.08); border:1.5px solid var(--success); border-radius:14px; padding:14px; margin-bottom:14px; display:none; align-items:center; gap:12px; font-weight:700; color:var(--success); }
         .est-box i { font-size:22px; }
 
         .bill { background:var(--bg); border-radius:14px; padding:16px; margin-bottom:18px; border:1px solid var(--border); }
@@ -177,62 +173,62 @@
         .delivery-row { color:var(--success); font-weight:800; }
 
         .booking-form .form-group { margin-bottom:14px; }
-        .booking-form label { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; }
-        .booking-form input, .booking-form textarea { width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; font-weight:600; outline:none; transition:0.3s; }
-        .booking-form input:focus, .booking-form textarea:focus { border-color:var(--primary); box-shadow:0 4px 14px rgba(14,165,233,0.15); }
-        .btn-book { width:100%; padding:16px; border-radius:50px; background: var(--grad-index); color:#fff; border:none; font-weight:800; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s ease; box-shadow: var(--glow-index); }
-        .btn-book:hover { transform:translateY(-2px); box-shadow: var(--glow-index-hover); }
+        .booking-form label { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:6px; }
+        .booking-form input,.booking-form textarea { width:100%; padding:13px 16px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; font-weight:600; outline:none; transition:.3s; }
+        .booking-form input:focus,.booking-form textarea:focus { border-color:var(--primary); box-shadow:0 4px 14px rgba(14,165,233,.15); }
+        .btn-book { width:100%; padding:16px; border-radius:50px; background:var(--grad-index); color:#fff; border:none; font-weight:800; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .3s ease; box-shadow:var(--glow-index); }
+        .btn-book:hover { transform:translateY(-2px); box-shadow:var(--glow-index-hover); }
         .btn-book:disabled { background:var(--border); color:var(--text-muted); box-shadow:none; transform:none; cursor:not-allowed; }
 
         .time-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
-        .time-pill { position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 6px; border-radius:16px; background:var(--surface); border:1.5px solid var(--border); cursor:pointer; transition:0.25s; text-align:center; }
-        .time-pill .tp-icon { width:34px; height:34px; border-radius:50%; background:var(--accent-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:14px; transition:0.25s; }
+        .time-pill { position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 6px; border-radius:16px; background:var(--surface); border:1.5px solid var(--border); cursor:pointer; transition:.25s; text-align:center; }
+        .time-pill .tp-icon { width:34px; height:34px; border-radius:50%; background:var(--accent-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:14px; transition:.25s; }
         .time-pill .tp-label { font-size:12px; font-weight:800; color:var(--text); }
         .time-pill .tp-time { font-size:10px; font-weight:700; color:var(--text-muted); }
-        .time-pill.active { border-color:var(--primary); background:var(--accent-light); box-shadow: var(--glow-pill); }
-        .time-pill.active .tp-icon { background: var(--grad-index); color:#fff; }
+        .time-pill.active { border-color:var(--primary); background:var(--accent-light); box-shadow:var(--glow-pill); }
+        .time-pill.active .tp-icon { background:var(--grad-index); color:#fff; }
         .time-pill.active::after { content:'\f00c'; font-family:"Font Awesome 6 Free"; font-weight:900; position:absolute; top:6px; right:8px; font-size:10px; color:var(--primary); }
-        .time-pill.disabled { opacity:0.4; pointer-events:none; }
+        .time-pill.disabled { opacity:.4; pointer-events:none; }
         .time-slot-note { font-size:11px; color:var(--text-muted); margin-top:6px; font-weight:600; }
 
         .delivery-card { background:var(--bg); border:1.5px solid var(--primary); border-radius:14px; padding:16px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; position:relative; overflow:hidden; }
         .delivery-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(180deg,var(--primary),var(--accent)); }
-        .edit-link { color:var(--primary); font-weight:800; cursor:pointer; font-size:12px; background:rgba(14,165,233,0.08); padding:6px 12px; border-radius:20px; border:1px solid rgba(14,165,233,0.2); transition:0.2s; white-space:nowrap; }
-        .edit-link:hover { background:rgba(14,165,233,0.15); }
+        .edit-link { color:var(--primary); font-weight:800; cursor:pointer; font-size:12px; background:rgba(14,165,233,.08); padding:6px 12px; border-radius:20px; border:1px solid rgba(14,165,233,.2); transition:.2s; white-space:nowrap; }
+        .edit-link:hover { background:rgba(14,165,233,.15); }
 
-        .mobile-cart-bar { position:fixed; bottom:0; left:0; right:0; z-index:240; display:none; justify-content:space-between; align-items:center; background: var(--grad-index); color:#fff; padding:15px 20px; padding-bottom:calc(15px + env(safe-area-inset-bottom)); box-shadow:0 -8px 24px rgba(99,102,241,0.35); cursor:pointer; transform: translateZ(0); backface-visibility: hidden; }
+        .mobile-cart-bar { position:fixed; bottom:0; left:0; right:0; z-index:240; display:none; justify-content:space-between; align-items:center; background:var(--grad-index); color:#fff; padding:15px 20px; padding-bottom:calc(15px + env(safe-area-inset-bottom)); box-shadow:0 -8px 24px rgba(99,102,241,.35); cursor:pointer; transform:translateZ(0); backface-visibility:hidden; }
         .mobile-cart-bar .mcb-left { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
         .mobile-cart-bar .mcb-right { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
-        .mobile-cart-bar .mcb-right i { animation: arrowNudge 1.2s ease infinite; }
+        .mobile-cart-bar .mcb-right i { animation:arrowNudge 1.2s ease infinite; }
         @keyframes arrowNudge { 0%,100%{transform:translateX(0);} 50%{transform:translateX(4px);} }
-        .mobile-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:250; }
-        .mobile-overlay.active { display:block; animation:fadeIn 0.3s ease; }
+        .mobile-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); z-index:250; }
+        .mobile-overlay.active { display:block; animation:fadeIn .3s ease; }
 
-        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.7); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:1000; padding:16px; }
-        .modal-overlay.active { display:flex; animation:fadeIn 0.3s ease; }
-        .modal-box { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:440px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.3); text-align:center; max-height:90vh; overflow-y:auto; }
-        [data-theme="dark"] .modal-box { background:rgba(30,41,59,0.95); border:1px solid rgba(255,255,255,0.1); }
-        .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:0.2s; z-index:6; }
+        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,.7); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:1000; padding:16px; }
+        .modal-overlay.active { display:flex; animation:fadeIn .3s ease; }
+        .modal-box { background:rgba(255,255,255,.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:440px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.3); text-align:center; max-height:90vh; overflow-y:auto; }
+        [data-theme="dark"] .modal-box { background:rgba(30,41,59,.95); border:1px solid rgba(255,255,255,.1); }
+        .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:.2s; z-index:6; }
         .close-modal-btn:hover { color:var(--danger); transform:scale(1.1); }
         #successOverlay .close-modal-btn { color:#fff; top:12px; right:14px; }
         #successOverlay .close-modal-btn:hover { color:#fff; transform:scale(1.1); }
-        .btn-google { width:100%; background:#fff; color:var(--text); border:1.5px solid var(--border); padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:0.3s; }
-        .btn-google:hover { border-color:var(--primary); background:rgba(14,165,233,0.05); }
+        .btn-google { width:100%; background:#fff; color:var(--text); border:1.5px solid var(--border); padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:.3s; }
+        .btn-google:hover { border-color:var(--primary); background:rgba(14,165,233,.05); }
         .google-icon { width:20px; height:20px; flex-shrink:0; }
         .auth-divider { display:flex; align-items:center; margin:16px 0; color:var(--text-muted); font-size:12px; font-weight:800; }
-        .auth-divider::before, .auth-divider::after { content:''; flex:1; border-bottom:1px solid var(--border); }
-        .auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; font-weight:700; outline:none; margin-bottom:14px; text-align:center; transition:0.3s; }
+        .auth-divider::before,.auth-divider::after { content:''; flex:1; border-bottom:1px solid var(--border); }
+        .auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; font-weight:700; outline:none; margin-bottom:14px; text-align:center; transition:.3s; }
         .auth-input:focus { border-color:var(--primary); }
-        .btn-primary-full { width:100%; background: var(--grad-index); color:#fff; border:none; padding:14px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:0.3s; text-decoration:none; box-shadow: var(--glow-index); }
-        .btn-primary-full:hover { transform:translateY(-1px); box-shadow: var(--glow-index-hover); }
+        .btn-primary-full { width:100%; background:var(--grad-index); color:#fff; border:none; padding:14px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:.3s; text-decoration:none; box-shadow:var(--glow-index); }
+        .btn-primary-full:hover { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
 
-        .success-hero { position:relative; overflow:hidden; background: var(--grad-index); color:#fff; padding:32px 24px; border-radius:20px; margin:-10px -10px 20px; }
-        .success-hero::before { content:''; position:absolute; top:-30px; right:-25px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.12); }
-        .success-hero::after { content:''; position:absolute; bottom:-40px; left:-20px; width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,0.08); }
-        .success-hero-icon { width:74px; height:74px; border-radius:50%; background:rgba(255,255,255,0.25); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:36px; border:3px solid rgba(255,255,255,0.4); position:relative; z-index:1; }
+        .success-hero { position:relative; overflow:hidden; background:var(--grad-index); color:#fff; padding:32px 24px; border-radius:20px; margin:-10px -10px 20px; }
+        .success-hero::before { content:''; position:absolute; top:-30px; right:-25px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.12); }
+        .success-hero::after { content:''; position:absolute; bottom:-40px; left:-20px; width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,.08); }
+        .success-hero-icon { width:74px; height:74px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:36px; border:3px solid rgba(255,255,255,.4); position:relative; z-index:1; }
         .success-hero h2 { font-size:24px; font-weight:800; margin-bottom:6px; position:relative; z-index:1; }
-        .success-hero p { font-size:14px; opacity:0.95; font-weight:600; position:relative; z-index:1; }
-        .success-sparkle { position:absolute; right:20px; bottom:15px; font-size:42px; color:rgba(255,255,255,0.18); transform:rotate(-10deg); pointer-events:none; }
+        .success-hero p { font-size:14px; opacity:.95; font-weight:600; position:relative; z-index:1; }
+        .success-sparkle { position:absolute; right:20px; bottom:15px; font-size:42px; color:rgba(255,255,255,.18); transform:rotate(-10deg); pointer-events:none; }
         .success-order-box { background:var(--bg); border:1.5px dashed var(--success); border-radius:14px; padding:16px; margin-bottom:16px; text-align:center; }
         .success-order-box .label { font-size:10px; color:var(--text-muted); font-weight:800; letter-spacing:1px; text-transform:uppercase; }
         .success-order-box .order-id { font-size:22px; color:var(--primary); font-weight:800; margin-top:4px; letter-spacing:1px; }
@@ -244,28 +240,23 @@
         .success-detail-row .value.highlight { color:var(--primary); font-size:15px; }
         .success-actions { display:flex; gap:10px; }
         .success-actions .btn-primary-full { flex:1; font-size:13px; padding:13px; }
-        .success-actions .btn-secondary { flex:1; background:var(--surface); color:var(--text); border:1.5px solid var(--border); padding:13px; border-radius:30px; font-size:13px; font-weight:800; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; transition:0.2s; }
+        .success-actions .btn-secondary { flex:1; background:var(--surface); color:var(--text); border:1.5px solid var(--border); padding:13px; border-radius:30px; font-size:13px; font-weight:800; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; transition:.2s; }
         .success-actions .btn-secondary:hover { border-color:var(--primary); color:var(--primary); }
 
         @media (max-width:1024px) {
             .app-layout { grid-template-columns:1fr; margin-bottom:110px; }
-            .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:88vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,0.2); z-index:300; overflow-y:auto; top:auto; }
-            .checkout-sidebar.mobile-open { display:block; animation:slideUp 0.3s ease; }
+            .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:88vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,.2); z-index:300; overflow-y:auto; top:auto; }
+            .checkout-sidebar.mobile-open { display:block; animation:slideUp .3s ease; }
             .sheet-handle { display:block; }
             .mobile-overlay.active { display:block; }
         }
         @media (max-width:768px) {
-            header { padding: 6px 4%; }
-            .logo-main { font-size: 1.8rem; }
-            .logo-sub { font-size: 0.85rem; }
-            .logo-tagline { font-size: 9px; }
+            header { padding:6px 4%; }
+            .logo-main { font-size:1.8rem; } .logo-sub { font-size:.85rem; } .logo-tagline { font-size:9px; }
             .items-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
-            .item-card { padding:13px; }
-            .item-name { font-size:13px; min-height:34px; }
-            .banner { padding:22px 20px; }
-            .banner h2 { font-size:20px; }
-            .banner-icon { display:none; }
-            .banner-sparkle { font-size:40px; right:16px; bottom:8px; }
+            .item-card { padding:13px; } .item-name { font-size:13px; min-height:34px; }
+            .banner { padding:22px 20px; } .banner h2 { font-size:20px; }
+            .banner-icon { display:none; } .banner-sparkle { font-size:40px; right:16px; bottom:8px; }
             .time-pill .tp-time { font-size:9px; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
@@ -273,7 +264,7 @@
     </style>
 </head>
 <body>
-    <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999999; display:flex; flex-direction:column; gap:8px;"></div>
+    <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:8px;"></div>
 
     <header>
         <a href="index.html" class="logo">
@@ -313,7 +304,6 @@
                 </div>
                 <div class="category-pills-wrap"><div class="category-pills" id="categoryPills"></div></div>
             </div>
-
             <div id="catalogGrid" class="items-grid"></div>
         </div>
 
@@ -334,9 +324,20 @@
             <div class="bag-items" id="bagItemsSummary"></div>
             <div id="upsellContainer" style="display:none;"></div>
 
-            <div class="coupon-card" id="couponCard" style="display:none;">
-                <div class="offer-text"><strong id="couponCodeText">🎉 PARTH20</strong> <span id="couponDescText">20% off up to ₹200 (first order)</span></div>
-                <button id="applyCouponBtn" onclick="App.Cart.applyPromoCode()">Apply</button>
+            <!-- ===== COUPON INPUT BOX (NEW) ===== -->
+            <div class="coupon-card" id="couponCard">
+                <div class="offer-header">
+                    <div class="coupon-icon"><i class="fas fa-ticket-alt"></i></div>
+                    <div class="offer-text">
+                        <strong>🎟️ Have a Coupon?</strong>
+                        <span id="couponDescText">Enter code to get discount</span>
+                    </div>
+                </div>
+                <div class="coupon-input-wrap">
+                    <input type="text" id="couponInput" placeholder="e.g. PARTH20" maxlength="20" autocomplete="off" spellcheck="false" />
+                    <button id="applyCouponBtn" onclick="App.Cart.applyPromoCode()">Apply</button>
+                </div>
+                <div class="coupon-msg" id="couponMsg"></div>
             </div>
 
             <label class="express-pill">
@@ -346,12 +347,12 @@
 
             <div class="min-alert" id="minOrderAlert"><i class="fas fa-exclamation-circle"></i> <span id="minOrderText">Min ₹300</span></div>
 
-            <div class="est-box" id="estDeliveryBox"><i class="fas fa-calendar-check"></i><div><span style="font-size:10px; color:var(--text-muted); font-weight:800; letter-spacing:0.5px;">ESTIMATED DELIVERY</span><br><strong id="estDeliveryDate" style="font-size:14px;">Select date</strong></div></div>
+            <div class="est-box" id="estDeliveryBox"><i class="fas fa-calendar-check"></i><div><span style="font-size:10px;color:var(--text-muted);font-weight:800;letter-spacing:.5px;">ESTIMATED DELIVERY</span><br><strong id="estDeliveryDate" style="font-size:14px;">Select date</strong></div></div>
 
             <div class="bill">
                 <div class="bill-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
                 <div class="bill-row" id="expressFeeRow" style="display:none;"><span>Express Fee</span><span id="expressFeeAmount">+₹0</span></div>
-                <div class="bill-row" id="discountRow" style="display:none; color:var(--success);"><span>Promo Discount</span><span id="discountAmount">-₹0</span></div>
+                <div class="bill-row" id="discountRow" style="display:none;color:var(--success);"><span>Promo Discount</span><span id="discountAmount">-₹0</span></div>
                 <div class="bill-row delivery-row"><span><i class="fas fa-truck"></i> Pickup & Delivery</span><span id="deliveryFee">FREE</span></div>
                 <div class="bill-row total"><span>Total Payable</span><span id="totalAmount">₹0</span></div>
             </div>
@@ -359,7 +360,7 @@
             <form class="booking-form" id="bookingForm">
                 <div class="form-group"><label>Pickup Date *</label><input type="date" id="pickupDate" required /></div>
                 <div class="form-group"><label>Time Slot *</label><div class="time-pills" id="timeSlotPills"></div><input type="hidden" id="selectedTimeSlot" required /><p class="time-slot-note" id="timeSlotNote"></p></div>
-                <div id="customerInfoSection"><div class="skeleton" style="height:90px; width:100%; margin-bottom:14px;"></div></div>
+                <div id="customerInfoSection"><div class="skeleton" style="height:90px;width:100%;margin-bottom:14px;"></div></div>
                 <div class="form-group"><label>Special Instructions (Max 150 chars)</label><textarea id="specialInst" rows="2" maxlength="150" placeholder="E.g. remove coffee stain on shirt..."></textarea></div>
                 <button type="submit" class="btn-book" id="submitBooking">Confirm Booking <i class="fas fa-check-circle"></i></button>
             </form>
@@ -375,8 +376,8 @@
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
             <button class="close-modal-btn" onclick="App.UI.closeModal('authModal')">&times;</button>
-            <h2 style="color:var(--primary); margin-bottom:12px;"><i class="fas fa-user-shield"></i> Welcome Back</h2>
-            <p style="color:var(--text-muted); margin-bottom:20px; font-weight:600;">Login to save address & book faster.</p>
+            <h2 style="color:var(--primary);margin-bottom:12px;"><i class="fas fa-user-shield"></i> Welcome Back</h2>
+            <p style="color:var(--text-muted);margin-bottom:20px;font-weight:600;">Login to save address & book faster.</p>
             <button class="btn-google" onclick="App.Auth.signInWithGoogle()">
                 <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
                 Continue with Google
@@ -408,7 +409,7 @@
     </div>
 
     <script>
-        console.log('🧺 ParthbookGen18 live');
+        console.log('🧺 ParthbookGen19 live');
         const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.database();
@@ -417,7 +418,6 @@
         function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
         function sanitizeHTML(str){ if(!str)return ''; return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-        // DEFAULTS (fallback agar DB khali ho)
         const DEFAULT_CATEGORIES = {
             combos:[{id:'combo-winter',name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150,icon:'fa-box'},{id:'combo-party',name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550,icon:'fa-box'}],
             mens:[{id:'mens-shirt',name:'Shirt',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-pant',name:'Pant',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-kurta',name:'Kurta',price:60,originalPrice:80,icon:'fa-vest'},{id:'mens-jeans',name:'Jeans',price:0,icon:'fa-tshirt'}],
@@ -474,14 +474,14 @@
                 this.UI.initCatalogSwipe();
             },
             showToast: function(msg,type='info'){ const c=document.getElementById('toastContainer'); while(c.childElementCount>=2)c.removeChild(c.firstChild);
-                const t=document.createElement('div'); t.style.cssText='padding:12px 16px; border-radius:12px; background:var(--surface); color:var(--text); box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; font-weight:700; border:1px solid var(--border); transition:.3s;';
+                const t=document.createElement('div'); t.style.cssText='padding:12px 16px;border-radius:12px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;font-weight:700;border:1px solid var(--border);transition:.3s;';
                 const icon=type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
                 const color=type==='success'?'var(--success)':type==='error'?'var(--danger)':'var(--primary)';
                 t.innerHTML=`<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`; c.appendChild(t);
                 setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),300);},3000); },
 
             UI: {
-                sheetCloseAnim:null, overlayCloseAnim:null,
+                sheetCloseAnim:null, overlayCloseAnim:null, sheetOpenTime:0,
                 toggleTheme: function(){ STATE.theme=STATE.theme==='light'?'dark':'light'; this.applyTheme(STATE.theme); localStorage.setItem('pdc_theme',STATE.theme); },
                 applyTheme: function(t){ if(t==='dark'){ document.documentElement.setAttribute('data-theme','dark'); document.getElementById('themeToggleBtn').innerHTML='<i class="fas fa-sun" style="color:var(--primary);"></i>'; } else { document.documentElement.removeAttribute('data-theme'); document.getElementById('themeToggleBtn').innerHTML='<i class="fas fa-moon"></i>'; } },
                 cartButtonAction: function(){ if(window.innerWidth<=1024)this.openMobileCheckout(); else document.getElementById('checkoutSidebar').scrollIntoView({behavior:'smooth',block:'start'}); },
@@ -490,9 +490,9 @@
                 closeModal: function(id){ if(history.state?.modal===id)history.back(); else { document.getElementById(id).classList.remove('active'); if(!document.querySelector('.modal-overlay.active'))document.body.style.overflow=''; } },
                 openMobileCheckout: function(){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
                     if(this.sheetCloseAnim){this.sheetCloseAnim.cancel();this.sheetCloseAnim=null;} if(this.overlayCloseAnim){this.overlayCloseAnim.cancel();this.overlayCloseAnim=null;}
-                    sheet.style.transform=''; overlay.style.opacity=''; sheet.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow='hidden'; sheetOpenTime=Date.now(); history.pushState({mobileCheckout:true},'','#cart'); },
+                    sheet.style.transform=''; overlay.style.opacity=''; sheet.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow='hidden'; this.sheetOpenTime=Date.now(); history.pushState({mobileCheckout:true},'','#cart'); },
                 closeMobileCheckout: function(skipAnim){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
-                    if(!sheet.classList.contains('mobile-open'))return; if(!skipAnim&&Date.now()-sheetOpenTime<500)return;
+                    if(!sheet.classList.contains('mobile-open'))return; if(!skipAnim&&Date.now()-this.sheetOpenTime<500)return;
                     const finalize=()=>{ if(this.sheetCloseAnim){this.sheetCloseAnim.cancel();this.sheetCloseAnim=null;} if(this.overlayCloseAnim){this.overlayCloseAnim.cancel();this.overlayCloseAnim=null;} sheet.classList.remove('mobile-open'); overlay.classList.remove('active'); sheet.style.transform=''; overlay.style.opacity=''; document.body.style.overflow=''; };
                     if(skipAnim||!sheet.animate){finalize();return;}
                     this.sheetCloseAnim=sheet.animate([{transform:'translateY(0)'},{transform:'translateY(100%)'}],{duration:230,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'});
@@ -503,9 +503,9 @@
                     sheet.addEventListener('touchmove',(e)=>{ if(!tracking)return; const dy=e.touches[0].clientY-startY; if(dy>0){curDy=dy; sheet.style.transform=`translateY(${dy*0.6}px)`; overlay.style.opacity=String(Math.max(0,1-dy/500));} else {tracking=false; sheet.style.transform=''; overlay.style.opacity='';} },{passive:true});
                     sheet.addEventListener('touchend',()=>{ if(!tracking)return; tracking=false; const dragged=curDy*0.6;
                         if(curDy>90){ sheet.style.transform=''; overlay.style.opacity='';
-                            this.sheetCloseAnim=sheet.animate([{transform:`translateY(${dragged}px)`},{transform:'translateY(100%)'}],{duration:220,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'});
-                            this.overlayCloseAnim=overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:0}],{duration:220,easing:'ease',fill:'forwards'});
-                            this.sheetCloseAnim.onfinish=()=>this.closeMobileCheckout(true);
+                            App.UI.sheetCloseAnim=sheet.animate([{transform:`translateY(${dragged}px)`},{transform:'translateY(100%)'}],{duration:220,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'});
+                            App.UI.overlayCloseAnim=overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:0}],{duration:220,easing:'ease',fill:'forwards'});
+                            App.UI.sheetCloseAnim.onfinish=()=>App.UI.closeMobileCheckout(true);
                         } else if(curDy>0){ if(sheet.animate){ sheet.animate([{transform:`translateY(${dragged}px)`},{transform:'translateY(0)'}],{duration:200,easing:'ease-out'}); overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:1}],{duration:200,easing:'ease'}); } else { sheet.style.transform=''; overlay.style.opacity=''; } }
                         curDy=0; }); },
                 initCatalogSwipe: function(){ const area=document.getElementById('catalogGrid'); let sx=0,sy=0,active=false;
@@ -526,7 +526,7 @@
                     slots.forEach(s=>{ const pill=document.createElement('div'); const isDisabled=isToday&&curHr>=s.endHr; pill.className=`time-pill ${isDisabled?'disabled':''}`; pill.innerHTML=`<span class="tp-icon"><i class="fas ${s.icon}"></i></span><span class="tp-label">${s.l}</span><span class="tp-time">${s.t}</span>`;
                         if(!isDisabled){ availableCount++; if(STATE.selectedTimeSlot===s.v)pill.classList.add('active'); pill.onclick=()=>{ document.querySelectorAll('.time-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); STATE.selectedTimeSlot=s.v; STATE.selectedSlotEndHr=s.endHr; document.getElementById('selectedTimeSlot').value=s.v; }; }
                         container.appendChild(pill); });
-                    if(availableCount===0&&isToday){ note.textContent='🌙 Today\'s pickups are complete — please choose tomorrow.'; note.style.color='var(--text-muted)'; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; }
+                    if(availableCount===0&&isToday){ note.textContent="🌙 Today's pickups are complete — please choose tomorrow."; note.style.color='var(--text-muted)'; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; }
                     else if(isToday&&availableCount<3){ note.textContent=`ℹ️ Only ${availableCount} slot(s) available for today.`; note.style.color='var(--text-muted)'; }
                     else note.textContent='';
                     if(STATE.selectedTimeSlot&&STATE.selectedSlotEndHr!==null&&isToday&&curHr>=STATE.selectedSlotEndHr){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; document.querySelectorAll('.time-pill').forEach(p=>p.classList.remove('active')); } },
@@ -572,7 +572,11 @@
                     this.renderSmartUpsell(subtotal);
                     const isExpress=document.getElementById('expressToggle').checked;
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
-                    let discount=(STATE.appliedPromo===SETTINGS.couponCode&&SETTINGS.couponEnabled&&!localStorage.getItem('pdc_first_order_used'))?Math.min(Math.round(subtotal*SETTINGS.couponPercent/100),SETTINGS.couponMax):0;
+                    const firstUsed = localStorage.getItem('pdc_first_order_used');
+                    let discount=0;
+                    if(STATE.appliedPromo===SETTINGS.couponCode && SETTINGS.couponEnabled && !firstUsed){
+                        discount = Math.min(Math.round(subtotal*SETTINGS.couponPercent/100), SETTINGS.couponMax);
+                    }
                     const total=Math.max(0,subtotal+expressFee-discount);
                     const min=SETTINGS.minOrder;
                     const progressFill=document.getElementById('deliveryProgress'); const statusText=document.getElementById('deliveryStatusText');
@@ -587,8 +591,57 @@
                     document.getElementById('submitBooking').disabled=subtotal<min;
                     const d=document.getElementById('pickupDate').value;
                     if(d){ let dt=new Date(d); dt.setDate(dt.getDate()+(isExpress?1:3)); document.getElementById('estDeliveryDate').textContent=dt.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); document.getElementById('estDeliveryBox').style.display='flex'; } },
-                applyPromoCode: function(){ if(!SETTINGS.couponEnabled)return App.showToast('Coupon disabled','error'); if(localStorage.getItem('pdc_first_order_used'))return App.showToast('Valid for first order only.','error'); if(STATE.appliedPromo===SETTINGS.couponCode)return;
-                    STATE.appliedPromo=SETTINGS.couponCode; const btn=document.getElementById('applyCouponBtn'); btn.textContent='✔ Applied'; btn.classList.add('applied'); this.updateSummary(); App.showToast('Promo applied!','success'); },
+
+                // ===== COUPON APPLY (SWIGGY-STYLE INPUT) =====
+                applyPromoCode: function(){
+                    const msg = document.getElementById('couponMsg');
+                    const btn = document.getElementById('applyCouponBtn');
+                    const input = document.getElementById('couponInput');
+
+                    // 1. Coupon disabled check
+                    if(!SETTINGS.couponEnabled){
+                        msg.textContent = '❌ Coupons are currently disabled';
+                        msg.className = 'coupon-msg error';
+                        return;
+                    }
+                    // 2. First order check
+                    if(localStorage.getItem('pdc_first_order_used')){
+                        msg.textContent = '⚠️ Valid for first order only';
+                        msg.className = 'coupon-msg error';
+                        return;
+                    }
+                    // 3. Already applied
+                    if(STATE.appliedPromo === SETTINGS.couponCode){
+                        msg.textContent = '✅ Coupon already applied!';
+                        msg.className = 'coupon-msg success';
+                        return;
+                    }
+                    // 4. Empty check
+                    const code = (input.value || '').trim().toUpperCase();
+                    if(!code){
+                        msg.textContent = '⚠️ Please enter a coupon code';
+                        msg.className = 'coupon-msg error';
+                        input.focus();
+                        return;
+                    }
+                    // 5. Validate
+                    if(code !== SETTINGS.couponCode){
+                        msg.textContent = '❌ Invalid coupon code. Please check and try again.';
+                        msg.className = 'coupon-msg error';
+                        if(input.animate){ input.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:300}); }
+                        return;
+                    }
+                    // 6. Apply
+                    STATE.appliedPromo = SETTINGS.couponCode;
+                    msg.innerHTML = `✅ <strong>${SETTINGS.couponCode}</strong> applied! ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
+                    msg.className = 'coupon-msg success';
+                    btn.textContent = '✓ Applied';
+                    btn.classList.add('applied');
+                    btn.disabled = true;
+                    input.disabled = true;
+                    this.updateSummary();
+                    App.showToast(`Coupon applied! You save up to ₹${SETTINGS.couponMax}`,'success');
+                },
                 repeatLastOrder: function(){ if(!STATE.lastOrderCache)return; STATE.bag={}; for(const [name,qty] of Object.entries(STATE.lastOrderCache)){ const f=Object.values(STATE.categories).flat().find(i=>i.name===name); if(f)STATE.bag[f.id]=qty; } localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag)); App.UI.renderItems(document.getElementById('itemSearch').value); this.updateSummary(); App.showToast('Previous bag loaded!','success'); },
                 getGPS: function(){ App.showToast('Fetching GPS location...','info'); if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(pos=>{ const addr=document.getElementById('custAddress'); if(addr){ const gpsLink=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`; if(!addr.value.includes('GPS:'))addr.value+=(addr.value?' ':'')+`(GPS: ${gpsLink})`; App.showToast('GPS location added!','success'); } },(err)=>{ if(err.code===1)App.showToast('Location permission denied.','error'); else if(err.code===2)App.showToast('Location unavailable.','error'); else App.showToast('GPS timeout. Try again.','error'); },{enableHighAccuracy:true,timeout:10000}); } else App.showToast('GPS not supported.','error'); }
             },
@@ -616,10 +669,29 @@
                 loadSettings: function(){ db.ref('settings/general').once('value').then(s=>{ const v=s.val()||{};
                         SETTINGS.couponEnabled=v.couponEnabled!==false; SETTINGS.couponCode=v.couponCode||'PARTH20'; SETTINGS.couponPercent=Number(v.couponPercent)||20; SETTINGS.couponMax=Number(v.couponMax)||200; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; SETTINGS.announcement=v.announcement||'';
                         this.applySettings(); }).catch(()=>{}); },
-                applySettings: function(){ const cc=document.getElementById('couponCard');
-                    if(SETTINGS.couponEnabled&&!localStorage.getItem('pdc_first_order_used')){ cc.style.display='flex'; document.getElementById('couponCodeText').textContent='🎉 '+SETTINGS.couponCode; document.getElementById('couponDescText').textContent=`${SETTINGS.couponPercent}% off up to ₹${SETTINGS.couponMax} (first order)`; } else cc.style.display='none';
+                applySettings: function(){
+                    const cc=document.getElementById('couponCard');
+                    const firstUsed = localStorage.getItem('pdc_first_order_used');
+                    // Show coupon card ONLY if enabled AND not used first order
+                    if(SETTINGS.couponEnabled && !firstUsed){
+                        cc.classList.add('active');
+                        document.getElementById('couponDescText').textContent = `Use ${SETTINGS.couponCode} for ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
+                    } else {
+                        cc.classList.remove('active');
+                    }
                     document.getElementById('expressLabel').innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`;
-                    document.getElementById('bannerMin').textContent=SETTINGS.minOrder; },
+                    document.getElementById('bannerMin').textContent=SETTINGS.minOrder;
+                    // Reset applied promo if coupon got disabled
+                    if(!SETTINGS.couponEnabled && STATE.appliedPromo){
+                        STATE.appliedPromo = null;
+                        const btn = document.getElementById('applyCouponBtn');
+                        const input = document.getElementById('couponInput');
+                        if(btn){ btn.textContent='Apply'; btn.classList.remove('applied'); btn.disabled=false; }
+                        if(input){ input.value=''; input.disabled=false; }
+                        document.getElementById('couponMsg').textContent='';
+                        App.Cart.updateSummary();
+                    }
+                },
                 submit: async function(e){ e.preventDefault(); if(!auth.currentUser){ App.showToast('Login to book.','warning'); App.UI.openModal('authModal'); return; }
                     let name=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.name?STATE.userProfile.name:document.getElementById('custName')?.value.trim();
                     let phone=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.phone?STATE.userProfile.phone:document.getElementById('custPhone')?.value.trim();
@@ -636,7 +708,8 @@
                     if(subtotal<SETTINGS.minOrder)return App.showToast(`Min ₹${SETTINGS.minOrder} required`,'error');
                     const btn=document.getElementById('submitBooking'); btn.innerHTML='<span class="skeleton" style="display:inline-block;width:100px;height:20px;"></span>'; btn.disabled=true;
                     const specialInst=sanitizeHTML(document.getElementById('specialInst').value); const isExpress=document.getElementById('expressToggle').checked;
-                    const discount=(STATE.appliedPromo===SETTINGS.couponCode&&SETTINGS.couponEnabled&&!localStorage.getItem('pdc_first_order_used'))?Math.min(Math.round(subtotal*SETTINGS.couponPercent/100),SETTINGS.couponMax):0;
+                    const firstUsed = localStorage.getItem('pdc_first_order_used');
+                    const discount=(STATE.appliedPromo===SETTINGS.couponCode && SETTINGS.couponEnabled && !firstUsed)?Math.min(Math.round(subtotal*SETTINGS.couponPercent/100),SETTINGS.couponMax):0;
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
                     const total=Math.max(0,subtotal+expressFee-discount);
                     const orderId='PDC-'+Math.random().toString(36).substring(2,8).toUpperCase();
@@ -646,20 +719,20 @@
                     const orderData={ orderId, uid:auth.currentUser.uid, customerName:sanitizeHTML(name), name:sanitizeHTML(name), phone, address:sanitizeHTML(address), pickupDate, timeSlot, estd, estdTime:estd, estimatedDelivery:estd, deliveryDate:estd, ESTD:estd, itemsList, specialInst, items:orderItems, subtotal, express:isExpress?'Yes':'No', discount, total, paymentStatus:'Pay on Delivery', status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP };
                     try{ await db.ref('orders/'+orderId).set(orderData); await db.ref('customers/'+auth.currentUser.uid).update({name,phone,address,lastOrderId:orderId});
                         try{ fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}); }catch(e){}
-                        if(!localStorage.getItem('pdc_first_order_used'))localStorage.setItem('pdc_first_order_used','true');
+                        if(!firstUsed)localStorage.setItem('pdc_first_order_used','true');
                         STATE.bag={}; localStorage.removeItem('pdc_cart'); document.getElementById('pickupDate').value=todayStr; document.getElementById('expressToggle').checked=false; document.getElementById('specialInst').value=''; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value='';
                         App.UI.updateTimeSlots(); App.UI.renderItems(); App.Cart.updateSummary();
                         document.getElementById('successOrderId').textContent=orderId; STATE.lastBookedOrderId=orderId;
                         const estDateStr=estDate.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); const pickupDateStr=new Date(pickupDate).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
                         document.getElementById('successDetails').innerHTML=`<div class="success-detail-row"><span class="l">Pickup Date</span><span class="v">${pickupDateStr}</span></div><div class="success-detail-row"><span class="l">Time Slot</span><span class="v">${sanitizeHTML(timeSlot)}</span></div><div class="success-detail-row"><span class="l">Est. Delivery</span><span class="v highlight">${estDateStr}</span></div><div class="success-detail-row"><span class="l">Total Amount</span><span class="v highlight">₹${total}</span></div>${isExpress?`<div class="success-detail-row"><span class="l">Express</span><span class="v" style="color:var(--gold);">⚡ 24-Hr</span></div>`:''}`;
                         if(typeof confetti==='function')confetti({particleCount:150,spread:70,origin:{y:0.6},zIndex:99999});
-                        App.UI.openModal('successOverlay'); document.getElementById('couponCard').style.display='none';
+                        App.UI.openModal('successOverlay'); document.getElementById('couponCard').classList.remove('active');
                     }catch(err){ console.error(err); App.showToast('Booking failed. Check connection.','error'); }
                     finally{ btn.innerHTML='Confirm Booking <i class="fas fa-check-circle"></i>'; btn.disabled=false; } },
                 downloadInvoice: function(){ const id=STATE.lastBookedOrderId; if(!id)return; App.showToast('Generating PDF Invoice...','info');
                     db.ref('orders/'+id).once('value').then(snap=>{ const o=snap.val(); let itemsHTML=''; for(const k in o.items){ itemsHTML+=`<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${sanitizeHTML(k)}</td><td style="text-align:right;font-weight:bold;">x${o.items[k]}</td></tr>`; }
                         const element=document.createElement('div');
-                        element.innerHTML=`<div style="padding:30px;font-family:'Outfit',sans-serif;width:400px;color:#0f172a;background:#ffffff;"><h2 style="color:#0ea5e9;text-align:center;margin:0;font-size:24px;font-weight:800;">Parth Dry Clean</h2><p style="text-align:center;font-size:11px;color:#64748b;font-weight:700;margin-top:4px;letter-spacing:1px;">PREMIUM FOR EVERYONE</p><p style="text-align:center;font-size:10px;color:#64748b;margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><p style="text-align:center;font-size:10px;color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</p><div style="border-top:2px solid #0ea5e9;margin-top:14px;"></div><div style="background:#f8fafc;padding:15px;border-radius:12px;margin:20px 0;font-size:12px;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Order ID:</span><strong>${id}</strong></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><span style="color:#64748b;">Date:</span><strong>${new Date(o.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</strong></div></div><div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:11px;"><div style="font-size:10px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Billed To</div><div style="font-weight:800;font-size:13px;">${sanitizeHTML(o.customerName||o.name||'Customer')}</div><div style="color:#334155;">📞 ${sanitizeHTML(o.phone||'—')}</div><div style="color:#334155;">📍 ${sanitizeHTML(o.address||'Not provided')}</div></div><h3 style="font-size:14px;margin-bottom:8px;">Garments</h3><table style="width:100%;border-collapse:collapse;font-size:12px;font-weight:600;">${itemsHTML}</table><div style="margin-top:20px;border-top:2px dashed #e2e8f0;padding-top:15px;font-weight:600;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Subtotal</span><span>₹${o.subtotal}</span></div>${o.express==='Yes'?`<div style="display:flex;justify-content:space-between;color:#ea580c;margin-top:5px;"><span>Express Fee</span><span>+₹${Math.round(o.subtotal*SETTINGS.expressPercent/100)}</span></div>`:''}${o.discount>0?`<div style="display:flex;justify-content:space-between;color:#16a34a;margin-top:5px;"><span>Discount</span><span>-₹${o.discount}</span></div>`:''}<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;"><span>Grand Total</span><span style="color:#0ea5e9;">₹${o.total}</span></div></div><div style="margin-top:18px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:10px;color:#166534;font-weight:600;">💚 Thank you for choosing Parth Dry Clean!</div></div>`;
+                        element.innerHTML=`<div style="padding:30px;font-family:'Outfit',sans-serif;width:400px;color:#0f172a;background:#fff;"><h2 style="color:#0ea5e9;text-align:center;margin:0;font-size:24px;font-weight:800;">Parth Dry Clean</h2><p style="text-align:center;font-size:11px;color:#64748b;font-weight:700;margin-top:4px;letter-spacing:1px;">PREMIUM FOR EVERYONE</p><p style="text-align:center;font-size:10px;color:#64748b;margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><p style="text-align:center;font-size:10px;color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</p><div style="border-top:2px solid #0ea5e9;margin-top:14px;"></div><div style="background:#f8fafc;padding:15px;border-radius:12px;margin:20px 0;font-size:12px;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Order ID:</span><strong>${id}</strong></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><span style="color:#64748b;">Date:</span><strong>${new Date(o.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</strong></div></div><div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:11px;"><div style="font-size:10px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Billed To</div><div style="font-weight:800;font-size:13px;">${sanitizeHTML(o.customerName||o.name||'Customer')}</div><div style="color:#334155;">📞 ${sanitizeHTML(o.phone||'—')}</div><div style="color:#334155;">📍 ${sanitizeHTML(o.address||'Not provided')}</div></div><h3 style="font-size:14px;margin-bottom:8px;">Garments</h3><table style="width:100%;border-collapse:collapse;font-size:12px;font-weight:600;">${itemsHTML}</table><div style="margin-top:20px;border-top:2px dashed #e2e8f0;padding-top:15px;font-weight:600;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Subtotal</span><span>₹${o.subtotal}</span></div>${o.express==='Yes'?`<div style="display:flex;justify-content:space-between;color:#ea580c;margin-top:5px;"><span>Express Fee</span><span>+₹${Math.round(o.subtotal*SETTINGS.expressPercent/100)}</span></div>`:''}${o.discount>0?`<div style="display:flex;justify-content:space-between;color:#16a34a;margin-top:5px;"><span>Discount</span><span>-₹${o.discount}</span></div>`:''}<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;"><span>Grand Total</span><span style="color:#0ea5e9;">₹${o.total}</span></div></div><div style="margin-top:18px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:10px;color:#166534;font-weight:600;">💚 Thank you for choosing Parth Dry Clean!</div></div>`;
                         html2pdf().set({margin:8,filename:'ParthDryClean_Invoice_'+id+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(element).save().then(()=>App.showToast('Invoice Downloaded!','success')); }); }
             }
         };
@@ -669,6 +742,9 @@
         auth.onAuthStateChanged(user=>App.Auth.handleStateChange(user));
         document.getElementById('pickupDate').min=todayISO();
         document.getElementById('pickupDate').value=todayISO();
+
+        // Enter key support for coupon input
+        document.getElementById('couponInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); App.Cart.applyPromoCode(); } });
     </script>
 </body>
 </html>
