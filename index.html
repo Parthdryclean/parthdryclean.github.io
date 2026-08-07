@@ -274,20 +274,34 @@ display:flex; align-items:center; gap:5px;
 .pill-status.status-processing { color:var(--accent); }
 .pill-status.status-quality_check { color:var(--success); }
 .pill-status.status-out_for_delivery { color:var(--primary-dark); }
-.care-sparkle {
-flex-shrink:0; font-size:1.25rem; line-height:1;
-background: linear-gradient(135deg, var(--primary), var(--accent));
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
-animation: careSparkle 2.2s ease-in-out infinite;
-filter: drop-shadow(0 0 6px rgba(14,165,233,.45));
-margin-left:8px;
+
+/* ===== SCROLL ARROW INDICATOR (sparkle ki jagah) ===== */
+.care-scroll-arrow {
+flex-shrink:0;
+width:28px; height:28px;
+border-radius:50%;
+background:linear-gradient(135deg, var(--primary), var(--accent));
+color:#fff;
+display:flex; align-items:center; justify-content:center;
+font-size:12px;
+margin-left:6px;
+box-shadow:0 3px 10px rgba(14,165,233,0.35);
+animation:arrowBounce 1.8s ease-in-out infinite;
 }
-@keyframes careSparkle {
-0%, 100% { opacity:.55; transform: scale(1) rotate(0deg); }
-50% { opacity:1; transform: scale(1.3) rotate(20deg); }
+.care-scroll-arrow i {
+animation:none;
 }
+@keyframes arrowBounce {
+0%, 100% { transform: translateX(0); opacity:0.7; }
+50% { transform: translateX(4px); opacity:1; }
+}
+/* Hide arrow when scrolled to end */
+.care-scroll-arrow.hide {
+opacity:0;
+pointer-events:none;
+transition:opacity 0.3s;
+}
+
 .care-hint {
 position:absolute; top:calc(100% + 8px); right:5%;
 background:var(--surface); border:1px solid var(--border); color:var(--text);
@@ -913,38 +927,11 @@ font-size: 10px;
 font-size: 10px;
 margin-left: auto;
 }
-.care-sparkle {
-font-size: 1.1rem;
+.care-scroll-arrow {
+width: 26px;
+height: 26px;
+font-size: 11px;
 margin-left: 4px;
-}
-/* Scroll indicator - right side arrow to show more pills */
-.active-orders-scroller::after {
-content: '→';
-position: sticky;
-right: 0;
-display: flex;
-align-items: center;
-justify-content: center;
-width: 24px;
-height: 24px;
-background: linear-gradient(135deg, var(--primary), var(--accent));
-color: #fff;
-border-radius: 50%;
-font-size: 12px;
-font-weight: 800;
-margin-left: auto;
-flex-shrink: 0;
-box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
-animation: pulseArrow 2s ease-in-out infinite;
-}
-@keyframes pulseArrow {
-0%, 100% { opacity: 0.6; transform: translateX(0); }
-50% { opacity: 1; transform: translateX(3px); }
-}
-/* Hide arrow when scrolled to end */
-.active-orders-scroller.at-end::after {
-opacity: 0;
-pointer-events: none;
 }
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
@@ -1006,7 +993,7 @@ Active Care
 </div>
 </div>
 <div class="active-orders-scroller" id="miniTimelines"></div>
-<div class="care-sparkle" aria-hidden="true">✦</div>
+<div class="care-scroll-arrow" id="careScrollArrow"><i class="fas fa-chevron-right"></i></div>
 <div class="care-hint" id="careHint"><i class="fas fa-hand-pointer"></i> Tap for full details</div>
 </div>
 <div class="active-care-dropdown" id="activeOrderDropdown">
@@ -1752,6 +1739,7 @@ const dropdown = document.getElementById('activeOrderDropdown');
 const miniContainer = document.getElementById('miniTimelines');
 const dropdownInner = document.getElementById('dropdownInner');
 const countText = document.getElementById('activeOrderCount');
+const scrollArrow = document.getElementById('careScrollArrow');
 if (active.length === 0) {
 bar.style.display = 'none';
 dropdown.classList.remove('open');
@@ -1765,13 +1753,23 @@ dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
 setTrustBarVisible(false);
 maybeShowCareHint();
 
-// Track scroll for hiding arrow indicator
+// Show arrow only if multiple pills
+if (scrollArrow) {
+if (active.length > 1) {
+scrollArrow.style.display = 'flex';
+} else {
+scrollArrow.style.display = 'none';
+}
+}
+
+// Track scroll to hide arrow at end
 miniContainer.addEventListener('scroll', () => {
+if (!scrollArrow) return;
 const { scrollLeft, scrollWidth, clientWidth } = miniContainer;
 if (scrollLeft + clientWidth >= scrollWidth - 10) {
-miniContainer.classList.add('at-end');
+scrollArrow.classList.add('hide');
 } else {
-miniContainer.classList.remove('at-end');
+scrollArrow.classList.remove('hide');
 }
 });
 });
