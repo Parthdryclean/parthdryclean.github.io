@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.2 -->
+<!-- ParthindexGen6.3 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#0ea5e9" />
-<meta name="generator" content="ParthindexGen6.2" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="description" content="Parth Dry Clean provides premium laundry and dry cleaning services in Lucknow with free doorstep pickup and delivery. 48-72 hour turnaround.">
@@ -39,7 +38,6 @@
 --shadow: 0 8px 30px rgba(0,0,0,0.06);
 --transition: 0.25s ease;
 --header-height: 60px;
---care-strip-height: 56px; /* 6.2 dropdown-line fix */
 }
 [data-theme="dark"] {
 --bg: #0f172a;
@@ -192,7 +190,7 @@ font-weight: 700; color: var(--text-muted); margin: 0 25px;
 .top-banner span { background:linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:800; font-size:15px; letter-spacing:1px; margin:0 4px; }
 .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; transition:0.2s; }
 .close-banner:hover { color:#fff; }
-/* ===== PREMIUM LIVE CARE STRIP (6.2 dropdown-line fix) ===== */
+/* ===== PREMIUM LIVE CARE STRIP ===== */
 .active-care-strip {
 background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12));
 border-bottom: 1px solid var(--border);
@@ -207,7 +205,6 @@ position: sticky;
 top: var(--header-height);
 z-index: 99;
 backdrop-filter: blur(14px);
-min-height: var(--care-strip-height);
 }
 .active-care-strip::after {
 content:'';
@@ -218,8 +215,6 @@ background-size:200% 100%;
 animation: shimmerLine 3s linear infinite;
 pointer-events:none;
 }
-/* 6.2: dropdown open hone par strip ki line hide (double-line fix) */
-.active-care-strip.line-hidden::after { display:none; }
 @keyframes shimmerLine {
 0% { background-position:200% 0; }
 100% { background-position:-200% 0; }
@@ -243,10 +238,13 @@ display:flex; flex-direction:column; line-height:1.15;
 .active-care-label small {
 font-size:10px; color:var(--text-muted); font-weight:700;
 }
+/* FIX: pill poora dikhe, sparkle tak (scroll-snap + padding) - MOBILE FIX */
 .active-orders-scroller {
 display:flex; align-items:center; gap:10px; overflow-x:auto;
-flex:1; padding:2px; scrollbar-width:none;
+flex:1; padding:4px 12px 4px 2px; scrollbar-width:none;
 overscroll-behavior: contain;
+scroll-snap-type:x mandatory;
+-webkit-overflow-scrolling: touch;
 }
 .active-orders-scroller::-webkit-scrollbar { display:none; }
 .care-order-pill {
@@ -254,7 +252,8 @@ display:flex; align-items:center; gap:10px;
 background:var(--surface); border:1px solid var(--border);
 border-radius:999px; padding:7px 14px;
 box-shadow:var(--shadow-sm); white-space:nowrap; flex-shrink:0;
-max-width:85vw; /* 6.2 mobile pill-wrap fix */
+scroll-snap-align:start;
+min-width: fit-content;
 }
 .care-order-pill .pill-icon {
 width:28px; height:28px; border-radius:50%;
@@ -264,14 +263,13 @@ color:#fff; font-size:13px; flex-shrink:0;
 }
 .care-order-pill .pill-id {
 font-size:12px; font-weight:800; color:var(--text); line-height:1.1;
-white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; /* 6.2 pill-wrap fix */
 }
 .care-order-pill .pill-status {
-font-size:11px; font-weight:700; color:var(--text-muted); white-space:nowrap;
+font-size:11px; font-weight:700; color:var(--text-muted);
 }
 .care-order-pill .pill-eta {
 font-size:11px; font-weight:800; color:var(--primary);
-display:flex; align-items:center; gap:5px; white-space:nowrap;
+display:flex; align-items:center; gap:5px;
 }
 .pill-status.status-pending { color:var(--gold); }
 .pill-status.status-picked_up { color:var(--primary); }
@@ -286,6 +284,7 @@ background: linear-gradient(135deg, var(--primary), var(--accent));
 background-clip: text;
 animation: careSparkle 2.2s ease-in-out infinite;
 filter: drop-shadow(0 0 6px rgba(14,165,233,.45));
+margin-left:8px;
 }
 @keyframes careSparkle {
 0%, 100% { opacity:.55; transform: scale(1) rotate(0deg); }
@@ -301,16 +300,17 @@ transition:all .4s ease; z-index:97;
 }
 .care-hint.show { opacity:1; transform:translateY(0); }
 .care-hint i { color:var(--primary); }
-/* 6.2 dropdown-line fix: strip-height variable se position, border-top none */
+/* FIX: band halat me border-bottom nahi (line gayab) */
 .active-care-dropdown {
 max-height:0; overflow:hidden;
 transition:max-height .35s ease;
-background:var(--surface); border-bottom:1px solid var(--border); border-top:none;
-position:sticky; top:calc(var(--header-height) + var(--care-strip-height)); z-index:98;
+background:var(--surface);
+position:sticky; top:calc(var(--header-height) + 56px); z-index:98;
 overscroll-behavior: contain;
 }
 .active-care-dropdown.open {
 max-height:560px; overflow-y:auto;
+border-bottom:1px solid var(--border);
 }
 .dropdown-close-row {
 display:flex; justify-content:space-between; align-items:center;
@@ -350,12 +350,11 @@ display:flex; align-items:center; gap:8px; flex-wrap:wrap;
 }
 .care-card-meta {
 font-size:12px; color:var(--text-muted); font-weight:700;
-display:flex; flex-wrap:wrap; gap:8px; align-items:center; row-gap:6px;
+display:flex; flex-wrap:wrap; gap:8px; align-items:center;
 }
 .meta-pill {
 background:var(--surface); border:1px solid var(--border);
 padding:5px 10px; border-radius:999px;
-max-width:100%; word-break:break-word; white-space:normal; /* 6.2 pill-wrap fix */
 }
 .eta-highlight { color:var(--primary); font-weight:800; }
 .care-progress {
@@ -442,7 +441,7 @@ gap:10px; margin-bottom:8px; flex-wrap:wrap;
 .history-id { font-weight:800; font-size:15px; color:var(--text); }
 .status-badge {
 padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800;
-display:inline-flex; align-items:center; gap:5px; white-space:nowrap;
+display:inline-flex; align-items:center; gap:5px;
 }
 .status-badge.pending { background:rgba(245,158,11,.15); color:var(--gold); }
 .status-badge.picked_up { background:rgba(14,165,233,.12); color:var(--primary); }
@@ -453,7 +452,7 @@ display:inline-flex; align-items:center; gap:5px; white-space:nowrap;
 .status-badge.cancelled { background:rgba(239,68,68,.12); color:var(--danger); }
 .history-meta {
 font-size:12px; color:var(--text-muted); font-weight:600;
-display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; row-gap:6px;
+display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;
 }
 .history-meta span { display:inline-flex; align-items:center; gap:5px; }
 .history-actions { display:flex; gap:8px; flex-wrap:wrap; }
@@ -467,7 +466,7 @@ margin-bottom:12px; display:block;
 }
 .history-empty .care-btn { margin-top:14px; }
 #orderHistoryList { overscroll-behavior: contain; }
-/* ===== MY ACCOUNT ===== */
+/* ===== MY ACCOUNT (PREMIUM REDESIGN — SPARKLE, NO CROWN) ===== */
 .profile-hero {
 position: relative;
 background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -561,7 +560,7 @@ opacity:0; transition:.25s;
 .profile-stat .stat-icon {
 width:40px; height:40px; margin:0 auto 10px;
 border-radius:14px;
-background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(99,102,241,.12));
+background:linear-gradient(135deg,rgba(14,165,233,0.12),rgba(99,102,241,0.12));
 color:var(--primary);
 display:flex; align-items:center; justify-content:center;
 font-size:17px;
@@ -580,7 +579,7 @@ margin:6px 0 14px;
 width:26px; height:26px; border-radius:9px;
 background:linear-gradient(135deg,var(--primary),var(--accent));
 color:#fff; display:flex; align-items:center; justify-content:center;
-font-size:11px; box-shadow:0 4px 10px rgba(99,102,241,.25);
+font-size:11px; box-shadow:0 4px 10px rgba(99,102,241,0.25);
 flex-shrink:0;
 }
 .profile-section-label .label-line {
@@ -605,7 +604,7 @@ box-shadow:var(--shadow-sm);
 .profile-field input:focus,
 .profile-field textarea:focus {
 border-color:var(--primary);
-box-shadow:0 4px 14px rgba(14,165,233,.15);
+box-shadow:0 4px 14px rgba(14,165,233,0.15);
 }
 .profile-field input[readonly] { opacity:.6; }
 #profileModal .btn-primary-full { padding:16px; border-radius:14px; font-size:15px; }
@@ -815,7 +814,7 @@ transition: opacity .3s ease;
 .fabric-content-card h3 { justify-content: center; }
 }
 @media (max-width:768px) {
-:root { --header-height: 56px; --care-strip-height: 52px; } /* 6.2 dropdown-line fix */
+:root { --header-height: 56px; }
 header { padding: 6px 4%; }
 .logo-main { font-size: 1.8rem; }
 .logo-sub { font-size: 0.85rem; }
@@ -873,22 +872,46 @@ font-size: 11px; padding: 6px 12px;
 }
 .active-care-strip { padding:8px 4%; gap:8px; }
 .active-care-label small { display:none; }
+.active-care-dropdown { top:calc(var(--header-height) + 52px); }
 .active-care-dropdown.open { max-height:70vh; }
 .care-card { padding:16px; border-radius:18px; }
 .care-progress { gap:2px; }
 .step-label { font-size:8.5px; }
 .care-card-actions .care-btn { flex:1; }
 .care-hint { right:4%; }
-/* 6.2 mobile pill-wrap fix */
-.active-orders-scroller { gap:8px; }
-.care-order-pill { padding:6px 10px; gap:8px; }
-.care-card-meta, .history-meta { row-gap:6px; }
-/* My Account Mobile */
 .profile-hero { padding:18px 16px; gap:12px; }
 .profile-stats { gap:8px; }
 .profile-stat .stat-value { font-size:18px; }
 .profile-quick-actions { gap:8px; }
 .profile-action-btn { padding:12px 10px; font-size:12px; }
+
+/* ===== MOBILE PILL WRAP FIX ===== */
+.active-orders-scroller {
+padding: 4px 14px 4px 6px;
+gap: 8px;
+}
+.care-order-pill {
+padding: 6px 12px;
+gap: 8px;
+}
+.care-order-pill .pill-icon {
+width: 24px;
+height: 24px;
+font-size: 11px;
+}
+.care-order-pill .pill-id {
+font-size: 11px;
+}
+.care-order-pill .pill-status {
+font-size: 10px;
+}
+.care-order-pill .pill-eta {
+font-size: 10px;
+}
+.care-sparkle {
+font-size: 1.1rem;
+margin-left: 6px;
+}
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
 </style>
@@ -1138,14 +1161,14 @@ Active Care
 <section class="info-section" id="contact">
 <div class="info-box">
 <h3><i class="fas fa-map-marker-alt"></i> Our Location</h3>
-<p id="siteAddress">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p>
+<p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p>
 <a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card"><i class="fas fa-location-arrow"></i> Open in Google Maps</a>
 </div>
 <div class="info-box">
 <h3><i class="fas fa-clock"></i> Working Hours</h3>
 <p>Monday - Sunday: 10:00 AM - 10:00 PM</p>
-<p><i class="fas fa-phone"></i> <a href="tel:+919235601645" id="sitePhoneLink" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p>
-<p><i class="fas fa-envelope"></i> <a href="mailto:parthdrycleaning@gmail.com" id="siteEmail" style="color:var(--text-muted); text-decoration:none; font-weight:600;">parthdrycleaning@gmail.com</a></p>
+<p><i class="fas fa-phone"></i> <a href="tel:+919235601645" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p>
+<p><i class="fas fa-envelope"></i> parthdrycleaning@gmail.com</p>
 </div>
 </section>
 <!-- Nearby Areas Map -->
@@ -1179,7 +1202,7 @@ Continue with Google
 </div>
 </div>
 </div>
-<!-- Profile Modal -->
+<!-- Profile Modal (PREMIUM — SPARKLE THEME) -->
 <div class="modal-overlay" id="profileModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
@@ -1264,18 +1287,6 @@ const db = firebase.database();
 const sanitizeHTML = (str) => String(str || '').replace(/[<>"']/g, '');
 const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
 const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
-// ====== SITE SETTINGS (6.2 dynamic) ======
-const SITE_DEFAULTS = {
-  shopName: 'Parth Dry Clean',
-  tagline: 'Premium For Everyone',
-  phone: '+91 92356 01645',
-  phoneRaw: '+919235601645',
-  whatsapp: '919235601645',
-  email: 'parthdrycleaning@gmail.com',
-  address: 'Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow',
-  bannerText: '🎉 First order? Use code <span>PARTH20</span> for 20% OFF!'
-};
-window.SITE = Object.assign({}, SITE_DEFAULTS);
 // ====== USER CACHE (refresh flicker fix) ======
 const USER_CACHE_KEY = 'pdc_cached_user';
 function cacheUser(user) {
@@ -1367,19 +1378,16 @@ festival: "Festival Special",
 iron: "Iron / Press",
 home: "Home & Travel"
 };
-let catOrder = Object.keys(categories); // 6.2: dynamic rebuild ke liye let
-let priceLookup = buildPriceLookup();
-function buildPriceLookup(){
+const catOrder = Object.keys(categories);
+let activeCategory = 'combos';
+let activeOrderListeners = [];
+const priceLookup = (() => {
 const map = {};
 for (const cat in categories) {
 categories[cat].forEach(item => { map[item.name.toLowerCase()] = item.price; });
 }
 return map;
-}
-function rebuildCategoryData(){
-priceLookup = buildPriceLookup();
-catOrder = Object.keys(categories);
-}
+})();
 function getItemRate(name) {
 const p = priceLookup[String(name || '').toLowerCase()];
 return (p && p > 0) ? p : null;
@@ -1410,70 +1418,6 @@ const careSteps = [
 { key:'quality_check', label:'Quality Check', icon:'fa-circle-check' },
 { key:'out_for_delivery', label:'On the Way', icon:'fa-truck-fast' }
 ];
-// ====== loadSiteSettings (6.2 NEW) ======
-function loadSiteSettings(){
-try {
-db.ref('settings/site').once('value').then(snap => {
-if (!snap.exists()) return;
-const s = snap.val() || {};
-Object.assign(window.SITE, s);
-if (s.shopName) document.title = s.shopName + ' | Premium Laundry in Lucknow';
-if (s.logoText) { const lm=document.querySelector('.logo-main'); if(lm) lm.textContent=s.logoText; }
-if (s.logoSub) { const ls=document.querySelector('.logo-sub'); if(ls) ls.textContent=s.logoSub; }
-if (s.tagline) { const lt=document.querySelector('.logo-tagline'); if(lt) lt.textContent=s.tagline; }
-if (s.bannerText) {
-const tb=document.getElementById('topBanner');
-if (tb) { tb.innerHTML = s.bannerText + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>'; bindBannerClose(); }
-}
-const addrEl=document.getElementById('siteAddress');
-if (addrEl && s.address) addrEl.textContent = s.address;
-const phoneEl=document.getElementById('sitePhoneLink');
-if (phoneEl && s.phone) { phoneEl.textContent=s.phone; phoneEl.href='tel:'+String(s.phoneRaw||s.phone).replace(/[^+\d]/g,''); }
-const emailEl=document.getElementById('siteEmail');
-if (emailEl && s.email) { emailEl.textContent=s.email; emailEl.href='mailto:'+s.email; }
-if (s.whatsapp) {
-const num=last10Digits(s.whatsapp);
-const full = (num.length===10) ? '91'+num : num;
-document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{ a.href=a.href.replace(/wa\.me\/\d+/,'wa.me/'+full); });
-window.SITE.whatsapp=full;
-}
-}).catch(()=>{});
-} catch(e) {}
-}
-// ====== loadDynamicCategories (6.2 NEW) ======
-function normalizeItem(it){
-return {
-id: String(it.id || it.name || '').trim(),
-name: String(it.name || 'Item'),
-price: Number(it.price) || 0,
-originalPrice: Number(it.originalPrice) || 0
-};
-}
-function loadDynamicCategories(){
-try {
-db.ref('settings/categories').once('value').then(snap => {
-if (!snap.exists()) return;
-const data = snap.val() || {};
-let changed=false;
-Object.keys(data).forEach(key => {
-const node = data[key];
-if (Array.isArray(node)) {
-categories[key] = node.map(normalizeItem);
-if (!categoryNames[key]) categoryNames[key]=key;
-changed=true;
-} else if (node && typeof node==='object') {
-if (node.name) categoryNames[key]=node.name;
-if (Array.isArray(node.items)) { categories[key]=node.items.map(normalizeItem); changed=true; }
-}
-});
-if (changed) {
-rebuildCategoryData();
-if (!categories[activeCategory]) activeCategory=catOrder[0];
-renderPricing();
-}
-}).catch(()=>{});
-} catch(e) {}
-}
 // ====== TRUST BAR: HIDE when active orders ======
 function setTrustBarVisible(visible) {
 const wrapper = document.getElementById('trustBarWrapper');
@@ -1722,8 +1666,7 @@ const eta = formatEta(order);
 const orderIdRaw = safeId(order.orderId);
 const orderIdDisplay = sanitizeHTML(order.orderId);
 const dateText = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Today';
-const waNum = window.SITE.whatsapp || '919235601645';
-const waLink = `https://wa.me/${waNum}?text=${encodeURIComponent(`Hello, I need support for my order ${orderIdRaw}. Current status: ${label}.`)}`;
+const waLink = `https://wa.me/919235601645?text=${encodeURIComponent(`Hello, I need support for my order ${orderIdRaw}. Current status: ${label}.`)}`;
 return `
 <div class="care-card">
 <div class="care-card-top">
@@ -1778,7 +1721,6 @@ const countText = document.getElementById('activeOrderCount');
 if (active.length === 0) {
 bar.style.display = 'none';
 dropdown.classList.remove('open');
-bar.classList.remove('line-hidden');
 setTrustBarVisible(true);
 return;
 }
@@ -1797,8 +1739,6 @@ if (dropdown.classList.contains('open')) closeActiveOrders();
 else openActiveOrders();
 }
 function openActiveOrders() {
-const bar = document.getElementById('activeOrderBar');
-if (bar) bar.classList.add('line-hidden');
 document.getElementById('activeOrderDropdown').classList.add('open');
 history.pushState({ careDropdown: true }, '', '#active-orders');
 }
@@ -1806,8 +1746,6 @@ function closeActiveOrders() {
 const dropdown = document.getElementById('activeOrderDropdown');
 if (!dropdown.classList.contains('open')) return;
 dropdown.classList.remove('open');
-const bar = document.getElementById('activeOrderBar');
-if (bar) bar.classList.remove('line-hidden');
 if (history.state && history.state.careDropdown) history.back();
 }
 document.addEventListener('click', (e) => {
@@ -1816,16 +1754,11 @@ const bar = document.getElementById('activeOrderBar');
 if (!dropdown || !dropdown.classList.contains('open')) return;
 if (dropdown.contains(e.target) || bar.contains(e.target)) return;
 dropdown.classList.remove('open');
-if (bar) bar.classList.remove('line-hidden');
 });
 document.addEventListener('keydown', (e) => {
 if (e.key === 'Escape') {
 const dropdown = document.getElementById('activeOrderDropdown');
-if (dropdown && dropdown.classList.contains('open')) {
-dropdown.classList.remove('open');
-const bar = document.getElementById('activeOrderBar');
-if (bar) bar.classList.remove('line-hidden');
-}
+if (dropdown && dropdown.classList.contains('open')) dropdown.classList.remove('open');
 }
 });
 // ====== THEME TOGGLE ======
@@ -1875,8 +1808,6 @@ document.body.style.overflow = '';
 const dropdown = document.getElementById('activeOrderDropdown');
 if (!e.state || !e.state.careDropdown) {
 if (dropdown) dropdown.classList.remove('open');
-const bar = document.getElementById('activeOrderBar');
-if (bar) bar.classList.remove('line-hidden');
 }
 if (e.state && e.state.modal) {
 document.getElementById(e.state.modal).classList.add('active');
@@ -2021,7 +1952,7 @@ list.innerHTML = html;
 });
 });
 }
-// ====== FULL DETAIL INVOICE (6.2: uses SITE settings) ======
+// ====== FULL DETAIL INVOICE ======
 function downloadInvoice(id) {
 showToast('Generating invoice...','info');
 const orderId = safeId(id);
@@ -2036,7 +1967,6 @@ buildInvoicePDF(o, prof, orderId);
 });
 }
 function buildInvoicePDF(o, prof, orderId) {
-const S = window.SITE || SITE_DEFAULTS;
 const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer');
 const custPhone = sanitizeHTML(o.phone || prof.phone || '—');
 const custAddress = sanitizeHTML(o.address || prof.address || 'Not provided');
@@ -2066,10 +1996,10 @@ const element = document.createElement('div');
 element.innerHTML = `
 <div style="padding:28px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;">
 <div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:14px; margin-bottom:16px;">
-<div style="font-size:24px; font-weight:800; color:#0ea5e9;">${sanitizeHTML(S.shopName)}</div>
-<div style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">${sanitizeHTML(S.tagline).toUpperCase()}</div>
-<div style="font-size:10px; color:#64748b; margin-top:6px;">${sanitizeHTML(S.address)}</div>
-<div style="font-size:10px; color:#64748b;">📞 ${sanitizeHTML(S.phone)} • ✉️ ${sanitizeHTML(S.email)}</div>
+<div style="font-size:24px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div>
+<div style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM FOR EVERYONE</div>
+<div style="font-size:10px; color:#64748b; margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div>
+<div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div>
 </div>
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
 <div style="font-size:16px; font-weight:800; color:#0f172a;">TAX INVOICE</div>
@@ -2106,7 +2036,7 @@ ${discount > 0 ? `<div style="display:flex; justify-content:space-between; margi
 </div>
 </div>
 <div style="margin-top:18px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px 14px; font-size:10px; color:#166534; font-weight:600;">
-💚 Thank you for choosing ${sanitizeHTML(S.shopName)}! Your garments are handled with premium care & eco-friendly solvents.
+💚 Thank you for choosing Parth Dry Clean! Your garments are handled with premium care & eco-friendly solvents.
 </div>
 <div style="margin-top:10px; font-size:9px; color:#94a3b8; text-align:center;">
 * Garments not collected within 30 days of delivery readiness are not our responsibility. For any issue, contact us within 48 hours of delivery.
@@ -2145,7 +2075,6 @@ loginBtn.onclick = () => openModal('authModal');
 myOrdersItem.style.display = 'none';
 document.getElementById('activeOrderBar').style.display = 'none';
 document.getElementById('activeOrderDropdown').classList.remove('open');
-document.getElementById('activeOrderBar').classList.remove('line-hidden');
 activeOrderListeners.forEach(ref => ref.off('value'));
 activeOrderListeners = [];
 setTrustBarVisible(true);
@@ -2165,6 +2094,49 @@ if (window.scrollY > 30 && nav.classList.contains('active')) {
 nav.classList.remove('active');
 }
 });
+// ====== ADMIN CONTROL: CATEGORIES + SETTINGS (index se live) ======
+function rebuildPriceLookup() {
+Object.keys(priceLookup).forEach(k => delete priceLookup[k]);
+for (const cat in categories) categories[cat].forEach(it => { priceLookup[it.name.toLowerCase()] = it.price; });
+}
+function loadDynamicCategories() {
+db.ref('services/categories').once('value').then(s => {
+if (!s.exists()) return;
+const data = s.val();
+const keys = Object.keys(data);
+if (!keys.length) return;
+keys.forEach(k => { delete categories[k]; delete categoryNames[k]; });
+keys.forEach(k => {
+const c = data[k] || {};
+categoryNames[k] = c.name || k;
+categories[k] = (c.items || []).map(it => ({
+id: k + '-' + String(it.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+name: it.name,
+price: Number(it.price) || 0,
+originalPrice: (it.originalPrice !== undefined && it.originalPrice !== null && it.originalPrice !== '') ? Number(it.originalPrice) : undefined
+}));
+});
+catOrder.length = 0;
+Object.keys(categories).forEach(k => catOrder.push(k));
+rebuildPriceLookup();
+if (!categories[activeCategory]) activeCategory = catOrder[0] || 'combos';
+renderPricing();
+}).catch(() => {});
+}
+function loadSiteSettings() {
+db.ref('settings/general').once('value').then(s => {
+if (!s.exists()) return;
+const v = s.val() || {};
+const banner = document.getElementById('topBanner');
+if (v.announcement) {
+banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>';
+banner.style.display = 'block';
+document.getElementById('closeBanner').addEventListener('click', () => banner.style.display = 'none');
+} else if (v.couponEnabled === false) {
+banner.style.display = 'none';
+}
+}).catch(() => {});
+}
 // ====== INIT ======
 const cachedUser = getCachedUser();
 if (cachedUser && cachedUser.name) {
@@ -2172,6 +2144,8 @@ applyLoggedInUI(cachedUser.name);
 } else {
 setTimeGreeting(null);
 }
+loadDynamicCategories();
+loadSiteSettings();
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => {
 if (!waTooltip) return;
@@ -2197,19 +2171,12 @@ const parent = this.parentElement;
 document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
 parent.classList.toggle('active');
 }));
-function bindBannerClose(){
-const b = document.getElementById('closeBanner');
-if (b) b.onclick = () => { document.getElementById('topBanner').style.display = 'none'; };
-}
 if (!localStorage.getItem('pdc_first_order_used')) {
 document.getElementById('topBanner').style.display = 'block';
 }
-bindBannerClose();
+document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
 renderPricing();
 enableListSwipe();
-// 6.2: dynamic settings & categories Firebase se load karo
-loadSiteSettings();
-loadDynamicCategories();
 </script>
 </body>
 </html>
