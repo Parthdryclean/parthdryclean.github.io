@@ -238,13 +238,12 @@ display:flex; flex-direction:column; line-height:1.15;
 .active-care-label small {
 font-size:10px; color:var(--text-muted); font-weight:700;
 }
-/* FIX: pill poora dikhe, sparkle tak (scroll-snap + padding) - MOBILE FIX */
+/* FIX: pill poora dikhe, sparkle tak (scroll-snap + padding) */
 .active-orders-scroller {
 display:flex; align-items:center; gap:10px; overflow-x:auto;
 flex:1; padding:4px 12px 4px 2px; scrollbar-width:none;
 overscroll-behavior: contain;
 scroll-snap-type:x mandatory;
--webkit-overflow-scrolling: touch;
 }
 .active-orders-scroller::-webkit-scrollbar { display:none; }
 .care-order-pill {
@@ -253,7 +252,6 @@ background:var(--surface); border:1px solid var(--border);
 border-radius:999px; padding:7px 14px;
 box-shadow:var(--shadow-sm); white-space:nowrap; flex-shrink:0;
 scroll-snap-align:start;
-min-width: fit-content;
 }
 .care-order-pill .pill-icon {
 width:28px; height:28px; border-radius:50%;
@@ -885,19 +883,25 @@ font-size: 11px; padding: 6px 12px;
 .profile-quick-actions { gap:8px; }
 .profile-action-btn { padding:12px 10px; font-size:12px; }
 
-/* ===== MOBILE PILL WRAP FIX ===== */
+/* ===== MOBILE PILL SNAP FIX — ONE PILL VISIBLE ===== */
 .active-orders-scroller {
-padding: 4px 14px 4px 6px;
 gap: 8px;
+padding: 4px 2px 4px 2px;
+scroll-snap-type: x mandatory;
+scroll-padding: 0 2px;
 }
 .care-order-pill {
-padding: 6px 12px;
+flex: 0 0 calc(100% - 4px);
+scroll-snap-align: start;
+scroll-snap-stop: always;
+padding: 6px 10px;
 gap: 8px;
+justify-content: flex-start;
 }
 .care-order-pill .pill-icon {
-width: 24px;
-height: 24px;
-font-size: 11px;
+width: 26px;
+height: 26px;
+font-size: 12px;
 }
 .care-order-pill .pill-id {
 font-size: 11px;
@@ -907,10 +911,40 @@ font-size: 10px;
 }
 .care-order-pill .pill-eta {
 font-size: 10px;
+margin-left: auto;
 }
 .care-sparkle {
 font-size: 1.1rem;
-margin-left: 6px;
+margin-left: 4px;
+}
+/* Scroll indicator - right side arrow to show more pills */
+.active-orders-scroller::after {
+content: '→';
+position: sticky;
+right: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 24px;
+height: 24px;
+background: linear-gradient(135deg, var(--primary), var(--accent));
+color: #fff;
+border-radius: 50%;
+font-size: 12px;
+font-weight: 800;
+margin-left: auto;
+flex-shrink: 0;
+box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+animation: pulseArrow 2s ease-in-out infinite;
+}
+@keyframes pulseArrow {
+0%, 100% { opacity: 0.6; transform: translateX(0); }
+50% { opacity: 1; transform: translateX(3px); }
+}
+/* Hide arrow when scrolled to end */
+.active-orders-scroller.at-end::after {
+opacity: 0;
+pointer-events: none;
 }
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
@@ -1730,6 +1764,16 @@ miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
 dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
 setTrustBarVisible(false);
 maybeShowCareHint();
+
+// Track scroll for hiding arrow indicator
+miniContainer.addEventListener('scroll', () => {
+const { scrollLeft, scrollWidth, clientWidth } = miniContainer;
+if (scrollLeft + clientWidth >= scrollWidth - 10) {
+miniContainer.classList.add('at-end');
+} else {
+miniContainer.classList.remove('at-end');
+}
+});
 });
 activeOrderListeners.push(ordersRef);
 }
