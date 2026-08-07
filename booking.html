@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- ParthbookGen20 -->
+<!-- ParthbookGen21 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen20" />
+    <meta name="app-version" content="ParthbookGen21" />
     <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
@@ -26,6 +26,8 @@
         [data-theme="dark"] .auth-input,[data-theme="dark"] .booking-form input,[data-theme="dark"] .booking-form textarea { background:#0f172a; color:var(--text); }
         [data-theme="dark"] .btn-google { background:#1e293b; color:var(--text); border-color:var(--border); }
         [data-theme="dark"] .sticky-catalog-nav { background:var(--bg); }
+        [data-theme="dark"] .coupon-card { background:linear-gradient(135deg, rgba(245,158,11,.12), rgba(249,115,22,.06)); }
+        [data-theme="dark"] .coupon-card::before,[data-theme="dark"] .coupon-card::after { background:var(--surface); }
 
         header { background:rgba(255,255,255,.9); backdrop-filter:blur(20px); padding:8px 5%; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; min-height:var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,.03); }
         .logo { display:flex; align-items:center; text-decoration:none; flex-shrink:0; }
@@ -134,24 +136,29 @@
         .upsell-card button { background:linear-gradient(135deg,#d946ef,#a21caf); color:#fff; border:none; padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:.2s; }
         .upsell-card button:hover { transform:scale(1.05); }
 
-        .coupon-card { background:rgba(245,158,11,.06); border:1.5px dashed var(--gold); border-radius:14px; padding:14px 16px; margin-bottom:16px; display:none; flex-direction:column; gap:10px; transition:.3s; }
+        /* ===== PREMIUM COUPON TICKET ===== */
+        .coupon-card { position:relative; background:linear-gradient(135deg, rgba(245,158,11,.10), rgba(249,115,22,.05)); border:1.5px dashed var(--gold); border-radius:18px; padding:16px 16px 12px; margin-bottom:16px; display:none; flex-direction:column; gap:12px; overflow:hidden; }
         .coupon-card.active { display:flex; }
-        .coupon-card .offer-header { display:flex; align-items:center; gap:10px; }
-        .coupon-card .coupon-icon { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+        .coupon-card::before,.coupon-card::after { content:''; position:absolute; width:22px; height:22px; border-radius:50%; background:var(--surface); top:50%; transform:translateY(-50%); box-shadow: inset 0 0 0 1.5px rgba(245,158,11,.35); }
+        .coupon-card::before { left:-12px; }
+        .coupon-card::after { right:-12px; }
+        .coupon-card .offer-header { display:flex; align-items:center; gap:12px; }
+        .coupon-card .coupon-icon { width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; box-shadow:0 6px 14px rgba(245,158,11,.35); }
         .coupon-card .offer-text { flex:1; }
-        .coupon-card .offer-text strong { font-size:13px; color:var(--text); font-weight:800; display:block; }
+        .coupon-card .offer-text strong { font-size:14px; color:var(--text); font-weight:800; display:block; }
         .coupon-card .offer-text span { font-size:11px; color:var(--text-muted); font-weight:600; }
-        .coupon-input-wrap { display:flex; gap:6px; }
-        .coupon-input-wrap input { flex:1; padding:11px 14px; border-radius:10px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-weight:700; font-family:inherit; outline:none; text-transform:uppercase; letter-spacing:.5px; transition:.2s; }
-        .coupon-input-wrap input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,233,.08); }
+        .coupon-input-wrap { display:flex; gap:8px; }
+        .coupon-input-wrap input { flex:1; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; font-weight:700; font-family:inherit; outline:none; text-transform:uppercase; letter-spacing:.5px; transition:.2s; }
+        .coupon-input-wrap input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(245,158,11,.12); }
         .coupon-input-wrap input:disabled { opacity:.6; background:var(--bg); cursor:not-allowed; }
-        .coupon-input-wrap button { padding:11px 20px; border-radius:10px; border:none; background:var(--grad-index); color:#fff; font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap; box-shadow:var(--glow-pill); transition:.2s; }
-        .coupon-input-wrap button:hover:not(:disabled) { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
+        .coupon-input-wrap button { padding:12px 22px; border-radius:12px; border:none; background:linear-gradient(135deg,#f59e0b,#f97316); color:#fff; font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap; box-shadow:0 6px 14px rgba(245,158,11,.35); transition:.2s; }
+        .coupon-input-wrap button:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 8px 18px rgba(245,158,11,.45); }
         .coupon-input-wrap button:disabled { background:var(--success); cursor:not-allowed; box-shadow:none; }
         .coupon-input-wrap button.applied { background:linear-gradient(135deg,var(--success),#059669); }
-        .coupon-msg { font-size:11px; font-weight:700; margin-top:2px; min-height:14px; transition:.2s; }
+        .coupon-msg { font-size:11px; font-weight:700; min-height:14px; }
         .coupon-msg.success { color:var(--success); }
         .coupon-msg.error { color:var(--danger); }
+        .coupon-tc { font-size:10px; color:var(--text-muted); font-weight:600; display:flex; align-items:center; gap:6px; border-top:1px dashed var(--border); padding-top:8px; }
 
         .express-pill { display:flex; align-items:center; justify-content:space-between; background:rgba(14,165,233,.08); border:1.5px solid var(--primary); border-radius:14px; padding:12px 18px; margin-bottom:14px; font-weight:800; font-size:13px; color:var(--primary); }
         .toggle-switch { position:relative; display:inline-block; width:44px; height:24px; flex-shrink:0; }
@@ -322,7 +329,7 @@
             <div class="bag-items" id="bagItemsSummary"></div>
             <div id="upsellContainer" style="display:none;"></div>
 
-            <!-- COUPON INPUT BOX -->
+            <!-- PREMIUM COUPON TICKET -->
             <div class="coupon-card" id="couponCard">
                 <div class="offer-header">
                     <div class="coupon-icon"><i class="fas fa-ticket-alt"></i></div>
@@ -332,10 +339,11 @@
                     </div>
                 </div>
                 <div class="coupon-input-wrap">
-                    <input type="text" id="couponInput" placeholder="e.g. PARTH20" maxlength="20" autocomplete="off" spellcheck="false" />
+                    <input type="text" id="couponInput" placeholder="Enter coupon code" maxlength="20" autocomplete="off" spellcheck="false" />
                     <button id="applyCouponBtn" onclick="App.Cart.applyPromoCode()">Apply</button>
                 </div>
                 <div class="coupon-msg" id="couponMsg"></div>
+                <div class="coupon-tc"><i class="fas fa-info-circle"></i> Valid on first order only · One code per order</div>
             </div>
 
             <label class="express-pill">
@@ -407,7 +415,7 @@
     </div>
 
     <script>
-        console.log('🧺 ParthbookGen20 live');
+        console.log('🧺 ParthbookGen21 live');
         const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.database();
@@ -570,10 +578,9 @@
                     this.renderSmartUpsell(subtotal);
                     const isExpress=document.getElementById('expressToggle').checked;
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
-                    const firstUsed = localStorage.getItem('pdc_first_order_used');
                     let discount=0;
-                    if(STATE.appliedPromo===SETTINGS.couponCode && SETTINGS.couponEnabled && !firstUsed){
-                        discount = Math.min(Math.round(subtotal*SETTINGS.couponPercent/100), SETTINGS.couponMax);
+                    if(STATE.appliedPromo && STATE.appliedPromo===SETTINGS.couponCode && SETTINGS.couponEnabled){
+                        discount=Math.min(Math.round(subtotal*SETTINGS.couponPercent/100), SETTINGS.couponMax);
                     }
                     const total=Math.max(0,subtotal+expressFee-discount);
                     const min=SETTINGS.minOrder;
@@ -590,22 +597,38 @@
                     const d=document.getElementById('pickupDate').value;
                     if(d){ let dt=new Date(d); dt.setDate(dt.getDate()+(isExpress?1:3)); document.getElementById('estDeliveryDate').textContent=dt.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); document.getElementById('estDeliveryBox').style.display='flex'; } },
 
+                // ===== COUPON: pehle code validate, phir first-order check =====
                 applyPromoCode: function(){
-                    const msg = document.getElementById('couponMsg');
-                    const btn = document.getElementById('applyCouponBtn');
-                    const input = document.getElementById('couponInput');
+                    const msg=document.getElementById('couponMsg');
+                    const btn=document.getElementById('applyCouponBtn');
+                    const input=document.getElementById('couponInput');
                     if(!SETTINGS.couponEnabled){ msg.textContent='❌ Coupons are currently disabled'; msg.className='coupon-msg error'; return; }
-                    if(localStorage.getItem('pdc_first_order_used')){ msg.textContent='⚠️ Valid for first order only'; msg.className='coupon-msg error'; return; }
-                    if(STATE.appliedPromo===SETTINGS.couponCode){ msg.textContent='✅ Coupon already applied!'; msg.className='coupon-msg success'; return; }
                     const code=(input.value||'').trim().toUpperCase();
                     if(!code){ msg.textContent='⚠️ Please enter a coupon code'; msg.className='coupon-msg error'; input.focus(); return; }
-                    if(code!==SETTINGS.couponCode){ msg.textContent='❌ Invalid coupon code. Please check and try again.'; msg.className='coupon-msg error'; if(input.animate){ input.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:300}); } return; }
-                    STATE.appliedPromo=SETTINGS.couponCode;
-                    msg.innerHTML=`✅ <strong>${SETTINGS.couponCode}</strong> applied! ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
-                    msg.className='coupon-msg success';
-                    btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true;
-                    this.updateSummary();
-                    App.showToast(`Coupon applied! You save up to ₹${SETTINGS.couponMax}`,'success');
+                    const validCode=String(SETTINGS.couponCode||'').toUpperCase();
+                    // 1) Galat code -> Invalid
+                    if(code!==validCode){
+                        msg.textContent=`❌ Invalid coupon code "${code}"`;
+                        msg.className='coupon-msg error';
+                        if(input.animate)input.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:300});
+                        return;
+                    }
+                    // 2) Sahi code -> first-order check (localStorage + past orders)
+                    const firstUsedLocal=localStorage.getItem('pdc_first_order_used');
+                    const pastCheck = auth.currentUser
+                        ? db.ref('orders').orderByChild('uid').equalTo(auth.currentUser.uid).limitToLast(1).once('value')
+                        : Promise.resolve({exists:()=>false});
+                    pastCheck.then(snap=>{
+                        const hasPast = snap && snap.exists ? snap.exists() : false;
+                        if(firstUsedLocal || hasPast){ msg.textContent='⚠️ Valid for first order only'; msg.className='coupon-msg error'; return; }
+                        if(STATE.appliedPromo===validCode){ msg.textContent='✅ Coupon already applied!'; msg.className='coupon-msg success'; return; }
+                        STATE.appliedPromo=validCode;
+                        msg.innerHTML=`✅ <strong>${validCode}</strong> applied! ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
+                        msg.className='coupon-msg success';
+                        btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true;
+                        this.updateSummary();
+                        App.showToast(`Coupon applied! You save up to ₹${SETTINGS.couponMax}`,'success');
+                    }).catch(()=>{ msg.textContent='❌ Could not verify. Try again.'; msg.className='coupon-msg error'; });
                 },
                 repeatLastOrder: function(){ if(!STATE.lastOrderCache)return; STATE.bag={}; for(const [name,qty] of Object.entries(STATE.lastOrderCache)){ const f=Object.values(STATE.categories).flat().find(i=>i.name===name); if(f)STATE.bag[f.id]=qty; } localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag)); App.UI.renderItems(document.getElementById('itemSearch').value); this.updateSummary(); App.showToast('Previous bag loaded!','success'); },
                 getGPS: function(){ App.showToast('Fetching GPS location...','info'); if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(pos=>{ const addr=document.getElementById('custAddress'); if(addr){ const gpsLink=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`; if(!addr.value.includes('GPS:'))addr.value+=(addr.value?' ':'')+`(GPS: ${gpsLink})`; App.showToast('GPS location added!','success'); } },(err)=>{ if(err.code===1)App.showToast('Location permission denied.','error'); else if(err.code===2)App.showToast('Location unavailable.','error'); else App.showToast('GPS timeout. Try again.','error'); },{enableHighAccuracy:true,timeout:10000}); } else App.showToast('GPS not supported.','error'); }
@@ -636,13 +659,10 @@
                         this.applySettings(); }).catch(()=>{}); },
                 applySettings: function(){
                     const cc=document.getElementById('couponCard');
-                    // FIX: Box hamesha dikhe jab couponEnabled (firstUsed check sirf Apply par)
                     if(SETTINGS.couponEnabled){
                         cc.classList.add('active');
-                        document.getElementById('couponDescText').textContent = `Use ${SETTINGS.couponCode} for ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
-                    } else {
-                        cc.classList.remove('active');
-                    }
+                        document.getElementById('couponDescText').textContent=`Use ${SETTINGS.couponCode} for ${SETTINGS.couponPercent}% off (max ₹${SETTINGS.couponMax})`;
+                    } else { cc.classList.remove('active'); }
                     document.getElementById('expressLabel').innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`;
                     document.getElementById('bannerMin').textContent=SETTINGS.minOrder;
                     if(!SETTINGS.couponEnabled && STATE.appliedPromo){
@@ -671,7 +691,7 @@
                     const btn=document.getElementById('submitBooking'); btn.innerHTML='<span class="skeleton" style="display:inline-block;width:100px;height:20px;"></span>'; btn.disabled=true;
                     const specialInst=sanitizeHTML(document.getElementById('specialInst').value); const isExpress=document.getElementById('expressToggle').checked;
                     const firstUsed = localStorage.getItem('pdc_first_order_used');
-                    const discount=(STATE.appliedPromo===SETTINGS.couponCode && SETTINGS.couponEnabled && !firstUsed)?Math.min(Math.round(subtotal*SETTINGS.couponPercent/100),SETTINGS.couponMax):0;
+                    const discount=(STATE.appliedPromo===SETTINGS.couponCode && SETTINGS.couponEnabled)?Math.min(Math.round(subtotal*SETTINGS.couponPercent/100),SETTINGS.couponMax):0;
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
                     const total=Math.max(0,subtotal+expressFee-discount);
                     const orderId='PDC-'+Math.random().toString(36).substring(2,8).toUpperCase();
