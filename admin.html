@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen19 : SYNTHWAVE/CYBERPUNK (CMS Editor + Orders Detailing) -->
+<!-- ParthadminGen20 : SYNTHWAVE (No Fake Seed + Reset CMS + CRUD Editor) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,29 +11,14 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
- --bg:#140021; --panel:rgba(40,10,70,.55); --panel2:rgba(58,16,96,.5);
- --line:rgba(255,46,196,.3); --line2:rgba(255,46,196,.6);
- --text:#ffe9fb; --muted:#c58fd9; --pink:#ff2ec4; --purple:#a855f7; --cyan:#22d3ee;
- --good:#34d399; --warn:#fbbf24; --bad:#ff5470; --glow:0 0 16px rgba(255,46,196,.5); --r:16px;
-}
-[data-theme="light"]{
- --bg:#fdf2fb; --panel:#ffffff; --panel2:#fbe7f8; --line:#f3c4ea; --line2:#d946ef;
- --text:#4a044e; --muted:#a21caf; --pink:#d946ef; --purple:#9333ea; --cyan:#0891b2;
- --good:#059669; --warn:#d97706; --bad:#e11d48; --glow:0 2px 12px rgba(217,70,239,.25);
-}
+:root{--bg:#140021;--panel:rgba(40,10,70,.55);--panel2:rgba(58,16,96,.5);--line:rgba(255,46,196,.3);--line2:rgba(255,46,196,.6);--text:#ffe9fb;--muted:#c58fd9;--pink:#ff2ec4;--purple:#a855f7;--cyan:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#ff5470;--glow:0 0 16px rgba(255,46,196,.5);--r:16px}
+[data-theme="light"]{--bg:#fdf2fb;--panel:#fff;--panel2:#fbe7f8;--line:#f3c4ea;--line2:#d946ef;--text:#4a044e;--muted:#a21caf;--pink:#d946ef;--purple:#9333ea;--cyan:#0891b2;--good:#059669;--warn:#d97706;--bad:#e11d48;--glow:0 2px 12px rgba(217,70,239,.25)}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
-.sun{position:fixed;bottom:24vh;left:50%;transform:translateX(-50%);width:230px;height:230px;border-radius:50%;z-index:0;pointer-events:none;
- background:linear-gradient(#ffd319 0%,#ff2975 55%,#8c1eff 100%);box-shadow:0 0 70px rgba(255,41,117,.55);
- -webkit-mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%);
- mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%)}
-.horizon{position:fixed;left:-50%;right:-50%;bottom:-14vh;height:52vh;z-index:0;pointer-events:none;transform:perspective(300px) rotateX(60deg);transform-origin:top;
- background:linear-gradient(transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/64px 100%;
- animation:gridmove 1.6s linear infinite}
+.sun{position:fixed;bottom:24vh;left:50%;transform:translateX(-50%);width:230px;height:230px;border-radius:50%;z-index:0;pointer-events:none;background:linear-gradient(#ffd319 0%,#ff2975 55%,#8c1eff 100%);box-shadow:0 0 70px rgba(255,41,117,.55);-webkit-mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%);mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%)}
+.horizon{position:fixed;left:-50%;right:-50%;bottom:-14vh;height:52vh;z-index:0;pointer-events:none;transform:perspective(300px) rotateX(60deg);transform-origin:top;background:linear-gradient(transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/64px 100%;animation:gridmove 1.6s linear infinite}
 @keyframes gridmove{to{background-position:0 44px,0 0}}
 [data-theme="light"] .sun{opacity:.5}
-[data-theme="light"] .horizon{background:linear-gradient(transparent 0,rgba(217,70,239,.25) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(217,70,239,.25) 2px,transparent 3px) 0 0/64px 100%}
-h1,h2,h3,.disp{font-family:'Orbitron',sans-serif;letter-spacing:1px}
+h1,h2,h3{font-family:'Orbitron',sans-serif;letter-spacing:1px}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
 button,input,select,textarea{font-family:inherit;outline:none}
 #toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:none}
@@ -47,22 +32,21 @@ button,input,select,textarea{font-family:inherit;outline:none}
 .modal-box .row button{flex:1;padding:11px;border-radius:12px;border:1px solid var(--line2);font-weight:700;cursor:pointer;background:var(--panel2);color:var(--text)}
 #confirmYes{background:var(--bad);color:#fff;border-color:var(--bad)}
 .sidebar{width:240px;flex-shrink:0;background:var(--panel);backdrop-filter:blur(16px);border-right:1px solid var(--line);min-height:100vh;padding:20px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:5}
-.brand{display:flex;align-items:center;gap:12px;margin:0 4px 20px;padding:12px;border:1px solid var(--line2);border-radius:14px;background:var(--panel2);box-shadow:inset 0 0 20px rgba(255,46,196,.1)}
+.brand{display:flex;align-items:center;gap:12px;margin:0 4px 20px;padding:12px;border:1px solid var(--line2);border-radius:14px;background:var(--panel2)}
 .brand .os-logo{font-family:'Monoton';font-size:17px;color:var(--pink);text-shadow:var(--glow)}
-.brand small{display:block;font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'Rajdhani'}
+.brand small{display:block;font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:.2s;position:relative}
 .nav-item i{width:18px;text-align:center}
 .nav-item:hover{color:var(--pink);background:var(--panel2)}
-.nav-item.active{color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;box-shadow:var(--glow)}
+.nav-item.active{color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:var(--glow)}
 .nav-item .badge{margin-left:auto;background:var(--bad);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px}
 .side-foot{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
 .side-foot .u{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center;margin-bottom:10px}
 .logout{width:100%;background:transparent;border:1px solid rgba(255,84,112,.5);color:var(--bad);padding:10px;border-radius:12px;cursor:pointer;font-weight:700}
-.logout:hover{background:rgba(255,84,112,.12)}
 .main{flex:1;padding:24px 28px;min-width:0;position:relative;z-index:1}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-.page-title h2{font-size:24px;background:linear-gradient(#fff,#ffd1f4 40%,var(--pink) 60%,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(255,46,196,.5))}
-[data-theme="light"] .page-title h2{background:linear-gradient(#4a044e,#a21caf 50%,#d946ef);-webkit-background-clip:text;background-clip:text}
+.page-title h2{font-size:24px;background:linear-gradient(#fff,#ffd1f4 40%,var(--pink) 60%,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px rgba(255,46,196,.5))}
+[data-theme="light"] .page-title h2{background:linear-gradient(#4a044e,#a21caf 50%,#d946ef);-webkit-background-clip:text}
 .page-title p{color:var(--muted);font-size:13px;margin-top:2px}
 .top-actions{display:flex;gap:8px}
 .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;font-size:15px}
@@ -73,15 +57,14 @@ button,input,select,textarea{font-family:inherit;outline:none}
 .card:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:var(--glow)}
 .card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--purple),var(--cyan));opacity:.8}
 .card .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px}
-.ic.c{background:rgba(255,46,196,.18);color:var(--pink)}.ic.g{background:rgba(52,211,153,.15);color:var(--good)}
-.ic.w{background:rgba(251,191,36,.15);color:var(--warn)}.ic.v{background:rgba(168,85,247,.18);color:var(--purple)}
+.ic.c{background:rgba(255,46,196,.18);color:var(--pink)}.ic.g{background:rgba(52,211,153,.15);color:var(--good)}.ic.w{background:rgba(251,191,36,.15);color:var(--warn)}.ic.v{background:rgba(168,85,247,.18);color:var(--purple)}
 .card .num{font-family:'Orbitron';font-size:26px;font-weight:700}
 .card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
 .card .delta{font-size:11px;font-weight:700;margin-top:4px}.delta.up{color:var(--good)}.delta.dn{color:var(--bad)}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
 .tabs button{padding:10px 16px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;display:flex;gap:8px;align-items:center}
 .tabs button:hover{color:var(--pink)}
-.tabs button.active{color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;box-shadow:var(--glow)}
+.tabs button.active{color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:var(--glow)}
 .tab-content{display:none;animation:fadeUp .3s ease}.tab-content.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .panel{background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
@@ -133,7 +116,6 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .bar-row .track{flex:1;height:10px;background:var(--panel2);border-radius:10px;overflow:hidden}
 .bar-row .fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple),var(--cyan));border-radius:10px}
 .bar-row .bv{width:70px;text-align:right;font-size:12px;font-weight:700}
-/* CMS EDIT CARD (Services jaisa) */
 .cms-edit-card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px;position:relative}
 .cms-edit-card .edit-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .cms-edit-card input,.cms-edit-card textarea{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px}
@@ -142,8 +124,6 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .cms-edit-card .star{width:28px;height:28px;border-radius:6px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)}
 .cms-edit-card .star.active{background:var(--warn);color:#fff;border-color:var(--warn)}
 .cms-edit-card .del-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:8px;background:transparent;border:1px solid rgba(255,84,112,.5);color:var(--bad);cursor:pointer;font-size:11px}
-.cms-edit-card .del-btn:hover{background:rgba(255,84,112,.12)}
-/* ORDER DRAWER */
 .drawer{position:fixed;top:0;right:-480px;width:460px;max-width:92vw;height:100vh;background:var(--panel);backdrop-filter:blur(20px);border-left:1px solid var(--line2);z-index:60;transition:right .3s ease;overflow-y:auto;padding:22px;box-shadow:var(--glow)}
 .drawer.open{right:0}
 .drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
@@ -172,7 +152,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div id="toast"></div>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v19</small></div></div>
+ <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v20</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -227,9 +207,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     <button class="btn" id="exportOrders"><i class="fas fa-file-csv"></i> CSV</button>
     <button class="btn" onclick="App.backup()"><i class="fas fa-download"></i> Backup</button>
    </div>
-   <div class="panel"><div class="tbl-wrap"><table><thead><tr>
-     <th>Order</th><th>Customer</th><th>Order Time</th><th>Pickup</th><th>Time Slot</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Assign</th><th>Actions</th>
-   </tr></thead><tbody id="ordersBody"></tbody></table></div></div>
+   <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Order Time</th><th>Pickup</th><th>Time Slot</th><th>Address</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Assign</th><th>Actions</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
   </div>
   <div class="tab-content" id="tab-neworder">
    <div class="form-grid">
@@ -279,10 +257,9 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div id="priceUI"></div>
   </div>
-  <!-- WEBSITE CMS (Services-style editor) -->
   <div class="tab-content" id="tab-website">
    <div class="panel">
-    <div class="panel-head"><h3>🌐 Website Content</h3></div>
+    <div class="panel-head"><h3>🌐 Website Content</h3><button class="btn bad" onclick="App.resetCMS()"><i class="fas fa-rotate-left"></i> Reset CMS Data</button></div>
     <div style="padding:16px">
      <div class="form-grid" style="margin:0">
       <div class="fg"><label>Hero Title</label><input id="cmsHeroTitle"/></div>
@@ -335,7 +312,6 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   </div>
  </div>
 </main>
-<!-- ORDER DRAWER -->
 <div class="d-overlay" id="dOverlay" onclick="App.closeDrawer()"></div>
 <div class="drawer" id="drawer">
  <div class="drawer-head"><h3 id="dTitle">Order</h3><button class="btn bad" onclick="App.closeDrawer()"><i class="fas fa-times"></i></button></div>
@@ -350,24 +326,12 @@ let ordersSnap=null,boys=[],coupons=[],customers={},CATS={},confirmCb=null;
 let cmsContent={},reviews=[],faqs=[];
 const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Full details & tracking'],neworder:['New Order','Manual entry'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],website:['Website CMS','Full editor'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics']};
 const DEFAULT_CATS={mens:{name:"Men's",icon:'fa-tshirt',items:[{name:'Shirt',price:60,originalPrice:80},{name:'Pant',price:60,originalPrice:80},{name:'Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},ladies:{name:"Ladies",icon:'fa-female',items:[{name:'Ladies Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},winterWomen:{name:"Winter (F)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},winterMen:{name:"Winter (M)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},festival:{name:"Festival",icon:'fa-female',items:[{name:'Saree',price:200,originalPrice:300},{name:'Lehenga (3 Pc)',price:400,originalPrice:600},{name:'Coat Pant',price:350,originalPrice:500}]},iron:{name:"Iron",icon:'fa-fire',items:[{name:'Iron Shirt',price:20}]},home:{name:"Home",icon:'fa-bed',items:[{name:'Blanket (Double)',price:350,originalPrice:450}]},combos:{name:"Combos",icon:'fa-gift',items:[{name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150},{name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550}]}};
-// SEED DEFAULTS for reviews/faq (index Gen6.5 se match — kabhi gayab nahi honge)
-const DEFAULT_REVIEWS=[
- {name:"Amit Sharma",loc:"Gomti Nagar, Lucknow",stars:5,text:"Best dry cleaning in Lucknow. Clothes always come back perfect and fresh!"},
- {name:"Priya Verma",loc:"Indira Nagar",stars:5,text:"Their saree cleaning is amazing. Very careful with delicate fabrics. Highly recommend!"},
- {name:"Rohit Gupta",loc:"Hazratganj",stars:4,text:"Good service, free pickup is a big plus. Quick turnaround too."}
-];
-const DEFAULT_FAQ=[
- {q:"How long does cleaning take?",a:"Standard turnaround is 3 days. Express service available in 24 hours for +90% fee."},
- {q:"Is pickup & delivery really free?",a:"Yes! Free doorstep pickup & delivery on all orders above ₹300 in Lucknow."},
- {q:"Do you clean wedding lehengas & heavy outfits?",a:"Yes, we specialize in premium festival wear including lehengas, sarees, sherwanis and coat-pants."},
- {q:"What payment options do you accept?",a:"Pay on Delivery (Cash/UPI) or Online — your choice."}
-];
 $('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
 function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type==='err'?'err':''}"><i class="fas fa-${type==='err'?'circle-exclamation':'circle-check'}"></i>${msg}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2600);}
 function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');}
 $('confirmNo').onclick=()=>$('confirmModal').classList.remove('open');
 $('confirmYes').onclick=()=>{$('confirmModal').classList.remove('open');if(confirmCb)confirmCb();};
-$('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='light';if(l){document.documentElement.removeAttribute('data-theme');localStorage.setItem('pos_theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';toast('Dark mode');}else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('pos_theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';toast('Light mode');}};
+$('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='light';if(l){document.documentElement.removeAttribute('data-theme');localStorage.setItem('pos_theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('pos_theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}};
 if(localStorage.getItem('pos_theme')==='light'){document.documentElement.setAttribute('data-theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}
 auth.onAuthStateChanged(u=>{ if(u){$('loginScreen').style.display='none';$('dashboard').classList.add('active');$('sidebar').style.display='';$('adminEmail').textContent=u.email||'admin';start();} else {$('loginScreen').style.display='flex';$('dashboard').classList.remove('active');$('sidebar').style.display='none';} });
 $('loginBtn').onclick=()=>{$('loginError').style.display='none';auth.signInWithEmailAndPassword($('adminEmailInput').value.trim(),$('adminPassInput').value.trim()).catch(()=>$('loginError').style.display='block');};
@@ -380,26 +344,10 @@ function start(){
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
- // CMS content
- db.ref('settings/content').once('value').then(s=>{
-  if(!s.exists()){db.ref('settings/content').set({heroTitle:'Premium Dry Cleaning at Your Doorstep',heroTag:'Free Pickup & Delivery in Lucknow',announcement:'Use PARTH20 for 20% off on your first order'});}
- });
+ // CMS: NO fake seed. Sirf DB se load (index apna asli data khud seed karega Gen6.6 me)
  db.ref('settings/content').on('value',s=>{cmsContent=s.val()||{};if($('tab-website').classList.contains('active'))renderCMSContent();});
- // Reviews (seed defaults if empty)
- db.ref('settings/reviews').once('value').then(s=>{
-  if(!s.exists() || !s.val() || Object.keys(s.val()).length===0){
-    DEFAULT_REVIEWS.forEach(r=>db.ref('settings/reviews').push(r));
-  }
- });
  db.ref('settings/reviews').on('value',s=>{reviews=[];if(s.exists())s.forEach(c=>reviews.push({id:c.key,...c.val()}));if($('tab-website').classList.contains('active'))renderReviewsEdit();});
- // FAQ (seed defaults if empty)
- db.ref('settings/faq').once('value').then(s=>{
-  if(!s.exists() || !s.val() || Object.keys(s.val()).length===0){
-    DEFAULT_FAQ.forEach(f=>db.ref('settings/faq').push(f));
-  }
- });
  db.ref('settings/faq').on('value',s=>{faqs=[];if(s.exists())s.forEach(c=>faqs.push({id:c.key,...c.val()}));if($('tab-website').classList.contains('active'))renderFaqEdit();});
- // Boys & coupons
  db.ref('delivery_boys').once('value').then(s=>{ if(s.exists()){ s.forEach(c=>{ if(!boys.find(b=>b.id===c.key)) boys.push({id:c.key,...c.val()}); }); } renderBoys(); });
  db.ref('settings/coupons').once('value').then(s=>{ if(s.exists()){ s.forEach(c=>{ if(!coupons.find(x=>x.code===c.key)) coupons.push({code:c.key,...c.val()}); }); } renderCoupons(); });
 }
@@ -417,7 +365,7 @@ function renderOrders(){ if(!ordersSnap)return; const q=($('orderSearch').value|
  list=list.filter(o=>{const m=!q||(o.orderId||'').toLowerCase().includes(q)||(o.customerName||o.name||'').toLowerCase().includes(q)||(o.phone||'').includes(q);const s=f==='all'||(o.status||'pending')===f;return m&&s;});
  list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));const today=dayStr(new Date());
  $('ordersBody').innerHTML=list.length?list.map(o=>{const st=o.status||'pending';const rc=(st!=='delivered'&&st!=='cancelled')?(o.pickupDate<today?'row-overdue':o.pickupDate===today?'row-urgent':''):'';const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="item-badge">${k} x${v}</span>`).join('');
-  const badges=`<span class="oc-id">${o.orderId||o.id}</span>${o.express==='Yes'?'<span class="item-badge express">⚡ Express</span>':''}${o.source?`<span class="item-badge source">${o.source}</span>`:''}`;
+  const badges=`${o.orderId||o.id}${o.express==='Yes'?'<span class="item-badge express">⚡ Express</span>':''}${o.source?`<span class="item-badge source">${o.source}</span>`:''}`;
   return `<tr class="${rc}"><td>${badges}</td><td><b>${o.customerName||o.name||'-'}</b><br><span style="color:var(--muted);font-size:12px">${o.phone||''}</span></td><td style="font-size:12px">${o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td><td>${o.pickupDate||'-'}</td><td style="font-size:12px;font-weight:700">${o.timeSlot||'-'}</td><td style="font-size:11px;max-width:180px">${o.address||'-'}</td><td>${items||'-'}</td><td><b>₹${o.total||0}</b></td><td><select onchange="App.setPay('${o.id}',this.value)"><option ${o.paymentStatus==='Paid'?'selected':''}>Paid</option><option ${(!o.paymentStatus||o.paymentStatus!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${o.id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${o.id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${b.phone}" ${o.assigned_to===b.phone?'selected':''}>${b.name}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${o.id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn solid" onclick="App.openDrawer('${o.id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i></button></td></tr>`;}).join(''):'<tr><td colspan="12"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';}
 $('orderSearch').oninput=renderOrders;$('orderFilter').onchange=renderOrders;
 function renderCoupons(){$('couponList').innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--pink)">${c.code}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${c.percent}% off (max ₹${c.max})</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${c.code}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${c.code}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>';}
@@ -434,69 +382,41 @@ function renderServices(){const wrap=$('priceUI');let html='';
   (c.items||[]).forEach((it,idx)=>{html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center"><input value="${it.name}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><button class="btn bad" style="padding:2px 8px;margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${it.price||0}" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price"/><input type="number" value="${it.originalPrice||''}" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/></div>`;});
   html+=`<button class="btn" onclick="App.addItem('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
  wrap.innerHTML=html||'<div class="empty-state"><i class="fas fa-tags"></i>Koi category nahi</div>';}
-// CMS CONTENT
-function renderCMSContent(){ $('cmsHeroTitle').value=cmsContent.heroTitle||''; $('cmsHeroTag').value=cmsContent.heroTag||''; $('cmsAnnounce').value=cmsContent.announcement||''; $('cmsAddress').value=cmsContent.address||''; $('cmsPhone').value=cmsContent.phone||''; $('cmsEmail').value=cmsContent.email||''; $('cmsHours').value=cmsContent.hours||''; $('cmsMap').value=cmsContent.map||'';}
-// REVIEWS EDITOR (Services-style)
-function renderReviewsEdit(){ $('reviewEditList').innerHTML=reviews.length?reviews.map((r,i)=>`<div class="cms-edit-card" data-idx="${i}"><button class="del-btn" onclick="App.delReviewCard(${i})"><i class="fas fa-times"></i></button><div class="edit-row"><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Name</label><input value="${(r.name||'').replace(/"/g,'&quot;')}" onchange="App.updateReview(${i},'name',this.value)"/></div><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Location</label><input value="${(r.loc||'').replace(/"/g,'&quot;')}" onchange="App.updateReview(${i},'loc',this.value)"/></div></div><div class="edit-row"><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Stars (${r.stars||5})</label><div class="stars-row">${[1,2,3,4,5].map(s=>`<div class="star ${s<=(r.stars||5)?'active':''}" onclick="App.updateReview(${i},'stars',${s})"><i class="fas fa-star"></i></div>`).join('')}</div></div></div><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Review Text</label><textarea onchange="App.updateReview(${i},'text',this.value)">${(r.text||'').replace(/</g,'&lt;')}</textarea></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-star"></i>Koi review nahi — "Add Review" karo</div>';}
-// FAQ EDITOR (Services-style)
-function renderFaqEdit(){ $('faqEditList').innerHTML=faqs.length?faqs.map((f,i)=>`<div class="cms-edit-card" data-idx="${i}"><button class="del-btn" onclick="App.delFaqCard(${i})"><i class="fas fa-times"></i></button><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Question</label><input style="width:100%;margin-bottom:8px" value="${(f.q||'').replace(/"/g,'&quot;')}" onchange="App.updateFaq(${i},'q',this.value)"/></div><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Answer</label><textarea onchange="App.updateFaq(${i},'a',this.value)">${(f.a||'').replace(/</g,'&lt;')}</textarea></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-circle-question"></i>Koi FAQ nahi — "Add FAQ" karo</div>';}
+function renderCMSContent(){$('cmsHeroTitle').value=cmsContent.heroTitle||'';$('cmsHeroTag').value=cmsContent.heroTag||'';$('cmsAnnounce').value=cmsContent.announcement||'';$('cmsAddress').value=cmsContent.address||'';$('cmsPhone').value=cmsContent.phone||'';$('cmsEmail').value=cmsContent.email||'';$('cmsHours').value=cmsContent.hours||'';$('cmsMap').value=cmsContent.map||'';}
+function renderReviewsEdit(){$('reviewEditList').innerHTML=reviews.length?reviews.map((r,i)=>`<div class="cms-edit-card"><button class="del-btn" onclick="App.delReviewCard(${i})"><i class="fas fa-times"></i></button><div class="edit-row"><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Name</label><input value="${(r.name||'').replace(/"/g,'&quot;')}" onchange="App.updateReview(${i},'name',this.value)"/></div><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Location</label><input value="${(r.loc||'').replace(/"/g,'&quot;')}" onchange="App.updateReview(${i},'loc',this.value)"/></div></div><div class="edit-row"><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Stars (${r.stars||5})</label><div class="stars-row">${[1,2,3,4,5].map(s=>`<div class="star ${s<=(r.stars||5)?'active':''}" onclick="App.updateReview(${i},'stars',${s})"><i class="fas fa-star"></i></div>`).join('')}</div></div></div><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Review Text</label><textarea onchange="App.updateReview(${i},'text',this.value)">${(r.text||'').replace(/</g,'&lt;')}</textarea></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-star"></i>Koi review nahi — "Add Review" se naya banao</div>';}
+function renderFaqEdit(){$('faqEditList').innerHTML=faqs.length?faqs.map((f,i)=>`<div class="cms-edit-card"><button class="del-btn" onclick="App.delFaqCard(${i})"><i class="fas fa-times"></i></button><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Question</label><input style="width:100%;margin-bottom:8px" value="${(f.q||'').replace(/"/g,'&quot;')}" onchange="App.updateFaq(${i},'q',this.value)"/></div><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Answer</label><textarea onchange="App.updateFaq(${i},'a',this.value)">${(f.a||'').replace(/</g,'&lt;')}</textarea></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-circle-question"></i>Koi FAQ nahi — "Add FAQ" se naya banao</div>';}
 const App={
- // ORDERS
  setStatus:(id,st)=>db.ref('orders/'+id).update({status:st}).then(()=>toast('Status updated')).catch(e=>toast(e.message,'err')),
  setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>toast('Payment: '+v)).catch(e=>toast(e.message,'err')),
  assign:id=>{const s=$('as_'+id);if(!s)return;const p=s.value;db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+p:''}).then(()=>toast('Boy assigned')).catch(e=>toast(e.message,'err'));},
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=bp||o.phone;if(!num)return toast('Number nahi','err');const msg=`*Parth Dry Clean* 🧺\n*Order:* ${o.orderId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  print:id=>{const o=ordersSnap.val()[id];const items=Object.entries(o.items||{}).map(([k,v])=>`${k} x${v}`).join('<br>');const w=open('','_blank','width=320,height=500');w.document.write(`<html><head><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${o.orderId}<br><b>Name:</b> ${o.customerName||o.name}<br><b>Phone:</b> ${o.phone}<div class="dashed"></div><b>Items:</b><br>${items}<div class="dashed"></div><b>Total:</b> Rs ${o.total}<script>window.print();window.close()<\/script></body></html>`);},
- // ORDER DRAWER
  openDrawer:id=>{const o=ordersSnap.val()[id];if(!o)return;$('dTitle').textContent='#'+(o.orderId||id);
   const steps=['pending','picked_up','processing','quality_check','out_for_delivery','delivered'];const cur=steps.indexOf(o.status||'pending');
   const items=Object.entries(o.items||{}).map(([k,v])=>`<div class="d-row"><span class="l">${k}</span><span class="r">x${v}</span></div>`).join('');
-  $('dBody').innerHTML=`
-   <div class="d-row"><span class="l">Customer</span><span class="r">${o.customerName||o.name||'-'}</span></div>
-   <div class="d-row"><span class="l">Phone</span><span class="r">${o.phone||'-'}</span></div>
-   <div class="d-row"><span class="l">Address</span><span class="r" style="max-width:220px">${o.address||'-'}</span></div>
-   <div class="d-row"><span class="l">Pickup Date</span><span class="r">${o.pickupDate||'-'}</span></div>
-   <div class="d-row"><span class="l">Time Slot</span><span class="r" style="color:var(--pink);font-weight:800">${o.timeSlot||'-'}</span></div>
-   <div class="d-row"><span class="l">Express</span><span class="r">${o.express==='Yes'?'⚡ Yes':'No'}</span></div>
-   <div class="d-row"><span class="l">Source</span><span class="r">${o.source||'Website'}</span></div>
-   <div class="d-row"><span class="l">Payment</span><span class="r">${o.paymentStatus||'Pay on Delivery'}</span></div>
-   <h4 style="margin:14px 0 6px;color:var(--cyan)">Items</h4>${items}
-   <div class="d-row"><span class="l">Subtotal</span><span class="r">₹${o.subtotal||o.total||0}</span></div>
-   ${o.express==='Yes'?`<div class="d-row"><span class="l">Express Fee</span><span class="r">+₹${Math.round((o.subtotal||0)*0.9)}</span></div>`:''}
-   ${o.discount>0?`<div class="d-row"><span class="l">Discount</span><span class="r" style="color:var(--good)">-₹${o.discount}</span></div>`:''}
-   <div class="d-row" style="border-top:2px solid var(--pink);padding-top:10px"><span class="l" style="font-weight:800">TOTAL</span><span class="r" style="color:var(--pink);font-size:18px">₹${o.total||0}</span></div>
-   <h4 style="margin:14px 0 6px;color:var(--cyan)">Timeline</h4>
-   <div class="d-tl">${steps.map((s,i)=>`<div class="${i<=cur?'on':''}">${s}</div>`).join('')}</div>
-   ${o.specialInst?`<div style="margin-top:12px;padding:10px;background:var(--panel2);border-radius:8px"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Special Instructions</div><div style="margin-top:4px">${o.specialInst}</div></div>`:''}
-  `;
+  $('dBody').innerHTML=`<div class="d-row"><span class="l">Customer</span><span class="r">${o.customerName||o.name||'-'}</span></div><div class="d-row"><span class="l">Phone</span><span class="r">${o.phone||'-'}</span></div><div class="d-row"><span class="l">Address</span><span class="r" style="max-width:220px">${o.address||'-'}</span></div><div class="d-row"><span class="l">Pickup Date</span><span class="r">${o.pickupDate||'-'}</span></div><div class="d-row"><span class="l">Time Slot</span><span class="r" style="color:var(--pink);font-weight:800">${o.timeSlot||'-'}</span></div><div class="d-row"><span class="l">Express</span><span class="r">${o.express==='Yes'?'⚡ Yes':'No'}</span></div><div class="d-row"><span class="l">Source</span><span class="r">${o.source||'Website'}</span></div><div class="d-row"><span class="l">Payment</span><span class="r">${o.paymentStatus||'Pay on Delivery'}</span></div><h4 style="margin:14px 0 6px;color:var(--cyan)">Items</h4>${items}<div class="d-row"><span class="l">Subtotal</span><span class="r">₹${o.subtotal||o.total||0}</span></div>${o.express==='Yes'?`<div class="d-row"><span class="l">Express Fee</span><span class="r">+₹${Math.round((o.subtotal||0)*0.9)}</span></div>`:''}${o.discount>0?`<div class="d-row"><span class="l">Discount</span><span class="r" style="color:var(--good)">-₹${o.discount}</span></div>`:''}<div class="d-row" style="border-top:2px solid var(--pink);padding-top:10px"><span class="l" style="font-weight:800">TOTAL</span><span class="r" style="color:var(--pink);font-size:18px">₹${o.total||0}</span></div><h4 style="margin:14px 0 6px;color:var(--cyan)">Timeline</h4><div class="d-tl">${steps.map((s,i)=>`<div class="${i<=cur?'on':''}">${s}</div>`).join('')}</div>${o.specialInst?`<div style="margin-top:12px;padding:10px;background:var(--panel2);border-radius:8px"><div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Special Instructions</div><div style="margin-top:4px">${o.specialInst}</div></div>`:''}`;
   $('drawer').classList.add('open');$('dOverlay').classList.add('open');},
  closeDrawer:()=>{$('drawer').classList.remove('open');$('dOverlay').classList.remove('open');},
  backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value')]).then(([o,c,b,s,srv])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Backup downloaded');}).catch(e=>toast(e.message,'err'));},
- // COUPONS
  toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF'));},
  delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>{coupons=coupons.filter(x=>x.code!==c);renderCoupons();db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted'));}),
- // BOYS
  addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));const data={name:n,phone:p,code,total_deliveries:0};db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
  delBoy:id=>askConfirm('Delete boy?',()=>{boys=boys.filter(b=>b.id!==id);renderBoys();db.ref('delivery_boys/'+id).remove().then(()=>toast('Boy deleted'));}),
  copyCode:c=>{if(navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast('Copied: '+c));else toast('Code: '+c);},
  regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));const b=boys.find(x=>x.id===id);if(b){b.code=c;renderBoys();}db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c));},
- // CONTROL
  saveControl:()=>{db.ref('settings/general').update({bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:+$('ctlMin').value||300,expressPercent:+$('ctlExpress').value||90}).then(()=>toast('✅ Settings saved')).catch(e=>toast(e.message,'err'));},
- // CMS
  saveContent:()=>{db.ref('settings/content').update({heroTitle:$('cmsHeroTitle').value.trim(),heroTag:$('cmsHeroTag').value.trim(),announcement:$('cmsAnnounce').value.trim(),address:$('cmsAddress').value.trim(),phone:$('cmsPhone').value.trim(),email:$('cmsEmail').value.trim(),hours:$('cmsHours').value.trim(),map:$('cmsMap').value.trim()}).then(()=>toast('✅ Website content saved')).catch(e=>toast(e.message,'err'));},
- // REVIEWS EDITOR (local array + save all)
- addReviewCard:()=>{reviews.push({name:'',loc:'',stars:5,text:''});renderReviewsEdit();toast('New review card added — Save All karo');},
- delReviewCard:(i)=>askConfirm('Delete review?',()=>{reviews.splice(i,1);renderReviewsEdit();toast('Review removed — Save All karo');}),
+ resetCMS:()=>askConfirm('Reset CMS data? Isse DB ka CMS data saaf hoga. Phir index refresh karo — wo apna ASLI data wapas la kar DB me seed karega (Gen6.6).',()=>{Promise.all([db.ref('settings/content').remove(),db.ref('settings/reviews').remove(),db.ref('settings/faq').remove()]).then(()=>{reviews=[];faqs=[];cmsContent={};renderCMSContent();renderReviewsEdit();renderFaqEdit();toast('✅ CMS data reset. Ab index refresh karo.');});}),
+ addReviewCard:()=>{reviews.push({name:'',loc:'',stars:5,text:''});renderReviewsEdit();toast('Naya review card juda — Save All karo');},
+ delReviewCard:(i)=>askConfirm('Delete review?',()=>{reviews.splice(i,1);renderReviewsEdit();toast('Review hata — Save All karo');}),
  updateReview:(i,k,v)=>{if(reviews[i])reviews[i][k]=v;},
- saveReviews:()=>{const btn=$('saveReviewsBtn');btn.disabled=true;const data={};reviews.forEach(r=>{if(r.id)data[r.id]={name:r.name||'',loc:r.loc||'',stars:+r.stars||5,text:r.text||''};});
-  db.ref('settings/reviews').set(data).then(()=>{toast('✅ All reviews saved! Index par live');btn.disabled=false;}).catch(e=>{toast(e.message,'err');btn.disabled=false;});},
- // FAQ EDITOR
- addFaqCard:()=>{faqs.push({q:'',a:''});renderFaqEdit();toast('New FAQ card added — Save All karo');},
- delFaqCard:(i)=>askConfirm('Delete FAQ?',()=>{faqs.splice(i,1);renderFaqEdit();toast('FAQ removed — Save All karo');}),
+ saveReviews:()=>{const btn=$('saveReviewsBtn');btn.disabled=true;const data={};reviews.forEach(r=>{const id=r.id||db.ref('settings/reviews').push().key;data[id]={name:r.name||'',loc:r.loc||'',stars:+r.stars||5,text:r.text||''};});
+  db.ref('settings/reviews').set(data).then(()=>{toast('✅ Reviews saved! Index par live');btn.disabled=false;}).catch(e=>{toast(e.message,'err');btn.disabled=false;});},
+ addFaqCard:()=>{faqs.push({q:'',a:''});renderFaqEdit();toast('Naya FAQ card juda — Save All karo');},
+ delFaqCard:(i)=>askConfirm('Delete FAQ?',()=>{faqs.splice(i,1);renderFaqEdit();toast('FAQ hata — Save All karo');}),
  updateFaq:(i,k,v)=>{if(faqs[i])faqs[i][k]=v;},
- saveFaq:()=>{const btn=$('saveFaqBtn');btn.disabled=true;const data={};faqs.forEach(f=>{if(f.id)data[f.id]={q:f.q||'',a:f.a||''};});
-  db.ref('settings/faq').set(data).then(()=>{toast('✅ All FAQ saved! Index par live');btn.disabled=false;}).catch(e=>{toast(e.message,'err');btn.disabled=false;});},
- // MANUAL ORDER
+ saveFaq:()=>{const btn=$('saveFaqBtn');btn.disabled=true;const data={};faqs.forEach(f=>{const id=f.id||db.ref('settings/faq').push().key;data[id]={q:f.q||'',a:f.a||''};});
+  db.ref('settings/faq').set(data).then(()=>{toast('✅ FAQ saved! Index par live');btn.disabled=false;}).catch(e=>{toast(e.message,'err');btn.disabled=false;});},
  moAddRow:()=>{const d=document.createElement('div');d.className='form-grid';d.style.marginBottom='8px';d.innerHTML=`<div class="fg"><label>Item</label><input class="mo-i" placeholder="Shirt"/></div><div class="fg"><label>Qty</label><input class="mo-q" type="number" value="1"/></div><div class="fg"><label>Price</label><input class="mo-p" type="number" placeholder="60"/></div>`;$('moItems').appendChild(d);},
  saveManualOrder:()=>{const name=$('moName').value.trim(),phone=$('moPhone').value.trim(),addr=$('moAddress').value.trim();
   if(!name||!/^[0-9]{10}$/.test(phone)||!addr)return toast('Name + valid phone + address required','err');
@@ -505,7 +425,6 @@ const App={
   const orderId='PDC-M'+Math.random().toString(36).substring(2,7).toUpperCase();
   const o={orderId,uid:'manual_'+phone,manual:true,source:$('moSource').value,customerName:name,name,phone,address:addr,pickupDate:$('moDate').value||dayStr(new Date()),timeSlot:$('moSlot').value,items,subtotal:auto,express:'No',discount:0,total,paymentStatus:$('moPay').value,status:'pending',createdAt:firebase.database.ServerValue.TIMESTAMP};
   db.ref('orders/'+orderId).set(o).then(()=>db.ref('customers/m_'+phone).update({name,phone,address:addr})).then(()=>{toast('✅ Manual order saved!');$('moName').value='';$('moPhone').value='';$('moAddress').value='';$('moItems').innerHTML='';$('moTotal').value='';}).catch(e=>toast(e.message,'err'));},
- // SERVICES
  addCat:()=>{const n=$('newCatName').value.trim();if(!n)return toast('Name likho','err');const key=n.toLowerCase().replace(/[^a-z0-9]+/g,'-');if(CATS[key])return toast('Exists','err');CATS[key]={name:n,icon:$('newCatIcon').value.trim()||'fa-tag',items:[]};$('newCatName').value='';renderServices();toast('Category added — Save All karo');},
  delCat:k=>askConfirm('Delete category?',()=>{delete CATS[k];renderServices();toast('Category removed — Save All karo');}),
  renameCat:(k,v)=>{CATS[k].name=v;}, setCatIcon:(k,v)=>{CATS[k].icon=v;},
@@ -517,7 +436,7 @@ const App={
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,TimeSlot,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},"${o.timeSlot||''}",${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v19 (Synthwave + CMS Editor + Orders Detailing) online');
+console.log('🌆 PARTH OS v20 (No fake seed + Reset CMS + CRUD) online');
 </script>
 </body>
 </html>
