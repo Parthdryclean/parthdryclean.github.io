@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen20.1 : SYNTHWAVE (No Seed + Reset CMS + CRUD + HeroDesc) -->
+<!-- ParthadminGen20.2 : SYNTHWAVE + AUTO-SEED CMS -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -35,7 +35,7 @@ button,input,select,textarea{font-family:inherit;outline:none}
 .brand{display:flex;align-items:center;gap:12px;margin:0 4px 20px;padding:12px;border:1px solid var(--line2);border-radius:14px;background:var(--panel2)}
 .brand .os-logo{font-family:'Monoton';font-size:17px;color:var(--pink);text-shadow:var(--glow)}
 .brand small{display:block;font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:.2s;position:relative}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:.2s}
 .nav-item i{width:18px;text-align:center}
 .nav-item:hover{color:var(--pink);background:var(--panel2)}
 .nav-item.active{color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:var(--glow)}
@@ -152,7 +152,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div id="toast"></div>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v20.1</small></div></div>
+ <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v20.2</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -259,7 +259,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   </div>
   <div class="tab-content" id="tab-website">
    <div class="panel">
-    <div class="panel-head"><h3>🌐 Website Content</h3><button class="btn bad" onclick="App.resetCMS()"><i class="fas fa-rotate-left"></i> Reset CMS Data</button></div>
+    <div class="panel-head"><h3>🌐 Website Content</h3><button class="btn bad" onclick="App.resetCMS()"><i class="fas fa-rotate-left"></i> Reset + Reseed</button></div>
     <div style="padding:16px">
      <div class="form-grid" style="margin:0">
       <div class="fg" style="flex:2"><label>Hero Title (HTML allowed)</label><textarea id="cmsHeroTitle" rows="2" style="resize:vertical;min-height:60px"></textarea></div>
@@ -328,6 +328,37 @@ let ordersSnap=null,boys=[],coupons=[],customers={},CATS={},confirmCb=null;
 let cmsContent={},reviews=[],faqs=[];
 const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Full details & tracking'],neworder:['New Order','Manual entry'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],website:['Website CMS','Full editor'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics']};
 const DEFAULT_CATS={mens:{name:"Men's",icon:'fa-tshirt',items:[{name:'Shirt',price:60,originalPrice:80},{name:'Pant',price:60,originalPrice:80},{name:'Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},ladies:{name:"Ladies",icon:'fa-female',items:[{name:'Ladies Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},winterWomen:{name:"Winter (F)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},winterMen:{name:"Winter (M)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},festival:{name:"Festival",icon:'fa-female',items:[{name:'Saree',price:200,originalPrice:300},{name:'Lehenga (3 Pc)',price:400,originalPrice:600},{name:'Coat Pant',price:350,originalPrice:500}]},iron:{name:"Iron",icon:'fa-fire',items:[{name:'Iron Shirt',price:20}]},home:{name:"Home",icon:'fa-bed',items:[{name:'Blanket (Double)',price:350,originalPrice:450}]},combos:{name:"Combos",icon:'fa-gift',items:[{name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150},{name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550}]}};
+
+// ===== DEFAULT CMS DATA (for seeding) =====
+const DEFAULT_REVIEWS=[
+ {name:"Anjali S.",loc:"Sector 14",stars:5,text:"Best dry cleaner in Indira Nagar! My silk saree came back like new."},
+ {name:"Rahul M.",loc:"Sector 10",stars:5,text:"Parth bhai's service is excellent. My blazer was cleaned perfectly."},
+ {name:"Smita P.",loc:"Munshipulia",stars:4,text:"Affordable and quality. Highly recommended."},
+ {name:"Vikram T.",loc:"Gomti Nagar",stars:5,text:"Pickup partner was on time and very polite. Clothes look fresh!"}
+];
+const DEFAULT_FAQ=[
+ {q:"What areas do you serve?",a:"We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available."},
+ {q:"How long does dry cleaning take?",a:"Standard turnaround is 48-72 hours. Express 24-hr service available on request."},
+ {q:"Do you clean wedding dresses?",a:"Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees."},
+ {q:"Is there a minimum order amount?",a:"Yes, minimum order value is ₹300 to avail free pickup and delivery service."}
+];
+const DEFAULT_CONTENT={
+ heroTitle:'Your Clothes Deserve <span class="text-gradient">Royal Treatment</span>',
+ heroTag:'Premium Care in Lucknow',
+ heroDesc:'Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.',
+ announcement:'',
+ address:'Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow',
+ phone:'+91 92356 01645',
+ email:'parthdrycleaning@gmail.com',
+ hours:'Monday - Sunday: 10:00 AM - 10:00 PM',
+ map:'https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac'
+};
+function seedCMS(){
+ db.ref('settings/reviews').once('value').then(s=>{ if(!s.exists()||!s.val()||Object.keys(s.val()).length===0){ DEFAULT_REVIEWS.forEach(r=>db.ref('settings/reviews').push(r)); } });
+ db.ref('settings/faq').once('value').then(s=>{ if(!s.exists()||!s.val()||Object.keys(s.val()).length===0){ DEFAULT_FAQ.forEach(f=>db.ref('settings/faq').push(f)); } });
+ db.ref('settings/content').once('value').then(s=>{ if(!s.exists()||!s.val()||Object.keys(s.val()).length===0){ db.ref('settings/content').set(DEFAULT_CONTENT); } });
+}
+
 $('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
 function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type==='err'?'err':''}"><i class="fas fa-${type==='err'?'circle-exclamation':'circle-check'}"></i>${msg}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2600);}
 function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');}
@@ -342,6 +373,7 @@ $('logoutBtn').onclick=()=>{db.ref('orders').off();db.ref('customers').off();db.
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
 function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='website'){renderCMSContent();renderReviewsEdit();renderFaqEdit();}}
 function start(){
+ seedCMS(); // auto-seed on login
  db.ref('orders').on('value',s=>{ordersSnap=s;renderDashboard();if($('tab-orders').classList.contains('active'))renderOrders();if($('tab-reports').classList.contains('active'))renderReports();if($('tab-customers').classList.contains('active'))renderCustomers();if($('tab-boys').classList.contains('active'))renderBoys();});
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
@@ -407,7 +439,7 @@ const App={
  regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));const b=boys.find(x=>x.id===id);if(b){b.code=c;renderBoys();}db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c));},
  saveControl:()=>{db.ref('settings/general').update({bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:+$('ctlMin').value||300,expressPercent:+$('ctlExpress').value||90}).then(()=>toast('✅ Settings saved')).catch(e=>toast(e.message,'err'));},
  saveContent:()=>{db.ref('settings/content').set({heroTitle:$('cmsHeroTitle').value,heroTag:$('cmsHeroTag').value.trim(),heroDesc:$('cmsHeroDesc').value.trim(),announcement:$('cmsAnnounce').value.trim(),address:$('cmsAddress').value.trim(),phone:$('cmsPhone').value.trim(),email:$('cmsEmail').value.trim(),hours:$('cmsHours').value.trim(),map:$('cmsMap').value.trim()}).then(()=>toast('✅ Website content saved! Index par live')).catch(e=>toast(e.message,'err'));},
- resetCMS:()=>askConfirm('Reset CMS data? Isse DB ka CMS data saaf hoga. Phir index refresh karo — wo apna ASLI data wapas la kar DB me seed karega (Gen6.6).',()=>{Promise.all([db.ref('settings/content').remove(),db.ref('settings/reviews').remove(),db.ref('settings/faq').remove()]).then(()=>{reviews=[];faqs=[];cmsContent={};renderCMSContent();renderReviewsEdit();renderFaqEdit();toast('✅ CMS data reset. Ab index refresh karo.');});}),
+ resetCMS:()=>askConfirm('Reset + reseed CMS data?',()=>{Promise.all([db.ref('settings/content').remove(),db.ref('settings/reviews').remove(),db.ref('settings/faq').remove()]).then(()=>{seedCMS();reviews=[];faqs=[];cmsContent={};renderCMSContent();renderReviewsEdit();renderFaqEdit();toast('✅ CMS reset + reseeded!');});}),
  addReviewCard:()=>{reviews.push({name:'',loc:'',stars:5,text:''});renderReviewsEdit();toast('Naya review card juda — Save All karo');},
  delReviewCard:(i)=>askConfirm('Delete review?',()=>{reviews.splice(i,1);renderReviewsEdit();toast('Review hata — Save All karo');}),
  updateReview:(i,k,v)=>{if(reviews[i])reviews[i][k]=v;},
@@ -437,7 +469,7 @@ const App={
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,TimeSlot,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},"${o.timeSlot||''}",${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v20.1 (No Seed + HeroDesc + Reset CMS) online');
+console.log('🌆 PARTH OS v20.2 (Auto-Seed CMS) online');
 </script>
 </body>
 </html>
