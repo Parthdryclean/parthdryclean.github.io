@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.4 -->
+<!-- ParthindexGen6.5 : Final CMS + BookingOpen -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -84,6 +84,9 @@ nav a:hover { color:var(--primary); }
 .top-banner span { background:linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:800; font-size:15px; letter-spacing:1px; margin:0 4px; }
 .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; transition:0.2s; }
 .close-banner:hover { color:#fff; }
+
+.closed-banner { background: linear-gradient(135deg, #dc2626, #991b1b); color:#fff; text-align:center; padding:12px 20px; font-size:14px; font-weight:800; position:relative; box-shadow:0 4px 15px rgba(220,38,38,0.3); display:none; }
+.closed-banner i { margin-right:8px; }
 
 .active-care-strip { background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12)); border-bottom: 1px solid var(--border); padding: 8px 5%; display: none; align-items: center; justify-content: space-between; gap: 14px; cursor: pointer; box-shadow: 0 4px 18px rgba(14,165,233,0.08); position: sticky; top: var(--header-height); z-index: 99; backdrop-filter: blur(14px); }
 .active-care-strip::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent); background-size:200% 100%; animation: shimmerLine 3s linear infinite; pointer-events:none; }
@@ -221,12 +224,13 @@ nav a:hover { color:var(--primary); }
 .hero-content { max-width:550px; }
 .premium-tag { display:inline-flex; align-items:center; gap:8px; background: rgba(14,165,233,0.1); color:var(--primary); padding:6px 16px; border-radius:30px; font-size:13px; font-weight:800; border:1px solid rgba(14,165,233,0.2); margin-bottom:18px; }
 .hero-content h1 { font-size:clamp(36px,5vw,52px); font-weight:800; line-height:1.1; margin-bottom:15px; }
-.text-gradient { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .hero-content p { font-size:16px; color:var(--text-muted); margin-bottom:25px; font-weight:500; }
+.text-gradient { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .action-buttons { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:18px; }
 .btn { padding:14px 28px; border-radius:50px; font-size:15px; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s; cursor:pointer; border:none; font-family:'Outfit'; }
 .btn-book-now { background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; box-shadow:0 8px 20px rgba(99,102,241,0.25); }
 .btn-book-now:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(99,102,241,0.35); }
+.btn-book-now.disabled { opacity:0.5; cursor:not-allowed; background:var(--muted); pointer-events:none; box-shadow:none; }
 .btn-install { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; box-shadow:0 4px 20px rgba(245,158,11,0.4); display:none; }
 .btn-whatsapp-sm { background:transparent; color:var(--accent); border:1.5px solid var(--accent); }
 .btn-whatsapp-sm:hover { background:rgba(99,102,241,0.06); transform:translateY(-2px); }
@@ -432,6 +436,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </head>
 <body>
 <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999999; display:flex; flex-direction:column; gap:8px;"></div>
+<div class="closed-banner" id="closedBanner"><i class="fas fa-store-slash"></i> Booking temporarily closed. Please check back later or WhatsApp us directly.</div>
 <div class="top-banner" id="topBanner" style="display:none;">
 🎉 First order? Use code <span>PARTH20</span> for 20% OFF!
 <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>
@@ -490,11 +495,11 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </a>
 <section class="hero" id="home">
 <div class="hero-content">
-<div class="premium-tag"><i class="fas fa-crown"></i> Premium Care in Lucknow</div>
-<h1 id="dynamicGreeting">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
-<p>Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
+<div class="premium-tag"><i class="fas fa-crown"></i> <span id="heroTagText">Premium Care in Lucknow</span></div>
+<h1 id="heroTitle">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
+<p id="heroDesc">Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
 <div class="action-buttons">
-<a href="booking.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
+<a href="booking.html" class="btn btn-book-now book-now-link" id="heroBookBtn" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
 <button type="button" class="btn btn-install installAppBtn"><i class="fas fa-download"></i> Install App</button>
 <a href="https://wa.me/919235601645?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup." target="_blank" class="btn btn-whatsapp-sm"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
 </div>
@@ -586,33 +591,30 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="section-header">
 <h2>Loved by <span class="text-gradient">Customers</span></h2>
 <p>Real feedback from our happy clients</p>
-<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(14,165,233,0.1); padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; color:var(--primary); margin-top:10px;"><i class="fab fa-google"></i> 4.9 Stars on Google (150+ Reviews)</div>
-<div style="margin-top: 15px;"><button class="write-review-btn" onclick="showToast('📝 Review feature coming soon!', 'info')"><i class="fas fa-pencil-alt"></i> Write a Review</button></div>
+<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(14,165,233,0.1); padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; color:var(--primary); margin-top:10px;"><i class="fab fa-google"></i> <span id="googleRatingText">4.9 Stars on Google (150+ Reviews)</span></div>
 </div>
-<div class="reviews-slider">
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
-</div>
+<div class="reviews-slider" id="reviewsSlider"></div>
 </section>
 <section class="faq-section" id="faq">
 <div class="section-header"><h2>Frequently Asked <span class="text-gradient">Questions</span></h2></div>
-<div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available.</div></div>
-<div class="faq-item"><div class="faq-question">How long does dry cleaning take? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service available on request.</div></div>
-<div class="faq-item"><div class="faq-question">Do you clean wedding dresses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees.</div></div>
-<div class="faq-item"><div class="faq-question">What about the 20% first order discount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Use code PARTH20 on the booking page to get 20% off your first order (max ₹200 off).</div></div>
-<div class="faq-item"><div class="faq-question">Is there a minimum order amount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, minimum order value is ₹300 to avail free pickup and delivery service.</div></div>
+<div id="faqContainer"></div>
 </section>
 <section class="info-section" id="contact">
-<div class="info-box"><h3><i class="fas fa-map-marker-alt"></i> Our Location</h3><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card"><i class="fas fa-location-arrow"></i> Open in Google Maps</a></div>
-<div class="info-box"><h3><i class="fas fa-clock"></i> Working Hours</h3><p>Monday - Sunday: 10:00 AM - 10:00 PM</p><p><i class="fas fa-phone"></i> <a href="tel:+919235601645" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p><p><i class="fas fa-envelope"></i> parthdrycleaning@gmail.com</p></div>
+<div class="info-box">
+<h3><i class="fas fa-map-marker-alt"></i> Our Location</h3>
+<p id="infoAddress">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p>
+<a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card" id="mapDirectLink"><i class="fas fa-location-arrow"></i> Open in Google Maps</a>
+</div>
+<div class="info-box">
+<h3><i class="fas fa-clock"></i> Working Hours</h3>
+<p id="infoHours">Monday - Sunday: 10:00 AM - 10:00 PM</p>
+<p><i class="fas fa-phone"></i> <a href="tel:+919235601645" id="infoPhoneLink" style="color:var(--text-muted); text-decoration:none; font-weight:600;" id="infoPhone">+91 92356 01645</a></p>
+<p><i class="fas fa-envelope"></i> <span id="infoEmail">parthdrycleaning@gmail.com</span></p>
+</div>
 </section>
-<div class="map-section"><iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe></div>
+<div class="map-section">
+<iframe class="map-iframe" id="mapFrame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe>
+</div>
 
 <div class="modal-overlay" id="authModal">
 <div class="modal-box">
@@ -716,7 +718,9 @@ function setTimeGreeting(userName) {
     else if(hour >= 12 && hour < 17) greeting = `Good Afternoon${nm}! <span class='text-gradient'>Relax & Unwind</span> 🌤️`;
     else if(hour >= 17 && hour < 22) greeting = `Good Evening${nm}! <span class='text-gradient'>Got Plans?</span> 🌙`;
     else greeting = `Late Night${nm}? <span class='text-gradient'>We've Got You</span> 🦉`;
-    document.getElementById('dynamicGreeting').innerHTML = greeting;
+    document.getElementById('dynamicGreeting') && (document.getElementById('dynamicGreeting').innerHTML = greeting);
+    const heroTitle = document.getElementById('heroTitle');
+    if (heroTitle && !heroTitle.dataset.cmsSet) heroTitle.innerHTML = greeting || `Your Clothes Deserve <span class="text-gradient">Royal Treatment</span>`;
 }
 
 function applyLoggedInUI(displayName) {
@@ -992,7 +996,6 @@ function setProfileHeader(user) {
     document.getElementById('profEmailDisplay').textContent = user.email || 'Phone login user';
 }
 
-// ===== FIX 1: loadProfileStats — Rules-compatible query =====
 function loadProfileStats(uid) {
     db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => {
         let count = 0, items = 0;
@@ -1007,7 +1010,6 @@ function loadProfileStats(uid) {
     }).catch(err => console.warn('Stats load failed:', err));
 }
 
-// ===== FIX 2: loadOrderHistory — Rules-compatible query =====
 function loadOrderHistory() {
     const list = document.getElementById('orderHistoryList');
     if (!auth.currentUser) return;
@@ -1016,24 +1018,13 @@ function loadOrderHistory() {
         <div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div>
         <div class="history-card" style="opacity:.4;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:50%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:75%;"></div></div>
     `;
-    // FIX: Rules-compatible — pehle UID se fetch, phir phone se extra
     db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => {
         const map = new Map();
         snap.forEach(child => {
             const o = child.val();
             if (o && o.orderId) map.set(o.orderId, o);
         });
-        // Phone se bhi try karo (agar profile me phone hai)
-        db.ref('customers/' + uid).once('value').then(pSnap => {
-            const prof = pSnap.exists() ? pSnap.val() : {};
-            const profPhone = last10Digits(prof.phone);
-            // Agar phone hai to phone-based orders bhi add karo (optional — purane orders ke liye)
-            if (profPhone.length === 10) {
-                // Note: phone-based query rules me allow nahi hai, isliye sirf UID-based hi dikhega
-                // Lekin agar future me rules update ho to ye kaam karega
-            }
-            renderOrderHistoryList(map);
-        }).catch(() => renderOrderHistoryList(map));
+        renderOrderHistoryList(map);
     }).catch(err => {
         console.warn('Orders load failed:', err);
         list.innerHTML = `<div class="history-empty"><i class="fas fa-exclamation-circle"></i>Orders load nahi ho paye. Page refresh karo.</div>`;
@@ -1049,7 +1040,7 @@ function renderOrderHistoryList(map) {
                 <i class="fas fa-box-open"></i>
                 Abhi koi order nahi hai.<br>Apna pehla premium order book karo!
                 <br>
-                <a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a>
+                <a href="booking.html" class="care-btn primary book-now-link" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a>
             </div>
         `;
         return;
@@ -1206,11 +1197,128 @@ function loadDynamicCategories() {
         renderPricing();
     }).catch(() => {});
 }
+
+// ===== NEW: CMS Content (hero, info, map) =====
+function loadCMSContent() {
+    db.ref('settings/content').once('value').then(s => {
+        if (!s.exists()) return;
+        const v = s.val() || {};
+        if (v.heroTitle) {
+            const heroTitle = document.getElementById('heroTitle');
+            if (heroTitle) { heroTitle.innerHTML = sanitizeHTML(v.heroTitle); heroTitle.dataset.cmsSet = '1'; }
+        }
+        if (v.heroTag) {
+            const heroTag = document.getElementById('heroTagText');
+            if (heroTag) heroTag.textContent = sanitizeHTML(v.heroTag);
+        }
+        if (v.heroDesc) {
+            const heroDesc = document.getElementById('heroDesc');
+            if (heroDesc) heroDesc.textContent = sanitizeHTML(v.heroDesc);
+        }
+        if (v.address) {
+            const infoAddr = document.getElementById('infoAddress');
+            if (infoAddr) infoAddr.textContent = sanitizeHTML(v.address);
+        }
+        if (v.phone) {
+            const phoneLink = document.getElementById('infoPhoneLink');
+            if (phoneLink) { phoneLink.href = 'tel:+91' + v.phone.replace(/\D/g,''); phoneLink.textContent = sanitizeHTML(v.phone); }
+        }
+        if (v.email) {
+            const emailEl = document.getElementById('infoEmail');
+            if (emailEl) emailEl.textContent = sanitizeHTML(v.email);
+        }
+        if (v.hours) {
+            const hoursEl = document.getElementById('infoHours');
+            if (hoursEl) hoursEl.textContent = sanitizeHTML(v.hours);
+        }
+        if (v.map) {
+            const mapFrame = document.getElementById('mapFrame');
+            const mapLink = document.getElementById('mapDirectLink');
+            if (mapFrame && v.map.includes('embed')) mapFrame.src = v.map;
+            if (mapLink && !v.map.includes('embed')) mapLink.href = v.map;
+        }
+    }).catch(() => {});
+}
+
+// ===== NEW: Dynamic Reviews =====
+function loadDynamicReviews() {
+    db.ref('settings/reviews').once('value').then(s => {
+        const slider = document.getElementById('reviewsSlider');
+        if (!slider) return;
+        if (!s.exists()) {
+            // fallback to hardcoded
+            slider.innerHTML = `
+                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
+                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
+                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
+                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
+            `;
+            slider.innerHTML += slider.innerHTML; // duplicate for infinite scroll
+            return;
+        }
+        const reviews = [];
+        s.forEach(c => reviews.push(c.val()));
+        if (!reviews.length) { slider.innerHTML = '<p style="padding:20px;">No reviews yet.</p>'; return; }
+        let html = reviews.map(r => {
+            const stars = '★'.repeat(Math.min(+r.stars || 5, 5));
+            const starHtml = stars.split('').map(() => '<i class="fas fa-star"></i>').join('');
+            return `<div class="review-card"><div class="stars">${starHtml}</div><p class="review-text">"${sanitizeHTML(r.text || '')}"</p><span class="customer-name">${sanitizeHTML(r.name || 'Customer')}</span><span class="customer-loc">${sanitizeHTML(r.loc || '')}</span></div>`;
+        }).join('');
+        slider.innerHTML = html + html; // duplicate for infinite scroll
+    }).catch(() => {});
+}
+
+// ===== NEW: Dynamic FAQ =====
+function loadDynamicFAQ() {
+    db.ref('settings/faq').once('value').then(s => {
+        const container = document.getElementById('faqContainer');
+        if (!container) return;
+        if (!s.exists()) {
+            container.innerHTML = `
+                <div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available.</div></div>
+                <div class="faq-item"><div class="faq-question">How long does dry cleaning take? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service available on request.</div></div>
+                <div class="faq-item"><div class="faq-question">Do you clean wedding dresses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees.</div></div>
+                <div class="faq-item"><div class="faq-question">Is there a minimum order amount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, minimum order value is ₹300 to avail free pickup and delivery service.</div></div>
+            `;
+            attachFAQListeners();
+            return;
+        }
+        const faqs = [];
+        s.forEach(c => faqs.push(c.val()));
+        if (!faqs.length) { container.innerHTML = '<p style="padding:20px; text-align:center;">No FAQs yet.</p>'; return; }
+        container.innerHTML = faqs.map(f => `<div class="faq-item"><div class="faq-question">${sanitizeHTML(f.q || '')} <i class="fas fa-chevron-down"></i></div><div class="faq-answer">${sanitizeHTML(f.a || '')}</div></div>`).join('');
+        attachFAQListeners();
+    }).catch(() => {});
+}
+function attachFAQListeners() {
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', function() {
+            const parent = this.parentElement;
+            document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
+            parent.classList.toggle('active');
+        });
+    });
+}
+
+// ===== NEW: Booking Open Check =====
 function loadSiteSettings() {
     db.ref('settings/general').once('value').then(s => {
         if (!s.exists()) return;
         const v = s.val() || {};
         const banner = document.getElementById('topBanner');
+        const closedBanner = document.getElementById('closedBanner');
+        const bookBtns = document.querySelectorAll('.book-now-link');
+        
+        // Booking closed enforcement
+        if (v.bookingOpen === false) {
+            if (closedBanner) closedBanner.style.display = 'block';
+            bookBtns.forEach(btn => {
+                btn.classList.add('disabled');
+                btn.onclick = (e) => { e.preventDefault(); showToast('Booking temporarily closed. Please WhatsApp us directly.', 'error'); };
+            });
+        }
+        
+        // Announcement
         if (v.announcement) {
             banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>';
             banner.style.display = 'block';
@@ -1226,6 +1334,9 @@ if (cachedUser && cachedUser.name) applyLoggedInUI(cachedUser.name);
 else setTimeGreeting(null);
 loadDynamicCategories();
 loadSiteSettings();
+loadCMSContent();
+loadDynamicReviews();
+loadDynamicFAQ();
 
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => { if (!waTooltip) return; if (window.scrollY > 60) waTooltip.classList.add('folded'); else waTooltip.classList.remove('folded'); }, { passive: true });
@@ -1244,13 +1355,13 @@ function showToast(msg, type='info'){
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
 document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
-document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() { const parent = this.parentElement; document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); }); parent.classList.toggle('active'); }));
+attachFAQListeners();
 if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topBanner').style.display = 'block';
-document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
+document.getElementById('closeBanner')?.addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
 renderPricing();
 enableListSwipe();
 
-console.log('🧺 ParthindexGen6.4 Active (My Orders + My Account Fixed!)');
+console.log('🧺 ParthindexGen6.5 Active (CMS + BookingOpen)');
 </script>
 </body>
 </html>
