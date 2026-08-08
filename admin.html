@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen20 : SYNTHWAVE (No Fake Seed + Reset CMS + CRUD Editor) -->
+<!-- ParthadminGen20.1 : SYNTHWAVE (No Seed + Reset CMS + CRUD + HeroDesc) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -152,7 +152,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div id="toast"></div>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v20</small></div></div>
+ <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v20.1</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -262,17 +262,19 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     <div class="panel-head"><h3>🌐 Website Content</h3><button class="btn bad" onclick="App.resetCMS()"><i class="fas fa-rotate-left"></i> Reset CMS Data</button></div>
     <div style="padding:16px">
      <div class="form-grid" style="margin:0">
-      <div class="fg"><label>Hero Title</label><input id="cmsHeroTitle"/></div>
+      <div class="fg" style="flex:2"><label>Hero Title (HTML allowed)</label><textarea id="cmsHeroTitle" rows="2" style="resize:vertical;min-height:60px"></textarea></div>
       <div class="fg"><label>Hero Tagline</label><input id="cmsHeroTag"/></div>
-      <div class="fg"><label>Announcement</label><input id="cmsAnnounce"/></div>
+      <div class="fg"><label>Hero Description</label><textarea id="cmsHeroDesc" rows="2"></textarea></div>
      </div>
      <div class="form-grid" style="margin:0">
+      <div class="fg"><label>Announcement</label><input id="cmsAnnounce"/></div>
       <div class="fg"><label>Address</label><input id="cmsAddress"/></div>
       <div class="fg"><label>Phone</label><input id="cmsPhone"/></div>
       <div class="fg"><label>Email</label><input id="cmsEmail"/></div>
       <div class="fg"><label>Hours</label><input id="cmsHours"/></div>
       <div class="fg"><label>Map URL</label><input id="cmsMap"/></div>
      </div>
+     <div style="margin-top:8px;font-size:11px;color:var(--muted)"><i class="fas fa-info-circle"></i> Hero Title me HTML use kar sakte ho: <code>&lt;span class="text-gradient"&gt;Royal Treatment&lt;/span&gt;</code></div>
      <button class="btn solid" style="margin-top:12px" onclick="App.saveContent()"><i class="fas fa-save"></i> Save Website Content</button>
     </div>
    </div>
@@ -344,7 +346,6 @@ function start(){
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
- // CMS: NO fake seed. Sirf DB se load (index apna asli data khud seed karega Gen6.6 me)
  db.ref('settings/content').on('value',s=>{cmsContent=s.val()||{};if($('tab-website').classList.contains('active'))renderCMSContent();});
  db.ref('settings/reviews').on('value',s=>{reviews=[];if(s.exists())s.forEach(c=>reviews.push({id:c.key,...c.val()}));if($('tab-website').classList.contains('active'))renderReviewsEdit();});
  db.ref('settings/faq').on('value',s=>{faqs=[];if(s.exists())s.forEach(c=>faqs.push({id:c.key,...c.val()}));if($('tab-website').classList.contains('active'))renderFaqEdit();});
@@ -382,7 +383,7 @@ function renderServices(){const wrap=$('priceUI');let html='';
   (c.items||[]).forEach((it,idx)=>{html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center"><input value="${it.name}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><button class="btn bad" style="padding:2px 8px;margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${it.price||0}" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price"/><input type="number" value="${it.originalPrice||''}" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/></div>`;});
   html+=`<button class="btn" onclick="App.addItem('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
  wrap.innerHTML=html||'<div class="empty-state"><i class="fas fa-tags"></i>Koi category nahi</div>';}
-function renderCMSContent(){$('cmsHeroTitle').value=cmsContent.heroTitle||'';$('cmsHeroTag').value=cmsContent.heroTag||'';$('cmsAnnounce').value=cmsContent.announcement||'';$('cmsAddress').value=cmsContent.address||'';$('cmsPhone').value=cmsContent.phone||'';$('cmsEmail').value=cmsContent.email||'';$('cmsHours').value=cmsContent.hours||'';$('cmsMap').value=cmsContent.map||'';}
+function renderCMSContent(){$('cmsHeroTitle').value=cmsContent.heroTitle||'';$('cmsHeroTag').value=cmsContent.heroTag||'';$('cmsHeroDesc').value=cmsContent.heroDesc||'';$('cmsAnnounce').value=cmsContent.announcement||'';$('cmsAddress').value=cmsContent.address||'';$('cmsPhone').value=cmsContent.phone||'';$('cmsEmail').value=cmsContent.email||'';$('cmsHours').value=cmsContent.hours||'';$('cmsMap').value=cmsContent.map||'';}
 function renderReviewsEdit(){$('reviewEditList').innerHTML=reviews.length?reviews.map((r,i)=>`<div class="cms-edit-card"><button class="del-btn" onclick="App.delReviewCard(${i})"><i class="fas fa-times"></i></button><div class="edit-row"><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Name</label><input value="${(r.name||'').replace(/"/g,'&quot;')}" onchange="App.updateReview(${i},'name',this.value)"/></div><div style="flex:1"><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Location</label><input value="${(r.loc||'').replace(/"/g,'&quot;')}" onchange="App.updateReview(${i},'loc',this.value)"/></div></div><div class="edit-row"><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Stars (${r.stars||5})</label><div class="stars-row">${[1,2,3,4,5].map(s=>`<div class="star ${s<=(r.stars||5)?'active':''}" onclick="App.updateReview(${i},'stars',${s})"><i class="fas fa-star"></i></div>`).join('')}</div></div></div><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Review Text</label><textarea onchange="App.updateReview(${i},'text',this.value)">${(r.text||'').replace(/</g,'&lt;')}</textarea></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-star"></i>Koi review nahi — "Add Review" se naya banao</div>';}
 function renderFaqEdit(){$('faqEditList').innerHTML=faqs.length?faqs.map((f,i)=>`<div class="cms-edit-card"><button class="del-btn" onclick="App.delFaqCard(${i})"><i class="fas fa-times"></i></button><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Question</label><input style="width:100%;margin-bottom:8px" value="${(f.q||'').replace(/"/g,'&quot;')}" onchange="App.updateFaq(${i},'q',this.value)"/></div><div><label style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase">Answer</label><textarea onchange="App.updateFaq(${i},'a',this.value)">${(f.a||'').replace(/</g,'&lt;')}</textarea></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-circle-question"></i>Koi FAQ nahi — "Add FAQ" se naya banao</div>';}
 const App={
@@ -405,7 +406,7 @@ const App={
  copyCode:c=>{if(navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast('Copied: '+c));else toast('Code: '+c);},
  regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));const b=boys.find(x=>x.id===id);if(b){b.code=c;renderBoys();}db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c));},
  saveControl:()=>{db.ref('settings/general').update({bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:+$('ctlMin').value||300,expressPercent:+$('ctlExpress').value||90}).then(()=>toast('✅ Settings saved')).catch(e=>toast(e.message,'err'));},
- saveContent:()=>{db.ref('settings/content').update({heroTitle:$('cmsHeroTitle').value.trim(),heroTag:$('cmsHeroTag').value.trim(),announcement:$('cmsAnnounce').value.trim(),address:$('cmsAddress').value.trim(),phone:$('cmsPhone').value.trim(),email:$('cmsEmail').value.trim(),hours:$('cmsHours').value.trim(),map:$('cmsMap').value.trim()}).then(()=>toast('✅ Website content saved')).catch(e=>toast(e.message,'err'));},
+ saveContent:()=>{db.ref('settings/content').set({heroTitle:$('cmsHeroTitle').value,heroTag:$('cmsHeroTag').value.trim(),heroDesc:$('cmsHeroDesc').value.trim(),announcement:$('cmsAnnounce').value.trim(),address:$('cmsAddress').value.trim(),phone:$('cmsPhone').value.trim(),email:$('cmsEmail').value.trim(),hours:$('cmsHours').value.trim(),map:$('cmsMap').value.trim()}).then(()=>toast('✅ Website content saved! Index par live')).catch(e=>toast(e.message,'err'));},
  resetCMS:()=>askConfirm('Reset CMS data? Isse DB ka CMS data saaf hoga. Phir index refresh karo — wo apna ASLI data wapas la kar DB me seed karega (Gen6.6).',()=>{Promise.all([db.ref('settings/content').remove(),db.ref('settings/reviews').remove(),db.ref('settings/faq').remove()]).then(()=>{reviews=[];faqs=[];cmsContent={};renderCMSContent();renderReviewsEdit();renderFaqEdit();toast('✅ CMS data reset. Ab index refresh karo.');});}),
  addReviewCard:()=>{reviews.push({name:'',loc:'',stars:5,text:''});renderReviewsEdit();toast('Naya review card juda — Save All karo');},
  delReviewCard:(i)=>askConfirm('Delete review?',()=>{reviews.splice(i,1);renderReviewsEdit();toast('Review hata — Save All karo');}),
@@ -436,7 +437,7 @@ const App={
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,TimeSlot,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},"${o.timeSlot||''}",${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v20 (No fake seed + Reset CMS + CRUD) online');
+console.log('🌆 PARTH OS v20.1 (No Seed + HeroDesc + Reset CMS) online');
 </script>
 </body>
 </html>
