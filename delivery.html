@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen1 : Delivery Partner Panel (Unique Code Login) -->
+<!-- ParthdeliveryGen2 : Delivery Partner (Unique Code Login) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -25,7 +25,7 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
 .hello p{font-size:13px;opacity:.9}
 .hello .code-chip{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--shadow)}
 .stat .n{font-size:22px;font-weight:800;color:var(--primary)}
 .stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .sec{font-size:14px;font-weight:800;margin:14px 0 10px;display:flex;align-items:center;gap:8px}
@@ -47,7 +47,6 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
 .oc-actions a.call{border-color:var(--good);color:var(--good)}
 .oc-actions a.map{border-color:var(--primary);color:var(--primary)}
 .btn-main{width:100%;padding:14px;border-radius:14px;border:none;background:var(--grad);color:#fff;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-main:disabled{opacity:.5}
 .btn-main.done{background:var(--good)}
 .empty{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty i{font-size:40px;opacity:.4;margin-bottom:10px;display:block}
@@ -56,7 +55,9 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
 .login-box{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:36px 28px;max-width:380px;width:100%;text-align:center;box-shadow:var(--shadow)}
 .login-box .lg{font-family:'Pacifico';font-size:26px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .login-box input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:14px;border-radius:14px;margin:16px 0 12px;font-size:16px;text-align:center;letter-spacing:2px;text-transform:uppercase}
-.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);color:var(--text);padding:12px 18px;border-radius:14px;font-weight:700;box-shadow:var(--shadow);z-index:99;display:flex;gap:8px;align-items:center}
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:none}
+#toast .t{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--good);color:var(--text);padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:8px;align-items:center}
+#toast .t.err{border-left-color:var(--bad)}
 </style>
 </head>
 <body>
@@ -100,11 +101,11 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 const $=id=>document.getElementById(id);
 let BOY=JSON.parse(localStorage.getItem('pdc_boy')||'null'), ordersRef=null;
 const LABEL={pending:'Pending',picked_up:'Picked Up',out_for_delivery:'Out for Delivery',delivered:'Delivered'};
-function toast(m,t){const el=$('toast');el.innerHTML=`<i class="fas fa-${t==='err'?'circle-exclamation':'circle-check'}" style="color:${t==='err'?'var(--bad)':'var(--good)'}"></i>${m}`;el.style.display='flex';setTimeout(()=>el.style.display='none',2500);}
+function toast(m,t){const el=$('toast');el.innerHTML=`<div class="t ${t==='err'?'err':''}"><i class="fas fa-${t==='err'?'circle-exclamation':'circle-check'}"></i>${m}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2500);}
 $('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',l?'light':'dark');$('themeBtn').innerHTML=l?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';localStorage.setItem('pdc_dtheme',l?'light':'dark');};
 if(localStorage.getItem('pdc_dtheme')==='dark'){document.documentElement.setAttribute('data-theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}
 $('logoutBtn').onclick=()=>{localStorage.removeItem('pdc_boy');BOY=null;auth.signOut();location.reload();};
-// LOGIN with unique code
+// LOGIN with unique code (no OTP)
 $('loginBtn').onclick=()=>{
  const code=($('codeInput').value||'').trim().toUpperCase();
  if(!code)return;
@@ -113,13 +114,11 @@ $('loginBtn').onclick=()=>{
    if(!s.exists()){$('loginErr').style.display='block';return;}
    let boy=null;s.forEach(c=>boy={id:c.key,...c.val()});
    auth.signInAnonymously().then(()=>{
-     const uid=auth.currentUser.uid;
-     const phoneE164='+91'+boy.phone;
+     const uid=auth.currentUser.uid;const phoneE164='+91'+boy.phone;
      db.ref('boy_sessions/'+uid).set({phone:boy.phone,phoneE164,name:boy.name,boyId:boy.id}).then(()=>{
-       BOY={...boy,phoneE164};localStorage.setItem('pdc_boy',JSON.stringify(BOY));
-       enterApp();
+       BOY={...boy,phoneE164};localStorage.setItem('pdc_boy',JSON.stringify(BOY));enterApp();
      });
-   });
+   }).catch(e=>toast(e.message,'err'));
  }).catch(()=>{$('loginErr').style.display='block';});
 };
 function enterApp(){
@@ -131,24 +130,24 @@ function enterApp(){
 function listen(){
  if(ordersRef)ordersRef.ref.off('value',ordersRef.cb);
  const ref=db.ref('orders').orderByChild('assigned_to_e164').equalTo(BOY.phoneE164);
- const cb=ref.on('value',s=>{render(s);},{ });
+ const cb=ref.on('value',s=>render(s));
  ordersRef={ref,cb};
 }
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function render(s){
  const today=dayStr(new Date());let act=[],done=[];let total=0;
- s.forEach(c=>{const o=c.val();if(!o)return;if(o.status==='delivered'){total++;if((o.deliveredAt?dayStr(new Date(o.deliveredAt)):'')===today)done.push(o);}else act.push(o);});
+ s.forEach(c=>{const o=c.val();if(!o)return;o._id=c.key;if(o.status==='delivered'){total++;if((o.deliveredAt?dayStr(new Date(o.deliveredAt)):'')===today)done.push(o);}else act.push(o);});
  act.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
  $('sActive').textContent=act.length;$('sToday').textContent=done.length;$('sTotal').textContent=total;
  $('activeList').innerHTML=act.length?act.map(o=>{
   const st=o.status||'pending';
   const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="chip">${k} x${v}</span>`).join('');
   let btn='';
-  if(st==='pending')btn=`<button class="btn-main" onclick="adv('${o._id||o.id}','picked_up')"><i class="fas fa-box"></i> Start Pickup</button>`;
-  else if(st==='picked_up')btn=`<button class="btn-main" onclick="adv('${o._id||o.id}','out_for_delivery')"><i class="fas fa-truck"></i> Start Delivery</button>`;
-  else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${o._id||o.id}','delivered')"><i class="fas fa-check"></i> Mark Delivered</button>`;
+  if(st==='pending')btn=`<button class="btn-main" onclick="adv('${o._id}','picked_up')"><i class="fas fa-box"></i> Start Pickup</button>`;
+  else if(st==='picked_up')btn=`<button class="btn-main" onclick="adv('${o._id}','out_for_delivery')"><i class="fas fa-truck"></i> Start Delivery</button>`;
+  else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${o._id}','delivered')"><i class="fas fa-check"></i> Mark Delivered</button>`;
   return `<div class="order-card">
-   <div class="oc-top"><span class="oc-id">#${o.orderId||o.id}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''} <span class="badge ${st}">${LABEL[st]||st}</span></span></div>
+   <div class="oc-top"><span class="oc-id">#${o.orderId||o._id}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''} <span class="badge ${st}">${LABEL[st]||st}</span></span></div>
    <div class="oc-name">${o.customerName||o.name||'-'}</div>
    <div class="oc-addr"><i class="fas fa-location-dot"></i> ${o.address||'-'}</div>
    <div class="oc-meta">${items}<span class="chip">₹${o.total||0}</span><span class="chip">${o.timeSlot||''}</span></div>
@@ -156,16 +155,16 @@ function render(s){
    ${btn}
   </div>`;
  }).join(''):'<div class="empty"><i class="fas fa-mug-hot"></i>Koi active order nahi. Aaram karo! ☕</div>';
- $('doneList').innerHTML=done.length?done.map(o=>`<div class="order-card" style="padding:12px 16px"><div class="oc-top"><span class="oc-id">#${o.orderId||o.id}</span><span class="badge delivered">✅ ₹${o.total||0}</span></div><div class="oc-name" style="font-size:13px">${o.customerName||o.name||'-'}</div></div>`).join(''):'<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery nahi</div>';
+ $('doneList').innerHTML=done.length?done.map(o=>`<div class="order-card" style="padding:12px 16px"><div class="oc-top"><span class="oc-id">#${o.orderId||o._id}</span><span class="badge delivered">✅ ₹${o.total||0}</span></div><div class="oc-name" style="font-size:13px">${o.customerName||o.name||'-'}</div></div>`).join(''):'<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery nahi</div>';
 }
 window.adv=(id,next)=>{
  const up={status:next};
- if(next==='delivered'){up.deliveredAt=firebase.database.ServerValue.TIMESTAMP; if(BOY&&BOY.id)db.ref('delivery_boys/'+BOY.id+'/total_deliveries').transaction(v=>(v||0)+1);}
+ if(next==='delivered'){up.deliveredAt=firebase.database.ServerValue.TIMESTAMP;if(BOY&&BOY.id)db.ref('delivery_boys/'+BOY.id+'/total_deliveries').transaction(v=>(v||0)+1);}
  db.ref('orders/'+id).update(up).then(()=>toast(next==='delivered'?'🎉 Delivered!':'Status updated')).catch(e=>toast(e.message,'err'));
 };
 // auto-enter if session exists
 if(BOY){ auth.onAuthStateChanged(u=>{ if(u){enterApp();} else { auth.signInAnonymously().then(()=>{ if(BOY)db.ref('boy_sessions/'+auth.currentUser.uid).set({phone:BOY.phone,phoneE164:BOY.phoneE164,name:BOY.name,boyId:BOY.id}); }); } }); }
-console.log('🛵 Parth Delivery Partner online');
+console.log('🛵 Parth Delivery Gen2 online');
 </script>
 </body>
 </html>
