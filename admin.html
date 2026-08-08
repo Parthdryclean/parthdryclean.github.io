@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- ParthadminGen15 : QUANTUM HUD (Hex-grid Sci-Fi + Accumulating Lists) -->
+<!-- ParthadminGen16 : JARVIS HUD -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PARTH OS · Quantum HUD</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet"/>
+<title>PARTH OS · JARVIS HUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -12,21 +12,19 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
- --bg:#030712; --panel:rgba(8,145,178,.06); --panel2:rgba(8,145,178,.10);
- --line:rgba(34,211,238,.22); --line2:rgba(34,211,238,.45);
- --text:#e0faff; --muted:#7ba6b8; --cyan:#22d3ee; --cyan-d:#0891b2; --amber:#fbbf24; --mag:#e879f9;
- --good:#34d399; --warn:#fbbf24; --bad:#f87171;
- --glow:0 0 14px rgba(34,211,238,.35); --r:14px;
+ --bg:#02060e; --panel:rgba(8,47,73,.35); --panel2:rgba(8,47,73,.55);
+ --line:rgba(56,189,248,.25); --line2:rgba(56,189,248,.55);
+ --text:#e0f2fe; --muted:#7d9bb8; --cyan:#38bdf8; --cyan-d:#0284c7; --gold:#fbbf24;
+ --good:#34d399; --warn:#fbbf24; --bad:#f87171; --glow:0 0 16px rgba(56,189,248,.4); --r:14px;
 }
 [data-theme="light"]{
- --bg:#eef8fb; --panel:#ffffff; --panel2:#e0f6fc; --line:#bfe8f2; --line2:#0891b2;
- --text:#083344; --muted:#5b7a88; --cyan:#0891b2; --cyan-d:#0e7490; --amber:#d97706; --mag:#c026d3;
- --good:#059669; --warn:#d97706; --bad:#dc2626; --glow:0 2px 12px rgba(8,145,178,.2);
+ --bg:#eef6fd; --panel:#ffffff; --panel2:#e3f2fd; --line:#bfe0f5; --line2:#0284c7;
+ --text:#082f49; --muted:#5b7a95; --cyan:#0284c7; --cyan-d:#0369a1; --gold:#d97706;
+ --good:#059669; --warn:#d97706; --bad:#dc2626; --glow:0 2px 12px rgba(2,132,199,.2);
 }
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;
- background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill='none' stroke='%2322d3ee' stroke-opacity='0.07'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9z'/%3E%3C/g%3E%3C/svg%3E")}
-[data-theme="light"] body{background-image:none}
-h1,h2,h3,.disp{font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.5px}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;
+ background-image:repeating-radial-gradient(circle at 50% 40%, rgba(56,189,248,.05) 0 1px, transparent 1px 90px),radial-gradient(700px 400px at 50% -10%,rgba(56,189,248,.14),transparent)}
+h1,h2,h3,.disp{font-family:'Orbitron',sans-serif;letter-spacing:1px}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
 button,input,select,textarea{font-family:inherit;outline:none}
 /* TOAST */
@@ -34,7 +32,7 @@ button,input,select,textarea{font-family:inherit;outline:none}
 #toast .t{background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:12px 22px;border-radius:10px;font-weight:700;box-shadow:var(--glow);display:flex;gap:10px;align-items:center}
 #toast .t.err{border-left-color:var(--bad)}
 /* CONFIRM */
-.modal{position:fixed;inset:0;background:rgba(3,7,18,.7);backdrop-filter:blur(8px);z-index:998;display:none;align-items:center;justify-content:center}
+.modal{position:fixed;inset:0;background:rgba(2,6,14,.7);backdrop-filter:blur(8px);z-index:998;display:none;align-items:center;justify-content:center}
 .modal.open{display:flex}
 .modal-box{background:var(--panel);backdrop-filter:blur(16px);border:1px solid var(--line2);border-radius:16px;padding:26px;max-width:360px;width:92%;text-align:center;box-shadow:var(--glow)}
 .modal-box p{margin-bottom:18px;font-weight:700}
@@ -43,13 +41,16 @@ button,input,select,textarea{font-family:inherit;outline:none}
 #confirmYes{background:var(--bad);color:#fff;border-color:var(--bad)}
 /* SIDEBAR */
 .sidebar{width:240px;flex-shrink:0;background:var(--panel);backdrop-filter:blur(16px);border-right:1px solid var(--line);min-height:100vh;padding:20px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:5}
-.brand{display:flex;align-items:center;margin:0 4px 20px;padding:12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel2);box-shadow:inset 0 0 20px rgba(34,211,238,.08)}
-.brand .os-logo{font-family:'Rajdhani';font-weight:700;font-size:19px;color:var(--cyan);text-shadow:var(--glow)}
+.brand{display:flex;align-items:center;gap:12px;margin:0 4px 20px;padding:12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel2);position:relative;overflow:hidden}
+.brand .reactor{width:34px;height:34px;border-radius:50%;border:2px solid var(--cyan);box-shadow:var(--glow),inset 0 0 10px rgba(56,189,248,.5);position:relative;flex-shrink:0}
+.brand .reactor::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle,var(--cyan),transparent 70%);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.brand .os-logo{font-family:'Orbitron';font-weight:700;font-size:17px;color:var(--cyan);text-shadow:var(--glow)}
 .brand small{display:block;font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:.2s;position:relative}
 .nav-item i{width:18px;text-align:center}
 .nav-item:hover{color:var(--cyan);background:var(--panel2)}
-.nav-item.active{color:var(--cyan);background:var(--panel2);border-color:var(--line2);box-shadow:inset 0 0 14px rgba(34,211,238,.12)}
+.nav-item.active{color:var(--cyan);background:var(--panel2);border-color:var(--line2);box-shadow:inset 0 0 14px rgba(56,189,248,.12)}
 .nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan);box-shadow:var(--glow)}
 .nav-item .badge{margin-left:auto;background:var(--bad);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px}
 .side-foot{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
@@ -59,66 +60,62 @@ button,input,select,textarea{font-family:inherit;outline:none}
 /* MAIN */
 .main{flex:1;padding:24px 28px;min-width:0;position:relative}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-.page-title h2{font-size:24px;color:var(--cyan);text-shadow:var(--glow)}
+.page-title h2{font-size:22px;color:var(--cyan);text-shadow:var(--glow)}
 .page-title p{color:var(--muted);font-size:13px;margin-top:2px}
 .top-actions{display:flex;gap:8px}
 .icon-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;font-size:15px}
 .icon-btn:hover{color:var(--cyan);box-shadow:var(--glow)}
 .menu-toggle{display:none}
-/* HUD CARDS */
-.bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px}
-.hud{background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);padding:18px;position:relative;transition:.25s;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
-.hud:hover{border-color:var(--line2);box-shadow:var(--glow)}
-.hud .ic{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px;border:1px solid var(--line)}
-.ic.c{background:rgba(34,211,238,.15);color:var(--cyan)}.ic.g{background:rgba(52,211,153,.15);color:var(--good)}
-.ic.w{background:rgba(251,191,36,.15);color:var(--warn)}.ic.v{background:rgba(232,121,249,.15);color:var(--mag)}.ic.i{background:rgba(34,211,238,.15);color:var(--cyan)}
-.hud .num{font-family:'Rajdhani';font-size:28px;font-weight:700;color:var(--text)}
-.hud .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.hud .delta{font-size:11px;font-weight:700;margin-top:4px}.delta.up{color:var(--good)}.delta.dn{color:var(--bad)}
-/* TABS */
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-.tabs button{padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;display:flex;gap:8px;align-items:center}
-.tabs button:hover{color:var(--cyan)}
-.tabs button.active{color:var(--cyan);background:var(--panel2);border-color:var(--line2);box-shadow:var(--glow)}
-.tab-content{display:none;animation:fadeUp .3s ease}.tab-content.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-/* PANEL/TABLE */
-.panel{background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+/* GAUGES */
+.gauges{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+.gauge{position:relative;width:110px;text-align:center}
+.gauge svg{display:block;margin:0 auto}
+.gauge .g-val{position:absolute;top:34px;left:0;right:0;font-family:'Orbitron';font-size:16px;font-weight:700;color:var(--text)}
+.gauge .g-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.reactor-big{width:120px;height:120px;border-radius:50%;border:2px solid var(--cyan);box-shadow:var(--glow),inset 0 0 24px rgba(56,189,248,.4);position:relative;margin:0 10px}
+.reactor-big::before{content:'';position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,var(--cyan),transparent 70%);animation:pulse 2s infinite}
+.reactor-big::after{content:'';position:absolute;inset:-10px;border-radius:50%;border:1px dashed var(--line2);animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* PANELS */
+.panel{background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;position:relative}
+.panel::before,.panel::after{content:'';position:absolute;width:16px;height:16px;border:2px solid var(--cyan);opacity:.6}
+.panel::before{top:6px;left:6px;border-right:none;border-bottom:none}
+.panel::after{bottom:6px;right:6px;border-left:none;border-top:none}
 .panel-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.panel-head h3{font-size:15px;color:var(--cyan)}
+.panel-head h3{font-size:14px;color:var(--cyan)}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.toolbar input,.toolbar select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:10px;font-size:13px}
+.toolbar input,.toolbar select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:10px;font-size:14px}
 .toolbar input{flex:1;min-width:160px}
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:1000px}
-th{padding:12px 14px;text-align:left;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--line2)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:1000px}
+th{padding:12px 14px;text-align:left;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--line2);font-family:'Orbitron'}
 td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:hover td{background:var(--panel2)}
 .row-urgent td{background:rgba(251,191,36,.08)}.row-overdue td{background:rgba(248,113,113,.08)}
-table select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:8px;font-size:12px}
-.btn{padding:9px 15px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+table select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:8px;font-size:13px}
+.btn{padding:9px 15px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
 .btn:hover{border-color:var(--line2);color:var(--cyan);box-shadow:var(--glow)}
 .btn.good{border-color:var(--good);color:var(--good)}.btn.bad{border-color:var(--bad);color:var(--bad)}
 .btn.solid{background:linear-gradient(135deg,var(--cyan-d),var(--cyan));border:none;color:#001018;font-weight:800}
 .btn.solid:hover{box-shadow:var(--glow)}
 .action-cell{display:flex;flex-direction:column;gap:6px}
-.item-badge{display:inline-block;background:rgba(34,211,238,.12);border:1px solid var(--line);color:var(--cyan);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin:2px}
+.item-badge{display:inline-block;background:rgba(56,189,248,.12);border:1px solid var(--line);color:var(--cyan);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;margin:2px}
 /* FORMS */
 .form-grid{display:flex;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;align-items:flex-end}
 .form-grid .fg{flex:1;min-width:120px}
 .form-grid label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-.form-grid input,.form-grid select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:10px;font-size:13px}
+.form-grid input,.form-grid select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:10px;font-size:14px}
 .list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:8px}
-.list-item .name{font-weight:700}.list-item .sub{color:var(--muted);font-size:12px}
+.list-item .name{font-weight:700}.list-item .sub{color:var(--muted);font-size:13px}
 .type-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800}
 .type-badge.first_order{background:rgba(251,191,36,.15);color:var(--warn)}.type-badge.general{background:rgba(52,211,153,.15);color:var(--good)}
-.type-badge.code{background:rgba(34,211,238,.15);color:var(--cyan);font-family:'Rajdhani'}
+.type-badge.code{background:rgba(56,189,248,.15);color:var(--cyan);font-family:'Orbitron'}
 .cat-block{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
 .cat-head{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
-.cat-head input{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px}
+.cat-head input{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;font-size:14px}
 .item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
 .item-box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px}
-.item-box input{width:100%;background:transparent;border:1px solid var(--line);color:var(--text);padding:7px 8px;border-radius:8px;font-size:12px;margin-top:4px}
+.item-box input{width:100%;background:transparent;border:1px solid var(--line);color:var(--text);padding:7px 8px;border-radius:8px;font-size:13px;margin-top:4px}
 .switch{position:relative;display:inline-block;width:46px;height:24px}
 .switch input{opacity:0;width:0;height:0}
 .switch .sl{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line);border-radius:30px;transition:.3s;cursor:pointer}
@@ -126,26 +123,29 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .switch input:checked + .sl{border-color:var(--good);background:rgba(52,211,153,.15)}
 .switch input:checked + .sl:before{transform:translateX(22px);background:var(--good);box-shadow:0 0 8px var(--good)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-row .bl{width:90px;font-size:12px;color:var(--muted);font-weight:600}
+.bar-row .bl{width:90px;font-size:13px;color:var(--muted);font-weight:600}
 .bar-row .track{flex:1;height:10px;background:var(--panel2);border-radius:10px;overflow:hidden}
-.bar-row .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--mag));border-radius:10px}
-.bar-row .bv{width:70px;text-align:right;font-size:12px;font-weight:700}
+.bar-row .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:10px}
+.bar-row .bv{width:70px;text-align:right;font-size:13px;font-weight:700}
 /* LOGIN */
 .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%}
 .login-box{background:var(--panel);backdrop-filter:blur(16px);border:1px solid var(--line2);border-radius:20px;padding:40px 34px;max-width:400px;width:100%;text-align:center;box-shadow:var(--glow)}
-.login-box .os-logo{font-family:'Rajdhani';font-size:26px;font-weight:700;color:var(--cyan);text-shadow:var(--glow)}
+.login-box .reactor-big{margin:0 auto 16px;width:90px;height:90px}
+.login-box .os-logo{font-family:'Orbitron';font-size:22px;color:var(--cyan);text-shadow:var(--glow)}
 .login-box input{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:10px;margin-bottom:12px;font-size:14px}
 .login-box .btn{width:100%;justify-content:center;padding:13px}
+.tab-content{display:none;animation:fadeUp .3s ease}.tab-content.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .dashboard{display:none}.dashboard.active{display:block}
 .empty-state{text-align:center;padding:40px;color:var(--muted)}.empty-state i{font-size:40px;opacity:.4;margin-bottom:10px;display:block}
-@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;position:relative;display:none}.sidebar.open{display:block}.menu-toggle{display:block}.main{padding:16px}.bento{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;position:relative;display:none}.sidebar.open{display:block}.menu-toggle{display:block}.main{padding:16px}.gauges{justify-content:center}}
 </style>
 </head>
 <body>
 <div id="toast"></div>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH OS</span><small>Quantum HUD v15</small></div></div>
+ <div class="brand"><div class="reactor"></div><div><span class="os-logo">PARTH OS</span><small>JARVIS HUD v16</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -173,6 +173,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
  </div>
  <div class="login-screen" id="loginScreen" style="display:none">
   <div class="login-box">
+   <div class="reactor-big"></div>
    <div class="os-logo">PARTH OS</div>
    <p style="color:var(--muted);font-size:12px;margin:6px 0 18px;letter-spacing:1px">ADMIN ACCESS ONLY</p>
    <input type="email" id="adminEmailInput" value="admin@parthdryclean.com"/>
@@ -183,14 +184,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
  </div>
  <div class="dashboard active" id="dashboard">
   <div class="tab-content active" id="tab-dashboard">
-   <div class="bento">
-    <div class="hud"><div class="ic i"><i class="fas fa-bag-shopping"></i></div><div class="num" id="dToday">0</div><div class="lbl">Aaj ke Orders</div><div class="delta" id="dTodayDelta"></div></div>
-    <div class="hud"><div class="ic g"><i class="fas fa-indian-rupee-sign"></i></div><div class="num" id="dRevToday">₹0</div><div class="lbl">Aaj Revenue</div><div class="delta" id="dRevDelta"></div></div>
-    <div class="hud"><div class="ic w"><i class="fas fa-clock"></i></div><div class="num" id="dPending">0</div><div class="lbl">Pending</div></div>
-    <div class="hud"><div class="ic v"><i class="fas fa-truck"></i></div><div class="num" id="dActive">0</div><div class="lbl">Active</div></div>
-    <div class="hud"><div class="ic g"><i class="fas fa-circle-check"></i></div><div class="num" id="dDelivered">0</div><div class="lbl">Delivered</div></div>
-    <div class="hud"><div class="ic c"><i class="fas fa-users"></i></div><div class="num" id="dCustomers">0</div><div class="lbl">Customers</div></div>
-   </div>
+   <div class="gauges" id="gauges"></div>
    <div class="panel"><div class="panel-head"><h3>🔥 Popular Items (Top 5)</h3></div><div style="padding:16px" id="popularList"></div></div>
   </div>
   <div class="tab-content" id="tab-orders">
@@ -278,9 +272,9 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Phone</th><th>Address</th><th>Orders</th><th>Total Spent</th></tr></thead><tbody id="custBody"></tbody></table></div></div>
   </div>
   <div class="tab-content" id="tab-control">
-   <div class="bento">
-    <div class="hud"><div class="ic g"><i class="fas fa-store"></i></div><div class="lbl" style="margin-bottom:8px">Booking Open</div><label class="switch"><input type="checkbox" id="ctlBookingOpen" onchange="App.saveControl()"><span class="sl"></span></label></div>
-    <div class="hud"><div class="ic w"><i class="fas fa-ticket"></i></div><div class="lbl" style="margin-bottom:8px">Coupons Enabled</div><label class="switch"><input type="checkbox" id="ctlCoupon" onchange="App.saveControl()"><span class="sl"></span></label></div>
+   <div class="gauges">
+    <div class="panel" style="padding:18px"><div class="g-lbl" style="margin-bottom:8px">Booking Open</div><label class="switch"><input type="checkbox" id="ctlBookingOpen" onchange="App.saveControl()"><span class="sl"></span></label></div>
+    <div class="panel" style="padding:18px"><div class="g-lbl" style="margin-bottom:8px">Coupons Enabled</div><label class="switch"><input type="checkbox" id="ctlCoupon" onchange="App.saveControl()"><span class="sl"></span></label></div>
    </div>
    <div class="form-grid">
     <div class="fg"><label>Min Order ₹</label><input id="ctlMin" type="number"/></div>
@@ -289,12 +283,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
   </div>
   <div class="tab-content" id="tab-reports">
-   <div class="bento">
-    <div class="hud"><div class="ic i"><i class="fas fa-box"></i></div><div class="num" id="rTotal">0</div><div class="lbl">Total Orders</div></div>
-    <div class="hud"><div class="ic g"><i class="fas fa-indian-rupee-sign"></i></div><div class="num" id="rRev">₹0</div><div class="lbl">Revenue</div></div>
-    <div class="hud"><div class="ic w"><i class="fas fa-tags"></i></div><div class="num" id="rDisc">₹0</div><div class="lbl">Discount</div></div>
-    <div class="hud"><div class="ic v"><i class="fas fa-receipt"></i></div><div class="num" id="rAvg">₹0</div><div class="lbl">Avg Order</div></div>
-   </div>
+   <div class="gauges" id="repGauges"></div>
    <div class="panel"><div class="panel-head"><h3>📈 Last 7 Days Revenue</h3></div><div style="padding:16px" id="revBars"></div></div>
   </div>
  </div>
@@ -328,34 +317,34 @@ function start(){
  db.ref('settings/content').on('value',s=>{const v=s.val()||{};$('cmsHeroTitle').value=v.heroTitle||'';$('cmsHeroTag').value=v.heroTag||'';$('cmsAnnounce').value=v.announcement||'';$('cmsAddress').value=v.address||'';$('cmsPhone').value=v.phone||'';$('cmsEmail').value=v.email||'';$('cmsHours').value=v.hours||'';$('cmsMap').value=v.map||'';});
  db.ref('settings/reviews').on('value',s=>renderReviews(s));
  db.ref('settings/faq').on('value',s=>renderFaq(s));
- // seed lists once (local source of truth)
  db.ref('delivery_boys').once('value').then(s=>{boys=[];if(s.exists())s.forEach(c=>boys.push({id:c.key,...c.val()}));renderBoys();});
  db.ref('settings/coupons').once('value').then(s=>{coupons=[];if(s.exists())s.forEach(c=>coupons.push({code:c.key,...c.val()}));renderCoupons();});
 }
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function ring(val,max,label,color){const pct=max?Math.min(val/max,1):0;const r=40,c=2*Math.PI*r,off=c*(1-pct);
+ return `<div class="gauge"><svg width="96" height="96"><circle cx="48" cy="48" r="${r}" stroke="rgba(56,189,248,.15)" stroke-width="7" fill="none"/><circle cx="48" cy="48" r="${r}" stroke="${color}" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 48 48)"/></svg><div class="g-val">${val}</div><div class="g-lbl">${label}</div></div>`;}
 function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date());const yest=dayStr(new Date(Date.now()-864e5));let tT=0,yT=0,rT=0,rY=0,pend=0,act=0,del=0;const itemCount={};
  ordersSnap.forEach(c=>{const o=c.val();if(!o)return;const d=o.createdAt?dayStr(new Date(o.createdAt)):'';const rev=(o.status==='delivered')?(+o.total||0):0;
   if(d===today){tT++;rT+=rev;} if(d===yest){yT++;rY+=rev;} const st=o.status||'pending'; if(st==='pending')pend++; if(['picked_up','processing','quality_check','out_for_delivery'].includes(st))act++; if(st==='delivered')del++;
   for(const k in(o.items||{}))itemCount[k]=(itemCount[k]||0)+o.items[k];});
- $('dToday').textContent=tT;$('dRevToday').textContent='₹'+rT;$('dPending').textContent=pend;$('dActive').textContent=act;$('dDelivered').textContent=del;$('dCustomers').textContent=Object.keys(customers).length;$('orderBadge').textContent=pend;
- $('dTodayDelta').innerHTML=tT>=yT?`<span class="delta up">▲ ${tT-yT} vs kal</span>`:`<span class="delta dn">▼ ${yT-tT} vs kal</span>`;
- $('dRevDelta').innerHTML=rT>=rY?`<span class="delta up">▲ ₹${rT-rY} vs kal</span>`:`<span class="delta dn">▼ ₹${rY-rT} vs kal</span>`;
+ $('orderBadge').textContent=pend;
+ $('gauges').innerHTML=`<div class="reactor-big"></div>`+ring(tT,Math.max(tT,yT,1),'Aaj Orders','var(--cyan)')+ring(pend,Math.max(pend,1),'Pending','var(--warn)')+ring(act,Math.max(act,1),'Active','var(--gold)')+ring(del,Math.max(del,1),'Delivered','var(--good)')+ring(Object.keys(customers).length,Math.max(Object.keys(customers).length,1),'Customers','var(--cyan)');
  const top=Object.entries(itemCount).sort((a,b)=>b[1]-a[1]).slice(0,5);const max=top.length?top[0][1]:1;
  $('popularList').innerHTML=top.length?top.map(([k,v])=>`<div class="bar-row"><div class="bl">${k}</div><div class="track"><div class="fill" style="width:${(v/max)*100}%"></div></div><div class="bv">${v}</div></div>`).join(''):'<div class="empty-state"><i class="fas fa-chart-simple"></i>Abhi koi data nahi</div>';}
 function renderOrders(){ if(!ordersSnap)return; const q=($('orderSearch').value||'').toLowerCase();const f=$('orderFilter').value;let list=[];ordersSnap.forEach(c=>{const o=c.val();if(o)list.push({id:c.key,...o});});
  list=list.filter(o=>{const m=!q||(o.orderId||'').toLowerCase().includes(q)||(o.customerName||o.name||'').toLowerCase().includes(q)||(o.phone||'').includes(q);const s=f==='all'||(o.status||'pending')===f;return m&&s;});
  list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));const today=dayStr(new Date());
  $('ordersBody').innerHTML=list.length?list.map(o=>{const st=o.status||'pending';const rc=(st!=='delivered'&&st!=='cancelled')?(o.pickupDate<today?'row-overdue':o.pickupDate===today?'row-urgent':''):'';const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="item-badge">${k} x${v}</span>`).join('');
-  return `<tr class="${rc}"><td style="color:var(--cyan);font-weight:700">${o.orderId||o.id}${o.source?`<br><span class="item-badge">${o.source}</span>`:''}</td><td><b>${o.customerName||o.name||'-'}</b><br><span style="color:var(--muted);font-size:11px">${o.phone||''}</span></td><td style="font-size:11px">${o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td><td>${o.pickupDate||'-'}</td><td>${items||'-'}</td><td><b>₹${o.total||0}</b></td><td><select onchange="App.setPay('${o.id}',this.value)"><option ${o.paymentStatus==='Paid'?'selected':''}>Paid</option><option ${(!o.paymentStatus||o.paymentStatus!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${o.id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${o.id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${b.phone}" ${o.assigned_to===b.phone?'selected':''}>${b.name}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${o.id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i></button></td></tr>`;}).join(''):'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';}
+  return `<tr class="${rc}"><td style="color:var(--cyan);font-weight:700">${o.orderId||o.id}${o.source?`<br><span class="item-badge">${o.source}</span>`:''}</td><td><b>${o.customerName||o.name||'-'}</b><br><span style="color:var(--muted);font-size:12px">${o.phone||''}</span></td><td style="font-size:12px">${o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td><td>${o.pickupDate||'-'}</td><td>${items||'-'}</td><td><b>₹${o.total||0}</b></td><td><select onchange="App.setPay('${o.id}',this.value)"><option ${o.paymentStatus==='Paid'?'selected':''}>Paid</option><option ${(!o.paymentStatus||o.paymentStatus!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${o.id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${o.id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${b.phone}" ${o.assigned_to===b.phone?'selected':''}>${b.name}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${o.id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i></button></td></tr>`;}).join(''):'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';}
 $('orderSearch').oninput=renderOrders;$('orderFilter').onchange=renderOrders;
 function renderCoupons(){$('couponList').innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--cyan)">${c.code}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${c.percent}% off (max ₹${c.max})</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${c.code}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${c.code}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>';}
 function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const a=orders.filter(o=>o.assigned_to===b.phone&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>o.assigned_to===b.phone&&o.status==='delivered').length;return `<div class="list-item"><div><span class="name">${b.name}</span> <span class="type-badge code">${b.code||'no-code'}</span><div class="sub">${b.phone} · ${a} active · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn" onclick="App.copyCode('${b.code}')"><i class="fas fa-copy"></i></button><button class="btn" onclick="App.regenCode('${b.id}')"><i class="fas fa-rotate"></i></button><button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>';}
 function renderCustomers(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const rows=Object.entries(customers).map(([uid,c])=>{const co=orders.filter(o=>o.uid===uid);const spent=co.filter(o=>o.status==='delivered').reduce((s,o)=>s+(+o.total||0),0);return{...c,orders:co.length,spent};});
- $('custBody').innerHTML=rows.length?rows.map(c=>`<tr><td><b>${c.name||'-'}</b></td><td>${c.phone||'-'}</td><td style="max-width:220px;font-size:11px">${c.address||'-'}</td><td>${c.orders}</td><td><b>₹${c.spent}</b></td></tr>`).join(''):'<tr><td colspan="5"><div class="empty-state"><i class="fas fa-users"></i>Koi customer nahi</div></td></tr>';}
+ $('custBody').innerHTML=rows.length?rows.map(c=>`<tr><td><b>${c.name||'-'}</b></td><td>${c.phone||'-'}</td><td style="max-width:220px;font-size:12px">${c.address||'-'}</td><td>${c.orders}</td><td><b>₹${c.spent}</b></td></tr>`).join(''):'<tr><td colspan="5"><div class="empty-state"><i class="fas fa-users"></i>Koi customer nahi</div></td></tr>';}
 function renderReviews(s){const list=[];if(s.exists())s.forEach(c=>list.push({id:c.key,...c.val()}));$('reviewList').innerHTML=list.length?list.map(r=>`<div class="list-item"><div><span class="name">${r.name}</span> <span class="sub">${'★'.repeat(+r.stars||5)}</span><div class="sub">${r.loc||''} · ${r.text||''}</div></div><button class="btn bad" onclick="App.delReview('${r.id}')"><i class="fas fa-trash"></i></button></div>`).join(''):'<div class="empty-state"><i class="fas fa-star"></i>Koi review nahi</div>';}
 function renderFaq(s){const list=[];if(s.exists())s.forEach(c=>list.push({id:c.key,...c.val()}));$('faqList').innerHTML=list.length?list.map(f=>`<div class="list-item"><div><span class="name">${f.q}</span><div class="sub">${f.a||''}</div></div><button class="btn bad" onclick="App.delFaq('${f.id}')"><i class="fas fa-trash"></i></button></div>`).join(''):'<div class="empty-state"><i class="fas fa-circle-question"></i>Koi FAQ nahi</div>';}
 function renderReports(){if(!ordersSnap)return;let t=0,rev=0,disc=0;const byDay={};ordersSnap.forEach(c=>{const o=c.val();if(!o)return;t++;if(o.status==='delivered'){rev+=(+o.total||0);disc+=(+o.discount||0);const d=o.createdAt?dayStr(new Date(o.createdAt)):'';byDay[d]=(byDay[d]||0)+(+o.total||0);}});
- $('rTotal').textContent=t;$('rRev').textContent='₹'+rev;$('rDisc').textContent='₹'+disc;$('rAvg').textContent='₹'+(t?Math.round(rev/t):0);
+ $('repGauges').innerHTML=ring(t,Math.max(t,1),'Total Orders','var(--cyan)')+ring(rev,Math.max(rev,1),'Revenue ₹','var(--good)')+ring(disc,Math.max(disc,1),'Discount ₹','var(--warn)')+ring(t?Math.round(rev/t):0,Math.max(rev,1),'Avg Order','var(--gold)');
  const days=[...Array(7)].map((_,i)=>dayStr(new Date(Date.now()-(6-i)*864e5)));const max=Math.max(...days.map(d=>byDay[d]||0),1);
  $('revBars').innerHTML=days.map(d=>`<div class="bar-row"><div class="bl">${d.slice(8)}/${d.slice(5,7)}</div><div class="track"><div class="fill" style="width:${((byDay[d]||0)/max)*100}%"></div></div><div class="bv">₹${byDay[d]||0}</div></div>`).join('');}
 function renderServices(){const wrap=$('priceUI');let html='';
@@ -373,8 +362,7 @@ const App={
  backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value')]).then(([o,c,b,s,srv])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Backup downloaded');}).catch(e=>toast(e.message,'err'));},
  toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF'));},
  delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>{coupons=coupons.filter(x=>x.code!==c);renderCoupons();db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted'));}),
- addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));const data={name:n,phone:p,code,total_deliveries:0};
-  db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
+ addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));const data={name:n,phone:p,code,total_deliveries:0};db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
  delBoy:id=>askConfirm('Delete boy?',()=>{boys=boys.filter(b=>b.id!==id);renderBoys();db.ref('delivery_boys/'+id).remove().then(()=>toast('Boy deleted'));}),
  copyCode:c=>{if(navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast('Copied: '+c));else toast('Code: '+c);},
  regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));const b=boys.find(x=>x.id===id);if(b){b.code=c;renderBoys();}db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c));},
@@ -403,7 +391,7 @@ const App={
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🧿 PARTH OS v15 (Quantum HUD) online');
+console.log('🤖 PARTH OS v16 (JARVIS HUD) online');
 </script>
 </body>
 </html>
