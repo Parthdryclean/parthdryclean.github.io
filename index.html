@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.5 : Final CMS + BookingOpen -->
+<!-- ParthindexGen6.6 : Full CMS + BookingOpen + SELF-SEED + LIVE -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -608,7 +608,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="info-box">
 <h3><i class="fas fa-clock"></i> Working Hours</h3>
 <p id="infoHours">Monday - Sunday: 10:00 AM - 10:00 PM</p>
-<p><i class="fas fa-phone"></i> <a href="tel:+919235601645" id="infoPhoneLink" style="color:var(--text-muted); text-decoration:none; font-weight:600;" id="infoPhone">+91 92356 01645</a></p>
+<p><i class="fas fa-phone"></i> <a href="tel:+919235601645" id="infoPhoneLink" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p>
 <p><i class="fas fa-envelope"></i> <span id="infoEmail">parthdrycleaning@gmail.com</span></p>
 </div>
 </section>
@@ -1198,14 +1198,34 @@ function loadDynamicCategories() {
     }).catch(() => {});
 }
 
-// ===== NEW: CMS Content (hero, info, map) =====
+// ===== UPDATED: CMS Content (SELF-SEED + LIVE LISTENER) =====
 function loadCMSContent() {
+    const DEFAULT_CONTENT = {
+        heroTitle: 'Your Clothes Deserve <span class="text-gradient">Royal Treatment</span>',
+        heroTag: 'Premium Care in Lucknow',
+        heroDesc: 'Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.',
+        announcement: '',
+        address: 'Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow',
+        phone: '+91 92356 01645',
+        email: 'parthdrycleaning@gmail.com',
+        hours: 'Monday - Sunday: 10:00 AM - 10:00 PM',
+        map: 'https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac'
+    };
+    
+    // Seed if empty
     db.ref('settings/content').once('value').then(s => {
+        if (!s.exists() || !s.val() || Object.keys(s.val()).length === 0) {
+            db.ref('settings/content').set(DEFAULT_CONTENT);
+        }
+    });
+    
+    // LIVE listener - admin edits reflect instantly
+    db.ref('settings/content').on('value', s => {
         if (!s.exists()) return;
         const v = s.val() || {};
         if (v.heroTitle) {
             const heroTitle = document.getElementById('heroTitle');
-            if (heroTitle) { heroTitle.innerHTML = sanitizeHTML(v.heroTitle); heroTitle.dataset.cmsSet = '1'; }
+            if (heroTitle) { heroTitle.innerHTML = v.heroTitle; heroTitle.dataset.cmsSet = '1'; }
         }
         if (v.heroTag) {
             const heroTag = document.getElementById('heroTagText');
@@ -1237,58 +1257,69 @@ function loadCMSContent() {
             if (mapFrame && v.map.includes('embed')) mapFrame.src = v.map;
             if (mapLink && !v.map.includes('embed')) mapLink.href = v.map;
         }
-    }).catch(() => {});
+    });
 }
 
-// ===== NEW: Dynamic Reviews =====
+// ===== UPDATED: Reviews (SELF-SEED + LIVE LISTENER) =====
 function loadDynamicReviews() {
+    const slider = document.getElementById('reviewsSlider');
+    if (!slider) return;
+    
+    const DEFAULT_REVIEWS = [
+        { name:"Anjali S.", loc:"Sector 14", stars:5, text:"Best dry cleaner in Indira Nagar! My silk saree came back like new." },
+        { name:"Rahul M.", loc:"Sector 10", stars:5, text:"Parth bhai's service is excellent. My blazer was cleaned perfectly." },
+        { name:"Smita P.", loc:"Munshipulia", stars:4, text:"Affordable and quality. Highly recommended." },
+        { name:"Vikram T.", loc:"Gomti Nagar", stars:5, text:"Pickup partner was on time and very polite. Clothes look fresh!" }
+    ];
+    
+    // Seed if DB empty
     db.ref('settings/reviews').once('value').then(s => {
-        const slider = document.getElementById('reviewsSlider');
-        if (!slider) return;
-        if (!s.exists()) {
-            // fallback to hardcoded
-            slider.innerHTML = `
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
-            `;
-            slider.innerHTML += slider.innerHTML; // duplicate for infinite scroll
-            return;
+        if (!s.exists() || !s.val() || Object.keys(s.val()).length === 0) {
+            DEFAULT_REVIEWS.forEach(r => db.ref('settings/reviews').push(r));
         }
+    });
+    
+    // LIVE listener - admin edits reflect instantly
+    db.ref('settings/reviews').on('value', snap => {
         const reviews = [];
-        s.forEach(c => reviews.push(c.val()));
+        snap.forEach(c => reviews.push(c.val()));
         if (!reviews.length) { slider.innerHTML = '<p style="padding:20px;">No reviews yet.</p>'; return; }
         let html = reviews.map(r => {
             const stars = '★'.repeat(Math.min(+r.stars || 5, 5));
             const starHtml = stars.split('').map(() => '<i class="fas fa-star"></i>').join('');
             return `<div class="review-card"><div class="stars">${starHtml}</div><p class="review-text">"${sanitizeHTML(r.text || '')}"</p><span class="customer-name">${sanitizeHTML(r.name || 'Customer')}</span><span class="customer-loc">${sanitizeHTML(r.loc || '')}</span></div>`;
         }).join('');
-        slider.innerHTML = html + html; // duplicate for infinite scroll
-    }).catch(() => {});
+        slider.innerHTML = html + html;
+    });
 }
 
-// ===== NEW: Dynamic FAQ =====
+// ===== UPDATED: FAQ (SELF-SEED + LIVE LISTENER) =====
 function loadDynamicFAQ() {
+    const container = document.getElementById('faqContainer');
+    if (!container) return;
+    
+    const DEFAULT_FAQ = [
+        { q:"What areas do you serve?", a:"We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available." },
+        { q:"How long does dry cleaning take?", a:"Standard turnaround is 48-72 hours. Express 24-hr service available on request." },
+        { q:"Do you clean wedding dresses?", a:"Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees." },
+        { q:"Is there a minimum order amount?", a:"Yes, minimum order value is ₹300 to avail free pickup and delivery service." }
+    ];
+    
+    // Seed if empty
     db.ref('settings/faq').once('value').then(s => {
-        const container = document.getElementById('faqContainer');
-        if (!container) return;
-        if (!s.exists()) {
-            container.innerHTML = `
-                <div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available.</div></div>
-                <div class="faq-item"><div class="faq-question">How long does dry cleaning take? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service available on request.</div></div>
-                <div class="faq-item"><div class="faq-question">Do you clean wedding dresses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees.</div></div>
-                <div class="faq-item"><div class="faq-question">Is there a minimum order amount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, minimum order value is ₹300 to avail free pickup and delivery service.</div></div>
-            `;
-            attachFAQListeners();
-            return;
+        if (!s.exists() || !s.val() || Object.keys(s.val()).length === 0) {
+            DEFAULT_FAQ.forEach(f => db.ref('settings/faq').push(f));
         }
+    });
+    
+    // LIVE listener - admin edits reflect instantly
+    db.ref('settings/faq').on('value', snap => {
         const faqs = [];
-        s.forEach(c => faqs.push(c.val()));
+        snap.forEach(c => faqs.push(c.val()));
         if (!faqs.length) { container.innerHTML = '<p style="padding:20px; text-align:center;">No FAQs yet.</p>'; return; }
         container.innerHTML = faqs.map(f => `<div class="faq-item"><div class="faq-question">${sanitizeHTML(f.q || '')} <i class="fas fa-chevron-down"></i></div><div class="faq-answer">${sanitizeHTML(f.a || '')}</div></div>`).join('');
         attachFAQListeners();
-    }).catch(() => {});
+    });
 }
 function attachFAQListeners() {
     document.querySelectorAll('.faq-question').forEach(q => {
@@ -1300,7 +1331,6 @@ function attachFAQListeners() {
     });
 }
 
-// ===== NEW: Booking Open Check =====
 function loadSiteSettings() {
     db.ref('settings/general').once('value').then(s => {
         if (!s.exists()) return;
@@ -1309,7 +1339,6 @@ function loadSiteSettings() {
         const closedBanner = document.getElementById('closedBanner');
         const bookBtns = document.querySelectorAll('.book-now-link');
         
-        // Booking closed enforcement
         if (v.bookingOpen === false) {
             if (closedBanner) closedBanner.style.display = 'block';
             bookBtns.forEach(btn => {
@@ -1318,7 +1347,6 @@ function loadSiteSettings() {
             });
         }
         
-        // Announcement
         if (v.announcement) {
             banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>';
             banner.style.display = 'block';
@@ -1361,7 +1389,7 @@ document.getElementById('closeBanner')?.addEventListener('click', () => document
 renderPricing();
 enableListSwipe();
 
-console.log('🧺 ParthindexGen6.5 Active (CMS + BookingOpen)');
+console.log('🧺 ParthindexGen6.6 Active (Self-Seed + Live CMS)');
 </script>
 </body>
 </html>
