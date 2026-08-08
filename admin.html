@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen19 : SYNTHWAVE (All Fixes) -->
+<!-- ParthadminGen20 : SYNTHWAVE (Bulletproof Live) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,25 +11,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
- --bg:#140021; --panel:rgba(40,10,70,.55); --panel2:rgba(58,16,96,.5);
- --line:rgba(255,46,196,.3); --line2:rgba(255,46,196,.6);
- --text:#ffe9fb; --muted:#c58fd9; --pink:#ff2ec4; --purple:#a855f7; --cyan:#22d3ee;
- --good:#34d399; --warn:#fbbf24; --bad:#ff5470; --glow:0 0 16px rgba(255,46,196,.5); --r:16px;
-}
-[data-theme="light"]{
- --bg:#fdf2fb; --panel:#ffffff; --panel2:#fbe7f8; --line:#f3c4ea; --line2:#d946ef;
- --text:#4a044e; --muted:#a21caf; --pink:#d946ef; --purple:#9333ea; --cyan:#0891b2;
- --good:#059669; --warn:#d97706; --bad:#e11d48; --glow:0 2px 12px rgba(217,70,239,.25);
-}
+:root{--bg:#140021;--panel:rgba(40,10,70,.55);--panel2:rgba(58,16,96,.5);--line:rgba(255,46,196,.3);--line2:rgba(255,46,196,.6);--text:#ffe9fb;--muted:#c58fd9;--pink:#ff2ec4;--purple:#a855f7;--cyan:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#ff5470;--glow:0 0 16px rgba(255,46,196,.5);--r:16px}
+[data-theme="light"]{--bg:#fdf2fb;--panel:#fff;--panel2:#fbe7f8;--line:#f3c4ea;--line2:#d946ef;--text:#4a044e;--muted:#a21caf;--pink:#d946ef;--purple:#9333ea;--cyan:#0891b2;--good:#059669;--warn:#d97706;--bad:#e11d48;--glow:0 2px 12px rgba(217,70,239,.25)}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
-.sun{position:fixed;bottom:24vh;left:50%;transform:translateX(-50%);width:230px;height:230px;border-radius:50%;z-index:0;pointer-events:none;
- background:linear-gradient(#ffd319 0%,#ff2975 55%,#8c1eff 100%);box-shadow:0 0 70px rgba(255,41,117,.55);
- -webkit-mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%);
- mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%)}
-.horizon{position:fixed;left:-50%;right:-50%;bottom:-14vh;height:52vh;z-index:0;pointer-events:none;transform:perspective(300px) rotateX(60deg);transform-origin:top;
- background:linear-gradient(transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/64px 100%;
- animation:gridmove 1.6s linear infinite}
+.sun{position:fixed;bottom:24vh;left:50%;transform:translateX(-50%);width:230px;height:230px;border-radius:50%;z-index:0;pointer-events:none;background:linear-gradient(#ffd319 0%,#ff2975 55%,#8c1eff 100%);box-shadow:0 0 70px rgba(255,41,117,.55);-webkit-mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%);mask:linear-gradient(to bottom,black 0 55%,transparent 55% 58%,black 58% 66%,transparent 66% 69%,black 69% 78%,transparent 78% 81%,black 81%)}
+.horizon{position:fixed;left:-50%;right:-50%;bottom:-14vh;height:52vh;z-index:0;pointer-events:none;transform:perspective(300px) rotateX(60deg);transform-origin:top;background:linear-gradient(transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(255,46,196,.3) 2px,transparent 3px) 0 0/64px 100%;animation:gridmove 1.6s linear infinite}
 @keyframes gridmove{to{background-position:0 44px,0 0}}
 [data-theme="light"] .sun{opacity:.5}
 [data-theme="light"] .horizon{background:linear-gradient(transparent 0,rgba(217,70,239,.25) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(217,70,239,.25) 2px,transparent 3px) 0 0/64px 100%}
@@ -105,7 +91,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .action-cell{display:flex;flex-direction:column;gap:6px}
 .item-badge{display:inline-block;background:rgba(255,46,196,.12);border:1px solid var(--line);color:var(--pink);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin:2px}
 .form-grid{display:flex;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;align-items:flex-end}
-.form-grid .fg{flex:1;min-width:120px}
+.form-grid .fg{flex:1;min-width:110px}
 .form-grid label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
 .form-grid input,.form-grid select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;font-size:13px}
 .list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:8px}
@@ -145,7 +131,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div id="toast"></div>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v19</small></div></div>
+ <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v20</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -315,7 +301,7 @@ const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomai
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.database();
 auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
 const $=id=>document.getElementById(id);
-let ordersSnap=null,boys=[],coupons=[],reviews=[],faqs=[],customers={},CATS={},cmsContent={},confirmCb=null,editingReview=null,editingFaq=null;
+let ordersSnap=null,boys=[],coupons=[],reviews=[],faqs=[],customers={},CATS={},confirmCb=null,editingReview=null,editingFaq=null;
 const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Manage & track'],neworder:['New Order','Manual entry'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],website:['Website CMS','Control website'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics']};
 const DEFAULT_CATS={mens:{name:"Men's",icon:'fa-tshirt',items:[{name:'Shirt',price:60,originalPrice:80},{name:'Pant',price:60,originalPrice:80},{name:'Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},ladies:{name:"Ladies",icon:'fa-female',items:[{name:'Ladies Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},winterWomen:{name:"Winter (F)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},winterMen:{name:"Winter (M)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},festival:{name:"Festival",icon:'fa-female',items:[{name:'Saree',price:200,originalPrice:300},{name:'Lehenga (3 Pc)',price:400,originalPrice:600},{name:'Coat Pant',price:350,originalPrice:500}]},iron:{name:"Iron",icon:'fa-fire',items:[{name:'Iron Shirt',price:20}]},home:{name:"Home",icon:'fa-bed',items:[{name:'Blanket (Double)',price:350,originalPrice:450}]},combos:{name:"Combos",icon:'fa-gift',items:[{name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150},{name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550}]}};
 $('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
@@ -323,24 +309,25 @@ function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type=
 function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');}
 $('confirmNo').onclick=()=>$('confirmModal').classList.remove('open');
 $('confirmYes').onclick=()=>{$('confirmModal').classList.remove('open');if(confirmCb)confirmCb();};
-$('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='light';if(l){document.documentElement.removeAttribute('data-theme');localStorage.setItem('pos_theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';toast('Dark mode');}else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('pos_theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';toast('Light mode');}};
+$('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='light';if(l){document.documentElement.removeAttribute('data-theme');localStorage.setItem('pos_theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('pos_theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}};
 if(localStorage.getItem('pos_theme')==='light'){document.documentElement.setAttribute('data-theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}
 auth.onAuthStateChanged(u=>{ if(u){$('loginScreen').style.display='none';$('dashboard').classList.add('active');$('sidebar').style.display='';$('adminEmail').textContent=u.email||'admin';start();} else {$('loginScreen').style.display='flex';$('dashboard').classList.remove('active');$('sidebar').style.display='none';} });
 $('loginBtn').onclick=()=>{$('loginError').style.display='none';auth.signInWithEmailAndPassword($('adminEmailInput').value.trim(),$('adminPassInput').value.trim()).catch(()=>$('loginError').style.display='block');};
 $('adminPassInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
-$('logoutBtn').onclick=()=>{db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();auth.signOut();};
+$('logoutBtn').onclick=()=>{['orders','customers','settings','services','delivery_boys'].forEach(p=>db.ref(p).off());auth.signOut();};
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
-function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='website')renderCMS();}
+function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();}
+// ===== LIVE LISTENERS (single source of truth) =====
 function start(){
- db.ref('orders').once('value').then(s=>{ordersSnap=s;renderDashboard();if($('tab-orders').classList.contains('active'))renderOrders();if($('tab-reports').classList.contains('active'))renderReports();if($('tab-customers').classList.contains('active'))renderCustomers();});
- db.ref('customers').once('value').then(s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
- db.ref('settings/general').once('value').then(s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
- db.ref('services/categories').once('value').then(s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
- db.ref('settings/content').once('value').then(s=>{cmsContent=s.val()||{};$('cmsHeroTitle').value=cmsContent.heroTitle||'';$('cmsHeroTag').value=cmsContent.heroTag||'';$('cmsHeroDesc').value=cmsContent.heroDesc||'';$('cmsAddress').value=cmsContent.address||'';$('cmsPhone').value=cmsContent.phone||'';$('cmsEmail').value=cmsContent.email||'';$('cmsHours').value=cmsContent.hours||'';$('cmsMap').value=cmsContent.map||'';});
- db.ref('settings/reviews').once('value').then(s=>{reviews=[];if(s.exists())s.forEach(c=>reviews.push({id:c.key,...c.val()}));renderReviews();});
- db.ref('settings/faq').once('value').then(s=>{faqs=[];if(s.exists())s.forEach(c=>faqs.push({id:c.key,...c.val()}));renderFaq();});
- db.ref('delivery_boys').once('value').then(s=>{boys=[];if(s.exists())s.forEach(c=>boys.push({id:c.key,...c.val()}));renderBoys();});
- db.ref('settings/coupons').once('value').then(s=>{coupons=[];if(s.exists())s.forEach(c=>coupons.push({code:c.key,...c.val()}));renderCoupons();});
+ db.ref('orders').on('value',s=>{ordersSnap=s;renderDashboard();if($('tab-orders').classList.contains('active'))renderOrders();if($('tab-reports').classList.contains('active'))renderReports();if($('tab-customers').classList.contains('active'))renderCustomers();if($('tab-boys').classList.contains('active'))renderBoys();});
+ db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
+ db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
+ db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
+ db.ref('settings/content').on('value',s=>{const v=s.val()||{};$('cmsHeroTitle').value=v.heroTitle||'';$('cmsHeroTag').value=v.heroTag||'';$('cmsHeroDesc').value=v.heroDesc||'';$('cmsAddress').value=v.address||'';$('cmsPhone').value=v.phone||'';$('cmsEmail').value=v.email||'';$('cmsHours').value=v.hours||'';$('cmsMap').value=v.map||'';});
+ db.ref('settings/reviews').on('value',s=>{reviews=[];if(s.exists())s.forEach(c=>reviews.push({id:c.key,...c.val()}));renderReviews();});
+ db.ref('settings/faq').on('value',s=>{faqs=[];if(s.exists())s.forEach(c=>faqs.push({id:c.key,...c.val()}));renderFaq();});
+ db.ref('delivery_boys').on('value',s=>{boys=[];if(s.exists())s.forEach(c=>boys.push({id:c.key,...c.val()}));renderBoys();if($('tab-orders').classList.contains('active'))renderOrders();});
+ db.ref('settings/coupons').on('value',s=>{coupons=[];if(s.exists())s.forEach(c=>coupons.push({code:c.key,...c.val()}));renderCoupons();});
 }
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date());const yest=dayStr(new Date(Date.now()-864e5));let tT=0,yT=0,rT=0,rY=0,pend=0,act=0,del=0;const itemCount={};
@@ -364,7 +351,6 @@ function renderCustomers(){const orders=ordersSnap?Object.values(ordersSnap.val(
  $('custBody').innerHTML=rows.length?rows.map(c=>`<tr><td><b>${c.name||'-'}</b></td><td>${c.phone||'-'}</td><td style="max-width:220px;font-size:12px">${c.address||'-'}</td><td>${c.orders}</td><td><b>₹${c.spent}</b></td></tr>`).join(''):'<tr><td colspan="5"><div class="empty-state"><i class="fas fa-users"></i>Koi customer nahi</div></td></tr>';}
 function renderReviews(){$('reviewList').innerHTML=reviews.length?reviews.map(r=>`<div class="list-item"><div><span class="name">${r.name}</span> <span class="sub">${'★'.repeat(+r.stars||5)}</span><div class="sub">${r.loc||''} · ${r.text||''}</div></div><div style="display:flex;gap:8px"><button class="btn" onclick="App.editReview('${r.id}')"><i class="fas fa-edit"></i></button><button class="btn bad" onclick="App.delReview('${r.id}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-star"></i>Koi review nahi</div>';}
 function renderFaq(){$('faqList').innerHTML=faqs.length?faqs.map(f=>`<div class="list-item"><div><span class="name">${f.q}</span><div class="sub">${f.a||''}</div></div><div style="display:flex;gap:8px"><button class="btn" onclick="App.editFaq('${f.id}')"><i class="fas fa-edit"></i></button><button class="btn bad" onclick="App.delFaq('${f.id}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-circle-question"></i>Koi FAQ nahi</div>';}
-function renderCMS(){}
 function renderReports(){if(!ordersSnap)return;let t=0,rev=0,disc=0;const byDay={};ordersSnap.forEach(c=>{const o=c.val();if(!o)return;t++;if(o.status==='delivered'){rev+=(+o.total||0);disc+=(+o.discount||0);const d=o.createdAt?dayStr(new Date(o.createdAt)):'';byDay[d]=(byDay[d]||0)+(+o.total||0);}});
  $('rTotal').textContent=t;$('rRev').textContent='₹'+rev;$('rDisc').textContent='₹'+disc;$('rAvg').textContent='₹'+(t?Math.round(rev/t):0);
  const days=[...Array(7)].map((_,i)=>dayStr(new Date(Date.now()-(6-i)*864e5)));const max=Math.max(...days.map(d=>byDay[d]||0),1);
@@ -373,7 +359,7 @@ function renderServices(){const wrap=$('priceUI');let html='';
  for(const key in CATS){const c=CATS[key]||{items:[]};
   html+=`<div class="cat-block"><div class="cat-head"><i class="fas ${c.icon||'fa-tag'}" style="color:var(--pink)"></i><input value="${c.name||key}" onchange="App.renameCat('${key}',this.value)" style="flex:1;min-width:120px"/><input value="${c.icon||''}" onchange="App.setCatIcon('${key}',this.value)" style="width:110px" placeholder="icon"/><button class="btn bad" onclick="App.delCat('${key}')"><i class="fas fa-trash"></i></button></div><div class="item-grid">`;
   (c.items||[]).forEach((it,idx)=>{html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center"><input value="${it.name}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><button class="btn bad" style="padding:2px 8px;margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${it.price||0}" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price"/><input type="number" value="${it.originalPrice||''}" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/></div>`;});
-  html+=`<button class="btn" onclick="App.addItem('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
+  html+=`</div><div class="form-grid" style="margin-top:10px"><div class="fg"><input id="ai_name_${key}" placeholder="New item name"/></div><div class="fg"><input id="ai_price_${key}" type="number" placeholder="Price"/></div><div class="fg"><input id="ai_orig_${key}" type="number" placeholder="Original"/></div><button class="btn" onclick="App.addItemInline('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
  wrap.innerHTML=html||'<div class="empty-state"><i class="fas fa-tags"></i>Koi category nahi</div>';}
 const App={
  setStatus:(id,st)=>db.ref('orders/'+id).update({status:st}).then(()=>toast('Status updated')).catch(e=>toast(e.message,'err')),
@@ -382,24 +368,28 @@ const App={
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=bp||o.phone;if(!num)return toast('Number nahi','err');const msg=`*Parth Dry Clean* 🧺\n*Order:* ${o.orderId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  print:id=>{const o=ordersSnap.val()[id];const items=Object.entries(o.items||{}).map(([k,v])=>`${k} x${v}`).join('<br>');const w=open('','_blank','width=320,height=500');w.document.write(`<html><head><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${o.orderId}<br><b>Name:</b> ${o.customerName||o.name}<br><b>Phone:</b> ${o.phone}<div class="dashed"></div><b>Items:</b><br>${items}<div class="dashed"></div><b>Total:</b> Rs ${o.total}<script>window.print();window.close()<\/script></body></html>`);},
  backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value')]).then(([o,c,b,s,srv])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Backup downloaded');}).catch(e=>toast(e.message,'err'));},
- toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x){x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF'));}},
- delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>{coupons=coupons.filter(x=>x.code!==c);renderCoupons();db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted'));}),
- addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));const data={name:n,phone:p,code,total_deliveries:0};db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
- delBoy:id=>askConfirm('Delete boy?',()=>{boys=boys.filter(b=>b.id!==id);renderBoys();db.ref('delivery_boys/'+id).remove().then(()=>toast('Boy deleted'));}),
+ toggleCoupon:(c,v)=>db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF')).catch(e=>toast(e.message,'err')),
+ delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted')).catch(e=>toast(e.message,'err'))),
+ addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));db.ref('delivery_boys').push({name:n,phone:p,code,total_deliveries:0}).then(()=>toast('✅ Boy added! Code: '+code)).catch(e=>toast(e.message,'err'));},
+ delBoy:id=>askConfirm('Delete boy?',()=>db.ref('delivery_boys/'+id).remove().then(()=>toast('Boy deleted')).catch(e=>toast(e.message,'err'))),
  copyCode:c=>{if(navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast('Copied: '+c));else toast('Code: '+c);},
- regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));const b=boys.find(x=>x.id===id);if(b){b.code=c;renderBoys();db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c));}},
+ regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c)).catch(e=>toast(e.message,'err'));},
  saveControl:()=>{db.ref('settings/general').update({bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:+$('ctlMin').value||300,expressPercent:+$('ctlExpress').value||90}).then(()=>toast('✅ Settings saved')).catch(e=>toast(e.message,'err'));},
- saveContent:()=>{const data={heroTitle:$('cmsHeroTitle').value.trim(),heroTag:$('cmsHeroTag').value.trim(),heroDesc:$('cmsHeroDesc').value.trim(),address:$('cmsAddress').value.trim(),phone:$('cmsPhone').value.trim(),email:$('cmsEmail').value.trim(),hours:$('cmsHours').value.trim(),map:$('cmsMap').value.trim()};cmsContent=data;db.ref('settings/content').set(data).then(()=>toast('✅ Website content saved')).catch(e=>toast(e.message,'err'));},
+ saveContent:()=>{db.ref('settings/content').set({heroTitle:$('cmsHeroTitle').value.trim(),heroTag:$('cmsHeroTag').value.trim(),heroDesc:$('cmsHeroDesc').value.trim(),address:$('cmsAddress').value.trim(),phone:$('cmsPhone').value.trim(),email:$('cmsEmail').value.trim(),hours:$('cmsHours').value.trim(),map:$('cmsMap').value.trim()}).then(()=>toast('✅ Website content saved')).catch(e=>toast(e.message,'err'));},
  showReviewForm:()=>{editingReview=null;$('rvName').value='';$('rvLoc').value='';$('rvStars').value='5';$('rvText').value='';$('reviewForm').style.display='flex';},
  hideReviewForm:()=>{$('reviewForm').style.display='none';editingReview=null;},
  editReview:id=>{const r=reviews.find(x=>x.id===id);if(!r)return;editingReview=id;$('rvName').value=r.name||'';$('rvLoc').value=r.loc||'';$('rvStars').value=r.stars||5;$('rvText').value=r.text||'';$('reviewForm').style.display='flex';},
- saveReview:()=>{const n=$('rvName').value.trim(),t=$('rvText').value.trim();if(!n||!t)return toast('Name + text required','err');const data={name:n,loc:$('rvLoc').value.trim(),stars:+$('rvStars').value||5,text:t};if(editingReview){const r=reviews.find(x=>x.id===editingReview);if(r){Object.assign(r,data);renderReviews();db.ref('settings/reviews/'+editingReview).update(data).then(()=>{$('reviewForm').style.display='none';editingReview=null;toast('Review updated');});}}else{db.ref('settings/reviews').push(data).then(ref=>{reviews.push({id:ref.key,...data});renderReviews();$('reviewForm').style.display='none';toast('Review added');});}},
- delReview:id=>askConfirm('Delete review?',()=>{reviews=reviews.filter(x=>x.id!==id);renderReviews();db.ref('settings/reviews/'+id).remove().then(()=>toast('Review deleted'));}),
+ saveReview:()=>{const n=$('rvName').value.trim(),t=$('rvText').value.trim();if(!n||!t)return toast('Name + text required','err');const data={name:n,loc:$('rvLoc').value.trim(),stars:+$('rvStars').value||5,text:t};
+  if(editingReview){db.ref('settings/reviews/'+editingReview).update(data).then(()=>{$('reviewForm').style.display='none';editingReview=null;toast('Review updated');}).catch(e=>toast(e.message,'err'));}
+  else{db.ref('settings/reviews').push(data).then(()=>{$('reviewForm').style.display='none';toast('Review added');}).catch(e=>toast(e.message,'err'));}},
+ delReview:id=>askConfirm('Delete review?',()=>db.ref('settings/reviews/'+id).remove().then(()=>toast('Review deleted')).catch(e=>toast(e.message,'err'))),
  showFaqForm:()=>{editingFaq=null;$('fqQ').value='';$('fqA').value='';$('faqForm').style.display='flex';},
  hideFaqForm:()=>{$('faqForm').style.display='none';editingFaq=null;},
  editFaq:id=>{const f=faqs.find(x=>x.id===id);if(!f)return;editingFaq=id;$('fqQ').value=f.q||'';$('fqA').value=f.a||'';$('faqForm').style.display='flex';},
- saveFaq:()=>{const q=$('fqQ').value.trim(),a=$('fqA').value.trim();if(!q||!a)return toast('Q + A required','err');const data={q,a};if(editingFaq){const f=faqs.find(x=>x.id===editingFaq);if(f){Object.assign(f,data);renderFaq();db.ref('settings/faq/'+editingFaq).update(data).then(()=>{$('faqForm').style.display='none';editingFaq=null;toast('FAQ updated');});}}else{db.ref('settings/faq').push(data).then(ref=>{faqs.push({id:ref.key,...data});renderFaq();$('faqForm').style.display='none';toast('FAQ added');});}},
- delFaq:id=>askConfirm('Delete FAQ?',()=>{faqs=faqs.filter(x=>x.id!==id);renderFaq();db.ref('settings/faq/'+id).remove().then(()=>toast('FAQ deleted'));}),
+ saveFaq:()=>{const q=$('fqQ').value.trim(),a=$('fqA').value.trim();if(!q||!a)return toast('Q + A required','err');const data={q,a};
+  if(editingFaq){db.ref('settings/faq/'+editingFaq).update(data).then(()=>{$('faqForm').style.display='none';editingFaq=null;toast('FAQ updated');}).catch(e=>toast(e.message,'err'));}
+  else{db.ref('settings/faq').push(data).then(()=>{$('faqForm').style.display='none';toast('FAQ added');}).catch(e=>toast(e.message,'err'));}},
+ delFaq:id=>askConfirm('Delete FAQ?',()=>db.ref('settings/faq/'+id).remove().then(()=>toast('FAQ deleted')).catch(e=>toast(e.message,'err'))),
  moAddRow:()=>{const d=document.createElement('div');d.className='form-grid';d.style.marginBottom='8px';d.innerHTML=`<div class="fg"><label>Item</label><input class="mo-i" placeholder="Shirt"/></div><div class="fg"><label>Qty</label><input class="mo-q" type="number" value="1"/></div><div class="fg"><label>Price</label><input class="mo-p" type="number" placeholder="60"/></div>`;$('moItems').appendChild(d);},
  saveManualOrder:()=>{const name=$('moName').value.trim(),phone=$('moPhone').value.trim(),addr=$('moAddress').value.trim();
   if(!name||!/^[0-9]{10}$/.test(phone)||!addr)return toast('Name + valid phone + address required','err');
@@ -407,19 +397,19 @@ const App={
   const total=+$('moTotal').value||auto;
   const orderId='PDC-M'+Math.random().toString(36).substring(2,7).toUpperCase();
   const o={orderId,uid:'manual_'+phone,manual:true,source:$('moSource').value,customerName:name,name,phone,address:addr,pickupDate:$('moDate').value||dayStr(new Date()),timeSlot:$('moSlot').value,items,subtotal:auto,express:'No',discount:0,total,paymentStatus:$('moPay').value,status:'pending',createdAt:firebase.database.ServerValue.TIMESTAMP};
-  db.ref('orders/'+orderId).set(o).then(()=>{db.ref('orders').once('value').then(s=>{ordersSnap=s;renderOrders();renderDashboard();});db.ref('customers/m_'+phone).update({name,phone,address:addr}).then(()=>{db.ref('customers').once('value').then(s=>{customers=s.val()||{};renderCustomers();});});toast('✅ Manual order saved!');$('moName').value='';$('moPhone').value='';$('moAddress').value='';$('moItems').innerHTML='';$('moTotal').value='';}).catch(e=>toast(e.message,'err'));},
+  db.ref('orders/'+orderId).set(o).then(()=>{db.ref('customers/m_'+phone).update({name,phone,address:addr});toast('✅ Manual order saved!');$('moName').value='';$('moPhone').value='';$('moAddress').value='';$('moItems').innerHTML='';$('moTotal').value='';}).catch(e=>toast(e.message,'err'));},
  addCat:()=>{const n=$('newCatName').value.trim();if(!n)return toast('Name likho','err');const key=n.toLowerCase().replace(/[^a-z0-9]+/g,'-');if(CATS[key])return toast('Exists','err');CATS[key]={name:n,icon:$('newCatIcon').value.trim()||'fa-tag',items:[]};$('newCatName').value='';renderServices();toast('Category added — Save All karo');},
  delCat:k=>askConfirm('Delete category?',()=>{delete CATS[k];renderServices();toast('Category removed — Save All karo');}),
  renameCat:(k,v)=>{CATS[k].name=v;}, setCatIcon:(k,v)=>{CATS[k].icon=v;},
- addItem:k=>{const name=prompt('Item name?');if(!name)return;const price=+prompt('Price?')||0;const orig=+prompt('Original (0 skip)?')||0;CATS[k].items=CATS[k].items||[];CATS[k].items.push({name,price,originalPrice:orig||undefined});renderServices();},
+ addItemInline:k=>{const n=($('ai_name_'+k).value||'').trim();const p=+($('ai_price_'+k).value)||0;const o=+($('ai_orig_'+k).value)||0;if(!n)return toast('Item name likho','err');CATS[k].items=CATS[k].items||[];CATS[k].items.push({name:n,price:p,originalPrice:o||undefined});$('ai_name_'+k).value='';$('ai_price_'+k).value='';$('ai_orig_'+k).value='';renderServices();toast('Item added — Save All karo');},
  delItem:(k,i)=>askConfirm('Delete item?',()=>{CATS[k].items.splice(i,1);renderServices();}),
  renameItem:(k,i,v)=>{CATS[k].items[i].name=v;}, setItemPrice:(k,i,v)=>{CATS[k].items[i].price=+v||0;}, setItemOrig:(k,i,v)=>{CATS[k].items[i].originalPrice=+v||undefined;},
  saveServices:()=>{db.ref('services/categories').set(CATS).then(()=>toast('✅ Services saved! Booking me live')).catch(e=>toast(e.message,'err'));}
 };
-$('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
+$('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');db.ref('settings/coupons/'+code).set({code,percent:p,max:m,type:t,enabled:true}).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v19 (Synthwave + All Fixes) online');
+console.log('🌆 PARTH OS v20 (Synthwave Bulletproof) online');
 </script>
 </body>
 </html>
