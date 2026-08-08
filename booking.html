@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<!-- ParthbookGen24 -->
+<!-- ParthbookGen23 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen24" />
+    <meta name="app-version" content="ParthbookGen23" />
+    <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -128,7 +129,7 @@
         .coupon-toggle .fa-chevron-down { transition:.3s; color:var(--text-muted); font-size:12px; }
         .coupon-card.open .fa-chevron-down { transform:rotate(180deg); }
         .coupon-body { max-height:0; overflow:hidden; transition:max-height .3s ease, padding .3s ease; padding:0 14px; }
-        .coupon-card.open .coupon-body { max-height:150px; padding:0 14px 12px; }
+        .coupon-card.open .coupon-body { max-height:160px; padding:0 14px 12px; }
         .coupon-desc { font-size:11px; color:var(--text-muted); font-weight:600; margin-bottom:8px; }
         .coupon-input-wrap { display:flex; gap:8px; }
         .coupon-input-wrap input { flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-weight:700; font-family:inherit; outline:none; text-transform:uppercase; letter-spacing:.5px; transition:.2s; }
@@ -162,7 +163,7 @@
         .btn-book:disabled { background:var(--border); color:var(--text-muted); box-shadow:none; transform:none; cursor:not-allowed; }
         .time-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
         .time-pill { position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border-radius:14px; background:var(--surface); border:1.5px solid var(--border); cursor:pointer; transition:.25s; text-align:center; -webkit-tap-highlight-color:transparent; }
-        .time-pill:focus, .time-pill:focus-visible { outline:none; box-shadow:none; }
+        .time-pill:focus,.time-pill:focus-visible { outline:none; box-shadow:none; }
         .time-pill .tp-icon { width:32px; height:32px; border-radius:50%; background:var(--accent-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:13px; transition:.25s; }
         .time-pill .tp-label { font-size:12px; font-weight:800; color:var(--text); }
         .time-pill .tp-time { font-size:10px; font-weight:700; color:var(--text-muted); }
@@ -200,9 +201,12 @@
         .btn-primary-full { width:100%; background:var(--grad-index); color:#fff; border:none; padding:14px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:.3s; text-decoration:none; box-shadow:var(--glow-index); }
         .btn-primary-full:hover { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
         .success-hero { position:relative; overflow:hidden; background:var(--grad-index); color:#fff; padding:32px 24px; border-radius:20px; margin:-10px -10px 20px; }
+        .success-hero::before { content:''; position:absolute; top:-30px; right:-25px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.12); }
+        .success-hero::after { content:''; position:absolute; bottom:-40px; left:-20px; width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,.08); }
         .success-hero-icon { width:74px; height:74px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:36px; border:3px solid rgba(255,255,255,.4); position:relative; z-index:1; }
         .success-hero h2 { font-size:24px; font-weight:800; margin-bottom:6px; position:relative; z-index:1; }
         .success-hero p { font-size:14px; opacity:.95; font-weight:600; position:relative; z-index:1; }
+        .success-sparkle { position:absolute; right:20px; bottom:15px; font-size:42px; color:rgba(255,255,255,.18); transform:rotate(-10deg); pointer-events:none; }
         .success-order-box { background:var(--bg); border:1.5px dashed var(--success); border-radius:14px; padding:16px; margin-bottom:16px; text-align:center; }
         .success-order-box .label { font-size:10px; color:var(--text-muted); font-weight:800; letter-spacing:1px; text-transform:uppercase; }
         .success-order-box .order-id { font-size:22px; color:var(--primary); font-weight:800; margin-top:4px; letter-spacing:1px; }
@@ -216,8 +220,22 @@
         .success-actions .btn-primary-full { flex:1; font-size:13px; padding:13px; }
         .success-actions .btn-secondary { flex:1; background:var(--surface); color:var(--text); border:1.5px solid var(--border); padding:13px; border-radius:30px; font-size:13px; font-weight:800; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; transition:.2s; }
         .success-actions .btn-secondary:hover { border-color:var(--primary); color:var(--primary); }
-        @media (max-width:1024px) { .app-layout { grid-template-columns:1fr; margin-bottom:110px; } .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:88vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,.2); z-index:300; overflow-y:auto; top:auto; } .checkout-sidebar.mobile-open { display:block; animation:slideUp .3s ease; } .sheet-handle { display:block; } .mobile-overlay.active { display:block; } }
-        @media (max-width:768px) { header { padding:6px 4%; } .logo-main { font-size:1.8rem; } .logo-sub { font-size:.85rem; } .logo-tagline { font-size:9px; } .items-grid { grid-template-columns:repeat(2,1fr); gap:10px; } .item-card { padding:13px; } .item-name { font-size:13px; min-height:34px; } .banner { padding:20px 18px; } .banner h2 { font-size:20px; } .banner-icon { display:none; } .banner-sparkle { font-size:40px; right:16px; bottom:8px; } .time-pill .tp-time { font-size:9px; } }
+        @media (max-width:1024px) {
+            .app-layout { grid-template-columns:1fr; margin-bottom:110px; }
+            .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:88vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,.2); z-index:300; overflow-y:auto; top:auto; }
+            .checkout-sidebar.mobile-open { display:block; animation:slideUp .3s ease; }
+            .sheet-handle { display:block; }
+            .mobile-overlay.active { display:block; }
+        }
+        @media (max-width:768px) {
+            header { padding:6px 4%; }
+            .logo-main { font-size:1.8rem; } .logo-sub { font-size:.85rem; } .logo-tagline { font-size:9px; }
+            .items-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+            .item-card { padding:13px; } .item-name { font-size:13px; min-height:34px; }
+            .banner { padding:20px 18px; } .banner h2 { font-size:20px; }
+            .banner-icon { display:none; } .banner-sparkle { font-size:40px; right:16px; bottom:8px; }
+            .time-pill .tp-time { font-size:9px; }
+        }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
         @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
     </style>
@@ -225,7 +243,12 @@
 <body>
     <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:8px;"></div>
     <header>
-        <a href="index.html" class="logo"><div class="logo-text-wrapper"><div class="logo-row"><span class="logo-main">Parth</span><span class="logo-sub">Dry Clean</span></div><span class="logo-tagline">Premium For Everyone</span></div></a>
+        <a href="index.html" class="logo">
+            <div class="logo-text-wrapper">
+                <div class="logo-row"><span class="logo-main">Parth</span><span class="logo-sub">Dry Clean</span></div>
+                <span class="logo-tagline">Premium For Everyone</span>
+            </div>
+        </a>
         <div class="header-actions">
             <button class="icon-btn" id="themeToggleBtn" onclick="App.UI.toggleTheme()" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
             <button class="icon-btn" onclick="App.UI.cartButtonAction()" title="My Bag"><i class="fas fa-shopping-bag"></i><span class="cart-count-badge" id="headerCartCount">0</span></button>
@@ -276,7 +299,7 @@
                     <i class="fas fa-chevron-down"></i>
                 </button>
                 <div class="coupon-body" id="couponBody">
-                    <div class="coupon-desc" id="couponDescText">Apply a coupon code for discount</div>
+                    <div class="coupon-desc" id="couponDescText">Enter code to get discount</div>
                     <div class="coupon-input-wrap">
                         <input type="text" id="couponInput" placeholder="Enter coupon code" maxlength="20" autocomplete="off" spellcheck="false" />
                         <button id="applyCouponBtn" onclick="App.Cart.applyPromoCode()">Apply</button>
@@ -335,7 +358,7 @@
     <div class="modal-overlay" id="successOverlay">
         <div class="modal-box">
             <button class="close-modal-btn" onclick="App.UI.closeModal('successOverlay')">&times;</button>
-            <div class="success-hero"><div class="success-hero-icon"><i class="fas fa-check"></i></div><h2>Order Confirmed!</h2><p>Your clothes will be picked up on time.</p></div>
+            <div class="success-hero"><div class="success-hero-icon"><i class="fas fa-check"></i></div><h2>Order Confirmed!</h2><p>Your clothes will be picked up on time.</p><span class="success-sparkle">✦</span></div>
             <div class="success-order-box"><span class="label">Order ID</span><div class="order-id" id="successOrderId">PDC-XXXX</div></div>
             <div class="success-details-card" id="successDetails"></div>
             <div class="success-actions">
@@ -345,14 +368,14 @@
         </div>
     </div>
     <script>
-        console.log('🧺 ParthbookGen24 live');
+        console.log('🧺 ParthbookGen23 live');
         const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.database();
         function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
         function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
-        function sanitizeHTML(str){ if(!str)return ''; return String(str).replace(/[&<>"']/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-        function orderCategories(cats){ try{ const keys=Object.keys(cats); const ordered={}; keys.filter(k=>k!=='combos').forEach(k=>ordered[k]=cats[k]); if(cats.combos) ordered.combos=cats.combos; return ordered; }catch(e){ return cats; } }
+        function sanitizeHTML(str){ if(!str)return ''; return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+        function orderCategories(cats){ const keys=Object.keys(cats); const ordered={}; keys.filter(k=>k!=='combos').forEach(k=>ordered[k]=cats[k]); if(cats.combos) ordered.combos=cats.combos; return ordered; }
         const DEFAULT_CATEGORIES = {
             mens:[{id:'mens-shirt',name:'Shirt',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-pant',name:'Pant',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-kurta',name:'Kurta',price:60,originalPrice:80,icon:'fa-vest'},{id:'mens-jeans',name:'Jeans',price:0,icon:'fa-tshirt'}],
             ladies:[{id:'ladies-kurta',name:'Ladies Kurta',price:60,originalPrice:80,icon:'fa-female'},{id:'ladies-jeans',name:'Jeans',price:0,icon:'fa-female'}],
@@ -366,11 +389,13 @@
         const DEFAULT_CATNAMES = { mens:"Men's", ladies:"Ladies", winterWomen:"Winter (F)", winterMen:"Winter (M)", festival:"Festival", iron:"Iron", home:"Home", combos:"Combos" };
         const DEFAULT_UPSELL = [ {id:'upsell-tie',name:'Premium Tie Wash',price:40,icon:'fa-user-tie'}, {id:'upsell-pillow',name:'Pillow Cover Wash',price:20,icon:'fa-bed'} ];
         const SETTINGS = { minOrder:300, expressPercent:90, announcement:'' };
+        let COUPONS = {}; // { CODE: {code,percent,max,type,enabled} }
         const STATE = {
             categories: orderCategories(JSON.parse(JSON.stringify(DEFAULT_CATEGORIES))),
             catNames: Object.assign({}, DEFAULT_CATNAMES),
             upsellRules: [ {triggerName:'Coat Pant', offerId:'upsell-tie', text:'Add Premium Tie Wash?', color:'#d946ef'}, {triggerName:'Blanket (Double)', offerId:'upsell-pillow', text:'Wash Pillow Covers too?', color:'#0ea5e9'} ],
-            coupons: [], appliedCoupon: null, currentCat: 'mens',
+            bag: JSON.parse(localStorage.getItem('pdc_cart')) || {},
+            appliedPromo: null, couponEligible: false, currentCat: 'mens',
             userProfile: { name:'', phone:'', address:'' },
             isLoggedIn:false, lastOrderCache:null,
             selectedTimeSlot:'', selectedSlotEndHr:null,
@@ -380,39 +405,36 @@
         function findItemById(id){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.id===id); if(f) return f; } return null; }
         const App = {
             init: function(){
-                try{
-                    this.UI.applyTheme(STATE.theme);
-                    this.UI.renderCategories();
-                    this.UI.renderItems();           // synchronous render (no skeleton delay)
-                    this.UI.renderCustomerInfo();    // customer form always renders
-                    this.UI.updateTimeSlots();
-                    this.Cart.updateSummary();
-                    this.Order.loadCategories();
-                    this.Order.loadSettings();
-                    this.Order.loadCoupons();
-                    this.UI.showCatSwipeHint();
-                    document.getElementById('itemSearch').addEventListener('input',(e)=>{ const v=e.target.value; document.getElementById('searchClearBtn').style.display=v?'flex':'none'; this.UI.renderItems(v); });
-                    document.getElementById('bookingForm').addEventListener('submit',(e)=>this.Order.submit(e));
-                    const dateInput=document.getElementById('pickupDate');
-                    dateInput.addEventListener('change',()=>this.UI.onDateChange());
-                    dateInput.addEventListener('input',()=>this.UI.onDateChange());
-                    window.addEventListener('popstate',(e)=>{
-                        document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('active'));
-                        const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
-                        sheet.classList.remove('mobile-open'); overlay.classList.remove('active'); sheet.style.transform=''; overlay.style.opacity=''; document.body.style.overflow='';
-                        if(e.state&&e.state.modal){ document.getElementById(e.state.modal).classList.add('active'); document.body.style.overflow='hidden'; }
-                        if(e.state&&e.state.mobileCheckout){ sheet.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow='hidden'; }
-                    });
-                    setInterval(()=>this.UI.updateTimeSlots(),60000);
-                    this.UI.initSheetSwipe();
-                    this.UI.initCatalogSwipe();
-                }catch(err){ console.error('Init error:',err); }
+                this.UI.applyTheme(STATE.theme);
+                this.UI.updateTimeSlots();
+                this.UI.renderCategories();
+                this.UI.renderItemsWithSkeleton();
+                this.Cart.updateSummary();
+                this.Order.loadCategories();
+                this.Order.loadSettings();
+                this.Order.loadCoupons();
+                this.UI.showCatSwipeHint();
+                document.getElementById('itemSearch').addEventListener('input',(e)=>{ const v=e.target.value; document.getElementById('searchClearBtn').style.display=v?'flex':'none'; this.UI.renderItems(v); });
+                document.getElementById('bookingForm').addEventListener('submit',(e)=>this.Order.submit(e));
+                const dateInput=document.getElementById('pickupDate');
+                dateInput.addEventListener('change',()=>this.UI.onDateChange());
+                dateInput.addEventListener('input',()=>this.UI.onDateChange());
+                window.addEventListener('popstate',(e)=>{
+                    document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('active'));
+                    const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
+                    sheet.classList.remove('mobile-open'); overlay.classList.remove('active'); sheet.style.transform=''; overlay.style.opacity=''; document.body.style.overflow='';
+                    if(e.state?.modal){ document.getElementById(e.state.modal).classList.add('active'); document.body.style.overflow='hidden'; }
+                    if(e.state?.mobileCheckout){ sheet.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow='hidden'; }
+                });
+                setInterval(()=>this.UI.updateTimeSlots(),60000);
+                this.UI.initSheetSwipe();
+                this.UI.initCatalogSwipe();
             },
             showToast: function(msg,type='info'){ const c=document.getElementById('toastContainer'); while(c.childElementCount>=2)c.removeChild(c.firstChild);
                 const t=document.createElement('div'); t.style.cssText='padding:12px 16px;border-radius:12px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;font-weight:700;border:1px solid var(--border);transition:.3s;';
                 const icon=type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
                 const color=type==='success'?'var(--success)':type==='error'?'var(--danger)':'var(--primary)';
-                t.innerHTML='<i class="fas fa-'+icon+'" style="color:'+color+';"></i> '+sanitizeHTML(msg); c.appendChild(t);
+                t.innerHTML=`<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`; c.appendChild(t);
                 setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),300);},3000); },
             UI: {
                 sheetCloseAnim:null, overlayCloseAnim:null, sheetOpenTime:0,
@@ -422,34 +444,33 @@
                 browseItems: function(){ this.closeMobileCheckout(); document.getElementById('catalogGrid').scrollIntoView({behavior:'smooth',block:'start'}); },
                 showCatSwipeHint: function(){ if(localStorage.getItem('pdc_cat_swipe_hint'))return; const h=document.getElementById('catSwipeHint'); if(!h)return; h.classList.add('show'); localStorage.setItem('pdc_cat_swipe_hint','1'); setTimeout(()=>h.classList.remove('show'),4000); },
                 openModal: function(id){ document.getElementById(id).classList.add('active'); document.body.style.overflow='hidden'; history.pushState({modal:id},'','#'+id); if(id==='authModal'&&!App.Auth.recaptchaVerifier)App.Auth.initRecaptcha(); },
-                closeModal: function(id){ if(history.state&&history.state.modal===id)history.back(); else { document.getElementById(id).classList.remove('active'); if(!document.querySelector('.modal-overlay.active'))document.body.style.overflow=''; } },
+                closeModal: function(id){ if(history.state?.modal===id)history.back(); else { document.getElementById(id).classList.remove('active'); if(!document.querySelector('.modal-overlay.active'))document.body.style.overflow=''; } },
                 openMobileCheckout: function(){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
                     if(this.sheetCloseAnim){this.sheetCloseAnim.cancel();this.sheetCloseAnim=null;} if(this.overlayCloseAnim){this.overlayCloseAnim.cancel();this.overlayCloseAnim=null;}
                     sheet.style.transform=''; overlay.style.opacity=''; sheet.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow='hidden'; this.sheetOpenTime=Date.now(); history.pushState({mobileCheckout:true},'','#cart'); },
                 closeMobileCheckout: function(skipAnim){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
                     if(!sheet.classList.contains('mobile-open'))return; if(!skipAnim&&Date.now()-this.sheetOpenTime<500)return;
-                    const self=this;
-                    const finalize=function(){ if(self.sheetCloseAnim){self.sheetCloseAnim.cancel();self.sheetCloseAnim=null;} if(self.overlayCloseAnim){self.overlayCloseAnim.cancel();self.overlayCloseAnim=null;} sheet.classList.remove('mobile-open'); overlay.classList.remove('active'); sheet.style.transform=''; overlay.style.opacity=''; document.body.style.overflow=''; };
+                    const finalize=()=>{ if(this.sheetCloseAnim){this.sheetCloseAnim.cancel();this.sheetCloseAnim=null;} if(this.overlayCloseAnim){this.overlayCloseAnim.cancel();this.overlayCloseAnim=null;} sheet.classList.remove('mobile-open'); overlay.classList.remove('active'); sheet.style.transform=''; overlay.style.opacity=''; document.body.style.overflow=''; };
                     if(skipAnim||!sheet.animate){finalize();return;}
                     this.sheetCloseAnim=sheet.animate([{transform:'translateY(0)'},{transform:'translateY(100%)'}],{duration:230,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'});
                     this.overlayCloseAnim=overlay.animate([{opacity:1},{opacity:0}],{duration:230,easing:'ease',fill:'forwards'});
                     this.sheetCloseAnim.onfinish=finalize; },
-                initSheetSwipe: function(){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay'); const self=this; let startY=0,curDy=0,tracking=false;
-                    sheet.addEventListener('touchstart',function(e){ if(window.innerWidth>1024||!sheet.classList.contains('mobile-open')){tracking=false;return;} if(sheet.scrollTop<=1){startY=e.touches[0].clientY;curDy=0;tracking=true;} else tracking=false; },{passive:true});
-                    sheet.addEventListener('touchmove',function(e){ if(!tracking)return; const dy=e.touches[0].clientY-startY; if(dy>0){curDy=dy; sheet.style.transform='translateY('+(dy*0.6)+'px)'; overlay.style.opacity=String(Math.max(0,1-dy/500));} else {tracking=false; sheet.style.transform=''; overlay.style.opacity='';} },{passive:true});
-                    sheet.addEventListener('touchend',function(){ if(!tracking)return; tracking=false; const dragged=curDy*0.6;
+                initSheetSwipe: function(){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay'); let startY=0,curDy=0,tracking=false;
+                    sheet.addEventListener('touchstart',(e)=>{ if(window.innerWidth>1024||!sheet.classList.contains('mobile-open')){tracking=false;return;} if(sheet.scrollTop<=1){startY=e.touches[0].clientY;curDy=0;tracking=true;} else tracking=false; },{passive:true});
+                    sheet.addEventListener('touchmove',(e)=>{ if(!tracking)return; const dy=e.touches[0].clientY-startY; if(dy>0){curDy=dy; sheet.style.transform=`translateY(${dy*0.6}px)`; overlay.style.opacity=String(Math.max(0,1-dy/500));} else {tracking=false; sheet.style.transform=''; overlay.style.opacity='';} },{passive:true});
+                    sheet.addEventListener('touchend',()=>{ if(!tracking)return; tracking=false; const dragged=curDy*0.6;
                         if(curDy>90){ sheet.style.transform=''; overlay.style.opacity='';
-                            self.sheetCloseAnim=sheet.animate([{transform:'translateY('+dragged+'px)'},{transform:'translateY(100%)'}],{duration:220,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'});
-                            self.overlayCloseAnim=overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:0}],{duration:220,easing:'ease',fill:'forwards'});
-                            self.sheetCloseAnim.onfinish=function(){self.closeMobileCheckout(true);};
-                        } else if(curDy>0){ if(sheet.animate){ sheet.animate([{transform:'translateY('+dragged+'px)'},{transform:'translateY(0)'}],{duration:200,easing:'ease-out'}); overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:1}],{duration:200,easing:'ease'}); } else { sheet.style.transform=''; overlay.style.opacity=''; } }
+                            App.UI.sheetCloseAnim=sheet.animate([{transform:`translateY(${dragged}px)`},{transform:'translateY(100%)'}],{duration:220,easing:'cubic-bezier(0.4,0,0.6,1)',fill:'forwards'});
+                            App.UI.overlayCloseAnim=overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:0}],{duration:220,easing:'ease',fill:'forwards'});
+                            App.UI.sheetCloseAnim.onfinish=()=>App.UI.closeMobileCheckout(true);
+                        } else if(curDy>0){ if(sheet.animate){ sheet.animate([{transform:`translateY(${dragged}px)`},{transform:'translateY(0)'}],{duration:200,easing:'ease-out'}); overlay.animate([{opacity:Math.max(0,1-curDy/500)},{opacity:1}],{duration:200,easing:'ease'}); } else { sheet.style.transform=''; overlay.style.opacity=''; } }
                         curDy=0; }); },
-                initCatalogSwipe: function(){ const area=document.getElementById('catalogGrid'); const self=this; let sx=0,sy=0,active=false;
-                    area.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;active=true;},{passive:true});
-                    area.addEventListener('touchend',function(e){ if(!active)return; active=false; const dx=e.changedTouches[0].clientX-sx; const dy=e.changedTouches[0].clientY-sy; if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)) self.goCategory(dx<0?1:-1); },{passive:true}); },
-                setActivePill: function(cat){ document.querySelectorAll('#categoryPills .pill').forEach(function(p){p.classList.toggle('active',p.dataset.cat===cat);}); },
-                goCategory: function(dir){ const keys=Object.keys(STATE.categories).filter(k=>k!=='upsell'); const idx=keys.indexOf(STATE.currentCat); const next=keys[idx+dir]; if(!next)return; const grid=document.getElementById('catalogGrid'); const self=this;
-                    const doSwitch=function(){ STATE.currentCat=next; self.setActivePill(next); self.renderItems(document.getElementById('itemSearch').value); };
+                initCatalogSwipe: function(){ const area=document.getElementById('catalogGrid'); let sx=0,sy=0,active=false;
+                    area.addEventListener('touchstart',(e)=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;active=true;},{passive:true});
+                    area.addEventListener('touchend',(e)=>{ if(!active)return; active=false; const dx=e.changedTouches[0].clientX-sx; const dy=e.changedTouches[0].clientY-sy; if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)) this.goCategory(dx<0?1:-1); },{passive:true}); },
+                setActivePill: function(cat){ document.querySelectorAll('#categoryPills .pill').forEach(p=>p.classList.toggle('active',p.dataset.cat===cat)); },
+                goCategory: function(dir){ const keys=Object.keys(STATE.categories).filter(k=>k!=='upsell'); const idx=keys.indexOf(STATE.currentCat); const next=keys[idx+dir]; if(!next)return; const grid=document.getElementById('catalogGrid');
+                    const doSwitch=()=>{ STATE.currentCat=next; this.setActivePill(next); this.renderItems(document.getElementById('itemSearch').value); if(grid.animate)grid.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease'}); };
                     if(grid.animate){ grid.animate([{opacity:1},{opacity:0}],{duration:120,easing:'ease'}).onfinish=doSwitch; } else doSwitch(); },
                 clearSearch: function(){ document.getElementById('itemSearch').value=''; document.getElementById('searchClearBtn').style.display='none'; this.renderItems(); document.getElementById('itemSearch').focus(); },
                 onDateChange: function(){ this.updateTimeSlots(); App.Cart.updateSummary(); },
@@ -459,114 +480,138 @@
                     const todayStr=todayISO(); const isToday=(dateVal===todayStr); const isPastDate=dateVal<todayStr; const curHr=new Date().getHours();
                     if(isPastDate){ note.textContent='🌙 That date has passed — please pick today or later.'; note.style.color='var(--text-muted)'; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; return; }
                     let availableCount=0;
-                    slots.forEach(function(s){ const pill=document.createElement('div'); const isDisabled=isToday&&curHr>=s.endHr; pill.className='time-pill'+(isDisabled?' disabled':''); pill.innerHTML='<span class="tp-icon"><i class="fas '+s.icon+'"></i></span><span class="tp-label">'+s.l+'</span><span class="tp-time">'+s.t+'</span>';
-                        if(!isDisabled){ availableCount++; if(STATE.selectedTimeSlot===s.v)pill.classList.add('active'); pill.onclick=function(){ document.querySelectorAll('.time-pill').forEach(function(p){p.classList.remove('active');}); pill.classList.add('active'); STATE.selectedTimeSlot=s.v; STATE.selectedSlotEndHr=s.endHr; document.getElementById('selectedTimeSlot').value=s.v; }; }
+                    slots.forEach(s=>{ const pill=document.createElement('div'); const isDisabled=isToday&&curHr>=s.endHr; pill.className=`time-pill ${isDisabled?'disabled':''}`; pill.innerHTML=`<span class="tp-icon"><i class="fas ${s.icon}"></i></span><span class="tp-label">${s.l}</span><span class="tp-time">${s.t}</span>`;
+                        if(!isDisabled){ availableCount++; if(STATE.selectedTimeSlot===s.v)pill.classList.add('active'); pill.onclick=()=>{ document.querySelectorAll('.time-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); STATE.selectedTimeSlot=s.v; STATE.selectedSlotEndHr=s.endHr; document.getElementById('selectedTimeSlot').value=s.v; }; }
                         container.appendChild(pill); });
                     if(availableCount===0&&isToday){ note.textContent="🌙 Today's pickups are complete — please choose tomorrow."; note.style.color='var(--text-muted)'; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; }
-                    else if(isToday&&availableCount<3){ note.textContent='ℹ️ Only '+availableCount+' slot(s) available for today.'; note.style.color='var(--text-muted)'; }
+                    else if(isToday&&availableCount<3){ note.textContent=`ℹ️ Only ${availableCount} slot(s) available for today.`; note.style.color='var(--text-muted)'; }
                     else note.textContent='';
-                    if(STATE.selectedTimeSlot&&STATE.selectedSlotEndHr!==null&&isToday&&curHr>=STATE.selectedSlotEndHr){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; document.querySelectorAll('.time-pill').forEach(function(p){p.classList.remove('active');}); } },
+                    if(STATE.selectedTimeSlot&&STATE.selectedSlotEndHr!==null&&isToday&&curHr>=STATE.selectedSlotEndHr){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; document.querySelectorAll('.time-pill').forEach(p=>p.classList.remove('active')); } },
                 renderCategories: function(){ const container=document.getElementById('categoryPills'); container.innerHTML='';
-                    Object.keys(STATE.categories).forEach(function(cat){ if(cat==='upsell')return; const pill=document.createElement('div'); pill.className='pill'+(cat===STATE.currentCat?' active':''); pill.dataset.cat=cat; const first=STATE.categories[cat][0]; pill.innerHTML='<i class="fas '+((first&&first.icon)||'fa-tshirt')+'"></i> '+(STATE.catNames[cat]||cat); pill.onclick=function(){ STATE.currentCat=cat; App.UI.renderCategories(); App.UI.renderItems(); }; container.appendChild(pill); }); },
-                buildAddControl: function(item,qty){ if(qty===0){ return '<div id="addctl_'+item.id+'"><button class="add-btn" onclick="App.Cart.updateQty(\''+item.id+'\',1)">ADD <i class="fas fa-plus"></i></button></div>'; }
-                    return '<div id="addctl_'+item.id+'"><div class="stepper"><button class="step-btn" onclick="App.Cart.updateQty(\''+item.id+'\',-1)"><i class="fas fa-minus"></i></button><span class="step-num">'+qty+'</span><button class="step-btn" onclick="App.Cart.updateQty(\''+item.id+'\',1)"><i class="fas fa-plus"></i></button></div></div>'; },
+                    Object.keys(STATE.categories).forEach(cat=>{ if(cat==='upsell')return; const pill=document.createElement('div'); pill.className=`pill ${cat===STATE.currentCat?'active':''}`; pill.dataset.cat=cat; pill.innerHTML=`<i class="fas ${STATE.categories[cat][0]?.icon||'fa-tshirt'}"></i> ${STATE.catNames[cat]||cat}`; pill.onclick=()=>{ STATE.currentCat=cat; this.renderCategories(); this.renderItemsWithSkeleton(); }; container.appendChild(pill); }); },
+                renderItemsWithSkeleton: function(){ const grid=document.getElementById('catalogGrid'); let h=''; for(let i=0;i<6;i++)h+='<div class="skeleton" style="height:180px;"></div>'; grid.innerHTML=h; setTimeout(()=>this.renderItems(),300); },
+                buildAddControl: function(item,qty){ if(qty===0){ return `<div id="addctl_${item.id}"><button class="add-btn" onclick="App.Cart.updateQty('${item.id}',1)">ADD <i class="fas fa-plus"></i></button></div>`; }
+                    return `<div id="addctl_${item.id}"><div class="stepper"><button class="step-btn" onclick="App.Cart.updateQty('${item.id}',-1)"><i class="fas fa-minus"></i></button><span class="step-num">${qty}</span><button class="step-btn" onclick="App.Cart.updateQty('${item.id}',1)"><i class="fas fa-plus"></i></button></div></div>`; },
                 renderAddControl: function(id){ const el=document.getElementById('addctl_'+id); if(!el)return; const qty=STATE.bag[id]||0; const item=findItemById(id); if(item)el.outerHTML=this.buildAddControl(item,qty); },
-                renderItems: function(filterText){ try{ filterText=filterText||''; const grid=document.getElementById('catalogGrid'); grid.innerHTML=''; let items;
-                    if(filterText){ items=[]; for(const cat in STATE.categories){ if(cat==='upsell')continue; STATE.categories[cat].forEach(function(i){ if(i.name.toLowerCase().includes(filterText.toLowerCase()))items.push(i); }); } }
+                renderItems: function(filterText=''){ const grid=document.getElementById('catalogGrid'); grid.innerHTML=''; let items;
+                    if(filterText){ items=[]; for(const cat in STATE.categories){ if(cat==='upsell')continue; STATE.categories[cat].forEach(i=>{ if(i.name.toLowerCase().includes(filterText.toLowerCase()))items.push(i); }); } }
                     else items=STATE.categories[STATE.currentCat]||[];
-                    if(!items||!items.length){ grid.innerHTML='<div class="empty-state"><i class="fas fa-search"></i><h3 style="font-weight:800;font-size:18px;">No items found</h3><p style="font-size:14px;">Try searching differently.</p></div>'; return; }
-                    items.forEach(function(item,idx){ const qty=STATE.bag[item.id]||0; const saveAmt=item.originalPrice?(item.originalPrice-item.price):0;
-                        const card=document.createElement('div'); card.className='item-card'; card.style.animation='fadeUp 0.3s ease both'; card.style.animationDelay=(idx*0.04)+'s';
-                        card.innerHTML=(saveAmt>0?'<span class="save-tag">Save ₹'+saveAmt+'</span>':'')+'<div class="item-icon"><i class="fas '+item.icon+'"></i></div><div class="item-name">'+sanitizeHTML(item.name)+'</div><div class="item-price-row">'+(item.price>0?'<span class="item-price">₹'+item.price+'</span>':'<span class="item-price">₹—</span>')+(item.originalPrice?'<span class="item-original-price">₹'+item.originalPrice+'</span>':'')+'</div>'+App.UI.buildAddControl(item,qty);
-                        grid.appendChild(card); }); }catch(err){ console.error('renderItems error:',err); } },
+                    if(!items.length){ grid.innerHTML=`<div class="empty-state"><i class="fas fa-search"></i><h3 style="font-weight:800;font-size:18px;">No items found</h3><p style="font-size:14px;">Try searching differently.</p></div>`; return; }
+                    items.forEach((item,idx)=>{ const qty=STATE.bag[item.id]||0; const saveAmt=item.originalPrice?(item.originalPrice-item.price):0;
+                        const card=document.createElement('div'); card.className='item-card'; card.style.animation='fadeUp 0.3s ease both'; card.style.animationDelay=`${idx*0.04}s`;
+                        card.innerHTML=`${saveAmt>0?`<span class="save-tag">Save ₹${saveAmt}</span>`:''}<div class="item-icon"><i class="fas ${item.icon}"></i></div><div class="item-name">${sanitizeHTML(item.name)}</div><div class="item-price-row">${item.price>0?`<span class="item-price">₹${item.price}</span>`:'<span class="item-price">₹—</span>'}${item.originalPrice?`<span class="item-original-price">₹${item.originalPrice}</span>`:''}</div>${this.buildAddControl(item,qty)}`;
+                        grid.appendChild(card); }); },
                 renderCustomerInfo: function(){ const section=document.getElementById('customerInfoSection');
                     if(STATE.isLoggedIn&&STATE.userProfile.name&&STATE.userProfile.phone&&STATE.userProfile.address&&!STATE.isEditingFields){
-                        section.innerHTML='<div class="delivery-card"><div style="flex:1;min-width:0;"><strong style="font-size:14px;">Delivering to:</strong><br><span style="font-size:13px;font-weight:700;">'+sanitizeHTML(STATE.userProfile.name)+', '+sanitizeHTML(STATE.userProfile.phone)+'</span><br><span style="font-size:12px;color:var(--text-muted);">'+sanitizeHTML(STATE.userProfile.address.substring(0,50))+'...</span></div><span class="edit-link" onclick="STATE.isEditingFields=true;App.UI.renderCustomerInfo();"><i class="fas fa-edit"></i> Edit</span></div>';
+                        section.innerHTML=`<div class="delivery-card"><div style="flex:1;min-width:0;"><strong style="font-size:14px;">Delivering to:</strong><br><span style="font-size:13px;font-weight:700;">${sanitizeHTML(STATE.userProfile.name)}, ${sanitizeHTML(STATE.userProfile.phone)}</span><br><span style="font-size:12px;color:var(--text-muted);">${sanitizeHTML(STATE.userProfile.address.substring(0,50))}...</span></div><span class="edit-link" onclick="STATE.isEditingFields=true;App.UI.renderCustomerInfo();"><i class="fas fa-edit"></i> Edit</span></div>`;
                     } else {
-                        section.innerHTML='<div style="display:flex;gap:8px;"><div class="form-group" style="flex:1;"><label>Name *</label><input type="text" id="custName" required value="'+sanitizeHTML(STATE.userProfile.name||'')+'" placeholder="Full Name" /></div><div class="form-group" style="flex:1;"><label>Mobile *</label><input type="tel" id="custPhone" pattern="[0-9]{10}" maxlength="10" required value="'+sanitizeHTML(STATE.userProfile.phone||'')+'" placeholder="10 Digits" /></div></div><div class="form-group"><label style="display:flex;justify-content:space-between;align-items:center;">Address *<button type="button" onclick="App.Cart.getGPS()" style="background:none;border:none;color:var(--primary);font-weight:800;cursor:pointer;font-size:11px;"><i class="fas fa-location-arrow"></i> Use GPS</button></label><textarea id="custAddress" rows="2" required minlength="20" placeholder="Min 20 characters...">'+sanitizeHTML(STATE.userProfile.address||'')+'</textarea></div>'; } }
+                        section.innerHTML=`<div style="display:flex;gap:8px;"><div class="form-group" style="flex:1;"><label>Name *</label><input type="text" id="custName" required value="${sanitizeHTML(STATE.userProfile.name||'')}" placeholder="Full Name" /></div><div class="form-group" style="flex:1;"><label>Mobile *</label><input type="tel" id="custPhone" pattern="[0-9]{10}" maxlength="10" required value="${sanitizeHTML(STATE.userProfile.phone||'')}" placeholder="10 Digits" /></div></div><div class="form-group"><label style="display:flex;justify-content:space-between;align-items:center;">Address *<button type="button" onclick="App.Cart.getGPS()" style="background:none;border:none;color:var(--primary);font-weight:800;cursor:pointer;font-size:11px;"><i class="fas fa-location-arrow"></i> Use GPS</button></label><textarea id="custAddress" rows="2" required minlength="20" placeholder="Min 20 characters...">${sanitizeHTML(STATE.userProfile.address||'')}</textarea></div>`; } }
             },
             Cart: {
                 updateQty: function(id,delta){ STATE.bag[id]=(STATE.bag[id]||0)+delta; if(STATE.bag[id]<=0)delete STATE.bag[id]; localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag)); if(delta>0&&navigator.vibrate)navigator.vibrate(40); App.UI.renderAddControl(id); this.updateSummary(); },
                 clearBag: function(){ if(!Object.keys(STATE.bag).length)return; STATE.bag={}; localStorage.removeItem('pdc_cart'); App.UI.renderItems(document.getElementById('itemSearch').value); this.updateSummary(); App.showToast('Bag cleared','info'); },
                 toggleCoupon: function(){ document.getElementById('couponCard').classList.toggle('open'); },
                 renderSmartUpsell: function(subtotal){ const container=document.getElementById('upsellContainer'); if(subtotal<=0){container.style.display='none';return;}
-                    const bagNames=Object.keys(STATE.bag).map(function(id){const f=findItemById(id);return f?f.name:'';});
+                    const bagNames=Object.keys(STATE.bag).map(id=>{const f=findItemById(id);return f?f.name:'';});
                     let triggered=null; for(const rule of STATE.upsellRules){ if(bagNames.includes(rule.triggerName)&&!STATE.bag[rule.offerId]){triggered=rule;break;} }
                     if(triggered){ const offer=findItemById(triggered.offerId)||{price:0,icon:'fa-plus'};
-                        container.innerHTML='<div class="upsell-card" style="border-color:'+triggered.color+';"><div><strong style="color:'+triggered.color+';"><i class="fas '+offer.icon+'"></i> '+triggered.text+'</strong><br><span style="color:var(--text-muted);font-size:12px;">Just ₹'+offer.price+' extra</span></div><button style="background:'+triggered.color+';" onclick="App.Cart.updateQty(\''+triggered.offerId+'\',1);App.showToast(\'Added!\',\'success\');">Add +</button></div>';
+                        container.innerHTML=`<div class="upsell-card" style="border-color:${triggered.color};"><div><strong style="color:${triggered.color};"><i class="fas ${offer.icon}"></i> ${triggered.text}</strong><br><span style="color:var(--text-muted);font-size:12px;">Just ₹${offer.price} extra</span></div><button style="background:${triggered.color};" onclick="App.Cart.updateQty('${triggered.offerId}',1);App.showToast('Added!','success');">Add +</button></div>`;
                         container.style.display='flex'; } else container.style.display='none'; },
+                currentDiscount: function(subtotal){
+                    if(!STATE.appliedPromo || !STATE.couponEligible) return 0;
+                    const c = COUPONS[STATE.appliedPromo];
+                    if(!c || c.enabled===false) return 0;
+                    return Math.min(Math.round(subtotal*(c.percent||0)/100), c.max||0);
+                },
                 updateSummary: function(){ const bagItemsCont=document.getElementById('bagItemsSummary'); const emptyBag=document.getElementById('emptyBagState'); let html='',subtotal=0,totalItems=0;
                     for(const [id,qty] of Object.entries(STATE.bag)){ const found=findItemById(id); if(found){ const itemTotal=(found.price||0)*qty; subtotal+=itemTotal; totalItems+=qty;
-                        html+='<div class="bag-row"><div class="bag-row-left"><div class="bag-row-icon"><i class="fas '+found.icon+'"></i></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+sanitizeHTML(found.name)+'</span></div><div class="bag-qty-control"><button class="bag-qty-btn" onclick="App.Cart.updateQty(\''+id+'\',-1)"><i class="fas fa-minus"></i></button><span>'+qty+'</span><button class="bag-qty-btn" onclick="App.Cart.updateQty(\''+id+'\',1)"><i class="fas fa-plus"></i></button></div><span class="bag-row-price">₹'+itemTotal+'</span></div>'; } }
+                        html+=`<div class="bag-row"><div class="bag-row-left"><div class="bag-row-icon"><i class="fas ${found.icon}"></i></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${sanitizeHTML(found.name)}</span></div><div class="bag-qty-control"><button class="bag-qty-btn" onclick="App.Cart.updateQty('${id}',-1)"><i class="fas fa-minus"></i></button><span>${qty}</span><button class="bag-qty-btn" onclick="App.Cart.updateQty('${id}',1)"><i class="fas fa-plus"></i></button></div><span class="bag-row-price">₹${itemTotal}</span></div>`; } }
                     bagItemsCont.innerHTML=html; bagItemsCont.style.display=totalItems>0?'block':'none'; emptyBag.style.display=totalItems===0?'block':'none';
-                    document.getElementById('bagCountLabel').textContent=totalItems>0?('• '+totalItems+' item'+(totalItems===1?'':'s')):'';
+                    document.getElementById('bagCountLabel').textContent=totalItems>0?`• ${totalItems} item${totalItems===1?'':'s'}`:'';
                     document.getElementById('mobileCartBar').style.display=totalItems>0?'flex':'none';
                     const headerBadge=document.getElementById('headerCartCount'); headerBadge.textContent=totalItems; headerBadge.style.display=totalItems>0?'flex':'none';
+                    if(totalItems>0){ const bagIcon=headerBadge.parentElement.querySelector('i'); bagIcon.classList.remove('cart-bounce'); void bagIcon.offsetWidth; bagIcon.classList.add('cart-bounce'); }
                     document.getElementById('mcbCount').textContent=totalItems;
                     this.renderSmartUpsell(subtotal);
                     const isExpress=document.getElementById('expressToggle').checked;
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
-                    let discount=0; if(STATE.appliedCoupon){ discount=Math.min(Math.round(subtotal*STATE.appliedCoupon.percent/100), STATE.appliedCoupon.max||0); }
+                    const discount=this.currentDiscount(subtotal);
                     const total=Math.max(0,subtotal+expressFee-discount);
                     const min=SETTINGS.minOrder;
                     const progressFill=document.getElementById('deliveryProgress'); const statusText=document.getElementById('deliveryStatusText');
                     if(subtotal>=min){ progressFill.style.width='100%'; statusText.innerHTML='<span style="color:var(--success);">🎉 FREE Pickup & Delivery Unlocked</span>'; }
-                    else { progressFill.style.width=((subtotal/min)*100)+'%'; statusText.innerHTML='Add ₹'+(min-subtotal)+' more for FREE Pickup & Delivery'; }
-                    document.getElementById('subtotal').textContent='₹'+subtotal;
-                    document.getElementById('expressFeeAmount').textContent='+₹'+expressFee; document.getElementById('expressFeeRow').style.display=isExpress?'flex':'none';
-                    document.getElementById('discountAmount').textContent='-₹'+discount; document.getElementById('discountRow').style.display=discount>0?'flex':'none';
-                    document.getElementById('totalAmount').textContent='₹'+total; document.getElementById('mcbTotal').textContent='₹'+total;
+                    else { progressFill.style.width=`${(subtotal/min)*100}%`; statusText.innerHTML=`Add ₹${min-subtotal} more for FREE Pickup & Delivery`; }
+                    document.getElementById('subtotal').textContent=`₹${subtotal}`;
+                    document.getElementById('expressFeeAmount').textContent=`+₹${expressFee}`; document.getElementById('expressFeeRow').style.display=isExpress?'flex':'none';
+                    document.getElementById('discountAmount').textContent=`-₹${discount}`; document.getElementById('discountRow').style.display=discount>0?'flex':'none';
+                    document.getElementById('totalAmount').textContent=`₹${total}`; document.getElementById('mcbTotal').textContent=`₹${total}`;
                     const minAlert=document.getElementById('minOrderAlert');
-                    if(subtotal>0&&subtotal<min){ minAlert.style.display='block'; document.getElementById('minOrderText').textContent='Min order is ₹'+min; } else minAlert.style.display='none';
+                    if(subtotal>0&&subtotal<min){ minAlert.style.display='block'; document.getElementById('minOrderText').textContent=`Min order is ₹${min}`; } else minAlert.style.display='none';
                     document.getElementById('submitBooking').disabled=subtotal<min;
-                    const d=document.getElementById('pickupDate').value; const estRow=document.getElementById('estRow');
+                    const d=document.getElementById('pickupDate').value;
+                    const estRow=document.getElementById('estRow');
                     if(d){ let dt=new Date(d); dt.setDate(dt.getDate()+(isExpress?1:3)); document.getElementById('estDeliveryDate').textContent=dt.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); estRow.style.display='flex'; } else estRow.style.display='none'; },
-                applyPromoCode: function(){ const msg=document.getElementById('couponMsg'); const btn=document.getElementById('applyCouponBtn'); const input=document.getElementById('couponInput');
+                applyPromoCode: function(){
+                    const msg=document.getElementById('couponMsg'); const btn=document.getElementById('applyCouponBtn'); const input=document.getElementById('couponInput');
                     const code=(input.value||'').trim().toUpperCase();
                     if(!code){ msg.textContent='Pehle coupon code likho 🙂'; msg.className='coupon-msg error'; input.focus(); return; }
-                    const cp=STATE.coupons.find(function(c){return c.code===code && c.enabled!==false;});
-                    if(!cp){ msg.textContent='Ye code sahi nahi lag raha, dobara check karo 🙂'; msg.className='coupon-msg error'; return; }
-                    const self=this;
-                    const doApply=function(){ STATE.appliedCoupon=cp; msg.innerHTML='✅ <strong>'+cp.code+'</strong> applied! '+cp.percent+'% off (max ₹'+(cp.max||0)+')'; msg.className='coupon-msg success'; btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true; self.updateSummary(); App.showToast('Coupon applied!','success'); };
-                    if(cp.type==='first_order'){ if(localStorage.getItem('pdc_first_order_used')){ msg.textContent='💙 Ye offer sirf aapke pehle order ke liye hai'; msg.className='coupon-msg error'; return; } doApply(); return; }
-                    if(auth.currentUser){ db.ref('customers/'+auth.currentUser.uid+'/usedCoupons/'+code).once('value').then(function(s){ if(s.exists()){ msg.textContent='🙂 Ye code aap already use kar chuke ho'; msg.className='coupon-msg error'; } else doApply(); }).catch(function(){doApply();}); }
-                    else doApply(); },
-                repeatLastOrder: function(){ if(!STATE.lastOrderCache)return; STATE.bag={}; for(const [name,qty] of Object.entries(STATE.lastOrderCache)){ const f=Object.values(STATE.categories).flat().find(function(i){return i.name===name;}); if(f)STATE.bag[f.id]=qty; } localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag)); App.UI.renderItems(document.getElementById('itemSearch').value); this.updateSummary(); App.showToast('Previous bag loaded!','success'); },
-                getGPS: function(){ App.showToast('Fetching GPS location...','info'); if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(function(pos){ const addr=document.getElementById('custAddress'); if(addr){ const gpsLink='https://maps.google.com/?q='+pos.coords.latitude+','+pos.coords.longitude; if(!addr.value.includes('GPS:'))addr.value+=(addr.value?' ':'')+'(GPS: '+gpsLink+')'; App.showToast('GPS location added!','success'); } },function(err){ if(err.code===1)App.showToast('Location permission denied.','error'); else if(err.code===2)App.showToast('Location unavailable.','error'); else App.showToast('GPS timeout. Try again.','error'); },{enableHighAccuracy:true,timeout:10000}); } else App.showToast('GPS not supported.','error'); }
+                    const c=COUPONS[code];
+                    if(!c || c.enabled===false){ msg.textContent='🎟️ Ye code available nahi hai'; msg.className='coupon-msg error'; return; }
+                    STATE.appliedPromo=code;
+                    // eligibility
+                    if(c.type==='first_order'){
+                        if(localStorage.getItem('pdc_first_order_used')){ STATE.couponEligible=false; msg.textContent='💙 Ye offer sirf aapke pehle order ke liye hai'; msg.className='coupon-msg error'; this.updateSummary(); return; }
+                        STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success';
+                    } else {
+                        const user=auth.currentUser;
+                        if(!user){ STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success'; this.updateSummary(); return; }
+                        db.ref('customers/'+user.uid+'/usedCoupons/'+code).once('value').then(s=>{
+                            if(s.exists()&&s.val()){ STATE.couponEligible=false; msg.textContent='💙 Ye code aap pehle hi use kar chuke ho'; msg.className='coupon-msg error'; }
+                            else { STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success'; }
+                            this.updateSummary();
+                        });
+                        return;
+                    }
+                    btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true;
+                    this.updateSummary();
+                    App.showToast('Coupon applied!','success');
+                },
+                repeatLastOrder: function(){ if(!STATE.lastOrderCache)return; STATE.bag={}; for(const [name,qty] of Object.entries(STATE.lastOrderCache)){ const f=Object.values(STATE.categories).flat().find(i=>i.name===name); if(f)STATE.bag[f.id]=qty; } localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag)); App.UI.renderItems(document.getElementById('itemSearch').value); this.updateSummary(); App.showToast('Previous bag loaded!','success'); },
+                getGPS: function(){ App.showToast('Fetching GPS location...','info'); if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(pos=>{ const addr=document.getElementById('custAddress'); if(addr){ const gpsLink=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`; if(!addr.value.includes('GPS:'))addr.value+=(addr.value?' ':'')+`(GPS: ${gpsLink})`; App.showToast('GPS location added!','success'); } },(err)=>{ if(err.code===1)App.showToast('Location permission denied.','error'); else if(err.code===2)App.showToast('Location unavailable.','error'); else App.showToast('GPS timeout. Try again.','error'); },{enableHighAccuracy:true,timeout:10000}); } else App.showToast('GPS not supported.','error'); }
             },
             Auth: {
                 recaptchaVerifier:null, confirmationResult:null,
                 initRecaptcha: function(){ this.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{size:'invisible'}); this.recaptchaVerifier.render(); },
-                signInWithGoogle: function(){ auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(){ App.showToast('Logged in!','success'); App.UI.closeModal('authModal'); }).catch(function(e){App.showToast(e.message,'error');}); },
+                signInWithGoogle: function(){ auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(()=>{ App.showToast('Logged in!','success'); App.UI.closeModal('authModal'); }).catch(e=>App.showToast(e.message,'error')); },
                 sendOTP: function(){ const num=document.getElementById('phoneInput').value; if(num.length!==10)return App.showToast('10 digit number likho','warning'); if(!this.recaptchaVerifier)this.initRecaptcha(); document.getElementById('sendOtpBtn').innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
-                    const self=this; auth.signInWithPhoneNumber('+91'+num,this.recaptchaVerifier).then(function(res){ self.confirmationResult=res; document.getElementById('phoneAuthSection').style.display='none'; document.getElementById('otpSection').style.display='block'; App.showToast('OTP sent!','success'); }).catch(function(err){ App.showToast(err.message,'error'); document.getElementById('sendOtpBtn').innerHTML='<i class="fas fa-paper-plane"></i> Send SMS OTP'; }); },
-                verifyOTP: function(){ const code=document.getElementById('otpInput').value; if(code.length!==6)return App.showToast('6 digit OTP likho','warning'); const self=this; this.confirmationResult.confirm(code).then(function(){App.showToast('Verified!','success');}).catch(function(){App.showToast('Galat OTP','error');}); },
+                    auth.signInWithPhoneNumber('+91'+num,this.recaptchaVerifier).then(res=>{ this.confirmationResult=res; document.getElementById('phoneAuthSection').style.display='none'; document.getElementById('otpSection').style.display='block'; App.showToast('OTP sent!','success'); }).catch(err=>{ App.showToast(err.message,'error'); document.getElementById('sendOtpBtn').innerHTML='<i class="fas fa-paper-plane"></i> Send SMS OTP'; }); },
+                verifyOTP: function(){ const code=document.getElementById('otpInput').value; if(code.length!==6)return App.showToast('6 digit OTP likho','warning'); this.confirmationResult.confirm(code).then(()=>App.showToast('Verified!','success')).catch(()=>App.showToast('Galat OTP','error')); },
                 handleStateChange: function(user){ const loginBtn=document.getElementById('loginBtn');
-                    if(user){ STATE.isLoggedIn=true; const firstName=(user.displayName||'User').split(' ')[0]; loginBtn.innerHTML='<i class="fas fa-user-circle" style="color:var(--accent);"></i>'; loginBtn.title='Hi, '+firstName;
-                        db.ref('customers/'+user.uid).once('value').then(function(s){ if(s.exists()){ const d=s.val(); STATE.userProfile={name:d.name||'',phone:d.phone||'',address:d.address||''}; if(d.lastOrderId){ db.ref('orders/'+d.lastOrderId).once('value').then(function(o){ if(o.exists()){ STATE.lastOrderCache=o.val().items; document.getElementById('repeatCard').style.display='flex'; } }); } } App.UI.renderCustomerInfo(); }).catch(function(){App.UI.renderCustomerInfo();});
-                        loginBtn.onclick=function(){App.showToast('Logged in as '+firstName,'info');}; }
-                    else { STATE.isLoggedIn=false; STATE.userProfile={}; loginBtn.innerHTML='<i class="fas fa-user-circle"></i>'; loginBtn.title='Login'; loginBtn.onclick=function(){App.UI.openModal('authModal');}; document.getElementById('repeatCard').style.display='none'; STATE.isEditingFields=false; App.UI.renderCustomerInfo(); } }
+                    if(user){ STATE.isLoggedIn=true; const firstName=(user.displayName||'User').split(' ')[0]; loginBtn.innerHTML=`<i class="fas fa-user-circle" style="color:var(--accent);"></i>`; loginBtn.title=`Hi, ${firstName}`;
+                        db.ref('customers/'+user.uid).once('value').then(s=>{ if(s.exists()){ const d=s.val(); STATE.userProfile={name:d.name||'',phone:d.phone||'',address:d.address||''}; if(d.lastOrderId){ db.ref('orders/'+d.lastOrderId).once('value').then(o=>{ if(o.exists()){ STATE.lastOrderCache=o.val().items; document.getElementById('repeatCard').style.display='flex'; } }); } } App.UI.renderCustomerInfo(); }).catch(()=>App.UI.renderCustomerInfo());
+                        loginBtn.onclick=()=>App.showToast(`Logged in as ${firstName}`,'info');
+                        // re-check coupon eligibility for general codes after login
+                        if(STATE.appliedPromo && COUPONS[STATE.appliedPromo] && COUPONS[STATE.appliedPromo].type==='general'){ App.Cart.applyPromoCode(); }
+                    } else { STATE.isLoggedIn=false; STATE.userProfile={}; loginBtn.innerHTML=`<i class="fas fa-user-circle"></i>`; loginBtn.title='Login'; loginBtn.onclick=()=>App.UI.openModal('authModal'); document.getElementById('repeatCard').style.display='none'; STATE.isEditingFields=false; App.UI.renderCustomerInfo(); } }
             },
             Order: {
-                loadCategories: function(){ db.ref('services/categories').once('value').then(function(s){ if(s.exists()){ const data=s.val(); const cats={}; const names={};
-                        for(const key in data){ const c=data[key]; if(!c||!c.items)continue; cats[key]=(c.items||[]).map(function(it){return {id:key+'-'+slug(it.name), name:it.name, price:Number(it.price)||0, originalPrice:(it.originalPrice?Number(it.originalPrice):undefined), icon:c.icon||'fa-tag'};}); names[key]=c.name||key; }
+                loadCategories: function(){ db.ref('services/categories').once('value').then(s=>{ if(s.exists()){ const data=s.val(); const cats={}; const names={};
+                        for(const key in data){ const c=data[key]; if(!c||!c.items)continue; cats[key]=(c.items||[]).map(it=>({id:key+'-'+slug(it.name), name:it.name, price:Number(it.price)||0, originalPrice:it.originalPrice?Number(it.originalPrice):undefined, icon:c.icon||'fa-tag'})); names[key]=c.name||key; }
                         if(Object.keys(cats).length){ STATE.categories=orderCategories(cats); STATE.catNames=Object.assign({},STATE.catNames,names); } }
                     STATE.categories.upsell=DEFAULT_UPSELL; STATE.catNames.upsell='Upsell';
-                    if(!STATE.categories[STATE.currentCat]) STATE.currentCat=Object.keys(STATE.categories).find(function(k){return k!=='upsell';})||'mens';
-                    App.UI.renderCategories(); App.UI.renderItems(); App.Cart.updateSummary(); }).catch(function(){}); },
-                loadSettings: function(){ db.ref('settings/general').once('value').then(function(s){ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; SETTINGS.announcement=v.announcement||''; document.getElementById('bannerMin').textContent=SETTINGS.minOrder; document.getElementById('expressLabel').innerHTML='<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+'+SETTINGS.expressPercent+'%)'; App.Cart.updateSummary(); }).catch(function(){}); },
-                loadCoupons: function(){ const self=this; db.ref('settings/coupons').once('value').then(function(s){ STATE.coupons=[];
-                        if(s.exists()) s.forEach(function(ch){ const c=ch.val(); if(c) STATE.coupons.push({code:ch.key, percent:Number(c.percent)||0, max:Number(c.max)||0, type:c.type||'general', enabled:c.enabled!==false}); });
-                        if(!STATE.coupons.length) STATE.coupons=[{code:'PARTH20',percent:20,max:200,type:'first_order',enabled:true}];
-                        const enabled=STATE.coupons.filter(function(c){return c.enabled!==false;});
-                        const cc=document.getElementById('couponCard');
-                        if(enabled.length){ cc.classList.add('active'); document.getElementById('couponDescText').textContent='Apply a coupon code for discount ('+enabled.length+' available)'; }
-                        else cc.classList.remove('active');
-                    }).catch(function(){ STATE.coupons=[{code:'PARTH20',percent:20,max:200,type:'first_order',enabled:true}]; document.getElementById('couponCard').classList.add('active'); }); },
+                    if(!STATE.categories[STATE.currentCat]) STATE.currentCat=Object.keys(STATE.categories).find(k=>k!=='upsell')||'mens';
+                    App.UI.renderCategories(); App.UI.renderItems(); App.Cart.updateSummary(); }).catch(()=>{}); },
+                loadSettings: function(){ db.ref('settings/general').once('value').then(s=>{ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; SETTINGS.announcement=v.announcement||''; document.getElementById('bannerMin').textContent=SETTINGS.minOrder; document.getElementById('expressLabel').innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`; }).catch(()=>{}); },
+                loadCoupons: function(){ db.ref('settings/coupons').on('value',snap=>{ COUPONS=snap.val()||{};
+                        const hasActive=Object.values(COUPONS).some(c=>c&&c.enabled!==false);
+                        document.getElementById('couponCard').classList.toggle('active', hasActive);
+                        if(STATE.appliedPromo && !COUPONS[STATE.appliedPromo]){ STATE.appliedPromo=null; STATE.couponEligible=false; App.Cart.updateSummary(); }
+                        if(STATE.appliedPromo) App.Cart.updateSummary();
+                    }); },
                 submit: async function(e){ e.preventDefault(); if(!auth.currentUser){ App.showToast('Login to book.','warning'); App.UI.openModal('authModal'); return; }
-                    let name=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.name?STATE.userProfile.name:(document.getElementById('custName')?document.getElementById('custName').value.trim():'');
-                    let phone=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.phone?STATE.userProfile.phone:(document.getElementById('custPhone')?document.getElementById('custPhone').value.trim():'');
-                    let address=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.address?STATE.userProfile.address:(document.getElementById('custAddress')?document.getElementById('custAddress').value.trim():'');
+                    let name=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.name?STATE.userProfile.name:document.getElementById('custName')?.value.trim();
+                    let phone=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.phone?STATE.userProfile.phone:document.getElementById('custPhone')?.value.trim();
+                    let address=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.address?STATE.userProfile.address:document.getElementById('custAddress')?.value.trim();
                     if(!name||!phone||!address)return App.showToast('Fill all details','warning');
                     if(!/^[a-zA-Z\s]{3,50}$/.test(name))return App.showToast('Valid name required','error');
                     if(phone.length!==10||!/^\d{10}$/.test(phone))return App.showToast('Valid 10-digit mobile required','error');
@@ -576,42 +621,58 @@
                     if(dateVal<todayStr)return App.showToast('Cannot book for past date','error');
                     if(dateVal===todayStr&&STATE.selectedSlotEndHr!==null&&new Date().getHours()>=STATE.selectedSlotEndHr){ App.showToast('Selected time slot has passed. Choose another.','error'); App.UI.updateTimeSlots(); return; }
                     let orderItems={},subtotal=0; for(const [id,qty] of Object.entries(STATE.bag)){ const f=findItemById(id); if(f){ orderItems[f.name]=qty; subtotal+=(f.price||0)*qty; } }
-                    if(subtotal<SETTINGS.minOrder)return App.showToast('Min ₹'+SETTINGS.minOrder+' required','error');
-                    const btn=document.getElementById('submitBooking'); btn.innerHTML='Booking...'; btn.disabled=true;
+                    if(subtotal<SETTINGS.minOrder)return App.showToast(`Min ₹${SETTINGS.minOrder} required`,'error');
+                    const btn=document.getElementById('submitBooking'); btn.innerHTML='<span class="skeleton" style="display:inline-block;width:100px;height:20px;"></span>'; btn.disabled=true;
                     const specialInst=sanitizeHTML(document.getElementById('specialInst').value); const isExpress=document.getElementById('expressToggle').checked;
-                    const discount=STATE.appliedCoupon?Math.min(Math.round(subtotal*STATE.appliedCoupon.percent/100),STATE.appliedCoupon.max||0):0;
+                    const uid=auth.currentUser.uid;
+                    // coupon discount with fresh eligibility
+                    let discount=0; let usedGeneralCode=null;
+                    const cp=STATE.appliedPromo?COUPONS[STATE.appliedPromo]:null;
+                    if(cp && cp.enabled!==false){
+                        if(cp.type==='first_order'){
+                            if(!localStorage.getItem('pdc_first_order_used')) discount=Math.min(Math.round(subtotal*(cp.percent||0)/100), cp.max||0);
+                        } else {
+                            let used=false;
+                            try{ const s=await db.ref('customers/'+uid+'/usedCoupons/'+STATE.appliedPromo).once('value'); used=s.exists()&&s.val(); }catch(err){}
+                            if(!used){ discount=Math.min(Math.round(subtotal*(cp.percent||0)/100), cp.max||0); usedGeneralCode=STATE.appliedPromo; }
+                        }
+                    }
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
                     const total=Math.max(0,subtotal+expressFee-discount);
                     const orderId='PDC-'+Math.random().toString(36).substring(2,8).toUpperCase();
                     const pickupDate=document.getElementById('pickupDate').value||todayISO(); const timeSlot=STATE.selectedTimeSlot;
                     const estDate=new Date(pickupDate); estDate.setDate(estDate.getDate()+(isExpress?1:3)); const estd=estDate.toISOString().split('T')[0];
-                    const itemsList=Object.entries(orderItems).map(function(kv){return kv[0]+' x'+kv[1];}).join(', ');
-                    const appliedCp=STATE.appliedCoupon;
-                    const orderData={ orderId, uid:auth.currentUser.uid, customerName:sanitizeHTML(name), name:sanitizeHTML(name), phone, address:sanitizeHTML(address), pickupDate, timeSlot, estd, estdTime:estd, estimatedDelivery:estd, deliveryDate:estd, ESTD:estd, itemsList, specialInst, items:orderItems, subtotal, express:isExpress?'Yes':'No', couponCode:appliedCp?appliedCp.code:'', discount, total, paymentStatus:'Pay on Delivery', status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP };
-                    try{ await db.ref('orders/'+orderId).set(orderData); await db.ref('customers/'+auth.currentUser.uid).update({name:name,phone:phone,address:address,lastOrderId:orderId});
-                        if(appliedCp){ if(appliedCp.type==='first_order'){ localStorage.setItem('pdc_first_order_used','true'); } else { db.ref('customers/'+auth.currentUser.uid+'/usedCoupons/'+appliedCp.code).set(true).catch(function(){}); } }
+                    const itemsList=Object.entries(orderItems).map(([k,v])=>`${k} x${v}`).join(', ');
+                    const orderData={ orderId, uid, customerName:sanitizeHTML(name), name:sanitizeHTML(name), phone, address:sanitizeHTML(address), pickupDate, timeSlot, estd, estdTime:estd, estimatedDelivery:estd, deliveryDate:estd, ESTD:estd, itemsList, specialInst, items:orderItems, subtotal, express:isExpress?'Yes':'No', discount, appliedCoupon:STATE.appliedPromo||null, total, paymentStatus:'Pay on Delivery', status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP };
+                    try{ await db.ref('orders/'+orderId).set(orderData); await db.ref('customers/'+uid).update({name,phone,address,lastOrderId:orderId});
+                        if(usedGeneralCode){ await db.ref('customers/'+uid+'/usedCoupons/'+usedGeneralCode).set(true).catch(()=>{}); }
                         try{ fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}); }catch(e){}
-                        STATE.bag={}; localStorage.removeItem('pdc_cart'); document.getElementById('pickupDate').value=todayStr; document.getElementById('expressToggle').checked=false; document.getElementById('specialInst').value=''; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value=''; STATE.appliedCoupon=null;
+                        if(!localStorage.getItem('pdc_first_order_used'))localStorage.setItem('pdc_first_order_used','true');
+                        STATE.bag={}; localStorage.removeItem('pdc_cart'); document.getElementById('pickupDate').value=todayStr; document.getElementById('expressToggle').checked=false; document.getElementById('specialInst').value=''; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value='';
+                        const cbtn=document.getElementById('applyCouponBtn'); const cinput=document.getElementById('couponInput');
+                        if(cbtn){cbtn.textContent='Apply';cbtn.classList.remove('applied');cbtn.disabled=false;} if(cinput){cinput.value='';cinput.disabled=false;}
+                        STATE.appliedPromo=null; STATE.couponEligible=false; document.getElementById('couponMsg').textContent='';
                         App.UI.updateTimeSlots(); App.UI.renderItems(); App.Cart.updateSummary();
                         document.getElementById('successOrderId').textContent=orderId; STATE.lastBookedOrderId=orderId;
                         const estDateStr=estDate.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); const pickupDateStr=new Date(pickupDate).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
-                        document.getElementById('successDetails').innerHTML='<div class="success-detail-row"><span class="label">Pickup Date</span><span class="v">'+pickupDateStr+'</span></div><div class="success-detail-row"><span class="label">Time Slot</span><span class="v">'+sanitizeHTML(timeSlot)+'</span></div><div class="success-detail-row"><span class="label">Est. Delivery</span><span class="value highlight">'+estDateStr+'</span></div><div class="success-detail-row"><span class="label">Total Amount</span><span class="value highlight">₹'+total+'</span></div>'+(isExpress?'<div class="success-detail-row"><span class="label">Express</span><span class="value" style="color:var(--gold);">⚡ 24-Hr</span></div>':'');
+                        document.getElementById('successDetails').innerHTML=`<div class="success-detail-row"><span class="l">Pickup Date</span><span class="v">${pickupDateStr}</span></div><div class="success-detail-row"><span class="l">Time Slot</span><span class="v">${sanitizeHTML(timeSlot)}</span></div><div class="success-detail-row"><span class="l">Est. Delivery</span><span class="v highlight">${estDateStr}</span></div><div class="success-detail-row"><span class="l">Total Amount</span><span class="v highlight">₹${total}</span></div>${isExpress?`<div class="success-detail-row"><span class="l">Express</span><span class="v" style="color:var(--gold);">⚡ 24-Hr</span></div>`:''}`;
                         if(typeof confetti==='function')confetti({particleCount:150,spread:70,origin:{y:0.6},zIndex:99999});
                         App.UI.openModal('successOverlay');
                     }catch(err){ console.error(err); App.showToast('Booking failed. Check connection.','error'); }
                     finally{ btn.innerHTML='Confirm Booking <i class="fas fa-check-circle"></i>'; btn.disabled=false; } },
                 downloadInvoice: function(){ const id=STATE.lastBookedOrderId; if(!id)return; App.showToast('Generating PDF Invoice...','info');
-                    db.ref('orders/'+id).once('value').then(function(snap){ const o=snap.val(); let itemsHTML=''; for(const k in o.items){ itemsHTML+='<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">'+sanitizeHTML(k)+'</td><td style="text-align:right;font-weight:bold;">x'+o.items[k]+'</td></tr>'; }
+                    db.ref('orders/'+id).once('value').then(snap=>{ const o=snap.val(); let itemsHTML=''; for(const k in o.items){ itemsHTML+=`<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0;">${sanitizeHTML(k)}</td><td style="text-align:right;font-weight:bold;">x${o.items[k]}</td></tr>`; }
                         const element=document.createElement('div');
-                        element.innerHTML='<div style="padding:30px;font-family:Outfit,sans-serif;width:400px;color:#0f172a;background:#fff;"><h2 style="color:#0ea5e9;text-align:center;margin:0;font-size:24px;font-weight:800;">Parth Dry Clean</h2><p style="text-align:center;font-size:11px;color:#64748b;font-weight:700;margin-top:4px;letter-spacing:1px;">PREMIUM FOR EVERYONE</p><div style="border-top:2px solid #0ea5e9;margin-top:14px;"></div><div style="background:#f8fafc;padding:15px;border-radius:12px;margin:20px 0;font-size:12px;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Order ID:</span><strong>'+id+'</strong></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><span style="color:#64748b;">Date:</span><strong>'+new Date(o.createdAt).toLocaleDateString('en-IN')+'</strong></div></div><div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:11px;"><div style="font-weight:800;font-size:13px;">'+sanitizeHTML(o.customerName||o.name||'Customer')+'</div><div style="color:#334155;">📞 '+sanitizeHTML(o.phone||'—')+'</div><div style="color:#334155;">📍 '+sanitizeHTML(o.address||'')+'</div></div><h3 style="font-size:14px;margin-bottom:8px;">Garments</h3><table style="width:100%;border-collapse:collapse;font-size:12px;font-weight:600;">'+itemsHTML+'</table><div style="margin-top:20px;border-top:2px dashed #e2e8f0;padding-top:15px;font-weight:600;"><div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;"><span>Grand Total</span><span style="color:#0ea5e9;">₹'+o.total+'</span></div></div><div style="margin-top:18px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:10px;color:#166534;font-weight:600;">💚 Thank you for choosing Parth Dry Clean!</div></div>';
-                        html2pdf().set({margin:8,filename:'ParthDryClean_Invoice_'+id+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(element).save().then(function(){App.showToast('Invoice Downloaded!','success');}); }); }
+                        element.innerHTML=`<div style="padding:30px;font-family:'Outfit',sans-serif;width:400px;color:#0f172a;background:#fff;"><h2 style="color:#0ea5e9;text-align:center;margin:0;font-size:24px;font-weight:800;">Parth Dry Clean</h2><p style="text-align:center;font-size:11px;color:#64748b;font-weight:700;margin-top:4px;letter-spacing:1px;">PREMIUM FOR EVERYONE</p><p style="text-align:center;font-size:10px;color:#64748b;margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><p style="text-align:center;font-size:10px;color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</p><div style="border-top:2px solid #0ea5e9;margin-top:14px;"></div><div style="background:#f8fafc;padding:15px;border-radius:12px;margin:20px 0;font-size:12px;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Order ID:</span><strong>${id}</strong></div><div style="display:flex;justify-content:space-between;margin-top:6px;"><span style="color:#64748b;">Date:</span><strong>${new Date(o.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</strong></div></div><div style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:11px;"><div style="font-size:10px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Billed To</div><div style="font-weight:800;font-size:13px;">${sanitizeHTML(o.customerName||o.name||'Customer')}</div><div style="color:#334155;">📞 ${sanitizeHTML(o.phone||'—')}</div><div style="color:#334155;">📍 ${sanitizeHTML(o.address||'Not provided')}</div></div><h3 style="font-size:14px;margin-bottom:8px;">Garments</h3><table style="width:100%;border-collapse:collapse;font-size:12px;font-weight:600;">${itemsHTML}</table><div style="margin-top:20px;border-top:2px dashed #e2e8f0;padding-top:15px;font-weight:600;"><div style="display:flex;justify-content:space-between;"><span style="color:#64748b;">Subtotal</span><span>₹${o.subtotal}</span></div>${o.express==='Yes'?`<div style="display:flex;justify-content:space-between;color:#ea580c;margin-top:5px;"><span>Express Fee</span><span>+₹${Math.round(o.subtotal*SETTINGS.expressPercent/100)}</span></div>`:''}${o.discount>0?`<div style="display:flex;justify-content:space-between;color:#16a34a;margin-top:5px;"><span>Discount</span><span>-₹${o.discount}</span></div>`:''}<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;margin-top:12px;padding-top:12px;border-top:1px solid #e2e8f0;"><span>Grand Total</span><span style="color:#0ea5e9;">₹${o.total}</span></div></div><div style="margin-top:18px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:10px;color:#166534;font-weight:600;">💚 Thank you for choosing Parth Dry Clean!</div></div>`;
+                        html2pdf().set({margin:8,filename:'ParthDryClean_Invoice_'+id+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(element).save().then(()=>App.showToast('Invoice Downloaded!','success')); }); }
             }
         };
+        let sheetOpenTime=0;
         App.init();
-        auth.onAuthStateChanged(function(user){App.Auth.handleStateChange(user);});
+        auth.onAuthStateChanged(user=>App.Auth.handleStateChange(user));
         document.getElementById('pickupDate').min=todayISO();
         document.getElementById('pickupDate').value=todayISO();
-        document.getElementById('couponInput').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); App.Cart.applyPromoCode(); } });
+        document.getElementById('couponInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); App.Cart.applyPromoCode(); } });
     </script>
 </body>
 </html>
