@@ -2228,6 +2228,13 @@ document.getElementById('topBanner').style.display = 'block';
 document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
 renderPricing();
 enableListSwipe();
+<script>
+// BOOKING CLOSED BANNER (index)
+db.ref('settings/general').on('value',s=>{const v=s.val()||{};let b=document.getElementById('closedBanner');
+ if(v.bookingOpen===false){ if(!b){b=document.createElement('div');b.id='closedBanner';b.style.cssText='background:linear-gradient(90deg,#7f1d1d,#991b1b);color:#fff;text-align:center;padding:10px 16px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px';b.innerHTML='🛠️ Bookings temporarily closed — <a href="https://wa.me/919235601645" style="color:#fde047">WhatsApp par order karein</a>';document.body.prepend(b);} }
+ else if(b){ b.remove(); }
+});
+</script>
 </script>
 </body>
 </html>
