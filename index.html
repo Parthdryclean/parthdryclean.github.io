@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.5 : Final CMS + BookingOpen -->
+<!-- ParthindexGen6.6 : CMS Fixed (No Duplication) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -1198,7 +1198,7 @@ function loadDynamicCategories() {
     }).catch(() => {});
 }
 
-// ===== NEW: CMS Content (hero, info, map) =====
+// ===== FIXED: CMS Content (hero, info, map) =====
 function loadCMSContent() {
     db.ref('settings/content').once('value').then(s => {
         if (!s.exists()) return;
@@ -1240,56 +1240,88 @@ function loadCMSContent() {
     }).catch(() => {});
 }
 
-// ===== NEW: Dynamic Reviews =====
+// ===== FIXED: Dynamic Reviews (NO DUPLICATION) =====
 function loadDynamicReviews() {
     db.ref('settings/reviews').once('value').then(s => {
         const slider = document.getElementById('reviewsSlider');
         if (!slider) return;
+        
         if (!s.exists()) {
-            // fallback to hardcoded
-            slider.innerHTML = `
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
-                <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
-            `;
-            slider.innerHTML += slider.innerHTML; // duplicate for infinite scroll
+            // If DB empty, show message
+            slider.innerHTML = '<p style="padding:40px; text-align:center; color:var(--text-muted); font-weight:600;">No reviews yet. Be the first to review!</p>';
             return;
         }
+        
         const reviews = [];
         s.forEach(c => reviews.push(c.val()));
-        if (!reviews.length) { slider.innerHTML = '<p style="padding:20px;">No reviews yet.</p>'; return; }
-        let html = reviews.map(r => {
+        
+        if (!reviews.length) {
+            slider.innerHTML = '<p style="padding:40px; text-align:center; color:var(--text-muted); font-weight:600;">No reviews yet.</p>';
+            return;
+        }
+        
+        // Render ONCE - no duplication
+        slider.innerHTML = reviews.map(r => {
             const stars = '★'.repeat(Math.min(+r.stars || 5, 5));
             const starHtml = stars.split('').map(() => '<i class="fas fa-star"></i>').join('');
-            return `<div class="review-card"><div class="stars">${starHtml}</div><p class="review-text">"${sanitizeHTML(r.text || '')}"</p><span class="customer-name">${sanitizeHTML(r.name || 'Customer')}</span><span class="customer-loc">${sanitizeHTML(r.loc || '')}</span></div>`;
+            return `
+                <div class="review-card">
+                    <div class="stars">${starHtml}</div>
+                    <p class="review-text">"${sanitizeHTML(r.text || '')}"</p>
+                    <span class="customer-name">${sanitizeHTML(r.name || 'Customer')}</span>
+                    <span class="customer-loc">${sanitizeHTML(r.loc || '')}</span>
+                </div>
+            `;
         }).join('');
-        slider.innerHTML = html + html; // duplicate for infinite scroll
-    }).catch(() => {});
+        
+        // Duplicate for infinite scroll ONLY if needed (CSS animation requires duplication)
+        if (reviews.length > 0) {
+            slider.innerHTML += slider.innerHTML;
+        }
+    }).catch(err => {
+        console.error('Reviews load failed:', err);
+        const slider = document.getElementById('reviewsSlider');
+        if (slider) slider.innerHTML = '<p style="padding:40px; text-align:center; color:var(--text-muted);">Unable to load reviews.</p>';
+    });
 }
 
-// ===== NEW: Dynamic FAQ =====
+// ===== FIXED: Dynamic FAQ (NO DUPLICATION) =====
 function loadDynamicFAQ() {
     db.ref('settings/faq').once('value').then(s => {
         const container = document.getElementById('faqContainer');
         if (!container) return;
+        
         if (!s.exists()) {
-            container.innerHTML = `
-                <div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available.</div></div>
-                <div class="faq-item"><div class="faq-question">How long does dry cleaning take? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service available on request.</div></div>
-                <div class="faq-item"><div class="faq-question">Do you clean wedding dresses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees.</div></div>
-                <div class="faq-item"><div class="faq-question">Is there a minimum order amount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, minimum order value is ₹300 to avail free pickup and delivery service.</div></div>
-            `;
+            // If DB empty, show message
+            container.innerHTML = '<p style="padding:40px; text-align:center; color:var(--text-muted); font-weight:600;">No FAQs yet. Check back later!</p>';
             attachFAQListeners();
             return;
         }
+        
         const faqs = [];
         s.forEach(c => faqs.push(c.val()));
-        if (!faqs.length) { container.innerHTML = '<p style="padding:20px; text-align:center;">No FAQs yet.</p>'; return; }
-        container.innerHTML = faqs.map(f => `<div class="faq-item"><div class="faq-question">${sanitizeHTML(f.q || '')} <i class="fas fa-chevron-down"></i></div><div class="faq-answer">${sanitizeHTML(f.a || '')}</div></div>`).join('');
+        
+        if (!faqs.length) {
+            container.innerHTML = '<p style="padding:40px; text-align:center; color:var(--text-muted); font-weight:600;">No FAQs yet.</p>';
+            attachFAQListeners();
+            return;
+        }
+        
+        container.innerHTML = faqs.map(f => `
+            <div class="faq-item">
+                <div class="faq-question">${sanitizeHTML(f.q || '')} <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">${sanitizeHTML(f.a || '')}</div>
+            </div>
+        `).join('');
+        
         attachFAQListeners();
-    }).catch(() => {});
+    }).catch(err => {
+        console.error('FAQ load failed:', err);
+        const container = document.getElementById('faqContainer');
+        if (container) container.innerHTML = '<p style="padding:40px; text-align:center; color:var(--text-muted);">Unable to load FAQs.</p>';
+    });
 }
+
 function attachFAQListeners() {
     document.querySelectorAll('.faq-question').forEach(q => {
         q.addEventListener('click', function() {
@@ -1300,7 +1332,7 @@ function attachFAQListeners() {
     });
 }
 
-// ===== NEW: Booking Open Check =====
+// ===== Booking Open Check =====
 function loadSiteSettings() {
     db.ref('settings/general').once('value').then(s => {
         if (!s.exists()) return;
@@ -1361,7 +1393,7 @@ document.getElementById('closeBanner')?.addEventListener('click', () => document
 renderPricing();
 enableListSwipe();
 
-console.log('🧺 ParthindexGen6.5 Active (CMS + BookingOpen)');
+console.log('🧺 ParthindexGen6.6 Active (CMS Fixed - No Duplication)');
 </script>
 </body>
 </html>
