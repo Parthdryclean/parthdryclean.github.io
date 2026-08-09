@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen19 : SYNTHWAVE (Sirf Website CMS removed, baaki Gen18 same) -->
+<!-- ParthadminGen19 : SYNTHWAVE (CMS removed) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -32,7 +32,6 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);mi
  animation:gridmove 1.6s linear infinite}
 @keyframes gridmove{to{background-position:0 44px,0 0}}
 [data-theme="light"] .sun{opacity:.5}
-[data-theme="light"] .horizon{background:linear-gradient(transparent 0,rgba(217,70,239,.25) 2px,transparent 3px) 0 0/100% 44px,linear-gradient(90deg,transparent 0,rgba(217,70,239,.25) 2px,transparent 3px) 0 0/64px 100%}
 h1,h2,h3,.disp{font-family:'Orbitron',sans-serif;letter-spacing:1px}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
 button,input,select,textarea{font-family:inherit;outline:none}
@@ -300,8 +299,8 @@ function start(){
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
- db.ref('settings/coupons').on('value',s=>{coupons=[];if(s.exists())s.forEach(c=>coupons.push({code:c.key,...c.val()}));if($('tab-coupons').classList.contains('active'))renderCoupons();});
  db.ref('delivery_boys').once('value').then(s=>{ if(s.exists()){ s.forEach(c=>{ if(!boys.find(b=>b.id===c.key)) boys.push({id:c.key,...c.val()}); }); } renderBoys(); });
+ db.ref('settings/coupons').once('value').then(s=>{ if(s.exists()){ s.forEach(c=>{ if(!coupons.find(x=>x.code===c.key)) coupons.push({code:c.key,...c.val()}); }); } renderCoupons(); });
 }
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date());const yest=dayStr(new Date(Date.now()-864e5));let tT=0,yT=0,rT=0,rY=0,pend=0,act=0,del=0;const itemCount={};
@@ -366,7 +365,7 @@ const App={
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v19 (Synthwave, sirf CMS removed) online');
+console.log('🌆 PARTH OS v19 (Synthwave, CMS removed) online');
 </script>
 </body>
 </html>
