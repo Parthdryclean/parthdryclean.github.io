@@ -673,13 +673,11 @@
         document.getElementById('pickupDate').min=todayISO();
         document.getElementById('pickupDate').value=todayISO();
         document.getElementById('couponInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); App.Cart.applyPromoCode(); } });
-<script>
 // BOOKING OPEN/CLOSE CHECK
 db.ref('settings/general').on('value',s=>{const v=s.val()||{};const closed=v.bookingOpen===false;let el=document.getElementById('closedOverlay');
  if(closed){ if(!el){el=document.createElement('div');el.id='closedOverlay';el.style.cssText='position:fixed;inset:0;background:rgba(2,6,23,.92);z-index:99999;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Outfit,sans-serif;text-align:center;padding:20px';el.innerHTML='<div><div style="font-size:40px;margin-bottom:10px">🛠️</div><h2 style="font-size:22px;margin-bottom:8px">Bookings Temporarily Closed</h2><p style="opacity:.8;margin-bottom:14px">Hum jald wapas aayenge. Tab tak WhatsApp par order karein.</p><a href="https://wa.me/919235601645" style="color:#22d3ee;font-weight:800">📲 WhatsApp karein</a></div>';document.body.appendChild(el);} }
  else if(el){ el.remove(); }
-});
-</script>  
+}); 
     </script>
 </body>
 </html>
