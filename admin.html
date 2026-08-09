@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen19 : SYNTHWAVE (CMS Removed) -->
+<!-- ParthadminGen19 : SYNTHWAVE (Sirf Website CMS removed, baaki Gen18 same) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -366,7 +366,7 @@ const App={
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v19 (Synthwave, CMS removed) online');
+console.log('🌆 PARTH OS v19 (Synthwave, sirf CMS removed) online');
 </script>
 </body>
 </html>
