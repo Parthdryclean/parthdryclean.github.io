@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen2 : Delivery Partner (Unique Code Login) -->
+<!-- ParthdeliveryGen3 : Delivery Partner + GPS + Extra Items + Issues -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,7 +14,7 @@
 :root{--bg:#f4f7fc;--card:#fff;--card2:#f1f5f9;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--primary:#0ea5e9;--accent:#6366f1;--good:#10b981;--warn:#f59e0b;--bad:#ef4444;--grad:linear-gradient(135deg,var(--primary),var(--accent));--shadow:0 8px 30px rgba(2,6,23,.08)}
 [data-theme="dark"]{--bg:#0b1020;--card:#151d3a;--card2:#1e293b;--line:#2a3654;--text:#e6eaf6;--muted:#94a3b8;--primary:#38bdf8;--accent:#818cf8;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--shadow:0 8px 30px rgba(0,0,0,.4)}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:90px;transition:background .3s}
-button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}
 .top{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
 .brand{font-family:'Pacifico';font-size:20px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .top-actions{display:flex;gap:8px}
@@ -24,12 +24,17 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
 .hello h2{font-size:20px;font-weight:800}
 .hello p{font-size:13px;opacity:.9}
 .hello .code-chip{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--shadow)}
-.stat .n{font-size:22px;font-weight:800;color:var(--primary)}
-.stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.sec{font-size:14px;font-weight:800;margin:14px 0 10px;display:flex;align-items:center;gap:8px}
-.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;box-shadow:var(--shadow)}
+.stat .n{font-size:20px;font-weight:800;color:var(--primary)}
+.stat .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.stat.cash .n{color:var(--good)}
+.sec{font-size:14px;font-weight:800;margin:18px 0 10px;display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+.sec .count{margin-left:auto;background:var(--primary);color:#fff;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:800}
+.sec.green{border-color:var(--good);color:var(--good)}
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);transition:.2s}
+.order-card.new-pulse{animation:pulseIn 1s ease}
+@keyframes pulseIn{0%{box-shadow:0 0 0 0 rgba(14,165,233,.6);}70%{box-shadow:0 0 0 14px rgba(14,165,233,0);}100%{box-shadow:0 0 0 0 rgba(14,165,233,0);}}
 .oc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .oc-id{font-weight:800;color:var(--primary)}
 .badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800}
@@ -38,15 +43,25 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
 .badge.out_for_delivery{background:rgba(99,102,241,.15);color:var(--accent)}
 .badge.delivered{background:rgba(16,185,129,.15);color:var(--good)}
 .badge.express{background:rgba(245,158,11,.2);color:var(--warn)}
+.badge.cod{background:rgba(16,185,129,.15);color:var(--good);margin-left:4px}
+.badge.paid{background:rgba(14,165,233,.15);color:var(--primary);margin-left:4px}
 .oc-name{font-weight:700;font-size:15px;margin-bottom:2px}
-.oc-addr{font-size:12px;color:var(--muted);margin-bottom:10px}
+.oc-addr{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.4}
 .oc-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .chip{background:var(--card2);border:1px solid var(--line);padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700}
-.oc-actions{display:flex;gap:8px;margin-bottom:10px}
-.oc-actions a{flex:1;text-align:center;padding:10px;border-radius:12px;border:1px solid var(--line);color:var(--text);font-size:13px;font-weight:700;text-decoration:none}
+.oc-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.oc-actions a,.oc-actions button{padding:9px 4px;border-radius:10px;border:1px solid var(--line);color:var(--text);font-size:11px;font-weight:700;text-decoration:none;text-align:center;background:var(--card2);cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.oc-actions a:hover,.oc-actions button:hover{border-color:var(--primary);color:var(--primary)}
 .oc-actions a.call{border-color:var(--good);color:var(--good)}
+.oc-actions a.wa{border-color:#25d366;color:#25d366}
+.oc-actions a.gps{border-color:var(--accent);color:var(--accent)}
 .oc-actions a.map{border-color:var(--primary);color:var(--primary)}
-.btn-main{width:100%;padding:14px;border-radius:14px;border:none;background:var(--grad);color:#fff;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.oc-actions button.report{border-color:var(--bad);color:var(--bad)}
+.oc-actions button.additem{border-color:var(--warn);color:var(--warn)}
+.oc-actions button.collect{border-color:var(--good);color:var(--good)}
+.oc-actions button.collect.done{background:var(--good);color:#fff}
+.btn-main{width:100%;padding:14px;border-radius:14px;border:none;background:var(--grad);color:#fff;font-weight:800;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
+.btn-main:hover{opacity:.92}
 .btn-main.done{background:var(--good)}
 .empty{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty i{font-size:40px;opacity:.4;margin-bottom:10px;display:block}
@@ -58,6 +73,21 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
 #toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:none}
 #toast .t{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--good);color:var(--text);padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:8px;align-items:center}
 #toast .t.err{border-left-color:var(--bad)}
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(2,6,23,.6);backdrop-filter:blur(6px);z-index:998;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;max-width:420px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal-box h3{margin-bottom:12px;font-size:17px;display:flex;align-items:center;gap:8px}
+.modal-box .row{display:flex;gap:8px;margin-top:14px}
+.modal-box .row button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-size:13px}
+.modal-box input,.modal-box select,.modal-box textarea{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:10px;margin-bottom:10px;font-size:13px}
+.item-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.item-row input{flex:1}
+.item-row .rm{background:var(--bad);color:#fff;border:none;width:30px;height:36px;border-radius:8px;cursor:pointer;font-weight:800}
+.issue-type{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.issue-type button{padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-weight:700;font-size:12px;cursor:pointer}
+.issue-type button.sel{background:var(--primary);color:#fff;border-color:var(--primary)}
+@media(max-width:480px){.stats{grid-template-columns:repeat(4,1fr)}.oc-actions{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -82,16 +112,49 @@ button,input{font-family:inherit;outline:none;-webkit-tap-highlight-color:transp
   </div>
  </div>
  <div class="wrap">
-  <div class="hello"><span class="code-chip" id="myCode">—</span><h2 id="helloName">Hello 👋</h2><p>Aaj ki deliveries neeche hai</p></div>
+  <div class="hello"><span class="code-chip" id="myCode">—</span><h2 id="helloName">Hello 👋</h2><p>Aaj ka kaam neeche hai</p></div>
   <div class="stats">
-   <div class="stat"><div class="n" id="sActive">0</div><div class="l">Active</div></div>
+   <div class="stat"><div class="n" id="sPickup">0</div><div class="l">Pickups</div></div>
+   <div class="stat"><div class="n" id="sDelivery">0</div><div class="l">Deliveries</div></div>
    <div class="stat"><div class="n" id="sToday">0</div><div class="l">Aaj Done</div></div>
-   <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Total</div></div>
+   <div class="stat cash"><div class="n" id="sCash">₹0</div><div class="l">Cash Due</div></div>
   </div>
-  <div class="sec"><i class="fas fa-box" style="color:var(--primary)"></i> Active Orders</div>
-  <div id="activeList"></div>
-  <div class="sec"><i class="fas fa-circle-check" style="color:var(--good)"></i> Delivered Today</div>
+  <div class="sec">📥 Pickups <span class="count" id="cPickup">0</span></div>
+  <div id="pickupList"></div>
+  <div class="sec green">📤 Deliveries <span class="count" id="cDelivery">0</span></div>
+  <div id="deliveryList"></div>
+  <div class="sec">✅ Delivered Today <span class="count" id="cDone">0</span></div>
   <div id="doneList"></div>
+ </div>
+</div>
+<!-- MODAL: ADD ITEM -->
+<div class="modal" id="addItemModal">
+ <div class="modal-box">
+  <h3>➕ Add Extra Item <span style="color:var(--muted);font-size:12px;margin-left:auto" id="addItemOrderId"></span></h3>
+  <p style="color:var(--muted);font-size:12px;margin-bottom:10px">Customer ne extra item maanga? Yahan add karo.</p>
+  <div id="extraItems"></div>
+  <button class="btn-main" onclick="addExtraItemRow()" style="padding:10px;font-size:13px;margin-bottom:10px"><i class="fas fa-plus"></i> Add Another</button>
+  <div class="row">
+   <button style="background:var(--card2);color:var(--text)" onclick="closeModal('addItemModal')">Cancel</button>
+   <button style="background:var(--grad);color:#fff" onclick="saveExtraItems()"><i class="fas fa-save"></i> Save</button>
+  </div>
+ </div>
+</div>
+<!-- MODAL: ISSUE -->
+<div class="modal" id="issueModal">
+ <div class="modal-box">
+  <h3>⚠️ Report Issue</h3>
+  <div class="issue-type">
+   <button onclick="selIssue(this,'wrong_address')">Address Galat</button>
+   <button onclick="selIssue(this,'not_home')">Customer Nahi Mila</button>
+   <button onclick="selIssue(this,'refused')">Customer Ne Mana</button>
+   <button onclick="selIssue(this,'other')">Other</button>
+  </div>
+  <textarea id="issueNote" rows="3" placeholder="Kya hua? (optional)"></textarea>
+  <div class="row">
+   <button style="background:var(--card2);color:var(--text)" onclick="closeModal('issueModal')">Cancel</button>
+   <button style="background:var(--bad);color:#fff" onclick="submitIssue()"><i class="fas fa-paper-plane"></i> Send to Admin</button>
+  </div>
  </div>
 </div>
 <script>
@@ -99,13 +162,18 @@ const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomai
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.database();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 const $=id=>document.getElementById(id);
-let BOY=JSON.parse(localStorage.getItem('pdc_boy')||'null'), ordersRef=null;
+let BOY=JSON.parse(localStorage.getItem('pdc_boy')||'null'), ordersRef=null, prevOrderIds=new Set(), issueCtx={orderId:null,type:null};
 const LABEL={pending:'Pending',picked_up:'Picked Up',out_for_delivery:'Out for Delivery',delivered:'Delivered'};
 function toast(m,t){const el=$('toast');el.innerHTML=`<div class="t ${t==='err'?'err':''}"><i class="fas fa-${t==='err'?'circle-exclamation':'circle-check'}"></i>${m}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2500);}
+function beep(){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.value=0.1;o.start();setTimeout(()=>{o.frequency.value=1100;},150);setTimeout(()=>{o.stop();ctx.close();},400);}catch(e){}}
+function openModal(id){$(id).classList.add('open');}
+function closeModal(id){$(id).classList.remove('open');}
+// GPS extraction
+function extractGPS(addr){const m=(addr||'').match(/\(GPS:\s*(https?:\/\/[^\)]+)\)/i);return m?m[1]:null;}
+function cleanAddress(addr){return (addr||'').replace(/\s*\(GPS:[^\)]*\)/i,'').trim();}
 $('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',l?'light':'dark');$('themeBtn').innerHTML=l?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';localStorage.setItem('pdc_dtheme',l?'light':'dark');};
 if(localStorage.getItem('pdc_dtheme')==='dark'){document.documentElement.setAttribute('data-theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}
 $('logoutBtn').onclick=()=>{localStorage.removeItem('pdc_boy');BOY=null;auth.signOut();location.reload();};
-// LOGIN with unique code (no OTP)
 $('loginBtn').onclick=()=>{
  const code=($('codeInput').value||'').trim().toUpperCase();
  if(!code)return;
@@ -130,41 +198,103 @@ function enterApp(){
 function listen(){
  if(ordersRef)ordersRef.ref.off('value',ordersRef.cb);
  const ref=db.ref('orders').orderByChild('assigned_to_e164').equalTo(BOY.phoneE164);
- const cb=ref.on('value',s=>render(s));
+ const cb=ref.on('value',s=>{
+  // detect new orders (beep)
+  const curIds=new Set();s.forEach(c=>curIds.add(c.key));
+  if(prevOrderIds.size>0){curIds.forEach(id=>{if(!prevOrderIds.has(id)){beep();toast('🔔 Naya order aaya!');}});}
+  prevOrderIds=curIds;
+  render(s);
+ });
  ordersRef={ref,cb};
 }
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function render(s){
- const today=dayStr(new Date());let act=[],done=[];let total=0;
- s.forEach(c=>{const o=c.val();if(!o)return;o._id=c.key;if(o.status==='delivered'){total++;if((o.deliveredAt?dayStr(new Date(o.deliveredAt)):'')===today)done.push(o);}else act.push(o);});
- act.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
- $('sActive').textContent=act.length;$('sToday').textContent=done.length;$('sTotal').textContent=total;
- $('activeList').innerHTML=act.length?act.map(o=>{
-  const st=o.status||'pending';
-  const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="chip">${k} x${v}</span>`).join('');
-  let btn='';
-  if(st==='pending')btn=`<button class="btn-main" onclick="adv('${o._id}','picked_up')"><i class="fas fa-box"></i> Start Pickup</button>`;
-  else if(st==='picked_up')btn=`<button class="btn-main" onclick="adv('${o._id}','out_for_delivery')"><i class="fas fa-truck"></i> Start Delivery</button>`;
-  else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${o._id}','delivered')"><i class="fas fa-check"></i> Mark Delivered</button>`;
-  return `<div class="order-card">
-   <div class="oc-top"><span class="oc-id">#${o.orderId||o._id}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''} <span class="badge ${st}">${LABEL[st]||st}</span></span></div>
+ const today=dayStr(new Date());let pickup=[],delivery=[],done=[];let total=0,cashDue=0;
+ s.forEach(c=>{const o=c.val();if(!o)return;o._id=c.key;
+  if(o.status==='delivered'){total++;if((o.deliveredAt?dayStr(new Date(o.deliveredAt)):'')===today)done.push(o);}
+  else if(o.status==='out_for_delivery'){delivery.push(o);if((o.paymentStatus||'')!=='Paid')cashDue+=(+o.total||0);}
+  else{pickup.push(o);if((o.paymentStatus||'')!=='Paid')cashDue+=(+o.total||0);}
+ });
+ pickup.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+ delivery.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+ $('sPickup').textContent=pickup.length;$('sDelivery').textContent=delivery.length;$('sToday').textContent=done.length;$('sCash').textContent='₹'+cashDue;
+ $('cPickup').textContent=pickup.length;$('cDelivery').textContent=delivery.length;$('cDone').textContent=done.length;
+ $('pickupList').innerHTML=pickup.length?pickup.map(o=>renderCard(o)).join(''):'<div class="empty"><i class="fas fa-inbox"></i>Koi pickup nahi</div>';
+ $('deliveryList').innerHTML=delivery.length?delivery.map(o=>renderCard(o)).join(''):'<div class="empty"><i class="fas fa-inbox"></i>Koi delivery nahi</div>';
+ $('doneList').innerHTML=done.length?done.map(o=>`<div class="order-card" style="padding:12px 16px"><div class="oc-top"><span class="oc-id">#${o.orderId||o._id}</span><span class="badge delivered">✅ ₹${o.total||0}</span></div><div class="oc-name" style="font-size:13px">${o.customerName||o.name||'-'}</div></div>`).join(''):'<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery nahi</div>';
+}
+function renderCard(o){
+ const st=o.status||'pending';
+ const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="chip">${k} x${v}</span>`).join('');
+ const gps=extractGPS(o.address);const addr=cleanAddress(o.address);
+ const isPaid=(o.paymentStatus||'')==='Paid';
+ const payBadge=isPaid?'<span class="badge paid">PAID</span>':'<span class="badge cod">COD ₹'+(o.total||0)+'</span>';
+ let btn='';
+ if(st==='pending')btn=`<button class="btn-main" onclick="adv('${o._id}','picked_up')"><i class="fas fa-box"></i> Start Pickup</button>`;
+ else if(st==='picked_up')btn=`<button class="btn-main" onclick="adv('${o._id}','out_for_delivery')"><i class="fas fa-truck"></i> Start Delivery</button>`;
+ else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${o._id}','delivered')"><i class="fas fa-check"></i> Mark Delivered</button>`;
+ const waMsg=encodeURIComponent(`Hi ${o.customerName||''}! Parth Delivery se ${BOY.name||'partner'} aapke order #${o.orderId||o._id} ke liye raah me hu. Jaldi pahunchunga. 🛵`);
+ const gpsBtn=gps?`<a class="gps" target="_blank" href="${gps}"><i class="fas fa-map-pin"></i> GPS</a>`:'';
+ const collectBtn=(!isPaid&&st==='out_for_delivery')?`<button class="collect" onclick="collectPayment('${o._id}',${o.total||0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${o.total||0}</button>`:(isPaid?`<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>`:'');
+ return `<div class="order-card">
+   <div class="oc-top"><span class="oc-id">#${o.orderId||o._id}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''} <span class="badge ${st}">${LABEL[st]||st}</span> ${payBadge}</span></div>
    <div class="oc-name">${o.customerName||o.name||'-'}</div>
-   <div class="oc-addr"><i class="fas fa-location-dot"></i> ${o.address||'-'}</div>
+   <div class="oc-addr"><i class="fas fa-location-dot"></i> ${addr}</div>
    <div class="oc-meta">${items}<span class="chip">₹${o.total||0}</span><span class="chip">${o.timeSlot||''}</span></div>
-   <div class="oc-actions"><a class="call" href="tel:+91${(o.phone||'').replace(/\D/g,'')}"><i class="fas fa-phone"></i> Call</a><a class="map" target="_blank" href="https://maps.google.com/?q=${encodeURIComponent(o.address||'')}"><i class="fas fa-map"></i> Map</a></div>
+   <div class="oc-actions">
+    <a class="call" href="tel:+91${(o.phone||'').replace(/\D/g,'')}"><i class="fas fa-phone"></i> Call</a>
+    <a class="wa" target="_blank" href="https://wa.me/91${(o.phone||'').replace(/\D/g,'')}?text=${waMsg}"><i class="fab fa-whatsapp"></i> On Way</a>
+    ${gpsBtn}
+    <a class="map" target="_blank" href="https://maps.google.com/?q=${encodeURIComponent(addr)}"><i class="fas fa-map"></i> Map</a>
+    <button class="additem" onclick="openAddItem('${o._id}')"><i class="fas fa-plus"></i> Add Item</button>
+    <button class="report" onclick="openIssue('${o._id}')"><i class="fas fa-flag"></i> Issue</button>
+    ${collectBtn}
+   </div>
    ${btn}
   </div>`;
- }).join(''):'<div class="empty"><i class="fas fa-mug-hot"></i>Koi active order nahi. Aaram karo! ☕</div>';
- $('doneList').innerHTML=done.length?done.map(o=>`<div class="order-card" style="padding:12px 16px"><div class="oc-top"><span class="oc-id">#${o.orderId||o._id}</span><span class="badge delivered">✅ ₹${o.total||0}</span></div><div class="oc-name" style="font-size:13px">${o.customerName||o.name||'-'}</div></div>`).join(''):'<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery nahi</div>';
 }
 window.adv=(id,next)=>{
  const up={status:next};
  if(next==='delivered'){up.deliveredAt=firebase.database.ServerValue.TIMESTAMP;if(BOY&&BOY.id)db.ref('delivery_boys/'+BOY.id+'/total_deliveries').transaction(v=>(v||0)+1);}
  db.ref('orders/'+id).update(up).then(()=>toast(next==='delivered'?'🎉 Delivered!':'Status updated')).catch(e=>toast(e.message,'err'));
 };
-// auto-enter if session exists
+window.collectPayment=(id,total)=>{
+ if(!confirm(`Customer se ₹${total} collect kiya?`))return;
+ db.ref('orders/'+id).update({paymentStatus:'Paid',collectedAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>toast('💰 ₹'+total+' collected!')).catch(e=>toast(e.message,'err'));
+};
+window.openAddItem=(id)=>{
+ issueCtx.orderId=id;$('addItemOrderId').textContent='#'+id;
+ $('extraItems').innerHTML='';addExtraItemRow();openModal('addItemModal');
+};
+function addExtraItemRow(){
+ const row=document.createElement('div');row.className='item-row';
+ row.innerHTML=`<input class="ei-name" placeholder="Item name (e.g. Shirt)"/><input class="ei-qty" type="number" value="1" style="width:60px"/><input class="ei-price" type="number" placeholder="₹" style="width:80px"/><button class="rm" onclick="this.parentElement.remove()">×</button>`;
+ $('extraItems').appendChild(row);
+}
+window.addExtraItemRow=addExtraItemRow;
+window.saveExtraItems=()=>{
+ const rows=$('extraItems').querySelectorAll('.item-row');const items=[];let extra=0;
+ rows.forEach(r=>{const n=r.querySelector('.ei-name').value.trim();const q=+r.querySelector('.ei-qty').value||1;const p=+r.querySelector('.ei-price').value||0;if(n){items.push({n,q,p});extra+=p*q;}});
+ if(!items.length)return toast('Koi item add nahi kiya','err');
+ const id=issueCtx.orderId;
+ db.ref('orders/'+id).once('value').then(s=>{
+  const o=s.val();if(!o)return;
+  const curItems=Object.assign({},o.items||{});
+  items.forEach(it=>{curItems[it.n]=(curItems[it.n]||0)+it.q;});
+  const newTotal=(+o.total||0)+extra;
+  db.ref('orders/'+id).update({items:curItems,total:newTotal,subtotal:(+o.subtotal||0)+extra}).then(()=>{toast(`✅ ${items.length} item(s) added, +₹${extra}`);closeModal('addItemModal');}).catch(e=>toast(e.message,'err'));
+ });
+};
+function selIssue(btn,type){document.querySelectorAll('#issueModal .issue-type button').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');issueCtx.type=type;}
+window.selIssue=selIssue;
+window.openIssue=(id)=>{issueCtx.orderId=id;issueCtx.type=null;document.querySelectorAll('#issueModal .issue-type button').forEach(b=>b.classList.remove('sel'));$('issueNote').value='';openModal('issueModal');};
+window.submitIssue=()=>{
+ if(!issueCtx.type)return toast('Issue type select karo','err');
+ const note=$('issueNote').value.trim();
+ db.ref('orders/'+issueCtx.orderId+'/issue').set({type:issueCtx.type,note,by:BOY.phone,boyName:BOY.name,at:firebase.database.ServerValue.TIMESTAMP}).then(()=>{toast('⚠️ Issue admin ko bhej diya');closeModal('issueModal');}).catch(e=>toast(e.message,'err'));
+};
 if(BOY){ auth.onAuthStateChanged(u=>{ if(u){enterApp();} else { auth.signInAnonymously().then(()=>{ if(BOY)db.ref('boy_sessions/'+auth.currentUser.uid).set({phone:BOY.phone,phoneE164:BOY.phoneE164,name:BOY.name,boyId:BOY.id}); }); } }); }
-console.log('🛵 Parth Delivery Gen2 online');
+console.log('🛵 Parth Delivery Gen3 online');
 </script>
 </body>
 </html>
