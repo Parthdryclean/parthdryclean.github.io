@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- ParthbookGen23 -->
+<!-- ParthbookGen24 : Gen23 + bookingOpen built-in (FULL, nothing cut) -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen23" />
+    <meta name="app-version" content="ParthbookGen24" />
     <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
@@ -55,7 +55,6 @@
         .banner-sparkle { position:absolute; right:24px; bottom:10px; font-size:54px; color:rgba(255,255,255,.15); transform:rotate(-10deg); pointer-events:none; z-index:0; }
         .repeat-card { background:rgba(16,185,129,.08); border:1.5px solid var(--success); padding:11px 16px; border-radius:12px; margin-bottom:12px; display:none; justify-content:space-between; align-items:center; font-weight:700; color:var(--success); font-size:13px; }
         .repeat-card button { background:linear-gradient(135deg,var(--success),#059669); color:#fff; border:none; padding:8px 18px; border-radius:30px; font-weight:800; cursor:pointer; font-size:12px; transition:.2s; }
-        .repeat-card button:hover { transform:translateY(-1px); }
         .sticky-catalog-nav { position:sticky; top:var(--header-height); z-index:50; background:var(--bg); padding:12px 0 2px; margin-bottom:6px; transition:background .3s; }
         .search-box { position:relative; margin-bottom:12px; }
         .search-box i.fa-search { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:16px; pointer-events:none; }
@@ -63,8 +62,6 @@
         .search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,.15); }
         .search-clear-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:50%; background:var(--bg); border:1px solid var(--border); color:var(--text-muted); font-size:13px; cursor:pointer; display:none; align-items:center; justify-content:center; transition:.2s; z-index:3; }
         .search-clear-btn:hover { color:var(--danger); border-color:var(--danger); }
-        .cat-swipe-hint { display:none; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--primary); margin:0 4px 8px; }
-        .cat-swipe-hint.show { display:flex; animation:fadeIn .4s ease; }
         .category-pills-wrap { position:relative; }
         .category-pills-wrap::after { content:''; position:absolute; right:0; top:0; bottom:8px; width:44px; background:linear-gradient(90deg,transparent,var(--bg)); pointer-events:none; z-index:2; }
         .category-pills { display:flex; gap:10px; overflow-x:auto; padding:6px 10px 16px; scrollbar-width:none; }
@@ -109,7 +106,6 @@
         .empty-bag i { font-size:32px; opacity:.4; margin-bottom:8px; display:block; }
         .empty-bag p { font-weight:700; font-size:13px; margin-bottom:10px; }
         .browse-btn { background:var(--grad-index); color:#fff; border:none; padding:10px 22px; border-radius:30px; font-weight:800; font-size:12px; cursor:pointer; transition:.2s; box-shadow:var(--glow-index); }
-        .browse-btn:hover { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
         .bag-items { max-height:220px; overflow-y:auto; margin-bottom:12px; display:none; }
         .bag-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed var(--border); font-size:13px; font-weight:600; }
         .bag-row-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
@@ -120,7 +116,6 @@
         .bag-row-price { font-weight:800; color:var(--text); min-width:50px; text-align:right; }
         .upsell-card { background:rgba(217,70,239,.08); border:1.5px dashed #e879f9; padding:12px; border-radius:12px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
         .upsell-card button { background:linear-gradient(135deg,#d946ef,#a21caf); color:#fff; border:none; padding:7px 16px; border-radius:20px; font-weight:800; cursor:pointer; transition:.2s; }
-        .upsell-card button:hover { transform:scale(1.05); }
         .coupon-card { border:1.5px solid var(--border); border-radius:14px; margin-bottom:12px; display:none; overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm); }
         .coupon-card.active { display:block; }
         .coupon-toggle { width:100%; display:flex; justify-content:space-between; align-items:center; background:none; border:none; padding:12px 14px; cursor:pointer; font-family:inherit; font-weight:700; font-size:13px; color:var(--text); }
@@ -134,8 +129,8 @@
         .coupon-input-wrap { display:flex; gap:8px; }
         .coupon-input-wrap input { flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-weight:700; font-family:inherit; outline:none; text-transform:uppercase; letter-spacing:.5px; transition:.2s; }
         .coupon-input-wrap input:focus { border-color:var(--primary); }
+        .coupon-input-wrap input:disabled { opacity:.6; background:var(--bg); cursor:not-allowed; }
         .coupon-input-wrap button { padding:10px 18px; border-radius:10px; border:1.5px solid var(--primary); background:transparent; color:var(--primary); font-weight:800; font-size:12px; cursor:pointer; white-space:nowrap; transition:.2s; }
-        .coupon-input-wrap button:hover:not(:disabled) { box-shadow:0 0 0 3px rgba(14,165,233,.12); }
         .coupon-input-wrap button:disabled { border-color:var(--success); color:var(--success); cursor:not-allowed; }
         .coupon-input-wrap button.applied { border-color:var(--success); color:var(--success); }
         .coupon-msg { font-size:11px; font-weight:700; margin-top:6px; min-height:14px; }
@@ -175,7 +170,6 @@
         .delivery-card { background:var(--bg); border:1.5px solid var(--primary); border-radius:12px; padding:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; position:relative; overflow:hidden; }
         .delivery-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(180deg,var(--primary),var(--accent)); }
         .edit-link { color:var(--primary); font-weight:800; cursor:pointer; font-size:12px; background:rgba(14,165,233,.08); padding:6px 12px; border-radius:20px; border:1px solid rgba(14,165,233,0.2); transition:.2s; white-space:nowrap; }
-        .edit-link:hover { background:rgba(14,165,233,.15); }
         .mobile-cart-bar { position:fixed; bottom:0; left:0; right:0; z-index:240; display:none; justify-content:space-between; align-items:center; background:var(--grad-index); color:#fff; padding:15px 20px; padding-bottom:calc(15px + env(safe-area-inset-bottom)); box-shadow:0 -8px 24px rgba(99,102,241,.35); cursor:pointer; transform:translateZ(0); backface-visibility:hidden; }
         .mobile-cart-bar .mcb-left { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
         .mobile-cart-bar .mcb-right { display:flex; align-items:center; gap:10px; font-weight:800; font-size:14px; }
@@ -190,23 +184,16 @@
         .close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:.2s; z-index:6; }
         .close-modal-btn:hover { color:var(--danger); transform:scale(1.1); }
         #successOverlay .close-modal-btn { color:#fff; top:12px; right:14px; }
-        #successOverlay .close-modal-btn:hover { color:#fff; transform:scale(1.1); }
         .btn-google { width:100%; background:#fff; color:var(--text); border:1.5px solid var(--border); padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:.3s; }
-        .btn-google:hover { border-color:var(--primary); background:rgba(14,165,233,.05); }
         .google-icon { width:20px; height:20px; flex-shrink:0; }
         .auth-divider { display:flex; align-items:center; margin:16px 0; color:var(--text-muted); font-size:12px; font-weight:800; }
         .auth-divider::before,.auth-divider::after { content:''; flex:1; border-bottom:1px solid var(--border); }
         .auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; font-weight:700; outline:none; margin-bottom:14px; text-align:center; transition:.3s; }
-        .auth-input:focus { border-color:var(--primary); }
-        .btn-primary-full { width:100%; background:var(--grad-index); color:#fff; border:none; padding:14px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:.3s; text-decoration:none; box-shadow:var(--glow-index); }
-        .btn-primary-full:hover { transform:translateY(-1px); box-shadow:var(--glow-index-hover); }
+        .btn-primary-full { width:100%; background:var(--grad-index); color:#fff; border:none; padding:14px; border-radius:50px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:.3s; box-shadow:var(--glow-index); }
         .success-hero { position:relative; overflow:hidden; background:var(--grad-index); color:#fff; padding:32px 24px; border-radius:20px; margin:-10px -10px 20px; }
-        .success-hero::before { content:''; position:absolute; top:-30px; right:-25px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,.12); }
-        .success-hero::after { content:''; position:absolute; bottom:-40px; left:-20px; width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,.08); }
         .success-hero-icon { width:74px; height:74px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:36px; border:3px solid rgba(255,255,255,.4); position:relative; z-index:1; }
         .success-hero h2 { font-size:24px; font-weight:800; margin-bottom:6px; position:relative; z-index:1; }
         .success-hero p { font-size:14px; opacity:.95; font-weight:600; position:relative; z-index:1; }
-        .success-sparkle { position:absolute; right:20px; bottom:15px; font-size:42px; color:rgba(255,255,255,.18); transform:rotate(-10deg); pointer-events:none; }
         .success-order-box { background:var(--bg); border:1.5px dashed var(--success); border-radius:14px; padding:16px; margin-bottom:16px; text-align:center; }
         .success-order-box .label { font-size:10px; color:var(--text-muted); font-weight:800; letter-spacing:1px; text-transform:uppercase; }
         .success-order-box .order-id { font-size:22px; color:var(--primary); font-weight:800; margin-top:4px; letter-spacing:1px; }
@@ -219,13 +206,11 @@
         .success-actions { display:flex; gap:10px; }
         .success-actions .btn-primary-full { flex:1; font-size:13px; padding:13px; }
         .success-actions .btn-secondary { flex:1; background:var(--surface); color:var(--text); border:1.5px solid var(--border); padding:13px; border-radius:30px; font-size:13px; font-weight:800; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; transition:.2s; }
-        .success-actions .btn-secondary:hover { border-color:var(--primary); color:var(--primary); }
         @media (max-width:1024px) {
             .app-layout { grid-template-columns:1fr; margin-bottom:110px; }
             .checkout-sidebar { display:none; position:fixed; bottom:0; left:0; width:100%; max-height:88vh; border-radius:24px 24px 0 0; box-shadow:0 -10px 40px rgba(0,0,0,.2); z-index:300; overflow-y:auto; top:auto; }
             .checkout-sidebar.mobile-open { display:block; animation:slideUp .3s ease; }
             .sheet-handle { display:block; }
-            .mobile-overlay.active { display:block; }
         }
         @media (max-width:768px) {
             header { padding:6px 4%; }
@@ -233,7 +218,7 @@
             .items-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
             .item-card { padding:13px; } .item-name { font-size:13px; min-height:34px; }
             .banner { padding:20px 18px; } .banner h2 { font-size:20px; }
-            .banner-icon { display:none; } .banner-sparkle { font-size:40px; right:16px; bottom:8px; }
+            .banner-icon { display:none; }
             .time-pill .tp-time { font-size:9px; }
         }
         @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
@@ -275,7 +260,6 @@
                     <input type="text" class="search-input" id="itemSearch" placeholder="Search garments... e.g. Shirt, Saree, Jacket" />
                     <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="App.UI.clearSearch()" aria-label="Clear search"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="cat-swipe-hint" id="catSwipeHint"><i class="fas fa-hand-pointer"></i> Swipe for more categories →</div>
                 <div class="category-pills-wrap"><div class="category-pills" id="categoryPills"></div></div>
             </div>
             <div id="catalogGrid" class="items-grid"></div>
@@ -358,7 +342,7 @@
     <div class="modal-overlay" id="successOverlay">
         <div class="modal-box">
             <button class="close-modal-btn" onclick="App.UI.closeModal('successOverlay')">&times;</button>
-            <div class="success-hero"><div class="success-hero-icon"><i class="fas fa-check"></i></div><h2>Order Confirmed!</h2><p>Your clothes will be picked up on time.</p><span class="success-sparkle">✦</span></div>
+            <div class="success-hero"><div class="success-hero-icon"><i class="fas fa-check"></i></div><h2>Order Confirmed!</h2><p>Your clothes will be picked up on time.</p></div>
             <div class="success-order-box"><span class="label">Order ID</span><div class="order-id" id="successOrderId">PDC-XXXX</div></div>
             <div class="success-details-card" id="successDetails"></div>
             <div class="success-actions">
@@ -368,14 +352,13 @@
         </div>
     </div>
     <script>
-        console.log('🧺 ParthbookGen23 live');
+        console.log('🧺 ParthbookGen24 live');
         const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.database();
         function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
         function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
         function sanitizeHTML(str){ if(!str)return ''; return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-        function orderCategories(cats){ const keys=Object.keys(cats); const ordered={}; keys.filter(k=>k!=='combos').forEach(k=>ordered[k]=cats[k]); if(cats.combos) ordered.combos=cats.combos; return ordered; }
         const DEFAULT_CATEGORIES = {
             mens:[{id:'mens-shirt',name:'Shirt',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-pant',name:'Pant',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-kurta',name:'Kurta',price:60,originalPrice:80,icon:'fa-vest'},{id:'mens-jeans',name:'Jeans',price:0,icon:'fa-tshirt'}],
             ladies:[{id:'ladies-kurta',name:'Ladies Kurta',price:60,originalPrice:80,icon:'fa-female'},{id:'ladies-jeans',name:'Jeans',price:0,icon:'fa-female'}],
@@ -389,9 +372,9 @@
         const DEFAULT_CATNAMES = { mens:"Men's", ladies:"Ladies", winterWomen:"Winter (F)", winterMen:"Winter (M)", festival:"Festival", iron:"Iron", home:"Home", combos:"Combos" };
         const DEFAULT_UPSELL = [ {id:'upsell-tie',name:'Premium Tie Wash',price:40,icon:'fa-user-tie'}, {id:'upsell-pillow',name:'Pillow Cover Wash',price:20,icon:'fa-bed'} ];
         const SETTINGS = { minOrder:300, expressPercent:90, announcement:'' };
-        let COUPONS = {}; // { CODE: {code,percent,max,type,enabled} }
+        let COUPONS = {};
         const STATE = {
-            categories: orderCategories(JSON.parse(JSON.stringify(DEFAULT_CATEGORIES))),
+            categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
             catNames: Object.assign({}, DEFAULT_CATNAMES),
             upsellRules: [ {triggerName:'Coat Pant', offerId:'upsell-tie', text:'Add Premium Tie Wash?', color:'#d946ef'}, {triggerName:'Blanket (Double)', offerId:'upsell-pillow', text:'Wash Pillow Covers too?', color:'#0ea5e9'} ],
             bag: JSON.parse(localStorage.getItem('pdc_cart')) || {},
@@ -413,7 +396,7 @@
                 this.Order.loadCategories();
                 this.Order.loadSettings();
                 this.Order.loadCoupons();
-                this.UI.showCatSwipeHint();
+                this.Order.checkBookingOpen();
                 document.getElementById('itemSearch').addEventListener('input',(e)=>{ const v=e.target.value; document.getElementById('searchClearBtn').style.display=v?'flex':'none'; this.UI.renderItems(v); });
                 document.getElementById('bookingForm').addEventListener('submit',(e)=>this.Order.submit(e));
                 const dateInput=document.getElementById('pickupDate');
@@ -442,7 +425,6 @@
                 applyTheme: function(t){ if(t==='dark'){ document.documentElement.setAttribute('data-theme','dark'); document.getElementById('themeToggleBtn').innerHTML='<i class="fas fa-sun" style="color:var(--primary);"></i>'; } else { document.documentElement.removeAttribute('data-theme'); document.getElementById('themeToggleBtn').innerHTML='<i class="fas fa-moon"></i>'; } },
                 cartButtonAction: function(){ if(window.innerWidth<=1024)this.openMobileCheckout(); else document.getElementById('checkoutSidebar').scrollIntoView({behavior:'smooth',block:'start'}); },
                 browseItems: function(){ this.closeMobileCheckout(); document.getElementById('catalogGrid').scrollIntoView({behavior:'smooth',block:'start'}); },
-                showCatSwipeHint: function(){ if(localStorage.getItem('pdc_cat_swipe_hint'))return; const h=document.getElementById('catSwipeHint'); if(!h)return; h.classList.add('show'); localStorage.setItem('pdc_cat_swipe_hint','1'); setTimeout(()=>h.classList.remove('show'),4000); },
                 openModal: function(id){ document.getElementById(id).classList.add('active'); document.body.style.overflow='hidden'; history.pushState({modal:id},'','#'+id); if(id==='authModal'&&!App.Auth.recaptchaVerifier)App.Auth.initRecaptcha(); },
                 closeModal: function(id){ if(history.state?.modal===id)history.back(); else { document.getElementById(id).classList.remove('active'); if(!document.querySelector('.modal-overlay.active'))document.body.style.overflow=''; } },
                 openMobileCheckout: function(){ const sheet=document.getElementById('checkoutSidebar'); const overlay=document.getElementById('mobileOverlay');
@@ -557,24 +539,20 @@
                     if(!code){ msg.textContent='Pehle coupon code likho 🙂'; msg.className='coupon-msg error'; input.focus(); return; }
                     const c=COUPONS[code];
                     if(!c || c.enabled===false){ msg.textContent='🎟️ Ye code available nahi hai'; msg.className='coupon-msg error'; return; }
-                    STATE.appliedPromo=code;
-                    // eligibility
-                    if(c.type==='first_order'){
-                        if(localStorage.getItem('pdc_first_order_used')){ STATE.couponEligible=false; msg.textContent='💙 Ye offer sirf aapke pehle order ke liye hai'; msg.className='coupon-msg error'; this.updateSummary(); return; }
-                        STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success';
-                    } else {
-                        const user=auth.currentUser;
-                        if(!user){ STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success'; this.updateSummary(); return; }
+                    if(STATE.appliedPromo===code){ msg.textContent='✅ Coupon already applied hai!'; msg.className='coupon-msg success'; return; }
+                    if(localStorage.getItem('pdc_first_order_used') && c.type==='first_order'){ msg.textContent='💙 Ye offer sirf aapke pehle order ke liye hai'; msg.className='coupon-msg error'; return; }
+                    const user=auth.currentUser;
+                    if(c.type==='general' && user){
                         db.ref('customers/'+user.uid+'/usedCoupons/'+code).once('value').then(s=>{
                             if(s.exists()&&s.val()){ STATE.couponEligible=false; msg.textContent='💙 Ye code aap pehle hi use kar chuke ho'; msg.className='coupon-msg error'; }
-                            else { STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success'; }
-                            this.updateSummary();
+                            else { STATE.appliedPromo=code; STATE.couponEligible=true; msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success'; btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true; this.updateSummary(); App.showToast('Coupon applied!','success'); }
                         });
                         return;
                     }
+                    STATE.appliedPromo=code; STATE.couponEligible=true;
+                    msg.innerHTML=`✅ <strong>${code}</strong> applied! ${c.percent}% off (max ₹${c.max})`; msg.className='coupon-msg success';
                     btn.textContent='✓ Applied'; btn.classList.add('applied'); btn.disabled=true; input.disabled=true;
-                    this.updateSummary();
-                    App.showToast('Coupon applied!','success');
+                    this.updateSummary(); App.showToast('Coupon applied!','success');
                 },
                 repeatLastOrder: function(){ if(!STATE.lastOrderCache)return; STATE.bag={}; for(const [name,qty] of Object.entries(STATE.lastOrderCache)){ const f=Object.values(STATE.categories).flat().find(i=>i.name===name); if(f)STATE.bag[f.id]=qty; } localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag)); App.UI.renderItems(document.getElementById('itemSearch').value); this.updateSummary(); App.showToast('Previous bag loaded!','success'); },
                 getGPS: function(){ App.showToast('Fetching GPS location...','info'); if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(pos=>{ const addr=document.getElementById('custAddress'); if(addr){ const gpsLink=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`; if(!addr.value.includes('GPS:'))addr.value+=(addr.value?' ':'')+`(GPS: ${gpsLink})`; App.showToast('GPS location added!','success'); } },(err)=>{ if(err.code===1)App.showToast('Location permission denied.','error'); else if(err.code===2)App.showToast('Location unavailable.','error'); else App.showToast('GPS timeout. Try again.','error'); },{enableHighAccuracy:true,timeout:10000}); } else App.showToast('GPS not supported.','error'); }
@@ -589,25 +567,25 @@
                 handleStateChange: function(user){ const loginBtn=document.getElementById('loginBtn');
                     if(user){ STATE.isLoggedIn=true; const firstName=(user.displayName||'User').split(' ')[0]; loginBtn.innerHTML=`<i class="fas fa-user-circle" style="color:var(--accent);"></i>`; loginBtn.title=`Hi, ${firstName}`;
                         db.ref('customers/'+user.uid).once('value').then(s=>{ if(s.exists()){ const d=s.val(); STATE.userProfile={name:d.name||'',phone:d.phone||'',address:d.address||''}; if(d.lastOrderId){ db.ref('orders/'+d.lastOrderId).once('value').then(o=>{ if(o.exists()){ STATE.lastOrderCache=o.val().items; document.getElementById('repeatCard').style.display='flex'; } }); } } App.UI.renderCustomerInfo(); }).catch(()=>App.UI.renderCustomerInfo());
-                        loginBtn.onclick=()=>App.showToast(`Logged in as ${firstName}`,'info');
-                        // re-check coupon eligibility for general codes after login
-                        if(STATE.appliedPromo && COUPONS[STATE.appliedPromo] && COUPONS[STATE.appliedPromo].type==='general'){ App.Cart.applyPromoCode(); }
-                    } else { STATE.isLoggedIn=false; STATE.userProfile={}; loginBtn.innerHTML=`<i class="fas fa-user-circle"></i>`; loginBtn.title='Login'; loginBtn.onclick=()=>App.UI.openModal('authModal'); document.getElementById('repeatCard').style.display='none'; STATE.isEditingFields=false; App.UI.renderCustomerInfo(); } }
+                        loginBtn.onclick=()=>App.showToast(`Logged in as ${firstName}`,'info'); }
+                    else { STATE.isLoggedIn=false; STATE.userProfile={}; loginBtn.innerHTML=`<i class="fas fa-user-circle"></i>`; loginBtn.title='Login'; loginBtn.onclick=()=>App.UI.openModal('authModal'); document.getElementById('repeatCard').style.display='none'; STATE.isEditingFields=false; App.UI.renderCustomerInfo(); } }
             },
             Order: {
+                checkBookingOpen: function(){ db.ref('settings/general').on('value',s=>{ const v=s.val()||{}; const closed=v.bookingOpen===false; let el=document.getElementById('closedOverlay');
+                    if(closed){ if(!el){ el=document.createElement('div'); el.id='closedOverlay'; el.style.cssText='position:fixed;inset:0;background:rgba(2,6,23,.92);z-index:99999;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Outfit,sans-serif;text-align:center;padding:20px'; el.innerHTML='<div><div style="font-size:40px;margin-bottom:10px">🛠️</div><h2 style="font-size:22px;margin-bottom:8px">Bookings Temporarily Closed</h2><p style="opacity:.8;margin-bottom:14px">Hum jald wapas aayenge. Tab tak WhatsApp par order karein.</p><a href="https://wa.me/919235601645" style="color:#22d3ee;font-weight:800">📲 WhatsApp karein</a></div>'; document.body.appendChild(el);} }
+                    else if(el){ el.remove(); } }); },
                 loadCategories: function(){ db.ref('services/categories').once('value').then(s=>{ if(s.exists()){ const data=s.val(); const cats={}; const names={};
                         for(const key in data){ const c=data[key]; if(!c||!c.items)continue; cats[key]=(c.items||[]).map(it=>({id:key+'-'+slug(it.name), name:it.name, price:Number(it.price)||0, originalPrice:it.originalPrice?Number(it.originalPrice):undefined, icon:c.icon||'fa-tag'})); names[key]=c.name||key; }
-                        if(Object.keys(cats).length){ STATE.categories=orderCategories(cats); STATE.catNames=Object.assign({},STATE.catNames,names); } }
+                        if(Object.keys(cats).length){ STATE.categories=cats; STATE.catNames=Object.assign({},STATE.catNames,names); } }
                     STATE.categories.upsell=DEFAULT_UPSELL; STATE.catNames.upsell='Upsell';
                     if(!STATE.categories[STATE.currentCat]) STATE.currentCat=Object.keys(STATE.categories).find(k=>k!=='upsell')||'mens';
                     App.UI.renderCategories(); App.UI.renderItems(); App.Cart.updateSummary(); }).catch(()=>{}); },
                 loadSettings: function(){ db.ref('settings/general').once('value').then(s=>{ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; SETTINGS.announcement=v.announcement||''; document.getElementById('bannerMin').textContent=SETTINGS.minOrder; document.getElementById('expressLabel').innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`; }).catch(()=>{}); },
-                loadCoupons: function(){ db.ref('settings/coupons').on('value',snap=>{ COUPONS=snap.val()||{};
+                loadCoupons: function(){ db.ref('settings/coupons').on('value',s=>{ COUPONS=s.val()||{};
                         const hasActive=Object.values(COUPONS).some(c=>c&&c.enabled!==false);
-                        document.getElementById('couponCard').classList.toggle('active', hasActive);
-                        if(STATE.appliedPromo && !COUPONS[STATE.appliedPromo]){ STATE.appliedPromo=null; STATE.couponEligible=false; App.Cart.updateSummary(); }
-                        if(STATE.appliedPromo) App.Cart.updateSummary();
-                    }); },
+                        const cc=document.getElementById('couponCard');
+                        if(hasActive){ cc.classList.add('active'); } else { cc.classList.remove('active'); }
+                        if(STATE.appliedPromo && !COUPONS[STATE.appliedPromo]){ STATE.appliedPromo=null; STATE.couponEligible=false; const btn=document.getElementById('applyCouponBtn'); const input=document.getElementById('couponInput'); if(btn){btn.textContent='Apply';btn.classList.remove('applied');btn.disabled=false;} if(input){input.value='';input.disabled=false;} document.getElementById('couponMsg').textContent=''; App.Cart.updateSummary(); } }); },
                 submit: async function(e){ e.preventDefault(); if(!auth.currentUser){ App.showToast('Login to book.','warning'); App.UI.openModal('authModal'); return; }
                     let name=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.name?STATE.userProfile.name:document.getElementById('custName')?.value.trim();
                     let phone=STATE.isLoggedIn&&!STATE.isEditingFields&&STATE.userProfile.phone?STATE.userProfile.phone:document.getElementById('custPhone')?.value.trim();
@@ -624,28 +602,17 @@
                     if(subtotal<SETTINGS.minOrder)return App.showToast(`Min ₹${SETTINGS.minOrder} required`,'error');
                     const btn=document.getElementById('submitBooking'); btn.innerHTML='<span class="skeleton" style="display:inline-block;width:100px;height:20px;"></span>'; btn.disabled=true;
                     const specialInst=sanitizeHTML(document.getElementById('specialInst').value); const isExpress=document.getElementById('expressToggle').checked;
-                    const uid=auth.currentUser.uid;
-                    // coupon discount with fresh eligibility
-                    let discount=0; let usedGeneralCode=null;
-                    const cp=STATE.appliedPromo?COUPONS[STATE.appliedPromo]:null;
-                    if(cp && cp.enabled!==false){
-                        if(cp.type==='first_order'){
-                            if(!localStorage.getItem('pdc_first_order_used')) discount=Math.min(Math.round(subtotal*(cp.percent||0)/100), cp.max||0);
-                        } else {
-                            let used=false;
-                            try{ const s=await db.ref('customers/'+uid+'/usedCoupons/'+STATE.appliedPromo).once('value'); used=s.exists()&&s.val(); }catch(err){}
-                            if(!used){ discount=Math.min(Math.round(subtotal*(cp.percent||0)/100), cp.max||0); usedGeneralCode=STATE.appliedPromo; }
-                        }
-                    }
+                    const discount=this.Cart?0:0; const disc=App.Cart.currentDiscount(subtotal);
                     const expressFee=isExpress?Math.round(subtotal*SETTINGS.expressPercent/100):0;
-                    const total=Math.max(0,subtotal+expressFee-discount);
+                    const total=Math.max(0,subtotal+expressFee-disc);
                     const orderId='PDC-'+Math.random().toString(36).substring(2,8).toUpperCase();
                     const pickupDate=document.getElementById('pickupDate').value||todayISO(); const timeSlot=STATE.selectedTimeSlot;
                     const estDate=new Date(pickupDate); estDate.setDate(estDate.getDate()+(isExpress?1:3)); const estd=estDate.toISOString().split('T')[0];
                     const itemsList=Object.entries(orderItems).map(([k,v])=>`${k} x${v}`).join(', ');
-                    const orderData={ orderId, uid, customerName:sanitizeHTML(name), name:sanitizeHTML(name), phone, address:sanitizeHTML(address), pickupDate, timeSlot, estd, estdTime:estd, estimatedDelivery:estd, deliveryDate:estd, ESTD:estd, itemsList, specialInst, items:orderItems, subtotal, express:isExpress?'Yes':'No', discount, appliedCoupon:STATE.appliedPromo||null, total, paymentStatus:'Pay on Delivery', status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP };
-                    try{ await db.ref('orders/'+orderId).set(orderData); await db.ref('customers/'+uid).update({name,phone,address,lastOrderId:orderId});
-                        if(usedGeneralCode){ await db.ref('customers/'+uid+'/usedCoupons/'+usedGeneralCode).set(true).catch(()=>{}); }
+                    const usedGeneral = (STATE.appliedPromo && COUPONS[STATE.appliedPromo] && COUPONS[STATE.appliedPromo].type==='general' && STATE.couponEligible) ? STATE.appliedPromo : null;
+                    const orderData={ orderId, uid:auth.currentUser.uid, customerName:sanitizeHTML(name), name:sanitizeHTML(name), phone, address:sanitizeHTML(address), pickupDate, timeSlot, estd, estdTime:estd, estimatedDelivery:estd, deliveryDate:estd, ESTD:estd, itemsList, specialInst, items:orderItems, subtotal, express:isExpress?'Yes':'No', discount:disc, appliedCoupon:STATE.appliedPromo||null, total, paymentStatus:'Pay on Delivery', status:'pending', createdAt:firebase.database.ServerValue.TIMESTAMP };
+                    try{ await db.ref('orders/'+orderId).set(orderData); await db.ref('customers/'+auth.currentUser.uid).update({name,phone,address,lastOrderId:orderId});
+                        if(usedGeneral){ await db.ref('customers/'+auth.currentUser.uid+'/usedCoupons/'+usedGeneral).set(true).catch(()=>{}); }
                         try{ fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}); }catch(e){}
                         if(!localStorage.getItem('pdc_first_order_used'))localStorage.setItem('pdc_first_order_used','true');
                         STATE.bag={}; localStorage.removeItem('pdc_cart'); document.getElementById('pickupDate').value=todayStr; document.getElementById('expressToggle').checked=false; document.getElementById('specialInst').value=''; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; document.getElementById('selectedTimeSlot').value='';
@@ -655,7 +622,7 @@
                         App.UI.updateTimeSlots(); App.UI.renderItems(); App.Cart.updateSummary();
                         document.getElementById('successOrderId').textContent=orderId; STATE.lastBookedOrderId=orderId;
                         const estDateStr=estDate.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'}); const pickupDateStr=new Date(pickupDate).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
-                        document.getElementById('successDetails').innerHTML=`<div class="success-detail-row"><span class="l">Pickup Date</span><span class="v">${pickupDateStr}</span></div><div class="success-detail-row"><span class="l">Time Slot</span><span class="v">${sanitizeHTML(timeSlot)}</span></div><div class="success-detail-row"><span class="l">Est. Delivery</span><span class="v highlight">${estDateStr}</span></div><div class="success-detail-row"><span class="l">Total Amount</span><span class="v highlight">₹${total}</span></div>${isExpress?`<div class="success-detail-row"><span class="l">Express</span><span class="v" style="color:var(--gold);">⚡ 24-Hr</span></div>`:''}`;
+                        document.getElementById('successDetails').innerHTML=`<div class="success-detail-row"><span class="label">Pickup Date</span><span class="value">${pickupDateStr}</span></div><div class="success-detail-row"><span class="label">Time Slot</span><span class="value">${sanitizeHTML(timeSlot)}</span></div><div class="success-detail-row"><span class="label">Est. Delivery</span><span class="value highlight">${estDateStr}</span></div><div class="success-detail-row"><span class="label">Total Amount</span><span class="value highlight">₹${total}</span></div>${isExpress?`<div class="success-detail-row"><span class="label">Express</span><span class="value" style="color:var(--gold);">⚡ 24-Hr</span></div>`:''}`;
                         if(typeof confetti==='function')confetti({particleCount:150,spread:70,origin:{y:0.6},zIndex:99999});
                         App.UI.openModal('successOverlay');
                     }catch(err){ console.error(err); App.showToast('Booking failed. Check connection.','error'); }
@@ -667,17 +634,11 @@
                         html2pdf().set({margin:8,filename:'ParthDryClean_Invoice_'+id+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(element).save().then(()=>App.showToast('Invoice Downloaded!','success')); }); }
             }
         };
-        let sheetOpenTime=0;
         App.init();
         auth.onAuthStateChanged(user=>App.Auth.handleStateChange(user));
         document.getElementById('pickupDate').min=todayISO();
         document.getElementById('pickupDate').value=todayISO();
         document.getElementById('couponInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); App.Cart.applyPromoCode(); } });
-// BOOKING OPEN/CLOSE CHECK
-db.ref('settings/general').on('value',s=>{const v=s.val()||{};const closed=v.bookingOpen===false;let el=document.getElementById('closedOverlay');
- if(closed){ if(!el){el=document.createElement('div');el.id='closedOverlay';el.style.cssText='position:fixed;inset:0;background:rgba(2,6,23,.92);z-index:99999;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Outfit,sans-serif;text-align:center;padding:20px';el.innerHTML='<div><div style="font-size:40px;margin-bottom:10px">🛠️</div><h2 style="font-size:22px;margin-bottom:8px">Bookings Temporarily Closed</h2><p style="opacity:.8;margin-bottom:14px">Hum jald wapas aayenge. Tab tak WhatsApp par order karein.</p><a href="https://wa.me/919235601645" style="color:#22d3ee;font-weight:800">📲 WhatsApp karein</a></div>';document.body.appendChild(el);} }
- else if(el){ el.remove(); }
-}); 
     </script>
 </body>
 </html>
