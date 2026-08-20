@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.7 : Gen6.6 + Full Pre-Filled Dynamic CMS Engine (FULL) -->
+<!-- ParthindexGen6.9 : Enterprise Auth & Tax Invoice Engine (FULL) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -37,7 +37,7 @@ button, a, input, textarea { -webkit-tap-highlight-color: transparent; outline: 
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
 [data-theme="dark"] header { background: rgba(15,23,42,0.88); }
-[data-theme="dark"] .auth-input { background:#0f172a; color:var(--text); }
+[data-theme="dark"] .auth-input { background:#0f172a; color:var(--text); border-color:var(--border); }
 [data-theme="dark"] .btn-google { background:#1e293b; color:var(--text); border-color:var(--border); }
 [data-theme="dark"] .btn-google:hover { background:rgba(14,165,233,0.08); }
 [data-theme="dark"] .whatsapp-tooltip { background:var(--surface); color:var(--text); border-color:var(--border); }
@@ -50,6 +50,9 @@ button, a, input, textarea { -webkit-tap-highlight-color: transparent; outline: 
 [data-theme="dark"] .step-dot { background:#1e293b; }
 [data-theme="dark"] .progress-step.done .step-dot { background:var(--primary); }
 [data-theme="dark"] .progress-step.current .step-dot { background:#1e293b; }
+[data-theme="dark"] .flag-pill { background:#0f172a; border-color:var(--border); color:var(--text); }
+[data-theme="dark"] .otp-digit-input { background:#0f172a; border-color:var(--border); color:var(--text); }
+
 header { background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); padding: 8px 5%; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; min-height:var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,0.03); flex-wrap: nowrap; }
 .logo { display:flex; align-items:center; gap:0; text-decoration:none; flex-shrink:0; }
 .logo-text-wrapper { display:flex; flex-direction:column; line-height:1; }
@@ -318,20 +321,36 @@ nav a:hover { color:var(--primary); }
 .whatsapp-tooltip { position:absolute; right:72px; top:50%; transform:translateY(-50%); background:#fff; color:var(--text); padding:8px 14px; border-radius:12px; font-size:12px; font-weight:800; box-shadow:var(--shadow); white-space:nowrap; border:1px solid var(--border); display:flex; align-items:center; gap:6px; transition: opacity .3s ease; }
 .whatsapp-tooltip.folded { opacity:0; pointer-events:none; }
 .whatsapp-tooltip span { width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; box-shadow:0 0 8px #22c55e; }
-.modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:100000; padding:16px; }
-.modal-overlay.active { display:flex; animation:fadeIn 0.3s ease; }
-.modal-box { background:rgba(255,255,255,0.95); backdrop-filter:blur(20px); border-radius:24px; padding:35px 30px; max-width:420px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.3); text-align:center; max-height:90vh; overflow-y:auto; overscroll-behavior: contain; }
-[data-theme="dark"] .modal-box { background:rgba(30,41,59,0.95); border:1px solid rgba(255,255,255,0.1); }
-.close-modal-btn { position:absolute; top:16px; right:20px; background:none; border:none; color:var(--text-muted); font-size:26px; cursor:pointer; transition:0.2s; }
+
+/* Modal & Clean Auth Styling */
+.modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.65); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:100000; padding:16px; }
+.modal-overlay.active { display:flex; animation:fadeIn 0.25s ease; }
+.modal-box { background:rgba(255,255,255,0.96); backdrop-filter:blur(20px); border-radius:24px; padding:30px 24px; max-width:400px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.3); text-align:center; max-height:92vh; overflow-y:auto; scrollbar-width:none; }
+.modal-box::-webkit-scrollbar { display:none; }
+[data-theme="dark"] .modal-box { background:rgba(30,41,59,0.96); border:1px solid rgba(255,255,255,0.1); }
+.close-modal-btn { position:absolute; top:14px; right:18px; background:none; border:none; color:var(--text-muted); font-size:24px; cursor:pointer; transition:0.2s; }
 .close-modal-btn:hover { color:var(--danger); transform:scale(1.1); }
-.btn-google { width:100%; background:#ffffff; color:var(--text); border:1.5px solid var(--border); padding:14px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; transition:0.3s; font-family:'Outfit'; box-shadow:0 2px 10px rgba(0,0,0,0.02); }
+.btn-google { width:100%; background:#ffffff; color:var(--text); border:1.5px solid var(--border); padding:12px; border-radius:14px; font-size:14px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; transition:0.3s; font-family:'Outfit'; box-shadow:0 2px 10px rgba(0,0,0,0.02); }
 .btn-google:hover { border-color:var(--primary); background:rgba(14,165,233,0.05); }
-.google-icon { width:20px; height:20px; flex-shrink:0; }
-.auth-divider { display:flex; align-items:center; margin:16px 0; color:var(--text-muted); font-size:12px; font-weight:800; }
+.google-icon { width:18px; height:18px; flex-shrink:0; }
+.auth-divider { display:flex; align-items:center; margin:14px 0; color:var(--text-muted); font-size:11px; font-weight:800; }
 .auth-divider::before, .auth-divider::after { content:''; flex:1; border-bottom:1px solid var(--border); }
-.auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; color:var(--text); font-family:'Outfit'; font-size:14px; outline:none; margin-bottom:14px; text-align:center; font-weight:600;}
+.auth-input { width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; color:var(--text); font-family:'Outfit'; font-size:14px; outline:none; margin-bottom:12px; font-weight:600;}
 .auth-input:focus { border-color:var(--primary); }
-.btn-primary-full { width:100%; background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:0.3s; font-family:'Outfit'; box-shadow:0 4px 15px rgba(14,165,233,0.3); }
+.btn-primary-full { width:100%; background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; padding:13px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.3s; font-family:'Outfit'; box-shadow:0 4px 15px rgba(14,165,233,0.3); }
+
+/* Phone & OTP Form Elements */
+.phone-input-group { display:flex; gap:8px; margin-bottom:12px; }
+.flag-pill { display:inline-flex; align-items:center; gap:4px; padding:0 12px; border-radius:12px; background:#f8fafc; border:1.5px solid var(--border); font-size:13px; font-weight:800; color:var(--text); flex-shrink:0; }
+.phone-number-field { flex:1; margin-bottom:0; text-align:left; letter-spacing:1px; }
+.otp-inputs-wrapper { display:flex; gap:6px; justify-content:center; margin:14px 0; }
+.otp-digit-input { width:42px; height:46px; border-radius:10px; border:1.5px solid var(--border); background:#f8fafc; text-align:center; font-size:18px; font-weight:800; color:var(--text); transition:.2s; font-family:'Outfit'; }
+.otp-digit-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,233,0.15); }
+.resend-timer-wrap { display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:14px; }
+.resend-btn { background:none; border:none; color:var(--primary); font-weight:800; cursor:pointer; font-size:11px; font-family:'Outfit'; }
+.resend-btn[disabled] { color:var(--text-muted); opacity:0.6; cursor:not-allowed; }
+.edit-phone-btn { color:var(--accent); cursor:pointer; text-decoration:underline; font-size:11px; font-weight:700; background:none; border:none; font-family:'Outfit'; }
+
 @media (max-width:900px) { .master-container { flex-direction: column; text-align: center; gap: 30px;} .master-right { align-items: center; } .fabric-pills { justify-content: center; } .fabric-content-card h3 { justify-content: center; } }
 @media (max-width:768px) {
 :root { --header-height: 56px; }
@@ -385,8 +404,9 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 .care-order-pill .pill-status { font-size: 10px; }
 .care-order-pill .pill-eta { font-size: 10px; margin-left: auto; }
 .care-scroll-arrow { width: 26px; height: 26px; font-size: 11px; margin-left: 4px; }
+.otp-digit-input { width:36px; height:42px; font-size:16px; }
 }
-@keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(15px);} to{opacity:1;transform:translateY(0);} }
 </style>
 </head>
 <body>
@@ -572,27 +592,60 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="info-box"><h3><i class="fas fa-clock"></i> Working Hours</h3><p id="contactHoursText">Monday - Sunday: 10:00 AM - 10:00 PM</p><p><i class="fas fa-phone"></i> <a href="tel:+919235601645" id="contactPhoneLink" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p><p><i class="fas fa-envelope"></i> <span id="contactEmailText">parthdrycleaning@gmail.com</span></p></div>
 </section>
 <div class="map-section"><iframe class="map-iframe" id="contactMapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe></div>
+
+<!-- Authentication Modal (Clean Zero-Scrollbar Layout) -->
 <div class="modal-overlay" id="authModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('authModal')" aria-label="Close">&times;</button>
-<h2 style="color:var(--primary); margin-bottom:12px;"><i class="fas fa-user-shield"></i> Welcome Back</h2>
-<p style="color:var(--text-muted); margin-bottom:20px; font-weight:600;">Login to book faster & track your orders securely.</p>
+<h2 style="color:var(--primary); margin-bottom:6px; font-size:20px;"><i class="fas fa-user-shield"></i> Welcome Back</h2>
+<p style="color:var(--text-muted); margin-bottom:16px; font-size:12px; font-weight:600;">Login to book & track your orders live</p>
 <button type="button" class="btn-google" onclick="signInWithGoogle()">
 <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
 Continue with Google
 </button>
-<div class="auth-divider">OR</div>
+<div class="auth-divider">OR MOBILE LOGIN</div>
 <div id="phoneAuthSection">
 <div id="recaptcha-container"></div>
-<input type="tel" id="phoneInput" class="auth-input" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="10">
-<button type="button" class="btn-primary-full" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send SMS OTP</button>
+<div class="phone-input-group">
+<span class="flag-pill">🇮🇳 +91</span>
+<input type="tel" id="phoneInput" class="auth-input phone-number-field" placeholder="10-digit mobile number" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="10">
+</div>
+<button type="button" class="btn-primary-full" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-paper-plane"></i> Send Verification OTP</button>
 </div>
 <div id="otpSection" style="display: none;">
-<input type="number" id="otpInput" class="auth-input" placeholder="Enter 6-digit OTP">
-<button type="button" class="btn-primary-full" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify OTP</button>
+<div style="font-size:12px; color:var(--text-muted); margin-bottom:6px; font-weight:700;">
+OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight:800;"></span> 
+<button type="button" class="edit-phone-btn" onclick="editPhoneNumber()">✏️ Edit</button>
+</div>
+<div class="otp-inputs-wrapper" onpaste="handleOtpPaste(event)">
+<input type="tel" maxlength="1" class="otp-digit-input" oninput="handleOtpInput(this, 0)" onkeydown="handleOtpKeydown(event, 0)" />
+<input type="tel" maxlength="1" class="otp-digit-input" oninput="handleOtpInput(this, 1)" onkeydown="handleOtpKeydown(event, 1)" />
+<input type="tel" maxlength="1" class="otp-digit-input" oninput="handleOtpInput(this, 2)" onkeydown="handleOtpKeydown(event, 2)" />
+<input type="tel" maxlength="1" class="otp-digit-input" oninput="handleOtpInput(this, 3)" onkeydown="handleOtpKeydown(event, 3)" />
+<input type="tel" maxlength="1" class="otp-digit-input" oninput="handleOtpInput(this, 4)" onkeydown="handleOtpKeydown(event, 4)" />
+<input type="tel" maxlength="1" class="otp-digit-input" oninput="handleOtpInput(this, 5)" onkeydown="handleOtpKeydown(event, 5)" />
+</div>
+<div class="resend-timer-wrap">
+<span id="timerText">Resend in <b id="countdownTimer">30</b>s</span>
+<button type="button" class="resend-btn" id="resendOtpBtn" disabled onclick="resendOTP()">Resend OTP</button>
+</div>
+<button type="button" class="btn-primary-full" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify & Login</button>
 </div>
 </div>
 </div>
+
+<!-- Onboarding Modal (First time profile setup) -->
+<div class="modal-overlay" id="onboardingModal">
+<div class="modal-box">
+<h2 style="color:var(--primary); margin-bottom:6px; font-size:20px;"><i class="fas fa-user-plus"></i> Complete Profile</h2>
+<p style="color:var(--text-muted); font-size:12px; font-weight:600; margin-bottom:18px;">Please provide your name for tax invoice & express updates.</p>
+<input type="text" id="onboardName" class="auth-input" placeholder="Your Full Name (Required)" style="text-align:left;" />
+<input type="email" id="onboardEmail" class="auth-input" placeholder="Email Address (Optional)" style="text-align:left;" />
+<button type="button" class="btn-primary-full" onclick="completeOnboarding()"><i class="fas fa-check"></i> Save & Continue</button>
+</div>
+</div>
+
+<!-- User Profile Modal -->
 <div class="modal-overlay" id="profileModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
@@ -617,6 +670,8 @@ Continue with Google
 </div>
 </div>
 </div>
+
+<!-- Orders History Modal -->
 <div class="modal-overlay" id="ordersModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')" aria-label="Close">&times;</button>
@@ -627,17 +682,21 @@ Continue with Google
 </div>
 </div>
 </div>
+
 <script>
 const firebaseConfig = { apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain: "parth-dry-clean.firebaseapp.com", databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "parth-dry-clean", storageBucket: "parth-dry-clean.firebasestorage.app", messagingSenderId: "673481985335", appId: "1:673481985335:web:eb4194b4860cf979b21eb2" };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
+
 const sanitizeHTML = (str) => String(str || '').replace(/[<>"']/g, '');
 const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
 const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
+
 const USER_CACHE_KEY = 'pdc_cached_user';
 function cacheUser(user) { try { localStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid: user.uid, name: user.displayName || '', email: user.email || '' })); } catch(e) {} }
 function getCachedUser() { try { const raw = localStorage.getItem(USER_CACHE_KEY); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
 function clearCachedUser() { try { localStorage.removeItem(USER_CACHE_KEY); } catch(e) {} }
+
 const categories = {
 combos: [ { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150 }, { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550 } ],
 mens: [ { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80 }, { id:'mens-pant', name:'Pant', price:60, originalPrice:80 }, { id:'mens-tshirt', name:'T‑Shirt', price:0 }, { id:'mens-kurta', name:'Kurta', price:60, originalPrice:80 }, { id:'mens-pajama', name:'Pajama', price:0 }, { id:'mens-lower', name:'Lower', price:0 }, { id:'mens-jeans', name:'Jeans', price:0 }, { id:'mens-shoes', name:'Shoes', price:0 } ],
@@ -654,16 +713,20 @@ let activeCategory = 'combos';
 let activeOrderListeners = [];
 const priceLookup = (() => { const map = {}; for (const cat in categories) categories[cat].forEach(item => { map[item.name.toLowerCase()] = item.price; }); return map; })();
 function getItemRate(name) { const p = priceLookup[String(name || '').toLowerCase()]; return (p && p > 0) ? p : null; }
+
 const activeStatuses = ['pending','picked_up','processing','quality_check','out_for_delivery'];
 const statusLabels = { pending: 'Pickup Scheduled', picked_up: 'Garments Collected', processing: 'Premium Cleaning', quality_check: 'Quality Check', out_for_delivery: 'Fresh Clothes on the Way', delivered: 'Delivered Successfully', cancelled: 'Cancelled' };
 const statusIcons = { pending: 'fa-clock', picked_up: 'fa-truck', processing: 'fa-tshirt', quality_check: 'fa-circle-check', out_for_delivery: 'fa-truck-fast', delivered: 'fa-box-open', cancelled: 'fa-ban' };
 const careSteps = [ { key:'pending', label:'Pickup', icon:'fa-calendar-check' }, { key:'picked_up', label:'Collected', icon:'fa-truck' }, { key:'processing', label:'Premium Cleaning', icon:'fa-tshirt' }, { key:'quality_check', label:'Quality Check', icon:'fa-circle-check' }, { key:'out_for_delivery', label:'On the Way', icon:'fa-truck-fast' } ];
+
 function setTrustBarVisible(visible) { const wrapper = document.getElementById('trustBarWrapper'); if (!wrapper) return; wrapper.style.display = visible ? '' : 'none'; }
 function setTimeGreeting(userName) { const hour = new Date().getHours(); const nm = userName ? `, ${sanitizeHTML(userName)}` : ''; let greeting; if(hour >= 5 && hour < 12) greeting = `Good Morning${nm}! <span class='text-gradient'>Ready for Fresh Clothes?</span> ☀️`; else if(hour >= 12 && hour < 17) greeting = `Good Afternoon${nm}! <span class='text-gradient'>Relax & Unwind</span> 🌤️`; else if(hour >= 17 && hour < 22) greeting = `Good Evening${nm}! <span class='text-gradient'>Got Plans?</span> 🌙`; else greeting = `Late Night${nm}? <span class='text-gradient'>We've Got You</span> 🦉`; document.getElementById('dynamicGreeting').innerHTML = greeting; }
 function applyLoggedInUI(displayName) { const firstName = (displayName || 'User').split(' ')[0]; const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${sanitizeHTML(firstName)}</span>`; loginBtn.style.background = 'var(--accent)'; loginBtn.style.color = '#fff'; document.getElementById('myOrdersNavItem').style.display = 'block'; setTimeGreeting(firstName); }
 function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`; loginBtn.style.background = ''; loginBtn.style.color = ''; document.getElementById('myOrdersNavItem').style.display = 'none'; setTimeGreeting(null); }
+
 function updateSlider(val) { document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`; document.getElementById('baSliderLine').style.left = `${val}%`; document.getElementById('baSliderBtn').style.left = `${val}%`; }
 function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); if(floatingImg){ floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); } }
+
 function renderPricing() { const chipsWrapper = document.getElementById('pricingChipsWrapper'); const container = document.getElementById('pricingContainer'); chipsWrapper.innerHTML = ''; let chipsHTML = `<button class="price-chip" onclick="filterCategory('all', this)">All Items</button>`; let itemsHTML = ''; Object.keys(categories).forEach(cat => { const items = categories[cat]; const isActive = (cat === activeCategory) ? 'active' : ''; chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${categoryNames[cat]}</button>`; const displayStyle = (cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;'; itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; itemsHTML += `<h3 class="category-group-title">${categoryNames[cat]}</h3>`; items.forEach(item => { const priceText = item.price > 0 ? `₹${item.price}` : '₹—'; const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : ''; itemsHTML += `<div class="price-item" data-name="${item.name.toLowerCase()}"><span class="price-name">${item.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }); itemsHTML += `</div>`; }); chipsWrapper.innerHTML = chipsHTML; container.innerHTML = itemsHTML; }
 function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
 window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'); return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
@@ -671,64 +734,496 @@ function globalSearch(val) { val = val.trim(); const container = document.getEle
 let searchTimeout; function debouncedSearch(val) { const clearBtn = document.getElementById('searchClearBtn'); if (clearBtn) clearBtn.style.display = val.trim() ? 'flex' : 'none'; clearTimeout(searchTimeout); searchTimeout = setTimeout(() => globalSearch(val), 300); }
 function clearSearch() { document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; globalSearch(''); document.getElementById('priceSearchInput').focus(); }
 function enableListSwipe() { const container = document.getElementById('pricingContainer'); let startX = 0, startY = 0, swiping = false; container.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; swiping = false; }, {passive: true}); container.addEventListener('touchmove', e => { if (swiping) return; const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY; if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) { e.preventDefault(); swiping = true; const idx = catOrder.indexOf(activeCategory); if (dx < -30 && idx < catOrder.length - 1) { const next = catOrder[idx + 1]; const btn = document.querySelector(`.price-chip[onclick*="${next}"]`); filterCategory(next, btn); } else if (dx > 30 && idx > 0) { const prev = catOrder[idx - 1]; const btn = document.querySelector(`.price-chip[onclick*="${prev}"]`); filterCategory(prev, btn); } } }, {passive: false}); container.addEventListener('touchend', () => { swiping = false; }); }
+
 function getOrderEtaDate(order) { if (order.eta) { const d = new Date(order.eta); if (!isNaN(d)) return d; } const base = order.createdAt ? new Date(order.createdAt) : new Date(); const hours = order.express === 'Yes' ? 24 : 72; return new Date(base.getTime() + hours * 60 * 60 * 1000); }
 function formatEta(order) { const etaDate = getOrderEtaDate(order); const now = new Date(); if (etaDate <= now) return 'Very soon'; const diffMs = etaDate - now; const hours = Math.floor(diffMs / 3600000); if (hours < 1) return 'Under 1 hour'; if (hours < 24) return `${hours}h left`; const day = etaDate.toLocaleDateString('en-IN', { weekday: 'short' }); const time = etaDate.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }); return `${day}, ${time}`; }
 function getOrderItemSummary(order) { if (!order.items) return '0 items'; const entries = Object.entries(order.items); const count = entries.reduce((sum, [, qty]) => sum + Number(qty || 0), 0); return `${count} item${count === 1 ? '' : 's'}`; }
 function maybeShowCareHint() { if (localStorage.getItem('pdc_care_hint_shown')) return; const hint = document.getElementById('careHint'); if (!hint) return; localStorage.setItem('pdc_care_hint_shown', '1'); setTimeout(() => { hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 4000); }, 800); }
+
 function renderMiniTimeline(order) { const label = statusLabels[order.status] || 'Live Update'; const icon = statusIcons[order.status] || 'fa-circle-notch'; const eta = formatEta(order); const orderId = sanitizeHTML(order.orderId); return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div><div class="pill-id">#${orderId}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`; }
 function renderCareProgress(order) { let currentIdx = careSteps.findIndex(step => step.key === order.status); if (currentIdx < 0) currentIdx = 0; return `<div class="care-progress">${careSteps.map((step, idx) => { let cls = ''; if (order.status === 'delivered' || idx < currentIdx) cls = 'done'; else if (idx === currentIdx) cls = 'current'; const icon = cls === 'done' ? 'fa-check' : step.icon; return `<div class="progress-step ${cls}"><div class="step-dot"><i class="fas ${icon}"></i></div><div class="step-label">${step.label}</div></div>`; }).join('')}</div>`; }
 function renderActiveOrderCard(order) { const label = statusLabels[order.status] || 'Live Update'; const expressHtml = order.express === 'Yes' ? `<span class="express-badge"><i class="fas fa-bolt"></i> Express</span>` : ''; const itemCount = getOrderItemSummary(order); const eta = formatEta(order); const orderIdRaw = safeId(order.orderId); const orderIdDisplay = sanitizeHTML(order.orderId); const dateText = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Today'; const waLink = `https://wa.me/919235601645?text=${encodeURIComponent(`Hello, I need support for my order ${orderIdRaw}. Current status: ${label}.`)}`; return `<div class="care-card"><div class="care-card-top"><div><div class="care-card-title">#${orderIdDisplay} ${expressHtml}</div><div class="care-card-meta"><span class="meta-pill">${dateText}</span><span class="meta-pill">${itemCount}</span><span class="meta-pill">₹${order.total || 0}</span><span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span></div></div><div class="live-indicator"><span class="live-care-dot"></span> LIVE</div></div>${renderCareProgress(order)}<div class="care-card-actions"><button class="care-btn primary" onclick="event.stopPropagation(); downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a class="care-btn whatsapp" href="${waLink}" target="_blank" onclick="event.stopPropagation();"><i class="fab fa-whatsapp"></i> Support</a><button class="care-btn secondary" onclick="event.stopPropagation(); showToast('Live tracking updates automatically.', 'info')"><i class="fas fa-location-dot"></i> Track</button></div></div>`; }
-function attachActiveOrderListener(uid) { activeOrderListeners.forEach(ref => ref.off('value')); activeOrderListeners = []; const ordersRef = db.ref('orders').orderByChild('uid').equalTo(uid); const listener = ordersRef.on('value', snap => { const active = []; snap.forEach(child => { const o = child.val(); if (activeStatuses.includes(o.status)) active.push(o); }); active.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); const bar = document.getElementById('activeOrderBar'); const dropdown = document.getElementById('activeOrderDropdown'); const miniContainer = document.getElementById('miniTimelines'); const dropdownInner = document.getElementById('dropdownInner'); const countText = document.getElementById('activeOrderCount'); const scrollArrow = document.getElementById('careScrollArrow'); if (active.length === 0) { bar.style.display = 'none'; dropdown.classList.remove('open'); setTrustBarVisible(true); return; } bar.style.display = 'flex'; countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`; miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join(''); dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join(''); setTrustBarVisible(false); maybeShowCareHint(); if (scrollArrow) { scrollArrow.style.display = active.length > 1 ? 'flex' : 'none'; } miniContainer.addEventListener('scroll', () => { if (!scrollArrow) return; const { scrollLeft, scrollWidth, clientWidth } = miniContainer; if (scrollLeft + clientWidth >= scrollWidth - 10) scrollArrow.classList.add('hide'); else scrollArrow.classList.remove('hide'); }); }); activeOrderListeners.push(ordersRef); }
+
+function attachActiveOrderListener(uid) {
+  activeOrderListeners.forEach(ref => ref.off('value'));
+  activeOrderListeners = [];
+  const ordersRef = db.ref('orders').orderByChild('uid').equalTo(uid);
+  const listener = ordersRef.on('value', snap => {
+    const active = [];
+    snap.forEach(child => {
+      const o = child.val();
+      if (o && activeStatuses.includes(o.status)) active.push(o);
+    });
+    active.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    const bar = document.getElementById('activeOrderBar');
+    const dropdown = document.getElementById('activeOrderDropdown');
+    const miniContainer = document.getElementById('miniTimelines');
+    const dropdownInner = document.getElementById('dropdownInner');
+    const countText = document.getElementById('activeOrderCount');
+    const scrollArrow = document.getElementById('careScrollArrow');
+    if (active.length === 0) {
+      bar.style.display = 'none';
+      dropdown.classList.remove('open');
+      setTrustBarVisible(true);
+      return;
+    }
+    bar.style.display = 'flex';
+    countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`;
+    miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
+    dropdownInner.innerHTML = active.map(o => renderActiveOrderCard(o)).join('');
+    setTrustBarVisible(false);
+    maybeShowCareHint();
+    if (scrollArrow) scrollArrow.style.display = active.length > 1 ? 'flex' : 'none';
+  });
+  activeOrderListeners.push(ordersRef);
+}
+
 function toggleActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (dropdown.classList.contains('open')) closeActiveOrders(); else openActiveOrders(); }
 function openActiveOrders() { document.getElementById('activeOrderDropdown').classList.add('open'); history.pushState({ careDropdown: true }, '', '#active-orders'); }
 function closeActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (!dropdown.classList.contains('open')) return; dropdown.classList.remove('open'); if (history.state && history.state.careDropdown) history.back(); }
+
 document.addEventListener('click', (e) => { const dropdown = document.getElementById('activeOrderDropdown'); const bar = document.getElementById('activeOrderBar'); if (!dropdown || !dropdown.classList.contains('open')) return; if (dropdown.contains(e.target) || bar.contains(e.target)) return; dropdown.classList.remove('open'); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const dropdown = document.getElementById('activeOrderDropdown'); if (dropdown && dropdown.classList.contains('open')) dropdown.classList.remove('open'); } });
+
 function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); if (html.hasAttribute('data-theme')) { html.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); icon.className = 'fas fa-moon'; } else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); icon.className = 'fas fa-sun'; } }
 (() => { if (localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.querySelector('#themeToggle i').className = 'fas fa-sun'; } })();
-function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; history.pushState({ modal: id }, '', '#' + id); if (id === 'authModal') { if (!window.recaptchaVerifier) { window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} }); } } }
-function closeModal(id) { if (history.state && history.state.modal === id) history.back(); else { document.getElementById(id).classList.remove('active'); if (!document.querySelector('.modal-overlay.active')) document.body.style.overflow = ''; } }
-window.addEventListener('popstate', (e) => { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active')); document.body.style.overflow = ''; const dropdown = document.getElementById('activeOrderDropdown'); if (!e.state || !e.state.careDropdown) { if (dropdown) dropdown.classList.remove('open'); } if (e.state && e.state.modal) { document.getElementById(e.state.modal).classList.add('active'); document.body.style.overflow = 'hidden'; } });
-let confirmationResult;
-function signInWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(() => { showToast('Logged in!','success'); closeModal('authModal'); }).catch(e => showToast(e.message,'error')); }
-function sendOTP() { const num = document.getElementById('phoneInput').value; if (num.length !== 10) return showToast('Enter 10 digits','warning'); document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...'; auth.signInWithPhoneNumber('+91'+num, window.recaptchaVerifier).then(res => { confirmationResult = res; document.getElementById('phoneAuthSection').style.display = 'none'; document.getElementById('otpSection').style.display = 'block'; showToast('OTP sent!','success'); }).catch(err => { showToast(err.message,'error'); document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send SMS OTP'; }); }
-function verifyOTP() { const code = document.getElementById('otpInput').value; if (code.length !== 6) return showToast('Enter 6-digit OTP','warning'); confirmationResult.confirm(code).then(() => { showToast('Verified!','success'); closeModal('authModal'); }).catch(() => showToast('Invalid OTP','error')); }
-function saveProfile() { const user = auth.currentUser; if (!user) return; const phone = document.getElementById('profPhone').value; if (!/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number','warning'); db.ref('customers/'+user.uid).update({ name: document.getElementById('profName').value, phone: phone, address: document.getElementById('profAddress').value }).then(() => showToast('Profile saved!','success')).catch(() => showToast('Error saving','error')); }
-function logoutUser() { auth.signOut().then(() => { closeModal('profileModal'); showToast('Logged out','info'); activeOrderListeners.forEach(ref => ref.off('value')); activeOrderListeners = []; setTrustBarVisible(true); }); }
-function setProfileHeader(user) { const name = user.displayName || 'User'; const parts = name.trim().split(/\s+/); const initials = ((parts[0] ? parts[0][0] : 'U') + (parts[1] ? parts[1][0] : '')).toUpperCase(); document.getElementById('profAvatar').textContent = initials; document.getElementById('profNameDisplay').textContent = name; document.getElementById('profEmailDisplay').textContent = user.email || 'Phone login user'; }
-function loadProfileStats(uid) { db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => { let count = 0, items = 0; snap.forEach(child => { const o = child.val(); if (!o) return; count++; for (const k in (o.items || {})) items += Number(o.items[k] || 0); }); document.getElementById('statOrders').textContent = count; document.getElementById('statItems').textContent = items; }); }
-function loadOrderHistory() { const list = document.getElementById('orderHistoryList'); if (!auth.currentUser) return; const uid = auth.currentUser.uid; list.innerHTML = `<div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div><div class="history-card" style="opacity:.4;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:50%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:75%;"></div></div>`; db.ref('customers/' + uid).once('value').then(pSnap => { const prof = pSnap.exists() ? pSnap.val() : {}; const profPhone = last10Digits(prof.phone); db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => { const map = new Map(); snap.forEach(child => { const o = child.val(); if (!o) return; const orderUid = String(o.uid || o.userId || o.customerId || ''); const orderPhone = last10Digits(o.phone || o.mobile); const isMatch = orderUid === uid || (profPhone.length === 10 && orderPhone.length === 10 && orderPhone === profPhone); if (isMatch) { const key = o.orderId || child.key; if (!map.has(key)) map.set(key, o); } }); const orders = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); if (!orders.length) { list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`; return; } let html = ''; orders.forEach(o => { const statusText = statusLabels[o.status] || (o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Order'); const statusClass = sanitizeHTML(o.status || ''); const orderIdRaw = safeId(o.orderId); const orderIdDisplay = sanitizeHTML(order.orderId); const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today'; const itemCount = getOrderItemSummary(o); const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : ''; html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`; }); list.innerHTML = html; }); }); }
-function downloadInvoice(id) { showToast('Generating invoice...','info'); db.ref('orders/' + id).once('value').then(snap => { const o = snap.val(); if (!o) { showToast('Order not found','error'); return; } const fetchProfile = o.uid ? db.ref('customers/' + o.uid).once('value') : Promise.resolve(null); fetchProfile.then(pSnap => { const prof = (pSnap && pSnap.exists()) ? pSnap.val() : {}; buildInvoicePDF(o, prof, id); }).catch(() => buildInvoicePDF(o, {}, id)); }); }
-function buildInvoicePDF(o, prof, orderId) { const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer'); const custPhone = sanitizeHTML(o.phone || prof.phone || '—'); const custAddress = sanitizeHTML(o.address || prof.address || 'Not provided'); const statusLabel = statusLabels[o.status] || (o.status || 'Confirmed'); const payStatus = sanitizeHTML(o.paymentStatus || 'Pay on Delivery'); const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—'; let rows = ''; for (let k in (o.items || {})) { const qty = Number(o.items[k]) || 0; const rate = getItemRate(k); const rateText = rate !== null ? `₹${rate}` : '—'; const amtText = rate !== null ? `₹${rate * qty}` : '—'; rows += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:9px 6px; font-weight:600;">${sanitizeHTML(k)}</td><td style="padding:9px 6px; text-align:center;">${qty}</td><td style="padding:9px 6px; text-align:right;">${rateText}</td><td style="padding:9px 6px; text-align:right; font-weight:700;">${amtText}</td></tr>`; } const baseSubtotal = o.subtotal || 0; const expressFee = o.express === 'Yes' ? Math.round(baseSubtotal * 0.9) : 0; const discount = o.discount || 0; const total = o.total || (baseSubtotal + expressFee - discount); const element = document.createElement('div'); element.innerHTML = `<div style="padding:28px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:14px; margin-bottom:16px;"><div style="font-size:24px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div><div style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM FOR EVERYONE</div><div style="font-size:10px; color:#64748b; margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;"><div style="font-size:16px; font-weight:800; color:#0f172a;">TAX INVOICE</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800;">${statusLabel}</div></div><div style="background:#f8fafc; padding:12px 14px; border-radius:10px; margin-bottom:12px; font-size:11px;"><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#64748b;">Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:11px;"><div style="font-size:10px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;">Billed To</div><div style="font-weight:800; font-size:13px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:12px;"><thead><tr style="background:#f1f5f9;"><th style="padding:8px 6px; text-align:left; font-size:10px; color:#64748b; text-transform:uppercase;">Item</th><th style="padding:8px 6px; text-align:center; font-size:10px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:8px 6px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:8px 6px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:16px; border-top:2px dashed #e2e8f0; padding-top:12px; font-size:12px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-top:5px;"><span>Express Fee (24hr)</span><span>+₹${expressFee}</span></div>` : ''}${discount > 0 ? `<div style="display:flex; justify-content:space-between; color:#16a34a; margin-top:5px;"><span>Discount</span><span>-₹${discount}</span></div>` : ''}<div style="display:flex; justify-content:space-between; font-size:17px; font-weight:800; margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;"><span>Grand Total</span><span style="color:#0ea5e9;">₹${total}</span></div></div><div style="margin-top:18px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px 14px; font-size:10px; color:#166534; font-weight:600;">💚 Thank you for choosing Parth Dry Clean! Your garments are handled with premium care & eco-friendly solvents.</div><div style="margin-top:10px; font-size:9px; color:#94a3b8; text-align:center;">* Garments not collected within 30 days of delivery readiness are not our responsibility. For any issue, contact us within 48 hours of delivery.</div></div>`; html2pdf().set({ margin: 8, filename: 'ParthDryClean_Invoice_' + orderId + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Invoice downloaded!','success')); }
-auth.onAuthStateChanged(user => { const loginBtn = document.getElementById('loginBtn'); const myOrdersItem = document.getElementById('myOrdersNavItem'); if (user) { cacheUser(user); applyLoggedInUI(user.displayName); loginBtn.onclick = () => { document.getElementById('profName').value = user.displayName || ''; document.getElementById('profEmail').value = user.email || ''; setProfileHeader(user); loadProfileStats(user.uid); db.ref('customers/'+user.uid).once('value').then(s => { if(s.exists()) { const d=s.val(); document.getElementById('profPhone').value=d.phone||''; document.getElementById('profAddress').value=d.address||''; } }); openModal('profileModal'); }; attachActiveOrderListener(user.uid); } else { clearCachedUser(); applyLoggedOutUI(); loginBtn.onclick = () => openModal('authModal'); myOrdersItem.style.display = 'none'; document.getElementById('activeOrderBar').style.display = 'none'; document.getElementById('activeOrderDropdown').classList.remove('open'); activeOrderListeners.forEach(ref => ref.off('value')); activeOrderListeners = []; setTrustBarVisible(true); } });
+
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+  history.pushState({ modal: id }, '', '#' + id);
+  if (id === 'authModal') {
+    initRecaptcha();
+  }
+}
+function closeModal(id) {
+  if (history.state && history.state.modal === id) history.back();
+  else {
+    document.getElementById(id).classList.remove('active');
+    if (!document.querySelector('.modal-overlay.active')) document.body.style.overflow = '';
+  }
+}
+window.addEventListener('popstate', (e) => {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+  document.body.style.overflow = '';
+  const dropdown = document.getElementById('activeOrderDropdown');
+  if (!e.state || !e.state.careDropdown) { if (dropdown) dropdown.classList.remove('open'); }
+  if (e.state && e.state.modal) {
+    document.getElementById(e.state.modal).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+});
+
+// ===== SMART PHONE & GOOGLE AUTH LOGIC =====
+let confirmationResult = null;
+let resendTimerInterval = null;
+
+function initRecaptcha() {
+  if (!window.recaptchaVerifier) {
+    try {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: () => {}
+      });
+    } catch(e) {}
+  }
+}
+
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).then(res => {
+    const user = res.user;
+    showToast('Logged in successfully!', 'success');
+    closeModal('authModal');
+    checkNewUserOnboarding(user);
+  }).catch(e => showToast(e.message, 'error'));
+}
+
+function startResendTimer() {
+  clearInterval(resendTimerInterval);
+  let timeLeft = 30;
+  const timerText = document.getElementById('timerText');
+  const timerEl = document.getElementById('countdownTimer');
+  const resendBtn = document.getElementById('resendOtpBtn');
+  resendBtn.disabled = true;
+  timerText.style.display = 'inline';
+  timerEl.textContent = timeLeft;
+  resendTimerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(resendTimerInterval);
+      resendBtn.disabled = false;
+      timerText.style.display = 'none';
+    }
+  }, 1000);
+}
+
+function sendOTP() {
+  const num = document.getElementById('phoneInput').value.trim();
+  if (num.length !== 10) return showToast('Please enter a valid 10-digit number', 'warning');
+  initRecaptcha();
+  document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+  auth.signInWithPhoneNumber('+91' + num, window.recaptchaVerifier).then(res => {
+    confirmationResult = res;
+    document.getElementById('displayOtpPhone').textContent = num;
+    document.getElementById('phoneAuthSection').style.display = 'none';
+    document.getElementById('otpSection').style.display = 'block';
+    startResendTimer();
+    clearOtpBoxes();
+    showToast('OTP sent successfully!', 'success');
+  }).catch(err => {
+    showToast(err.message, 'error');
+    document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send Verification OTP';
+    if (window.recaptchaVerifier) window.recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
+  });
+}
+
+function resendOTP() {
+  const num = document.getElementById('phoneInput').value.trim();
+  if (num.length !== 10) return;
+  initRecaptcha();
+  document.getElementById('resendOtpBtn').textContent = 'Sending...';
+  auth.signInWithPhoneNumber('+91' + num, window.recaptchaVerifier).then(res => {
+    confirmationResult = res;
+    startResendTimer();
+    document.getElementById('resendOtpBtn').textContent = 'Resend OTP';
+    showToast('OTP resent!', 'success');
+  }).catch(err => {
+    showToast(err.message, 'error');
+    document.getElementById('resendOtpBtn').textContent = 'Resend OTP';
+  });
+}
+
+function editPhoneNumber() {
+  clearInterval(resendTimerInterval);
+  document.getElementById('otpSection').style.display = 'none';
+  document.getElementById('phoneAuthSection').style.display = 'block';
+  document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send Verification OTP';
+  document.getElementById('phoneInput').focus();
+}
+
+function clearOtpBoxes() {
+  const boxes = document.querySelectorAll('.otp-digit-input');
+  boxes.forEach(b => b.value = '');
+  if (boxes[0]) boxes[0].focus();
+}
+
+function handleOtpInput(input, index) {
+  input.value = input.value.replace(/[^0-9]/g, '');
+  const boxes = document.querySelectorAll('.otp-digit-input');
+  if (input.value && index < boxes.length - 1) {
+    boxes[index + 1].focus();
+  }
+  const fullCode = Array.from(boxes).map(b => b.value).join('');
+  if (fullCode.length === 6) {
+    verifyOTP();
+  }
+}
+
+function handleOtpKeydown(e, index) {
+  const boxes = document.querySelectorAll('.otp-digit-input');
+  if (e.key === 'Backspace' && !boxes[index].value && index > 0) {
+    boxes[index - 1].focus();
+  }
+}
+
+function handleOtpPaste(e) {
+  e.preventDefault();
+  const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+  if (!paste) return;
+  const boxes = document.querySelectorAll('.otp-digit-input');
+  paste.split('').forEach((char, i) => {
+    if (boxes[i]) boxes[i].value = char;
+  });
+  if (paste.length === 6) {
+    verifyOTP();
+  } else if (boxes[paste.length]) {
+    boxes[paste.length].focus();
+  }
+}
+
+function verifyOTP() {
+  const boxes = document.querySelectorAll('.otp-digit-input');
+  const code = Array.from(boxes).map(b => b.value).join('');
+  if (code.length !== 6) return showToast('Enter 6-digit OTP', 'warning');
+  document.getElementById('verifyOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+  confirmationResult.confirm(code).then(res => {
+    const user = res.user;
+    showToast('Mobile Verified!', 'success');
+    closeModal('authModal');
+    editPhoneNumber();
+    checkNewUserOnboarding(user);
+  }).catch(() => {
+    showToast('Invalid or expired OTP', 'error');
+    document.getElementById('verifyOtpBtn').innerHTML = '<i class="fas fa-check-circle"></i> Verify & Login';
+  });
+}
+
+function checkNewUserOnboarding(user) {
+  db.ref('customers/' + user.uid).once('value').then(snap => {
+    const data = snap.val();
+    if (!data || !data.name) {
+      if (user.displayName) {
+        db.ref('customers/' + user.uid).update({
+          name: user.displayName,
+          email: user.email || '',
+          phone: user.phoneNumber ? last10Digits(user.phoneNumber) : ''
+        });
+      } else {
+        openModal('onboardingModal');
+      }
+    }
+  });
+}
+
+function completeOnboarding() {
+  const name = document.getElementById('onboardName').value.trim();
+  const email = document.getElementById('onboardEmail').value.trim();
+  if (!name) return showToast('Please enter your full name', 'warning');
+  const user = auth.currentUser;
+  if (!user) return;
+  const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : '';
+  db.ref('customers/' + user.uid).update({
+    name: name,
+    email: email,
+    phone: phone
+  }).then(() => {
+    showToast('Profile created successfully!', 'success');
+    closeModal('onboardingModal');
+    applyLoggedInUI(name);
+  }).catch(() => showToast('Error saving profile', 'error'));
+}
+
+function saveProfile() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const phone = document.getElementById('profPhone').value.trim();
+  if (!/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number', 'warning');
+  db.ref('customers/' + user.uid).update({
+    name: document.getElementById('profName').value,
+    phone: phone,
+    address: document.getElementById('profAddress').value
+  }).then(() => showToast('Profile saved!', 'success')).catch(() => showToast('Error saving profile', 'error'));
+}
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    closeModal('profileModal');
+    showToast('Logged out', 'info');
+    activeOrderListeners.forEach(ref => ref.off('value'));
+    activeOrderListeners = [];
+    setTrustBarVisible(true);
+  });
+}
+
+function setProfileHeader(user) {
+  const name = user.displayName || document.getElementById('profName').value || 'User';
+  const parts = name.trim().split(/\s+/);
+  const initials = ((parts[0] ? parts[0][0] : 'U') + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  document.getElementById('profAvatar').textContent = initials;
+  document.getElementById('profNameDisplay').textContent = name;
+  document.getElementById('profEmailDisplay').textContent = user.email || 'Phone verified member';
+}
+
+function loadProfileStats(uid) {
+  db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => {
+    let count = 0, items = 0;
+    snap.forEach(child => {
+      const o = child.val();
+      if (!o) return;
+      count++;
+      for (const k in (o.items || {})) items += Number(o.items[k] || 0);
+    });
+    document.getElementById('statOrders').textContent = count;
+    document.getElementById('statItems').textContent = items;
+  });
+}
+
+function loadOrderHistory() {
+  const list = document.getElementById('orderHistoryList');
+  if (!auth.currentUser) return;
+  const uid = auth.currentUser.uid;
+  list.innerHTML = `<div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div>`;
+  
+  db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => {
+    const orders = [];
+    snap.forEach(child => {
+      const o = child.val();
+      if (o) orders.push(o);
+    });
+    orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    if (!orders.length) {
+      list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`;
+      return;
+    }
+    let html = '';
+    orders.forEach(o => {
+      const statusText = statusLabels[o.status] || 'Order';
+      const statusClass = sanitizeHTML(o.status || '');
+      const orderIdRaw = safeId(o.orderId);
+      const orderIdDisplay = sanitizeHTML(o.orderId);
+      const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today';
+      const itemCount = getOrderItemSummary(o);
+      const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : '';
+      html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`;
+    });
+    list.innerHTML = html;
+  });
+}
+
+// ===== ENTERPRISE TAX INVOICE (SAC 998714 + GST 18%) =====
+function downloadInvoice(id) {
+  showToast('Generating official tax invoice...', 'info');
+  db.ref('orders/' + id).once('value').then(snap => {
+    const o = snap.val();
+    if (!o) { showToast('Order not found', 'error'); return; }
+    const fetchProfile = o.uid ? db.ref('customers/' + o.uid).once('value') : Promise.resolve(null);
+    fetchProfile.then(pSnap => {
+      const prof = (pSnap && pSnap.exists()) ? pSnap.val() : {};
+      buildInvoicePDF(o, prof, id);
+    }).catch(() => buildInvoicePDF(o, {}, id));
+  });
+}
+
+function buildInvoicePDF(o, prof, orderId) {
+  const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer');
+  const custPhone = sanitizeHTML(o.phone || prof.phone || '—');
+  const custAddress = sanitizeHTML(o.address || prof.address || 'Not provided');
+  const statusLabel = statusLabels[o.status] || (o.status || 'Confirmed');
+  const payStatus = sanitizeHTML(o.paymentStatus || 'Pay on Delivery');
+  const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+  
+  let rows = '';
+  let computedSubtotal = 0;
+  const items = o.items || {};
+  const totalItemCount = Object.values(items).reduce((s, q) => s + (Number(q) || 0), 0);
+
+  for (let k in items) {
+    const qty = Number(items[k]) || 0;
+    let rate = getItemRate(k);
+    if (rate === null) {
+      rate = (totalItemCount > 0 && o.subtotal) ? Math.round(o.subtotal / totalItemCount) : 0;
+    }
+    const amt = rate * qty;
+    computedSubtotal += amt;
+    rows += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:8px 6px; font-weight:600;">${sanitizeHTML(k)}</td><td style="padding:8px 6px; text-align:center;">998714</td><td style="padding:8px 6px; text-align:center;">${qty}</td><td style="padding:8px 6px; text-align:right;">₹${rate}</td><td style="padding:8px 6px; text-align:right; font-weight:700;">₹${amt}</td></tr>`;
+  }
+
+  const baseSubtotal = o.subtotal || computedSubtotal;
+  const expressFee = o.express === 'Yes' ? (o.expressFee || Math.round(baseSubtotal * 0.9)) : 0;
+  const discount = o.discount || 0;
+  const grandTotal = o.total || (baseSubtotal + expressFee - discount);
+  
+  // Tax distribution calculation
+  const taxableValue = Math.round(grandTotal / 1.18);
+  const totalGST = grandTotal - taxableValue;
+  const cgst = (totalGST / 2).toFixed(2);
+  const sgst = (totalGST / 2).toFixed(2);
+
+  const element = document.createElement('div');
+  element.innerHTML = `<div style="padding:24px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:12px; margin-bottom:14px;"><div style="font-size:22px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div><div style="font-size:10px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM LAUNDRY & DRY CLEANING SERVICES</div><div style="font-size:10px; color:#64748b; margin-top:4px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><div style="font-size:15px; font-weight:800; color:#0f172a;">TAX INVOICE / BILL OF SUPPLY</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800;">${statusLabel}</div></div><div style="background:#f8fafc; padding:10px 12px; border-radius:10px; margin-bottom:12px; font-size:10.5px;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Invoice Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment Status:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:10.5px;"><div style="font-size:9.5px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Customer Details</div><div style="font-weight:800; font-size:12px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:11px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px; text-align:left; font-size:9.5px; color:#64748b; text-transform:uppercase;">Item Description</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">SAC</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:14px; border-top:2px dashed #e2e8f0; padding-top:10px; font-size:11px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-bottom:4px;"><span>Express 24hr Surcharge</span><span>+₹${expressFee}</span></div>` : ''}${discount > 0 ? `<div style="display:flex; justify-content:space-between; color:#16a34a; margin-bottom:4px;"><span>Coupon Discount</span><span>-₹${discount}</span></div>` : ''}<div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:4px;"><span>Taxable Value (Incl. in Total): ₹${taxableValue}</span><span>CGST (9%): ₹${cgst} | SGST (9%): ₹${sgst}</span></div><div style="display:flex; justify-content:space-between; font-size:16px; font-weight:800; margin-top:8px; padding-top:8px; border-top:1px solid #e2e8f0;"><span>Grand Total (INR)</span><span style="color:#0ea5e9;">₹${grandTotal}</span></div></div><div style="margin-top:14px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 10px; font-size:9.5px; color:#166534; font-weight:600;">💚 Thank you for choosing Parth Dry Clean! Garments processed with eco-friendly solvents & steam finishing.</div><div style="margin-top:8px; font-size:8.5px; color:#94a3b8; text-align:center;">* Computer generated legal invoice under GST SAC 998714. Issues must be reported within 48 hours of delivery.</div></div>`;
+  
+  html2pdf().set({ margin: 8, filename: 'ParthDryClean_Invoice_' + orderId + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Invoice downloaded!', 'success'));
+}
+
+// Auth State Monitor
+auth.onAuthStateChanged(user => {
+  const loginBtn = document.getElementById('loginBtn');
+  const myOrdersItem = document.getElementById('myOrdersNavItem');
+  if (user) {
+    cacheUser(user);
+    db.ref('customers/' + user.uid).once('value').then(s => {
+      const d = s.val() || {};
+      const finalName = d.name || user.displayName || 'User';
+      applyLoggedInUI(finalName);
+      loginBtn.onclick = () => {
+        document.getElementById('profName').value = finalName;
+        document.getElementById('profEmail').value = d.email || user.email || '';
+        document.getElementById('profPhone').value = d.phone || (user.phoneNumber ? last10Digits(user.phoneNumber) : '');
+        document.getElementById('profAddress').value = d.address || '';
+        setProfileHeader(user);
+        loadProfileStats(user.uid);
+        openModal('profileModal');
+      };
+    });
+    attachActiveOrderListener(user.uid);
+  } else {
+    clearCachedUser();
+    applyLoggedOutUI();
+    loginBtn.onclick = () => openModal('authModal');
+    myOrdersItem.style.display = 'none';
+    document.getElementById('activeOrderBar').style.display = 'none';
+    document.getElementById('activeOrderDropdown').classList.remove('open');
+    activeOrderListeners.forEach(ref => ref.off('value'));
+    activeOrderListeners = [];
+    setTrustBarVisible(true);
+  }
+});
+
 document.getElementById('mobileMenuBtn').addEventListener('click', () => { document.getElementById('navLinks').classList.toggle('active'); });
 document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => { document.getElementById('navLinks').classList.remove('active'); }));
 window.addEventListener('scroll', () => { const nav = document.getElementById('navLinks'); if (window.scrollY > 30 && nav.classList.contains('active')) nav.classList.remove('active'); });
-function rebuildPriceLookup() { Object.keys(priceLookup).forEach(k => delete priceLookup[k]); for (const cat in categories) categories[cat].forEach(it => { priceLookup[it.name.toLowerCase()] = it.price; }); }
-function loadDynamicCategories() { db.ref('services/categories').once('value').then(s => { if (!s.exists()) return; const data = s.val(); const keys = Object.keys(data); if (!keys.length) return; keys.forEach(k => { delete categories[k]; delete categoryNames[k]; }); keys.forEach(k => { const c = data[k] || {}; categoryNames[k] = c.name || k; categories[k] = (c.items || []).map(it => ({ id: k + '-' + String(it.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), name: it.name, price: Number(it.price) || 0, originalPrice: (it.originalPrice !== undefined && it.originalPrice !== null && it.originalPrice !== '') ? Number(it.originalPrice) : undefined })); }); catOrder.length = 0; Object.keys(categories).forEach(k => catOrder.push(k)); rebuildPriceLookup(); if (!categories[activeCategory]) activeCategory = catOrder[0] || 'combos'; renderPricing(); }).catch(() => {}); }
-function loadSiteSettings() { db.ref('settings/general').once('value').then(s => { if (!s.exists()) return; const v = s.val() || {}; const banner = document.getElementById('topBanner'); if (v.announcement) { banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>'; banner.style.display = 'block'; document.getElementById('closeBanner').addEventListener('click', () => banner.style.display = 'none'); } else if (v.couponEnabled === false) { banner.style.display = 'none'; } }).catch(() => {}); }
 
-// ===== FULL DYNAMIC CMS LOADER (ParthindexGen6.7) =====
+function rebuildPriceLookup() { Object.keys(priceLookup).forEach(k => delete priceLookup[k]); for (const cat in categories) categories[cat].forEach(it => { priceLookup[it.name.toLowerCase()] = it.price; }); }
+
+function loadDynamicCategories() {
+  db.ref('services/categories').once('value').then(s => {
+    if (!s.exists()) return;
+    const data = s.val();
+    const keys = Object.keys(data);
+    if (!keys.length) return;
+    keys.forEach(k => { delete categories[k]; delete categoryNames[k]; });
+    keys.forEach(k => {
+      const c = data[k] || {};
+      categoryNames[k] = c.name || k;
+      categories[k] = (c.items || []).map(it => ({
+        id: k + '-' + String(it.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        name: it.name,
+        price: Number(it.price) || 0,
+        originalPrice: (it.originalPrice !== undefined && it.originalPrice !== null && it.originalPrice !== '') ? Number(it.originalPrice) : undefined
+      }));
+    });
+    catOrder.length = 0;
+    Object.keys(categories).forEach(k => catOrder.push(k));
+    rebuildPriceLookup();
+    if (!categories[activeCategory]) activeCategory = catOrder[0] || 'combos';
+    renderPricing();
+  }).catch(() => {});
+}
+
+function loadSiteSettings() {
+  db.ref('settings/general').once('value').then(s => {
+    if (!s.exists()) return;
+    const v = s.val() || {};
+    const banner = document.getElementById('topBanner');
+    if (v.announcement) {
+      banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>';
+      banner.style.display = 'block';
+      document.getElementById('closeBanner').addEventListener('click', () => banner.style.display = 'none');
+    } else if (v.couponEnabled === false) {
+      banner.style.display = 'none';
+    }
+  }).catch(() => {});
+}
+
 function loadSiteCMSContent() {
   db.ref('site_content').on('value', snap => {
     if (!snap.exists()) return;
     const cms = snap.val() || {};
 
-    // 1. Hero Section
     if (cms.hero) {
       if (cms.hero.badge) document.getElementById('heroBadge').innerHTML = `<i class="fas fa-crown"></i> ${sanitizeHTML(cms.hero.badge)}`;
       if (cms.hero.subtitle) document.getElementById('heroSubtitle').textContent = cms.hero.subtitle;
       if (cms.hero.rating) document.getElementById('heroRatingBadge').innerHTML = `<i class="fas fa-star" style="color:var(--gold);"></i> ${sanitizeHTML(cms.hero.rating)}`;
     }
 
-    // 2. Trust Bar
     if (cms.trustItems && cms.trustItems.length) {
       const track = document.getElementById('trustBarTrack');
       const itemsHtml = cms.trustItems.map(it => `<div class="trust-item"><i class="fas ${sanitizeHTML(it.icon || 'fa-check')}"></i> ${sanitizeHTML(it.text)}</div>`).join('');
       track.innerHTML = itemsHtml + itemsHtml;
     }
 
-    // 3. Fabric Masterclass
     if (cms.fabrics && cms.fabrics.length) {
       const pillsContainer = document.getElementById('fabricPillsContainer');
       const cardsContainer = document.getElementById('fabricCardsContainer');
@@ -744,17 +1239,14 @@ function loadSiteCMSContent() {
       cardsContainer.innerHTML = cardsHtml;
     }
 
-    // 4. How It Works Steps
     if (cms.howItWorks && cms.howItWorks.length) {
       document.getElementById('howItWorksGrid').innerHTML = cms.howItWorks.map(h => `<div class="step-card"><div class="step-icon"><i class="fas ${sanitizeHTML(h.icon || 'fa-check')}"></i></div><h3>${sanitizeHTML(h.title)}</h3><p>${sanitizeHTML(h.desc)}</p></div>`).join('');
     }
 
-    // 5. Why Choose Us Grid
     if (cms.whyUs && cms.whyUs.length) {
       document.getElementById('whyChooseUsGrid').innerHTML = cms.whyUs.map(w => `<div class="service-card"><div class="icon-box"><i class="fas ${sanitizeHTML(w.icon || 'fa-star')}"></i></div><h3>${sanitizeHTML(w.title)}</h3><p>${sanitizeHTML(w.desc)}</p></div>`).join('');
     }
 
-    // 6. Reviews
     if (cms.reviews && cms.reviews.length) {
       const reviewsHtml = cms.reviews.map(r => {
         const fullStars = Math.floor(r.stars || 5);
@@ -767,7 +1259,6 @@ function loadSiteCMSContent() {
       if (cms.reviewsRatingHeader) document.getElementById('reviewsHeaderBadge').innerHTML = `<i class="fab fa-google"></i> ${sanitizeHTML(cms.reviewsRatingHeader)}`;
     }
 
-    // 7. FAQs
     if (cms.faqs && cms.faqs.length) {
       document.getElementById('faqList').innerHTML = cms.faqs.map(f => `<div class="faq-item"><div class="faq-question">${sanitizeHTML(f.q)} <i class="fas fa-chevron-down"></i></div><div class="faq-answer">${sanitizeHTML(f.a)}</div></div>`).join('');
       document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
@@ -777,7 +1268,6 @@ function loadSiteCMSContent() {
       }));
     }
 
-    // 8. Contact & Map Details
     if (cms.contact) {
       if (cms.contact.address) document.getElementById('contactAddressText').textContent = cms.contact.address;
       if (cms.contact.hours) document.getElementById('contactHoursText').textContent = cms.contact.hours;
@@ -798,25 +1288,64 @@ function loadSiteCMSContent() {
   });
 }
 
-function checkBookingOpen() { db.ref('settings/general').on('value', s => { const v = s.val() || {}; const closed = (v.bookingOpen === false); let b = document.getElementById('closedBanner'); if (closed) { if (!b) { b = document.createElement('div'); b.id = 'closedBanner'; b.style.cssText = 'background:linear-gradient(90deg,#7f1d1d,#991b1b);color:#fff;text-align:center;padding:10px 16px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px;position:relative;z-index:9999'; b.innerHTML = '🛠️ Bookings temporarily closed — <a href="https://wa.me/919235601645" style="color:#fde047;text-decoration:underline">WhatsApp par order karein</a>'; document.body.prepend(b); } } else if (b) { b.remove(); } }); }
+function checkBookingOpen() {
+  db.ref('settings/general').on('value', s => {
+    const v = s.val() || {};
+    const closed = (v.bookingOpen === false);
+    let b = document.getElementById('closedBanner');
+    if (closed) {
+      if (!b) {
+        b = document.createElement('div');
+        b.id = 'closedBanner';
+        b.style.cssText = 'background:linear-gradient(90deg,#7f1d1d,#991b1b);color:#fff;text-align:center;padding:10px 16px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px;position:relative;z-index:9999';
+        b.innerHTML = '🛠️ Bookings temporarily closed — <a href="https://wa.me/919235601645" style="color:#fde047;text-decoration:underline">WhatsApp par order karein</a>';
+        document.body.prepend(b);
+      }
+    } else if (b) {
+      b.remove();
+    }
+  });
+}
+
 const cachedUser = getCachedUser();
 if (cachedUser && cachedUser.name) applyLoggedInUI(cachedUser.name); else setTimeGreeting(null);
+
 loadDynamicCategories();
 loadSiteSettings();
 loadSiteCMSContent();
 checkBookingOpen();
+
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => { if (!waTooltip) return; if (window.scrollY > 60) waTooltip.classList.add('folded'); else waTooltip.classList.remove('folded'); }, { passive: true });
-function showToast(msg, type='info'){ const container = document.getElementById('toastContainer'); while(container.children.length > 3) container.removeChild(container.firstChild); const t = document.createElement('div'); t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700; transition: opacity 0.3s;'; const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'; const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#0ea5e9'; t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`; container.appendChild(t); setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000); }
+
+function showToast(msg, type='info'){
+  const container = document.getElementById('toastContainer');
+  while(container.children.length > 3) container.removeChild(container.firstChild);
+  const t = document.createElement('div');
+  t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700; transition: opacity 0.3s;';
+  const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
+  const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#0ea5e9';
+  t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`;
+  container.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
 document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
-document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() { const parent = this.parentElement; document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); }); parent.classList.toggle('active'); }));
+
+document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
+  const parent = this.parentElement;
+  document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
+  parent.classList.toggle('active');
+}));
+
 if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topBanner').style.display = 'block';
 document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
+
 renderPricing();
 enableListSwipe();
-console.log('🧺 ParthindexGen6.7 Active (Full Pre-Filled Dynamic CMS Engine)');
+console.log('🧺 ParthindexGen6.9 Active (Enterprise Tax Invoice & Smart OTP Engine)');
 </script>
 </body>
 </html>
