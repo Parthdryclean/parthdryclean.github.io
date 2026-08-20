@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- ParthadminGen19 : SYNTHWAVE (CMS removed) -->
+<!-- ParthadminGen22 : SYNTHWAVE (Clean Exact Services Tab Design Pattern for CMS) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PARTH OS · Synthwave</title>
+<title>PARTH OS v22 · Synthwave CMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -104,20 +104,25 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .action-cell{display:flex;flex-direction:column;gap:6px}
 .item-badge{display:inline-block;background:rgba(255,46,196,.12);border:1px solid var(--line);color:var(--pink);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin:2px}
 .form-grid{display:flex;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;align-items:flex-end}
-.form-grid .fg{flex:1;min-width:120px}
+.form-grid .fg{flex:1;min-width:140px}
 .form-grid label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-.form-grid input,.form-grid select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;font-size:13px}
+.form-grid input,.form-grid select,.form-grid textarea{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;font-size:13px}
 .list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:8px}
 .list-item .name{font-weight:700}.list-item .sub{color:var(--muted);font-size:12px}
 .type-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800}
 .type-badge.first_order{background:rgba(251,191,36,.15);color:var(--warn)}.type-badge.general{background:rgba(52,211,153,.15);color:var(--good)}
 .type-badge.code{background:rgba(255,46,196,.15);color:var(--pink);font-family:'Orbitron'}
-.cat-block{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
-.cat-head{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
-.cat-head input{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:10px;font-size:13px}
-.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
-.item-box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px}
-.item-box input{width:100%;background:transparent;border:1px solid var(--line);color:var(--text);padding:7px 8px;border-radius:8px;font-size:12px;margin-top:4px}
+
+/* Exact Services Tab Matching Cards Style */
+.cat-block{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:18px}
+.cat-head{display:flex;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.cat-head input{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700}
+.item-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.item-box{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.item-box input,.item-box textarea{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:9px 12px;border-radius:10px;font-size:13px}
+.item-del-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,84,112,.15);border:1px solid var(--bad);color:var(--bad);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex-shrink:0}
+.item-del-btn:hover{background:var(--bad);color:#fff}
+
 .switch{position:relative;display:inline-block;width:46px;height:24px}
 .switch input{opacity:0;width:0;height:0}
 .switch .sl{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line);border-radius:30px;transition:.3s;cursor:pointer}
@@ -144,11 +149,12 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div id="toast"></div>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v19</small></div></div>
+ <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v22</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
   <div class="nav-item" data-tab="neworder"><i class="fas fa-plus"></i> New Order</div>
+  <div class="nav-item" data-tab="cms"><i class="fas fa-palette"></i> Site Content / CMS</div>
   <div class="nav-item" data-tab="coupons"><i class="fas fa-ticket"></i> Coupons</div>
   <div class="nav-item" data-tab="boys"><i class="fas fa-truck"></i> Delivery Boys</div>
   <div class="nav-item" data-tab="services"><i class="fas fa-tags"></i> Services</div>
@@ -221,6 +227,130 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <button class="btn solid" onclick="App.saveManualOrder()"><i class="fas fa-save"></i> Save Order</button>
   </div>
+
+  <!-- ===== CMS / SITE CONTENT TAB (Exact Services Layout) ===== -->
+  <div class="tab-content" id="tab-cms">
+   
+   <div class="form-grid">
+    <div class="fg"><label>CMS Live Sync</label><p style="color:var(--muted);font-size:12px">Website ke loaded cards edit karo ya naya add karo.</p></div>
+    <button class="btn good" onclick="App.saveAllCMS()"><i class="fas fa-save"></i> Save All CMS Content</button>
+   </div>
+
+   <!-- 1. Hero Section -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-crown" style="color:var(--pink);font-size:18px"></i>
+     <input value="Hero & Top Section" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSHero()"><i class="fas fa-save"></i> Save Hero</button>
+    </div>
+    <div class="item-grid">
+     <div class="item-box">
+      <label style="font-size:11px;color:var(--muted);font-weight:700">TOP BADGE</label>
+      <input id="cmsHeroBadge" placeholder="Tagline Badge"/>
+      <label style="font-size:11px;color:var(--muted);font-weight:700;margin-top:4px">SUBTITLE</label>
+      <textarea id="cmsHeroSubtitle" placeholder="Hero Subtitle" style="height:55px"></textarea>
+      <label style="font-size:11px;color:var(--muted);font-weight:700;margin-top:4px">FLOATING RATING</label>
+      <input id="cmsHeroRating" placeholder="Rating Badge"/>
+     </div>
+    </div>
+   </div>
+
+   <!-- 2. Trust Bar -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-shield-alt" style="color:var(--pink);font-size:18px"></i>
+     <input value="Trust Bar Items" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSTrust()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid" id="cmsTrustList"></div>
+    <button class="btn" style="margin-top:12px" onclick="App.addCMSTrust()"><i class="fas fa-plus"></i> Add Item</button>
+   </div>
+
+   <!-- 3. Fabric Masterclass -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-tshirt" style="color:var(--pink);font-size:18px"></i>
+     <input value="Fabric Masterclass" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSFabrics()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid" id="cmsFabricsList"></div>
+    <button class="btn" style="margin-top:12px" onclick="App.addCMSFabric()"><i class="fas fa-plus"></i> Add Fabric</button>
+   </div>
+
+   <!-- 4. How It Works -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-list-check" style="color:var(--pink);font-size:18px"></i>
+     <input value="How It Works Steps" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSHowItWorks()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid" id="cmsHowList"></div>
+    <button class="btn" style="margin-top:12px" onclick="App.addCMSHow()"><i class="fas fa-plus"></i> Add Step</button>
+   </div>
+
+   <!-- 5. Why Choose Us -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-star" style="color:var(--pink);font-size:18px"></i>
+     <input value="Why Choose Us (Features)" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSWhyUs()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid" id="cmsWhyUsList"></div>
+    <button class="btn" style="margin-top:12px" onclick="App.addCMSWhyUs()"><i class="fas fa-plus"></i> Add Feature</button>
+   </div>
+
+   <!-- 6. Reviews -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-comments" style="color:var(--pink);font-size:18px"></i>
+     <input value="Customer Reviews" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <input id="cmsReviewsRatingHeader" placeholder="Google Rating Badge" style="width:230px"/>
+     <button class="btn good" onclick="App.saveCMSReviews()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid" id="cmsReviewsList"></div>
+    <button class="btn" style="margin-top:12px" onclick="App.addCMSReview()"><i class="fas fa-plus"></i> Add Review</button>
+   </div>
+
+   <!-- 7. FAQs -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-circle-question" style="color:var(--pink);font-size:18px"></i>
+     <input value="Frequently Asked Questions" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSFaqs()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid" id="cmsFaqsList"></div>
+    <button class="btn" style="margin-top:12px" onclick="App.addCMSFaq()"><i class="fas fa-plus"></i> Add FAQ</button>
+   </div>
+
+   <!-- 8. Contact Details -->
+   <div class="cat-block">
+    <div class="cat-head">
+     <i class="fas fa-address-book" style="color:var(--pink);font-size:18px"></i>
+     <input value="Contact Information & Maps" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/>
+     <button class="btn good" onclick="App.saveCMSContact()"><i class="fas fa-save"></i> Save All</button>
+    </div>
+    <div class="item-grid">
+     <div class="item-box">
+      <label style="font-size:11px;color:var(--muted);font-weight:700">PHONE & WHATSAPP & EMAIL</label>
+      <input id="cmsContactPhone" placeholder="Display Phone"/>
+      <input id="cmsContactWa" placeholder="WhatsApp (10 Digits)"/>
+      <input id="cmsContactEmail" placeholder="Email"/>
+     </div>
+     <div class="item-box">
+      <label style="font-size:11px;color:var(--muted);font-weight:700">ADDRESS & WORKING HOURS</label>
+      <input id="cmsContactAddress" placeholder="Address"/>
+      <input id="cmsContactHours" placeholder="Working Hours"/>
+     </div>
+     <div class="item-box">
+      <label style="font-size:11px;color:var(--muted);font-weight:700">MAP LINKS</label>
+      <input id="cmsContactMapLink" placeholder="Google Maps Direct Link"/>
+      <input id="cmsContactMapEmbed" placeholder="Google Maps Embed URL"/>
+     </div>
+    </div>
+   </div>
+
+  </div>
+
   <div class="tab-content" id="tab-coupons">
    <div class="form-grid">
     <div class="fg"><label>Code</label><input id="cpCode" style="text-transform:uppercase" maxlength="20" placeholder="PARTH50"/></div>
@@ -279,8 +409,60 @@ firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=fireb
 auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
 const $=id=>document.getElementById(id);
 let ordersSnap=null,boys=[],coupons=[],customers={},CATS={},confirmCb=null;
-const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Manage & track'],neworder:['New Order','Manual entry'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics']};
+
 const DEFAULT_CATS={mens:{name:"Men's",icon:'fa-tshirt',items:[{name:'Shirt',price:60,originalPrice:80},{name:'Pant',price:60,originalPrice:80},{name:'Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},ladies:{name:"Ladies",icon:'fa-female',items:[{name:'Ladies Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},winterWomen:{name:"Winter (F)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},winterMen:{name:"Winter (M)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},festival:{name:"Festival",icon:'fa-female',items:[{name:'Saree',price:200,originalPrice:300},{name:'Lehenga (3 Pc)',price:400,originalPrice:600},{name:'Coat Pant',price:350,originalPrice:500}]},iron:{name:"Iron",icon:'fa-fire',items:[{name:'Iron Shirt',price:20}]},home:{name:"Home",icon:'fa-bed',items:[{name:'Blanket (Double)',price:350,originalPrice:450}]},combos:{name:"Combos",icon:'fa-gift',items:[{name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150},{name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550}]}};
+
+// Pre-filled Complete Website Content for Initial Load
+const DEFAULT_CMS = {
+  hero: { badge: "Premium Care in Lucknow", subtitle: "Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.", rating: "4.9/5 Google Rated" },
+  contact: { phone: "+91 92356 01645", whatsapp: "9235601645", email: "parthdrycleaning@gmail.com", address: "Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow", hours: "Monday - Sunday: 10:00 AM - 10:00 PM", mapLink: "https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac", mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" },
+  trustItems: [
+    { icon: "fa-truck", text: "Free Pickup & Delivery" },
+    { icon: "fa-clock", text: "48-72 Hr Turnaround" },
+    { icon: "fa-shield-alt", text: "100% Garment Safety" },
+    { icon: "fa-star", text: "4.9/5 Google Ratings" },
+    { icon: "fa-tags", text: "Bulk Booking Discounts" }
+  ],
+  fabrics: [
+    { tabTitle: "Premium Shirt", icon: "fa-tshirt", title: "Premium Shirt Care", desc: "Our expert steam‑pressing and stain removal ensures your shirts look sharp, crisp, and last longer.", image: "assets/shirt.png" },
+    { tabTitle: "Silk & Sarees", icon: "fa-crown", title: "Silk Saree & Delicate Care", desc: "Handled with specialized dry solvents and starching options. We ensure your zari work retains royal shine.", image: "assets/saree.png" },
+    { tabTitle: "Woollen", icon: "fa-snowflake", title: "Woollen & Winter Wear Care", desc: "Anti-shrinkage gentle tumbling and chemical-free conditioning to keep your sweaters fluffy and soft.", image: "assets/sweater.png" },
+    { tabTitle: "Leather", icon: "fa-vest", title: "Jackets & Heavy Wear Care", desc: "Deep conditioning for leather and waterproof treatment for padded jackets to remove dust.", image: "assets/leather.png" },
+    { tabTitle: "Suits & Blazers", icon: "fa-user-tie", title: "Suits & Formal Wear Care", desc: "Contoured hanger steam pressing to maintain suit structure, shoulder pads, and lapel shape.", image: "assets/blazer.png" }
+  ],
+  howItWorks: [
+    { icon: "fa-tshirt", title: "Select Garments", desc: "Pick from our price list the items you need cleaning." },
+    { icon: "fa-calendar-alt", title: "Schedule Pickup", desc: "Choose a convenient date & time slot, we'll come to your doorstep." },
+    { icon: "fa-box-open", title: "Get Fresh Delivery", desc: "We return your clothes fresh, folded, and ready to wear." }
+  ],
+  whyUs: [
+    { icon: "fa-leaf", title: "Eco-Friendly", desc: "Gentle on clothes & skin, no harsh toxins used." },
+    { icon: "fa-truck-fast", title: "Free Pickup Service", desc: "We come to your doorstep at your convenience." },
+    { icon: "fa-clock", title: "48-72 Hr Service", desc: "Reliable turnaround, careful handling." },
+    { icon: "fa-hand-sparkles", title: "Premium Finishing", desc: "Expert pressing & folding, ready to wear." },
+    { icon: "fa-bolt", title: "Express Delivery", desc: "24‑hour express delivery available for urgent needs." },
+    { icon: "fa-users", title: "Bulk Booking", desc: "Special discounts for bulk orders. Perfect for hotels and offices." }
+  ],
+  reviewsRatingHeader: "4.9 Stars on Google (150+ Reviews)",
+  reviews: [
+    { name: "Anjali S.", loc: "Sector 14", stars: 5, text: "Best dry cleaner in Indira Nagar! My silk saree came back like new." },
+    { name: "Rahul M.", loc: "Sector 10", stars: 5, text: "Parth bhai's service is excellent. My blazer was cleaned perfectly." },
+    { name: "Smita P.", loc: "Munshipulia", stars: 4.5, text: "Affordable and quality. Highly recommended." },
+    { name: "Vikram T.", loc: "Gomti Nagar", stars: 5, text: "Pickup partner was on time and very polite. Clothes look fresh!" }
+  ],
+  faqs: [
+    { q: "What areas do you serve?", a: "We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available." },
+    { q: "How long does dry cleaning take?", a: "Standard turnaround is 48-72 hours. Express 24-hr service available on request." },
+    { q: "Do you clean wedding dresses?", a: "Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees." },
+    { q: "What about the 20% first order discount?", a: "Use code PARTH20 on the booking page to get 20% off your first order (max ₹200 off)." },
+    { q: "Is there a minimum order amount?", a: "Yes, minimum order value is ₹300 to avail free pickup and delivery service." }
+  ]
+};
+
+let CMS = JSON.parse(JSON.stringify(DEFAULT_CMS));
+
+const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Manage & track'],neworder:['New Order','Manual entry'],cms:['Site Content & CMS','Edit dynamic website cards'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics']};
+
 $('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
 function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type==='err'?'err':''}"><i class="fas fa-${type==='err'?'circle-exclamation':'circle-check'}"></i>${msg}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2600);}
 function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');}
@@ -291,17 +473,36 @@ if(localStorage.getItem('pos_theme')==='light'){document.documentElement.setAttr
 auth.onAuthStateChanged(u=>{ if(u){$('loginScreen').style.display='none';$('dashboard').classList.add('active');$('sidebar').style.display='';$('adminEmail').textContent=u.email||'admin';start();} else {$('loginScreen').style.display='flex';$('dashboard').classList.remove('active');$('sidebar').style.display='none';} });
 $('loginBtn').onclick=()=>{$('loginError').style.display='none';auth.signInWithEmailAndPassword($('adminEmailInput').value.trim(),$('adminPassInput').value.trim()).catch(()=>$('loginError').style.display='block');};
 $('adminPassInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
-$('logoutBtn').onclick=()=>{db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();auth.signOut();};
+$('logoutBtn').onclick=()=>{db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();auth.signOut();};
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
-function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();}
+function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='cms')renderCMS();}
+
 function start(){
  db.ref('orders').on('value',s=>{ordersSnap=s;renderDashboard();if($('tab-orders').classList.contains('active'))renderOrders();if($('tab-reports').classList.contains('active'))renderReports();if($('tab-customers').classList.contains('active'))renderCustomers();if($('tab-boys').classList.contains('active'))renderBoys();});
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
+ db.ref('site_content').on('value',s=>{
+   if (s.exists()) {
+     const data = s.val() || {};
+     CMS.hero = data.hero || DEFAULT_CMS.hero;
+     CMS.contact = data.contact || DEFAULT_CMS.contact;
+     CMS.trustItems = data.trustItems || DEFAULT_CMS.trustItems;
+     CMS.fabrics = data.fabrics || DEFAULT_CMS.fabrics;
+     CMS.howItWorks = data.howItWorks || DEFAULT_CMS.howItWorks;
+     CMS.whyUs = data.whyUs || DEFAULT_CMS.whyUs;
+     CMS.reviews = data.reviews || DEFAULT_CMS.reviews;
+     CMS.faqs = data.faqs || DEFAULT_CMS.faqs;
+     CMS.reviewsRatingHeader = data.reviewsRatingHeader || DEFAULT_CMS.reviewsRatingHeader;
+   } else {
+     CMS = JSON.parse(JSON.stringify(DEFAULT_CMS));
+   }
+   renderCMS();
+ });
  db.ref('delivery_boys').once('value').then(s=>{ if(s.exists()){ s.forEach(c=>{ if(!boys.find(b=>b.id===c.key)) boys.push({id:c.key,...c.val()}); }); } renderBoys(); });
  db.ref('settings/coupons').once('value').then(s=>{ if(s.exists()){ s.forEach(c=>{ if(!coupons.find(x=>x.code===c.key)) coupons.push({code:c.key,...c.val()}); }); } renderCoupons(); });
 }
+
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date());const yest=dayStr(new Date(Date.now()-864e5));let tT=0,yT=0,rT=0,rY=0,pend=0,act=0,del=0;const itemCount={};
  ordersSnap.forEach(c=>{const o=c.val();if(!o)return;const d=o.createdAt?dayStr(new Date(o.createdAt)):'';const rev=(o.status==='delivered')?(+o.total||0):0;
@@ -311,13 +512,109 @@ function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date()
  $('dTodayDelta').innerHTML=tT>=yT?`<span class="delta up">▲ ${tT-yT} vs kal</span>`:`<span class="delta dn">▼ ${yT-tT} vs kal</span>`;
  $('dRevDelta').innerHTML=rT>=rY?`<span class="delta up">▲ ₹${rT-rY} vs kal</span>`:`<span class="delta dn">▼ ₹${rY-rT} vs kal</span>`;
  const top=Object.entries(itemCount).sort((a,b)=>b[1]-a[1]).slice(0,5);const max=top.length?top[0][1]:1;
- $('popularList').innerHTML=top.length?top.map(([k,v])=>`<div class="bar-row"><div class="bl">${k}</div><div class="track"><div class="fill" style="width:${(v/max)*100}%"></div></div><div class="bv">${v}</div></div>`).join(''):'<div class="empty-state"><i class="fas fa-chart-simple"></i>Abhi koi data nahi</div>';}
+ $('popularList').innerHTML=top.length?top.map(([k,v])=>`<div class="bar-row"><div class="bl">${k}</div><div class="track"><div class="fill" style="width:${Math.round((v/max)*100)}%"></div></div><div class="bv">${v}</div></div>`).join(''):'<div class="empty-state"><i class="fas fa-chart-simple"></i>Abhi koi data nahi</div>';}
+
 function renderOrders(){ if(!ordersSnap)return; const q=($('orderSearch').value||'').toLowerCase();const f=$('orderFilter').value;let list=[];ordersSnap.forEach(c=>{const o=c.val();if(o)list.push({id:c.key,...o});});
  list=list.filter(o=>{const m=!q||(o.orderId||'').toLowerCase().includes(q)||(o.customerName||o.name||'').toLowerCase().includes(q)||(o.phone||'').includes(q);const s=f==='all'||(o.status||'pending')===f;return m&&s;});
  list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));const today=dayStr(new Date());
  $('ordersBody').innerHTML=list.length?list.map(o=>{const st=o.status||'pending';const rc=(st!=='delivered'&&st!=='cancelled')?(o.pickupDate<today?'row-overdue':o.pickupDate===today?'row-urgent':''):'';const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="item-badge">${k} x${v}</span>`).join('');
   return `<tr class="${rc}"><td style="color:var(--pink);font-weight:700">${o.orderId||o.id}${o.source?`<br><span class="item-badge">${o.source}</span>`:''}</td><td><b>${o.customerName||o.name||'-'}</b><br><span style="color:var(--muted);font-size:12px">${o.phone||''}</span></td><td style="font-size:12px">${o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td><td>${o.pickupDate||'-'}</td><td>${items||'-'}</td><td><b>₹${o.total||0}</b></td><td><select onchange="App.setPay('${o.id}',this.value)"><option ${o.paymentStatus==='Paid'?'selected':''}>Paid</option><option ${(!o.paymentStatus||o.paymentStatus!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${o.id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${o.id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${b.phone}" ${o.assigned_to===b.phone?'selected':''}>${b.name}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${o.id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i></button></td></tr>`;}).join(''):'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';}
 $('orderSearch').oninput=renderOrders;$('orderFilter').onchange=renderOrders;
+
+// ===== RENDER CMS (Exact Services Tab Visual Flow) =====
+function renderCMS(){
+ const h = CMS.hero || DEFAULT_CMS.hero;
+ $('cmsHeroBadge').value = h.badge || '';
+ $('cmsHeroSubtitle').value = h.subtitle || '';
+ $('cmsHeroRating').value = h.rating || '';
+
+ const c = CMS.contact || DEFAULT_CMS.contact;
+ $('cmsContactPhone').value = c.phone || '';
+ $('cmsContactWa').value = c.whatsapp || '';
+ $('cmsContactEmail').value = c.email || '';
+ $('cmsContactAddress').value = c.address || '';
+ $('cmsContactHours').value = c.hours || '';
+ $('cmsContactMapLink').value = c.mapLink || '';
+ $('cmsContactMapEmbed').value = c.mapEmbed || '';
+
+ $('cmsReviewsRatingHeader').value = CMS.reviewsRatingHeader || DEFAULT_CMS.reviewsRatingHeader;
+
+ // 1. Trust Items Cards
+ $('cmsTrustList').innerHTML = (CMS.trustItems||[]).map((t,i)=>`
+  <div class="item-box">
+   <div style="display:flex;justify-content:space-between;align-items:center">
+    <input value="${t.icon||'fa-check'}" placeholder="fa-icon" onchange="CMS.trustItems[${i}].icon=this.value" style="font-weight:700;margin:0"/>
+    <button class="item-del-btn" style="margin-left:6px" onclick="App.delCMSTrust(${i})"><i class="fas fa-times"></i></button>
+   </div>
+   <input value="${t.text||''}" placeholder="Ticker text" onchange="CMS.trustItems[${i}].text=this.value"/>
+  </div>
+ `).join('');
+
+ // 2. Fabric Cards
+ $('cmsFabricsList').innerHTML = (CMS.fabrics||[]).map((f,i)=>`
+  <div class="item-box">
+   <div style="display:flex;justify-content:space-between;align-items:center">
+    <input value="${f.tabTitle||f.title||''}" placeholder="Tab Title" onchange="CMS.fabrics[${i}].tabTitle=this.value" style="font-weight:700;margin:0"/>
+    <button class="item-del-btn" style="margin-left:6px" onclick="App.delCMSFabric(${i})"><i class="fas fa-times"></i></button>
+   </div>
+   <input value="${f.icon||'fa-tshirt'}" placeholder="Icon (fa-icon)" onchange="CMS.fabrics[${i}].icon=this.value"/>
+   <input value="${f.title||''}" placeholder="Card Header Title" onchange="CMS.fabrics[${i}].title=this.value"/>
+   <input value="${f.image||'assets/shirt.png'}" placeholder="Image Path" onchange="CMS.fabrics[${i}].image=this.value"/>
+   <textarea placeholder="Description" onchange="CMS.fabrics[${i}].desc=this.value" style="height:55px">${f.desc||''}</textarea>
+  </div>
+ `).join('');
+
+ // 3. How It Works Cards
+ $('cmsHowList').innerHTML = (CMS.howItWorks||[]).map((h,i)=>`
+  <div class="item-box">
+   <div style="display:flex;justify-content:space-between;align-items:center">
+    <input value="${h.title||''}" placeholder="Step Title" onchange="CMS.howItWorks[${i}].title=this.value" style="font-weight:700;margin:0"/>
+    <button class="item-del-btn" style="margin-left:6px" onclick="App.delCMSHow(${i})"><i class="fas fa-times"></i></button>
+   </div>
+   <input value="${h.icon||'fa-check'}" placeholder="Icon (fa-icon)" onchange="CMS.howItWorks[${i}].icon=this.value"/>
+   <textarea placeholder="Description" onchange="CMS.howItWorks[${i}].desc=this.value" style="height:50px">${h.desc||''}</textarea>
+  </div>
+ `).join('');
+
+ // 4. Why Choose Us Cards
+ $('cmsWhyUsList').innerHTML = (CMS.whyUs||[]).map((w,i)=>`
+  <div class="item-box">
+   <div style="display:flex;justify-content:space-between;align-items:center">
+    <input value="${w.title||''}" placeholder="Feature Title" onchange="CMS.whyUs[${i}].title=this.value" style="font-weight:700;margin:0"/>
+    <button class="item-del-btn" style="margin-left:6px" onclick="App.delCMSWhyUs(${i})"><i class="fas fa-times"></i></button>
+   </div>
+   <input value="${w.icon||'fa-star'}" placeholder="Icon (fa-icon)" onchange="CMS.whyUs[${i}].icon=this.value"/>
+   <textarea placeholder="Description" onchange="CMS.whyUs[${i}].desc=this.value" style="height:50px">${w.desc||''}</textarea>
+  </div>
+ `).join('');
+
+ // 5. Reviews Cards
+ $('cmsReviewsList').innerHTML = (CMS.reviews||[]).map((r,i)=>`
+  <div class="item-box">
+   <div style="display:flex;justify-content:space-between;align-items:center">
+    <input value="${r.name||''}" placeholder="Customer Name" onchange="CMS.reviews[${i}].name=this.value" style="font-weight:700;margin:0"/>
+    <button class="item-del-btn" style="margin-left:6px" onclick="App.delCMSReview(${i})"><i class="fas fa-times"></i></button>
+   </div>
+   <div style="display:flex;gap:6px">
+    <input value="${r.loc||''}" placeholder="Location" onchange="CMS.reviews[${i}].loc=this.value" style="flex:1"/>
+    <input type="number" step="0.5" min="1" max="5" value="${r.stars||5}" placeholder="Stars" onchange="CMS.reviews[${i}].stars=+this.value" style="width:75px"/>
+   </div>
+   <textarea placeholder="Review text" onchange="CMS.reviews[${i}].text=this.value" style="height:50px">${r.text||''}</textarea>
+  </div>
+ `).join('');
+
+ // 6. FAQ Cards
+ $('cmsFaqsList').innerHTML = (CMS.faqs||[]).map((f,i)=>`
+  <div class="item-box">
+   <div style="display:flex;justify-content:space-between;align-items:center">
+    <input value="${f.q||''}" placeholder="Question" onchange="CMS.faqs[${i}].q=this.value" style="font-weight:700;margin:0"/>
+    <button class="item-del-btn" style="margin-left:6px" onclick="App.delCMSFaq(${i})"><i class="fas fa-times"></i></button>
+   </div>
+   <textarea placeholder="Answer" onchange="CMS.faqs[${i}].a=this.value" style="height:55px">${f.a||''}</textarea>
+  </div>
+ `).join('');
+}
+
 function renderCoupons(){$('couponList').innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--pink)">${c.code}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${c.percent}% off (max ₹${c.max})</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${c.code}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${c.code}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>';}
 function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const a=orders.filter(o=>o.assigned_to===b.phone&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>o.assigned_to===b.phone&&o.status==='delivered').length;return `<div class="list-item"><div><span class="name">${b.name}</span> <span class="type-badge code">${b.code||'no-code'}</span><div class="sub">${b.phone} · ${a} active · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn" onclick="App.copyCode('${b.code}')"><i class="fas fa-copy"></i></button><button class="btn" onclick="App.regenCode('${b.id}')"><i class="fas fa-rotate"></i></button><button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>';}
 function renderCustomers(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const rows=Object.entries(customers).map(([uid,c])=>{const co=orders.filter(o=>o.uid===uid);const spent=co.filter(o=>o.status==='delivered').reduce((s,o)=>s+(+o.total||0),0);return{...c,orders:co.length,spent};});
@@ -325,20 +622,21 @@ function renderCustomers(){const orders=ordersSnap?Object.values(ordersSnap.val(
 function renderReports(){if(!ordersSnap)return;let t=0,rev=0,disc=0;const byDay={};ordersSnap.forEach(c=>{const o=c.val();if(!o)return;t++;if(o.status==='delivered'){rev+=(+o.total||0);disc+=(+o.discount||0);const d=o.createdAt?dayStr(new Date(o.createdAt)):'';byDay[d]=(byDay[d]||0)+(+o.total||0);}});
  $('rTotal').textContent=t;$('rRev').textContent='₹'+rev;$('rDisc').textContent='₹'+disc;$('rAvg').textContent='₹'+(t?Math.round(rev/t):0);
  const days=[...Array(7)].map((_,i)=>dayStr(new Date(Date.now()-(6-i)*864e5)));const max=Math.max(...days.map(d=>byDay[d]||0),1);
- $('revBars').innerHTML=days.map(d=>`<div class="bar-row"><div class="bl">${d.slice(8)}/${d.slice(5,7)}</div><div class="track"><div class="fill" style="width:${((byDay[d]||0)/max)*100}%"></div></div><div class="bv">₹${byDay[d]||0}</div></div>`).join('');}
+ $('revBars').innerHTML=days.map(d=>`<div class="bar-row"><div class="bl">${d.slice(8)}/${d.slice(5,7)}</div><div class="track"><div class="fill" style="width:${Math.round(((byDay[d]||0)/max)*100)}%"></div></div><div class="bv">₹${byDay[d]||0}</div></div>`).join('');}
 function renderServices(){const wrap=$('priceUI');let html='';
  for(const key in CATS){const c=CATS[key]||{items:[]};
   html+=`<div class="cat-block"><div class="cat-head"><i class="fas ${c.icon||'fa-tag'}" style="color:var(--pink)"></i><input value="${c.name||key}" onchange="App.renameCat('${key}',this.value)" style="flex:1;min-width:120px"/><input value="${c.icon||''}" onchange="App.setCatIcon('${key}',this.value)" style="width:110px" placeholder="icon"/><button class="btn bad" onclick="App.delCat('${key}')"><i class="fas fa-trash"></i></button></div><div class="item-grid">`;
-  (c.items||[]).forEach((it,idx)=>{html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center"><input value="${it.name}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><button class="btn bad" style="padding:2px 8px;margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${it.price||0}" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price"/><input type="number" value="${it.originalPrice||''}" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/></div>`;});
+  (c.items||[]).forEach((it,idx)=>{html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center"><input value="${it.name}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><button class="item-del-btn" style="margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${it.price||0}" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price"/><input type="number" value="${it.originalPrice||''}" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/></div>`;});
   html+=`<button class="btn" onclick="App.addItem('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
  wrap.innerHTML=html||'<div class="empty-state"><i class="fas fa-tags"></i>Koi category nahi</div>';}
+
 const App={
  setStatus:(id,st)=>db.ref('orders/'+id).update({status:st}).then(()=>toast('Status updated')).catch(e=>toast(e.message,'err')),
  setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>toast('Payment: '+v)).catch(e=>toast(e.message,'err')),
  assign:id=>{const s=$('as_'+id);if(!s)return;const p=s.value;db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+p:''}).then(()=>toast('Boy assigned')).catch(e=>toast(e.message,'err'));},
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=bp||o.phone;if(!num)return toast('Number nahi','err');const msg=`*Parth Dry Clean* 🧺\n*Order:* ${o.orderId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  print:id=>{const o=ordersSnap.val()[id];const items=Object.entries(o.items||{}).map(([k,v])=>`${k} x${v}`).join('<br>');const w=open('','_blank','width=320,height=500');w.document.write(`<html><head><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${o.orderId}<br><b>Name:</b> ${o.customerName||o.name}<br><b>Phone:</b> ${o.phone}<div class="dashed"></div><b>Items:</b><br>${items}<div class="dashed"></div><b>Total:</b> Rs ${o.total}<script>window.print();window.close()<\/script></body></html>`);},
- backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value')]).then(([o,c,b,s,srv])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Backup downloaded');}).catch(e=>toast(e.message,'err'));},
+ backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value'),db.ref('site_content').once('value')]).then(([o,c,b,s,srv,cms])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Complete Backup downloaded');}).catch(e=>toast(e.message,'err'));},
  toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF'));},
  delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>{coupons=coupons.filter(x=>x.code!==c);renderCoupons();db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted'));}),
  addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));const data={name:n,phone:p,code,total_deliveries:0};db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
@@ -360,12 +658,59 @@ const App={
  addItem:k=>{const name=prompt('Item name?');if(!name)return;const price=+prompt('Price?')||0;const orig=+prompt('Original (0 skip)?')||0;CATS[k].items=CATS[k].items||[];CATS[k].items.push({name,price,originalPrice:orig||undefined});renderServices();},
  delItem:(k,i)=>askConfirm('Delete item?',()=>{CATS[k].items.splice(i,1);renderServices();}),
  renameItem:(k,i,v)=>{CATS[k].items[i].name=v;}, setItemPrice:(k,i,v)=>{CATS[k].items[i].price=+v||0;}, setItemOrig:(k,i,v)=>{CATS[k].items[i].originalPrice=+v||undefined;},
- saveServices:()=>{db.ref('services/categories').set(CATS).then(()=>toast('✅ Services saved! Booking me live')).catch(e=>toast(e.message,'err'));}
+ saveServices:()=>{db.ref('services/categories').set(CATS).then(()=>toast('✅ Services saved! Booking me live')).catch(e=>toast(e.message,'err'));},
+ 
+ // Exact CMS Dynamic Actions
+ saveCMSHero:()=>{
+   CMS.hero = { badge: $('cmsHeroBadge').value.trim(), subtitle: $('cmsHeroSubtitle').value.trim(), rating: $('cmsHeroRating').value.trim() };
+   db.ref('site_content/hero').set(CMS.hero).then(()=>toast('✅ Hero saved')).catch(e=>toast(e.message,'err'));
+ },
+ addCMSTrust:()=>{ CMS.trustItems = CMS.trustItems || []; CMS.trustItems.push({ icon: "fa-check", text: "New Trust Badge" }); renderCMS(); },
+ delCMSTrust:(i)=>{ CMS.trustItems.splice(i,1); renderCMS(); },
+ saveCMSTrust:()=>{ db.ref('site_content/trustItems').set(CMS.trustItems).then(()=>toast('✅ Trust Bar saved')).catch(e=>toast(e.message,'err')); },
+ 
+ addCMSFabric:()=>{ CMS.fabrics = CMS.fabrics || []; CMS.fabrics.push({ tabTitle: "New Fabric", icon: "fa-tshirt", title: "Fabric Care Title", desc: "Expert fabric care description...", image: "assets/shirt.png" }); renderCMS(); },
+ delCMSFabric:(i)=>{ CMS.fabrics.splice(i,1); renderCMS(); },
+ saveCMSFabrics:()=>{ db.ref('site_content/fabrics').set(CMS.fabrics).then(()=>toast('✅ Fabrics saved')).catch(e=>toast(e.message,'err')); },
+
+ addCMSHow:()=>{ CMS.howItWorks = CMS.howItWorks || []; CMS.howItWorks.push({ icon: "fa-check", title: "Step Title", desc: "Step description..." }); renderCMS(); },
+ delCMSHow:(i)=>{ CMS.howItWorks.splice(i,1); renderCMS(); },
+ saveCMSHowItWorks:()=>{ db.ref('site_content/howItWorks').set(CMS.howItWorks).then(()=>toast('✅ Steps saved')).catch(e=>toast(e.message,'err')); },
+
+ addCMSWhyUs:()=>{ CMS.whyUs = CMS.whyUs || []; CMS.whyUs.push({ icon: "fa-star", title: "Feature Title", desc: "Feature description..." }); renderCMS(); },
+ delCMSWhyUs:(i)=>{ CMS.whyUs.splice(i,1); renderCMS(); },
+ saveCMSWhyUs:()=>{ db.ref('site_content/whyUs').set(CMS.whyUs).then(()=>toast('✅ Features saved')).catch(e=>toast(e.message,'err')); },
+
+ addCMSReview:()=>{ CMS.reviews = CMS.reviews || []; CMS.reviews.push({ name: "Customer Name", loc: "Lucknow", stars: 5, text: "Great service!" }); renderCMS(); },
+ delCMSReview:(i)=>{ CMS.reviews.splice(i,1); renderCMS(); },
+ saveCMSReviews:()=>{
+   CMS.reviewsRatingHeader = $('cmsReviewsRatingHeader').value.trim();
+   db.ref('site_content/reviews').set(CMS.reviews).then(()=>{
+     return db.ref('site_content/reviewsRatingHeader').set(CMS.reviewsRatingHeader);
+   }).then(()=>toast('✅ Reviews saved')).catch(e=>toast(e.message,'err'));
+ },
+
+ addCMSFaq:()=>{ CMS.faqs = CMS.faqs || []; CMS.faqs.push({ q: "New Question?", a: "Answer here..." }); renderCMS(); },
+ delCMSFaq:(i)=>{ CMS.faqs.splice(i,1); renderCMS(); },
+ saveCMSFaqs:()=>{ db.ref('site_content/faqs').set(CMS.faqs).then(()=>toast('✅ FAQs saved')).catch(e=>toast(e.message,'err')); },
+
+ saveCMSContact:()=>{
+   CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email: $('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours: $('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed: $('cmsContactMapEmbed').value.trim() };
+   db.ref('site_content/contact').set(CMS.contact).then(()=>toast('✅ Contact saved')).catch(e=>toast(e.message,'err'));
+ },
+
+ saveAllCMS:()=>{
+   CMS.hero = { badge: $('cmsHeroBadge').value.trim(), subtitle: $('cmsHeroSubtitle').value.trim(), rating: $('cmsHeroRating').value.trim() };
+   CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email: $('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours: $('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed: $('cmsContactMapEmbed').value.trim() };
+   CMS.reviewsRatingHeader = $('cmsReviewsRatingHeader').value.trim();
+   db.ref('site_content').set(CMS).then(()=>toast('🎉 Complete CMS Sync Saved!')).catch(e=>toast(e.message,'err'));
+ }
 };
+
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
-$('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v19 (Synthwave, CMS removed) online');
+$('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(csv)],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
+console.log('🌆 PARTH OS v22 (Synthwave + Error-Free Services Matching CMS Engine) online');
 </script>
 </body>
 </html>
