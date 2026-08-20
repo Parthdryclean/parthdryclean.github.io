@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen6.4 : Gen6.3 + bookingOpen built-in (FULL) -->
+<!-- ParthindexGen6.7 : Gen6.6 + Full Pre-Filled Dynamic CMS Engine (FULL) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -71,7 +71,7 @@ nav a:hover { color:var(--primary); }
 .mobile-menu-btn:hover { color:var(--primary); }
 .install-pill { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; border:none; padding:8px 14px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; display:none; align-items:center; gap:6px; font-family:'Outfit'; }
 .trust-bar-wrapper { background: var(--surface); overflow: hidden; white-space: nowrap; padding: 10px 0; }
-.trust-bar-track { display: inline-block; animation: scroll-left 20s linear infinite; }
+.trust-bar-track { display: inline-block; animation: scroll-left 25s linear infinite; }
 .trust-bar-track:hover { animation-play-state: paused; }
 .trust-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-muted); margin: 0 25px; }
 .trust-item i { color: var(--primary); font-size: 16px; }
@@ -392,14 +392,14 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <body>
 <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999999; display:flex; flex-direction:column; gap:8px;"></div>
 <div class="top-banner" id="topBanner" style="display:none;">
-🎉 First order? Use code <span>PARTH20</span> for 20% OFF!
+<span id="topBannerText">🎉 First order? Use code <span>PARTH20</span> for 20% OFF!</span>
 <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>
 </div>
 <header>
 <a href="index.html" class="logo">
 <div class="logo-text-wrapper">
-<div class="logo-row"><span class="logo-main">Parth</span><span class="logo-sub">Dry Clean</span></div>
-<span class="logo-tagline">Premium For Everyone</span>
+<div class="logo-row"><span class="logo-main" id="brandLogoMain">Parth</span><span class="logo-sub" id="brandLogoSub">Dry Clean</span></div>
+<span class="logo-tagline" id="brandTagline">Premium For Everyone</span>
 </div>
 </a>
 <div class="header-actions">
@@ -417,7 +417,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </div>
 </header>
 <div class="trust-bar-wrapper" id="trustBarWrapper">
-<div class="trust-bar-track">
+<div class="trust-bar-track" id="trustBarTrack">
 <div class="trust-item"><i class="fas fa-truck"></i> Free Pickup & Delivery</div>
 <div class="trust-item"><i class="fas fa-clock"></i> 48-72 Hr Turnaround</div>
 <div class="trust-item"><i class="fas fa-shield-alt"></i> 100% Garment Safety</div>
@@ -443,25 +443,25 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </div>
 <div class="dropdown-inner" id="dropdownInner"></div>
 </div>
-<a href="https://wa.me/919235601645?text=Hello%2C%20I%20need%20help%20with%20my%20laundry%20order." target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+<a href="https://wa.me/919235601645?text=Hello%2C%20I%20need%20help%20with%20my%20laundry%20order." target="_blank" class="floating-whatsapp" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
 <div class="whatsapp-tooltip" id="waTooltip"><span></span> Need help? Chat with us!</div>
 <i class="fab fa-whatsapp"></i>
 </a>
 <section class="hero" id="home">
 <div class="hero-content">
-<div class="premium-tag"><i class="fas fa-crown"></i> Premium Care in Lucknow</div>
+<div class="premium-tag" id="heroBadge"><i class="fas fa-crown"></i> Premium Care in Lucknow</div>
 <h1 id="dynamicGreeting">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
-<p>Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
+<p id="heroSubtitle">Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
 <div class="action-buttons">
 <a href="booking.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
 <button type="button" class="btn btn-install installAppBtn"><i class="fas fa-download"></i> Install App</button>
-<a href="https://wa.me/919235601645?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup." target="_blank" class="btn btn-whatsapp-sm"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+<a href="https://wa.me/919235601645?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup." target="_blank" class="btn btn-whatsapp-sm" id="heroWaBtn"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
 </div>
 </div>
 <div class="hero-images-container">
 <div class="hero-img-box img-1"><img src="assets/hero1.jpg" alt="Shop neat and clean" /></div>
 <div class="hero-img-box img-2"><img src="assets/hero2.jpg" alt="Folded clothes" /></div>
-<div class="hero-floating-badge"><i class="fas fa-star" style="color:var(--gold);"></i> 4.9/5 Google Rated</div>
+<div class="hero-floating-badge" id="heroRatingBadge"><i class="fas fa-star" style="color:var(--gold);"></i> 4.9/5 Google Rated</div>
 </div>
 </section>
 <section class="before-after-section">
@@ -481,28 +481,30 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="master-container">
 <div class="master-left">
 <div class="stain-arch"></div>
-<img src="assets/saree.png" alt="Premium Saree" class="stain-saree-bg" loading="lazy">
-<img src="assets/blazer.png" alt="Premium Blazer" class="stain-blazer-bg" loading="lazy">
+<img src="assets/saree.png" alt="Premium Saree" class="stain-saree-bg" id="masterDecorSaree" loading="lazy">
+<img src="assets/blazer.png" alt="Premium Blazer" class="stain-blazer-bg" id="masterDecorBlazer" loading="lazy">
 <img src="assets/shirt.png" alt="Premium Folded Shirt" class="stain-main-img" id="mainFloatingImg" loading="lazy">
 <img src="assets/decor-left.png" alt="Decor" class="stain-decor-left" loading="lazy">
 <img src="assets/spray.png" alt="Care Spray" class="stain-spray" loading="lazy">
 <img src="assets/hanger.png" alt="Hanger Bag" class="stain-hanger" loading="lazy">
 </div>
 <div class="master-right">
-<div class="stain-brand-text">100% Fabric Protection</div>
-<h2 class="stain-main-title">Professional Care<br><span class="text-gradient">For Every Thread</span></h2>
-<div class="fabric-pills">
+<div class="stain-brand-text" id="fabricBrandText">100% Fabric Protection</div>
+<h2 class="stain-main-title" id="fabricMainTitle">Professional Care<br><span class="text-gradient">For Every Thread</span></h2>
+<div class="fabric-pills" id="fabricPillsContainer">
 <button type="button" class="fabric-pill active" onclick="switchFabric('shirt', this, 'assets/shirt.png')"><i class="fas fa-tshirt"></i> Premium Shirt</button>
 <button type="button" class="fabric-pill" onclick="switchFabric('silk', this, 'assets/saree.png')"><i class="fas fa-crown"></i> Silk & Sarees</button>
 <button type="button" class="fabric-pill" onclick="switchFabric('woollen', this, 'assets/sweater.png')"><i class="fas fa-snowflake"></i> Woollen</button>
 <button type="button" class="fabric-pill" onclick="switchFabric('leather', this, 'assets/leather.png')"><i class="fas fa-vest"></i> Leather</button>
 <button type="button" class="fabric-pill" onclick="switchFabric('formal', this, 'assets/blazer.png')"><i class="fas fa-user-tie"></i> Suits & Blazers</button>
 </div>
+<div id="fabricCardsContainer">
 <div class="fabric-content-card active" id="fabric-shirt"><h3><i class="fas fa-tshirt" style="color:var(--primary);"></i> Premium Shirt Care</h3><p>Our expert steam‑pressing and stain removal ensures your shirts look sharp, crisp, and last longer. Perfect for formal and casual wear.</p></div>
 <div class="fabric-content-card" id="fabric-silk"><h3><i class="fas fa-crown" style="color:var(--gold);"></i> Silk Saree & Delicate Care</h3><p>Handled with specialized dry solvents and starching options. We ensure your zari work and delicate weaves retain their royal shine for years.</p></div>
 <div class="fabric-content-card" id="fabric-woollen"><h3><i class="fas fa-snowflake" style="color:var(--primary);"></i> Woollen & Winter Wear Care</h3><p>Anti-shrinkage gentle tumbling and chemical-free conditioning to keep your sweaters fluffy, warm, and soft as new.</p></div>
 <div class="fabric-content-card" id="fabric-leather"><h3><i class="fas fa-vest" style="color:#8b5a2b;"></i> Jackets & Heavy Wear Care</h3><p>Deep conditioning for leather and waterproof treatment for padded jackets to remove dust and maintain texture.</p></div>
 <div class="fabric-content-card" id="fabric-formal"><h3><i class="fas fa-user-tie" style="color:#1e293b;"></i> Suits & Formal Wear Care</h3><p>Contoured hanger steam pressing to maintain suit structure, shoulder pads, and lapel shape perfectly.</p></div>
+</div>
 <div class="trust-badge-small"><i class="fas fa-shield-alt" style="color:var(--success);"></i> Zero Shrinkage Guarantee</div>
 </div>
 </div>
@@ -524,7 +526,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </section>
 <section class="how-it-works" id="how-it-works">
 <div class="section-header"><h2>How It <span class="text-gradient">Works</span></h2><p>3 simple steps to fresh clothes</p></div>
-<div class="steps-grid">
+<div class="steps-grid" id="howItWorksGrid">
 <div class="step-card"><div class="step-icon"><i class="fas fa-tshirt"></i></div><h3>Select Garments</h3><p>Pick from our price list the items you need cleaning.</p></div>
 <div class="step-card"><div class="step-icon"><i class="fas fa-calendar-alt"></i></div><h3>Schedule Pickup</h3><p>Choose a convenient date & time slot, we'll come to your doorstep.</p></div>
 <div class="step-card"><div class="step-icon"><i class="fas fa-box-open"></i></div><h3>Get Fresh Delivery</h3><p>We return your clothes fresh, folded, and ready to wear.</p></div>
@@ -532,7 +534,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </section>
 <section class="services-section" id="services">
 <div class="section-header"><h2>Why <span class="text-gradient">Choose Us?</span></h2><p>We treat your garments like our own</p></div>
-<div class="services-grid">
+<div class="services-grid" id="whyChooseUsGrid">
 <div class="service-card"><div class="icon-box"><i class="fas fa-leaf"></i></div><h3>Eco-Friendly</h3><p>Gentle on clothes & skin, no harsh toxins used.</p></div>
 <div class="service-card"><div class="icon-box"><i class="fas fa-truck-fast"></i></div><h3>Free Pickup Service</h3><p>We come to your doorstep at your convenience.</p></div>
 <div class="service-card"><div class="icon-box"><i class="fas fa-clock"></i></div><h3>48-72 Hr Service</h3><p>Reliable turnaround, careful handling.</p></div>
@@ -545,14 +547,10 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="section-header">
 <h2>Loved by <span class="text-gradient">Customers</span></h2>
 <p>Real feedback from our happy clients</p>
-<div style="display:inline-flex; align-items:center; gap:6px; background:rgba(14,165,233,0.1); padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; color:var(--primary); margin-top:10px;"><i class="fab fa-google"></i> 4.9 Stars on Google (150+ Reviews)</div>
+<div id="reviewsHeaderBadge" style="display:inline-flex; align-items:center; gap:6px; background:rgba(14,165,233,0.1); padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; color:var(--primary); margin-top:10px;"><i class="fab fa-google"></i> 4.9 Stars on Google (150+ Reviews)</div>
 <div style="margin-top: 15px;"><button class="write-review-btn" onclick="showToast('📝 Review feature coming soon!', 'info')"><i class="fas fa-pencil-alt"></i> Write a Review</button></div>
 </div>
-<div class="reviews-slider">
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
-<div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Pickup partner was on time and very polite. Clothes look fresh!"</p><span class="customer-name">Vikram T.</span><span class="customer-loc">Gomti Nagar</span></div>
+<div class="reviews-slider" id="reviewsSlider">
 <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Best dry cleaner in Indira Nagar! My silk saree came back like new."</p><span class="customer-name">Anjali S.</span><span class="customer-loc">Sector 14</span></div>
 <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="review-text">"Parth bhai's service is excellent. My blazer was cleaned perfectly."</p><span class="customer-name">Rahul M.</span><span class="customer-loc">Sector 10</span></div>
 <div class="review-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="review-text">"Affordable and quality. Highly recommended."</p><span class="customer-name">Smita P.</span><span class="customer-loc">Munshipulia</span></div>
@@ -561,17 +559,19 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </section>
 <section class="faq-section" id="faq">
 <div class="section-header"><h2>Frequently Asked <span class="text-gradient">Questions</span></h2></div>
+<div id="faqList">
 <div class="faq-item"><div class="faq-question">What areas do you serve? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available.</div></div>
 <div class="faq-item"><div class="faq-question">How long does dry cleaning take? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service available on request.</div></div>
 <div class="faq-item"><div class="faq-question">Do you clean wedding dresses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, we specialize in bridal wear, lehengas, sherwanis, and delicate silk sarees.</div></div>
 <div class="faq-item"><div class="faq-question">What about the 20% first order discount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Use code PARTH20 on the booking page to get 20% off your first order (max ₹200 off).</div></div>
 <div class="faq-item"><div class="faq-question">Is there a minimum order amount? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Yes, minimum order value is ₹300 to avail free pickup and delivery service.</div></div>
+</div>
 </section>
 <section class="info-section" id="contact">
-<div class="info-box"><h3><i class="fas fa-map-marker-alt"></i> Our Location</h3><p>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card"><i class="fas fa-location-arrow"></i> Open in Google Maps</a></div>
-<div class="info-box"><h3><i class="fas fa-clock"></i> Working Hours</h3><p>Monday - Sunday: 10:00 AM - 10:00 PM</p><p><i class="fas fa-phone"></i> <a href="tel:+919235601645" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p><p><i class="fas fa-envelope"></i> parthdrycleaning@gmail.com</p></div>
+<div class="info-box"><h3><i class="fas fa-map-marker-alt"></i> Our Location</h3><p id="contactAddressText">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</p><a href="https://maps.app.goo.gl/Sye8Xw9zXrU7tpy78?g_st=ac" target="_blank" class="map-direct-card" id="contactMapLink"><i class="fas fa-location-arrow"></i> Open in Google Maps</a></div>
+<div class="info-box"><h3><i class="fas fa-clock"></i> Working Hours</h3><p id="contactHoursText">Monday - Sunday: 10:00 AM - 10:00 PM</p><p><i class="fas fa-phone"></i> <a href="tel:+919235601645" id="contactPhoneLink" style="color:var(--text-muted); text-decoration:none; font-weight:600;">+91 92356 01645</a></p><p><i class="fas fa-envelope"></i> <span id="contactEmailText">parthdrycleaning@gmail.com</span></p></div>
 </section>
-<div class="map-section"><iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe></div>
+<div class="map-section"><iframe class="map-iframe" id="contactMapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe></div>
 <div class="modal-overlay" id="authModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('authModal')" aria-label="Close">&times;</button>
@@ -663,7 +663,7 @@ function setTimeGreeting(userName) { const hour = new Date().getHours(); const n
 function applyLoggedInUI(displayName) { const firstName = (displayName || 'User').split(' ')[0]; const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${sanitizeHTML(firstName)}</span>`; loginBtn.style.background = 'var(--accent)'; loginBtn.style.color = '#fff'; document.getElementById('myOrdersNavItem').style.display = 'block'; setTimeGreeting(firstName); }
 function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`; loginBtn.style.background = ''; loginBtn.style.color = ''; document.getElementById('myOrdersNavItem').style.display = 'none'; setTimeGreeting(null); }
 function updateSlider(val) { document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`; document.getElementById('baSliderLine').style.left = `${val}%`; document.getElementById('baSliderBtn').style.left = `${val}%`; }
-function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); }
+function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); if(floatingImg){ floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); } }
 function renderPricing() { const chipsWrapper = document.getElementById('pricingChipsWrapper'); const container = document.getElementById('pricingContainer'); chipsWrapper.innerHTML = ''; let chipsHTML = `<button class="price-chip" onclick="filterCategory('all', this)">All Items</button>`; let itemsHTML = ''; Object.keys(categories).forEach(cat => { const items = categories[cat]; const isActive = (cat === activeCategory) ? 'active' : ''; chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${categoryNames[cat]}</button>`; const displayStyle = (cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;'; itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; itemsHTML += `<h3 class="category-group-title">${categoryNames[cat]}</h3>`; items.forEach(item => { const priceText = item.price > 0 ? `₹${item.price}` : '₹—'; const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : ''; itemsHTML += `<div class="price-item" data-name="${item.name.toLowerCase()}"><span class="price-name">${item.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }); itemsHTML += `</div>`; }); chipsWrapper.innerHTML = chipsHTML; container.innerHTML = itemsHTML; }
 function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
 window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'); return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
@@ -697,7 +697,7 @@ function saveProfile() { const user = auth.currentUser; if (!user) return; const
 function logoutUser() { auth.signOut().then(() => { closeModal('profileModal'); showToast('Logged out','info'); activeOrderListeners.forEach(ref => ref.off('value')); activeOrderListeners = []; setTrustBarVisible(true); }); }
 function setProfileHeader(user) { const name = user.displayName || 'User'; const parts = name.trim().split(/\s+/); const initials = ((parts[0] ? parts[0][0] : 'U') + (parts[1] ? parts[1][0] : '')).toUpperCase(); document.getElementById('profAvatar').textContent = initials; document.getElementById('profNameDisplay').textContent = name; document.getElementById('profEmailDisplay').textContent = user.email || 'Phone login user'; }
 function loadProfileStats(uid) { db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => { let count = 0, items = 0; snap.forEach(child => { const o = child.val(); if (!o) return; count++; for (const k in (o.items || {})) items += Number(o.items[k] || 0); }); document.getElementById('statOrders').textContent = count; document.getElementById('statItems').textContent = items; }); }
-function loadOrderHistory() { const list = document.getElementById('orderHistoryList'); if (!auth.currentUser) return; const uid = auth.currentUser.uid; list.innerHTML = `<div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div><div class="history-card" style="opacity:.4;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:50%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:75%;"></div></div>`; db.ref('customers/' + uid).once('value').then(pSnap => { const prof = pSnap.exists() ? pSnap.val() : {}; const profPhone = last10Digits(prof.phone); db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => { const map = new Map(); snap.forEach(child => { const o = child.val(); if (!o) return; const orderUid = String(o.uid || o.userId || o.customerId || ''); const orderPhone = last10Digits(o.phone || o.mobile); const isMatch = orderUid === uid || (profPhone.length === 10 && orderPhone.length === 10 && orderPhone === profPhone); if (isMatch) { const key = o.orderId || child.key; if (!map.has(key)) map.set(key, o); } }); const orders = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); if (!orders.length) { list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`; return; } let html = ''; orders.forEach(o => { const statusText = statusLabels[o.status] || (o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Order'); const statusClass = sanitizeHTML(o.status || ''); const orderIdRaw = safeId(o.orderId); const orderIdDisplay = sanitizeHTML(o.orderId); const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today'; const itemCount = getOrderItemSummary(o); const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : ''; html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`; }); list.innerHTML = html; }); }); }
+function loadOrderHistory() { const list = document.getElementById('orderHistoryList'); if (!auth.currentUser) return; const uid = auth.currentUser.uid; list.innerHTML = `<div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div><div class="history-card" style="opacity:.4;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:50%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:75%;"></div></div>`; db.ref('customers/' + uid).once('value').then(pSnap => { const prof = pSnap.exists() ? pSnap.val() : {}; const profPhone = last10Digits(prof.phone); db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => { const map = new Map(); snap.forEach(child => { const o = child.val(); if (!o) return; const orderUid = String(o.uid || o.userId || o.customerId || ''); const orderPhone = last10Digits(o.phone || o.mobile); const isMatch = orderUid === uid || (profPhone.length === 10 && orderPhone.length === 10 && orderPhone === profPhone); if (isMatch) { const key = o.orderId || child.key; if (!map.has(key)) map.set(key, o); } }); const orders = Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); if (!orders.length) { list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`; return; } let html = ''; orders.forEach(o => { const statusText = statusLabels[o.status] || (o.status ? o.status.charAt(0).toUpperCase() + o.status.slice(1) : 'Order'); const statusClass = sanitizeHTML(o.status || ''); const orderIdRaw = safeId(o.orderId); const orderIdDisplay = sanitizeHTML(order.orderId); const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today'; const itemCount = getOrderItemSummary(o); const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : ''; html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`; }); list.innerHTML = html; }); }); }
 function downloadInvoice(id) { showToast('Generating invoice...','info'); db.ref('orders/' + id).once('value').then(snap => { const o = snap.val(); if (!o) { showToast('Order not found','error'); return; } const fetchProfile = o.uid ? db.ref('customers/' + o.uid).once('value') : Promise.resolve(null); fetchProfile.then(pSnap => { const prof = (pSnap && pSnap.exists()) ? pSnap.val() : {}; buildInvoicePDF(o, prof, id); }).catch(() => buildInvoicePDF(o, {}, id)); }); }
 function buildInvoicePDF(o, prof, orderId) { const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer'); const custPhone = sanitizeHTML(o.phone || prof.phone || '—'); const custAddress = sanitizeHTML(o.address || prof.address || 'Not provided'); const statusLabel = statusLabels[o.status] || (o.status || 'Confirmed'); const payStatus = sanitizeHTML(o.paymentStatus || 'Pay on Delivery'); const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—'; let rows = ''; for (let k in (o.items || {})) { const qty = Number(o.items[k]) || 0; const rate = getItemRate(k); const rateText = rate !== null ? `₹${rate}` : '—'; const amtText = rate !== null ? `₹${rate * qty}` : '—'; rows += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:9px 6px; font-weight:600;">${sanitizeHTML(k)}</td><td style="padding:9px 6px; text-align:center;">${qty}</td><td style="padding:9px 6px; text-align:right;">${rateText}</td><td style="padding:9px 6px; text-align:right; font-weight:700;">${amtText}</td></tr>`; } const baseSubtotal = o.subtotal || 0; const expressFee = o.express === 'Yes' ? Math.round(baseSubtotal * 0.9) : 0; const discount = o.discount || 0; const total = o.total || (baseSubtotal + expressFee - discount); const element = document.createElement('div'); element.innerHTML = `<div style="padding:28px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:14px; margin-bottom:16px;"><div style="font-size:24px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div><div style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM FOR EVERYONE</div><div style="font-size:10px; color:#64748b; margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;"><div style="font-size:16px; font-weight:800; color:#0f172a;">TAX INVOICE</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800;">${statusLabel}</div></div><div style="background:#f8fafc; padding:12px 14px; border-radius:10px; margin-bottom:12px; font-size:11px;"><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span style="color:#64748b;">Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; margin-bottom:14px; font-size:11px;"><div style="font-size:10px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px;">Billed To</div><div style="font-weight:800; font-size:13px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:12px;"><thead><tr style="background:#f1f5f9;"><th style="padding:8px 6px; text-align:left; font-size:10px; color:#64748b; text-transform:uppercase;">Item</th><th style="padding:8px 6px; text-align:center; font-size:10px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:8px 6px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:8px 6px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:16px; border-top:2px dashed #e2e8f0; padding-top:12px; font-size:12px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-top:5px;"><span>Express Fee (24hr)</span><span>+₹${expressFee}</span></div>` : ''}${discount > 0 ? `<div style="display:flex; justify-content:space-between; color:#16a34a; margin-top:5px;"><span>Discount</span><span>-₹${discount}</span></div>` : ''}<div style="display:flex; justify-content:space-between; font-size:17px; font-weight:800; margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;"><span>Grand Total</span><span style="color:#0ea5e9;">₹${total}</span></div></div><div style="margin-top:18px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px 14px; font-size:10px; color:#166534; font-weight:600;">💚 Thank you for choosing Parth Dry Clean! Your garments are handled with premium care & eco-friendly solvents.</div><div style="margin-top:10px; font-size:9px; color:#94a3b8; text-align:center;">* Garments not collected within 30 days of delivery readiness are not our responsibility. For any issue, contact us within 48 hours of delivery.</div></div>`; html2pdf().set({ margin: 8, filename: 'ParthDryClean_Invoice_' + orderId + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Invoice downloaded!','success')); }
 auth.onAuthStateChanged(user => { const loginBtn = document.getElementById('loginBtn'); const myOrdersItem = document.getElementById('myOrdersNavItem'); if (user) { cacheUser(user); applyLoggedInUI(user.displayName); loginBtn.onclick = () => { document.getElementById('profName').value = user.displayName || ''; document.getElementById('profEmail').value = user.email || ''; setProfileHeader(user); loadProfileStats(user.uid); db.ref('customers/'+user.uid).once('value').then(s => { if(s.exists()) { const d=s.val(); document.getElementById('profPhone').value=d.phone||''; document.getElementById('profAddress').value=d.address||''; } }); openModal('profileModal'); }; attachActiveOrderListener(user.uid); } else { clearCachedUser(); applyLoggedOutUI(); loginBtn.onclick = () => openModal('authModal'); myOrdersItem.style.display = 'none'; document.getElementById('activeOrderBar').style.display = 'none'; document.getElementById('activeOrderDropdown').classList.remove('open'); activeOrderListeners.forEach(ref => ref.off('value')); activeOrderListeners = []; setTrustBarVisible(true); } });
@@ -707,12 +707,103 @@ window.addEventListener('scroll', () => { const nav = document.getElementById('n
 function rebuildPriceLookup() { Object.keys(priceLookup).forEach(k => delete priceLookup[k]); for (const cat in categories) categories[cat].forEach(it => { priceLookup[it.name.toLowerCase()] = it.price; }); }
 function loadDynamicCategories() { db.ref('services/categories').once('value').then(s => { if (!s.exists()) return; const data = s.val(); const keys = Object.keys(data); if (!keys.length) return; keys.forEach(k => { delete categories[k]; delete categoryNames[k]; }); keys.forEach(k => { const c = data[k] || {}; categoryNames[k] = c.name || k; categories[k] = (c.items || []).map(it => ({ id: k + '-' + String(it.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), name: it.name, price: Number(it.price) || 0, originalPrice: (it.originalPrice !== undefined && it.originalPrice !== null && it.originalPrice !== '') ? Number(it.originalPrice) : undefined })); }); catOrder.length = 0; Object.keys(categories).forEach(k => catOrder.push(k)); rebuildPriceLookup(); if (!categories[activeCategory]) activeCategory = catOrder[0] || 'combos'; renderPricing(); }).catch(() => {}); }
 function loadSiteSettings() { db.ref('settings/general').once('value').then(s => { if (!s.exists()) return; const v = s.val() || {}; const banner = document.getElementById('topBanner'); if (v.announcement) { banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>'; banner.style.display = 'block'; document.getElementById('closeBanner').addEventListener('click', () => banner.style.display = 'none'); } else if (v.couponEnabled === false) { banner.style.display = 'none'; } }).catch(() => {}); }
-// ===== BOOKING OPEN/CLOSE CHECK (index) — Gen6.4 =====
+
+// ===== FULL DYNAMIC CMS LOADER (ParthindexGen6.7) =====
+function loadSiteCMSContent() {
+  db.ref('site_content').on('value', snap => {
+    if (!snap.exists()) return;
+    const cms = snap.val() || {};
+
+    // 1. Hero Section
+    if (cms.hero) {
+      if (cms.hero.badge) document.getElementById('heroBadge').innerHTML = `<i class="fas fa-crown"></i> ${sanitizeHTML(cms.hero.badge)}`;
+      if (cms.hero.subtitle) document.getElementById('heroSubtitle').textContent = cms.hero.subtitle;
+      if (cms.hero.rating) document.getElementById('heroRatingBadge').innerHTML = `<i class="fas fa-star" style="color:var(--gold);"></i> ${sanitizeHTML(cms.hero.rating)}`;
+    }
+
+    // 2. Trust Bar
+    if (cms.trustItems && cms.trustItems.length) {
+      const track = document.getElementById('trustBarTrack');
+      const itemsHtml = cms.trustItems.map(it => `<div class="trust-item"><i class="fas ${sanitizeHTML(it.icon || 'fa-check')}"></i> ${sanitizeHTML(it.text)}</div>`).join('');
+      track.innerHTML = itemsHtml + itemsHtml;
+    }
+
+    // 3. Fabric Masterclass
+    if (cms.fabrics && cms.fabrics.length) {
+      const pillsContainer = document.getElementById('fabricPillsContainer');
+      const cardsContainer = document.getElementById('fabricCardsContainer');
+      let pillsHtml = '';
+      let cardsHtml = '';
+      cms.fabrics.forEach((f, idx) => {
+        const activeClass = idx === 0 ? 'active' : '';
+        const safeKey = 'fab-' + idx;
+        pillsHtml += `<button type="button" class="fabric-pill ${activeClass}" onclick="switchFabric('${safeKey}', this, '${sanitizeHTML(f.image || 'assets/shirt.png')}')"><i class="fas ${sanitizeHTML(f.icon || 'fa-tshirt')}"></i> ${sanitizeHTML(f.tabTitle || f.title)}</button>`;
+        cardsHtml += `<div class="fabric-content-card ${activeClass}" id="fabric-${safeKey}"><h3><i class="fas ${sanitizeHTML(f.icon || 'fa-tshirt')}" style="color:var(--primary);"></i> ${sanitizeHTML(f.title)}</h3><p>${sanitizeHTML(f.desc)}</p></div>`;
+      });
+      pillsContainer.innerHTML = pillsHtml;
+      cardsContainer.innerHTML = cardsHtml;
+    }
+
+    // 4. How It Works Steps
+    if (cms.howItWorks && cms.howItWorks.length) {
+      document.getElementById('howItWorksGrid').innerHTML = cms.howItWorks.map(h => `<div class="step-card"><div class="step-icon"><i class="fas ${sanitizeHTML(h.icon || 'fa-check')}"></i></div><h3>${sanitizeHTML(h.title)}</h3><p>${sanitizeHTML(h.desc)}</p></div>`).join('');
+    }
+
+    // 5. Why Choose Us Grid
+    if (cms.whyUs && cms.whyUs.length) {
+      document.getElementById('whyChooseUsGrid').innerHTML = cms.whyUs.map(w => `<div class="service-card"><div class="icon-box"><i class="fas ${sanitizeHTML(w.icon || 'fa-star')}"></i></div><h3>${sanitizeHTML(w.title)}</h3><p>${sanitizeHTML(w.desc)}</p></div>`).join('');
+    }
+
+    // 6. Reviews
+    if (cms.reviews && cms.reviews.length) {
+      const reviewsHtml = cms.reviews.map(r => {
+        const fullStars = Math.floor(r.stars || 5);
+        let starHtml = '';
+        for(let i=0; i<fullStars; i++) starHtml += '<i class="fas fa-star"></i>';
+        if((r.stars || 5) % 1 !== 0) starHtml += '<i class="fas fa-star-half-alt"></i>';
+        return `<div class="review-card"><div class="stars">${starHtml}</div><p class="review-text">"${sanitizeHTML(r.text)}"</p><span class="customer-name">${sanitizeHTML(r.name)}</span><span class="customer-loc">${sanitizeHTML(r.loc)}</span></div>`;
+      }).join('');
+      document.getElementById('reviewsSlider').innerHTML = reviewsHtml + reviewsHtml;
+      if (cms.reviewsRatingHeader) document.getElementById('reviewsHeaderBadge').innerHTML = `<i class="fab fa-google"></i> ${sanitizeHTML(cms.reviewsRatingHeader)}`;
+    }
+
+    // 7. FAQs
+    if (cms.faqs && cms.faqs.length) {
+      document.getElementById('faqList').innerHTML = cms.faqs.map(f => `<div class="faq-item"><div class="faq-question">${sanitizeHTML(f.q)} <i class="fas fa-chevron-down"></i></div><div class="faq-answer">${sanitizeHTML(f.a)}</div></div>`).join('');
+      document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
+        const parent = this.parentElement;
+        document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
+        parent.classList.toggle('active');
+      }));
+    }
+
+    // 8. Contact & Map Details
+    if (cms.contact) {
+      if (cms.contact.address) document.getElementById('contactAddressText').textContent = cms.contact.address;
+      if (cms.contact.hours) document.getElementById('contactHoursText').textContent = cms.contact.hours;
+      if (cms.contact.email) document.getElementById('contactEmailText').textContent = cms.contact.email;
+      if (cms.contact.phone) {
+        const phoneLink = document.getElementById('contactPhoneLink');
+        phoneLink.textContent = cms.contact.phone;
+        phoneLink.href = 'tel:' + cms.contact.phone.replace(/\s+/g, '');
+      }
+      if (cms.contact.whatsapp) {
+        const cleanWa = cms.contact.whatsapp.replace(/\D/g, '');
+        document.getElementById('floatingWhatsappBtn').href = `https://wa.me/${cleanWa}?text=Hello%2C%20I%20need%20help%20with%20my%20laundry%20order.`;
+        document.getElementById('heroWaBtn').href = `https://wa.me/${cleanWa}?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup.`;
+      }
+      if (cms.contact.mapLink) document.getElementById('contactMapLink').href = cms.contact.mapLink;
+      if (cms.contact.mapEmbed) document.getElementById('contactMapIframe').src = cms.contact.mapEmbed;
+    }
+  });
+}
+
 function checkBookingOpen() { db.ref('settings/general').on('value', s => { const v = s.val() || {}; const closed = (v.bookingOpen === false); let b = document.getElementById('closedBanner'); if (closed) { if (!b) { b = document.createElement('div'); b.id = 'closedBanner'; b.style.cssText = 'background:linear-gradient(90deg,#7f1d1d,#991b1b);color:#fff;text-align:center;padding:10px 16px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px;position:relative;z-index:9999'; b.innerHTML = '🛠️ Bookings temporarily closed — <a href="https://wa.me/919235601645" style="color:#fde047;text-decoration:underline">WhatsApp par order karein</a>'; document.body.prepend(b); } } else if (b) { b.remove(); } }); }
 const cachedUser = getCachedUser();
 if (cachedUser && cachedUser.name) applyLoggedInUI(cachedUser.name); else setTimeGreeting(null);
 loadDynamicCategories();
 loadSiteSettings();
+loadSiteCMSContent();
 checkBookingOpen();
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => { if (!waTooltip) return; if (window.scrollY > 60) waTooltip.classList.add('folded'); else waTooltip.classList.remove('folded'); }, { passive: true });
@@ -725,7 +816,7 @@ if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topB
 document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
 renderPricing();
 enableListSwipe();
-console.log('🧺 ParthindexGen6.4 Active (bookingOpen built-in)');
+console.log('🧺 ParthindexGen6.7 Active (Full Pre-Filled Dynamic CMS Engine)');
 </script>
 </body>
 </html>
