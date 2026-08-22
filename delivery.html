@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Batch + Push + COD Tracker + Live Status Sync + FCM Token Save (REFINED) -->
+<!-- ParthdeliveryGen9 : Batch + Push + COD Tracker + Live Status Sync + FCM Token Save (REFINED) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -13,12 +13,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<!-- FCM Messaging SDK (NEW) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <style>
-/* ------------------------------------------------------------------
-   GEN8 STYLES - Identical to Gen7, no changes here
-------------------------------------------------------------------- */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
  --bg:#0a0e1a;--bg2:#111827;--card:rgba(17,24,39,.85);--card2:rgba(31,41,55,.7);
@@ -203,7 +199,6 @@ button,input,select,textarea{font-family:inherit;outline:none}
 <body>
 <div id="toast"></div>
 
-<!-- INSTALL MODAL -->
 <div class="install-modal" id="installModal">
  <div class="install-box">
   <div class="install-icon">📱</div>
@@ -220,7 +215,6 @@ button,input,select,textarea{font-family:inherit;outline:none}
  </div>
 </div>
 
-<!-- LOGIN SCREEN -->
 <div class="login" id="loginScreen">
  <div class="login-box">
   <div class="lg">Parth Rider</div>
@@ -231,7 +225,6 @@ button,input,select,textarea{font-family:inherit;outline:none}
  </div>
 </div>
 
-<!-- APP WRAPPER -->
 <div id="app" style="display:none">
  <div class="top">
   <div class="brand">
@@ -256,14 +249,12 @@ button,input,select,textarea{font-family:inherit;outline:none}
    <p>Aaj ki rides neeche listed hain</p>
   </div>
   
-  <!-- TAB NAV -->
   <div class="tab-nav">
    <button class="tab-btn active" data-tab="orders"><i class="fas fa-box"></i> Orders</button>
    <button class="tab-btn" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
    <button class="tab-btn" data-tab="chat"><i class="fas fa-comments"></i> Chat</button>
   </div>
   
-  <!-- ORDERS TAB -->
   <div class="tab-content active" id="tab-orders">
    <div class="stats">
     <div class="stat"><div class="n num" id="sPickup">0</div><div class="l">Pickups</div></div>
@@ -279,7 +270,6 @@ button,input,select,textarea{font-family:inherit;outline:none}
    <div id="doneList"></div>
   </div>
   
-  <!-- DASHBOARD TAB -->
   <div class="tab-content" id="tab-dashboard">
    <div class="dash-grid">
     <div class="dash-card">
@@ -305,7 +295,6 @@ button,input,select,textarea{font-family:inherit;outline:none}
    </div>
   </div>
   
-  <!-- CHAT TAB -->
   <div class="tab-content" id="tab-chat">
    <div class="chat-container">
     <div class="chat-messages" id="chatMessages">
@@ -320,13 +309,11 @@ button,input,select,textarea{font-family:inherit;outline:none}
  </div>
 </div>
 
-<!-- BATCH BAR -->
 <div class="batch-bar" id="batchBar">
  <span class="batch-count num" id="batchCount">0</span> selected
  <button onclick="batchStartPickup()">Batch Pickup</button>
 </div>
 
-<!-- MODAL: ADD EXTRA ITEM -->
 <div class="modal" id="addItemModal">
  <div class="modal-box">
   <h3><i class="fas fa-plus-circle"></i> Add Doorstep Items <span style="color:var(--muted);font-size:11px;margin-left:auto;font-family:'JetBrains Mono'" id="addItemOrderId"></span></h3>
@@ -340,7 +327,6 @@ button,input,select,textarea{font-family:inherit;outline:none}
  </div>
 </div>
 
-<!-- MODAL: REPORT ISSUE -->
 <div class="modal" id="issueModal">
  <div class="modal-box">
   <h3><i class="fas fa-exclamation-triangle"></i> Report Issue</h3>
@@ -365,7 +351,6 @@ const auth=firebase.auth(); const db=firebase.database();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 const $=id=>document.getElementById(id);
 
-// VAPID key for FCM (NEW)
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 
 let BOY=JSON.parse(localStorage.getItem('pdc_boy')||'null');
@@ -465,7 +450,6 @@ function enterApp(){
  requestNotificationPermission();
 }
 
-// Upgraded notification permission + FCM token save (NEW)
 function requestNotificationPermission(){
  try {
    if('Notification' in window && Notification.permission==='default'){
@@ -534,7 +518,6 @@ function listen(){
   const curIds=new Set();const curStatuses={};
   const myOrders=[];
   const boyPhone10=last10Digits(BOY.phone);
-
   s.forEach(c=>{
    const o=c.val(); if(!o)return;
    const assigned=(o.assigned_to_e164||o.assigned_to||'');
@@ -544,7 +527,6 @@ function listen(){
     myOrders.push({_id:c.key,...o});
    }
   });
-
   if(Object.keys(prevStatuses).length>0){
    for(const id in curStatuses){
     if(prevStatuses[id]&&prevStatuses[id]!==curStatuses[id]){
@@ -571,7 +553,6 @@ function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,
 function render(myOrders){
  const today=dayStr(new Date()); let pickup=[],delivery=[],done=[];
  let cashDue=0;
- 
  myOrders.forEach(o=>{
   const isPaid=(o.paymentStatus||'')==='Paid';
   if(o.status==='delivered'){
@@ -584,10 +565,8 @@ function render(myOrders){
    if(!isPaid) cashDue+=(+o.total||0);
   }
  });
-
  pickup.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
  delivery.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
- 
  $('sPickup').textContent=pickup.length;
  $('sDelivery').textContent=delivery.length;
  $('sToday').textContent=done.length;
@@ -595,7 +574,6 @@ function render(myOrders){
  $('cPickup').textContent=pickup.length;
  $('cDelivery').textContent=delivery.length;
  $('cDone').textContent=done.length;
- 
  $('pickupList').innerHTML=pickup.length?pickup.map(o=>renderCard(o)).join(''):'<div class="empty"><i class="fas fa-inbox"></i>Koi pickup pending nahi</div>';
  $('deliveryList').innerHTML=delivery.length?delivery.map(o=>renderCard(o)).join(''):'<div class="empty"><i class="fas fa-truck"></i>Koi delivery out nahi</div>';
  $('doneList').innerHTML=done.length?done.map(o=>`<div class="order-card" style="padding:12px 16px;opacity:.85"><div class="oc-top"><span class="oc-id">#${esc(o.orderId||o._id)}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName||o.name||'-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total)||0} · ${esc(o.timeSlot||'')}</div></div>`).join(''):'<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
@@ -624,18 +602,15 @@ function renderCard(o){
   const isPaid=(o.paymentStatus||'')==='Paid';
   const payBadge=isPaid?'<span class="badge paid">PAID</span>':'<span class="badge cod">COD ₹'+esc(o.total||0)+'</span>';
   const isSelected=selectedOrders.has(o._id);
-
   let btn='';
   if(st==='pending')btn=`<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box"></i> Mark Picked Up</button>`;
   else if(st==='picked_up')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-check"></i> Collected (At Store)</button>`;
   else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
-
   const waMsg=encodeURIComponent(`Hi ${o.customerName||''}! Parth Rider (${BOY.name||''}) aapke order #${o.orderId||o._id} ke liye raah me hu. 🛵`);
   const mapUrl=safeUrl(gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
   const phone=last10Digits(o.phone);
   const collectBtn=(!isPaid&&st==='out_for_delivery')?`<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total)||0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total)||0}</button>`:(isPaid?`<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>`:'');
   const checkBtn=(st==='pending')?`<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>`:'';
-
   return `<div class="order-card ${isSelected?'selected':''}" data-id="${esc(o._id)}">
     ${checkBtn}
     <div class="oc-top"><span class="oc-id">#${esc(o.orderId||o._id)}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''}<span class="badge ${esc(st)}">${esc(LABEL[st]||st)}</span>${payBadge}</span></div>
@@ -718,26 +693,20 @@ function loadDashboard(){
   const weekStart=new Date(now);weekStart.setDate(now.getDate()-now.getDay());
   const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
   const boyPhone10=last10Digits(BOY.phone);
-  
   let weekDel=0,weekEarn=0,monthDel=0,monthEarn=0,totalDel=0,totalEarn=0;
   const dayCounts={};
-  
   snap.forEach(c=>{
    const o=c.val();if(!o||o.status!=='delivered')return;
    const assigned=(o.assigned_to_e164||o.assigned_to||'');
    if(last10Digits(assigned)!==boyPhone10)return;
-
    const delDate=o.deliveredAt?new Date(o.deliveredAt):null;if(!delDate)return;
    const amt=+o.total||0;
    totalDel++;totalEarn+=amt;
-   
    const dayKey=dayStr(delDate);
    dayCounts[dayKey]=(dayCounts[dayKey]||0)+1;
-   
    if(delDate>=weekStart){weekDel++;weekEarn+=amt;}
    if(delDate>=monthStart){monthDel++;monthEarn+=amt;}
   });
-  
   let streak=0;
   let checkDate=new Date(now);
   while(true){
@@ -745,13 +714,11 @@ function loadDashboard(){
    if(dayCounts[key]&&dayCounts[key]>0){streak++;checkDate.setDate(checkDate.getDate()-1);}
    else break;
   }
-  
   let bestDay='—';
   let maxCount=0;
   for(const day in dayCounts){
    if(dayCounts[day]>maxCount){maxCount=dayCounts[day];bestDay=day;}
   }
-  
   $('weekDeliveries').textContent=weekDel;
   $('weekEarnings').textContent='₹'+weekEarn;
   $('monthDeliveries').textContent=monthDel;
@@ -770,12 +737,10 @@ function loadChat(){
   const msgs=[];
   s.forEach(c=>msgs.push({id:c.key,...c.val()}));
   msgs.sort((a,b)=>a.at-b.at);
-  
   if(msgs.length===0){
    $('chatMessages').innerHTML='<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
    return;
   }
-  
   $('chatMessages').innerHTML=msgs.map(m=>{
    const isSent=m.from==='boy';
    const time=new Date(m.at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
@@ -787,7 +752,6 @@ function loadChat(){
     </div>
    </div>`;
   }).join('');
-  
   $('chatMessages').scrollTop=$('chatMessages').scrollHeight;
  });
 }
@@ -796,7 +760,6 @@ window.sendChat=()=>{
  const input=$('chatInput');
  const text=input.value.trim();
  if(!text||!BOY)return;
- 
  db.ref('chat/'+BOY.id).push({
   text, from:'boy', boyName:BOY.name, boyPhone:BOY.phone,
   at:firebase.database.ServerValue.TIMESTAMP
@@ -814,7 +777,6 @@ if(BOY){
  });
 }
 
-// Existing caching service worker (unchanged)
 if('serviceWorker' in navigator){
  const swCode=`
   const CACHE='parth-rider-v7';
@@ -831,7 +793,7 @@ if('serviceWorker' in navigator){
  navigator.serviceWorker.register(swUrl).catch(()=>{});
 }
 
-console.log('🛵 Parth Delivery Gen8 Live (FCM Token Save Ready)');
+console.log('🛵 Parth Delivery Gen9 Live (FCM Token Save Ready)');
 </script>
 </body>
 </html>
