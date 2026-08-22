@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen7.5 : Refined Dual Auth + Realtime Synced Order Invoice + FCM Notifications (SAFE) -->
+<!-- ParthindexGen7.5 : Refined Dual Auth + Realtime Synced Order Invoice + FCM Push (FULL) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -327,7 +327,6 @@ nav a:hover { color:var(--primary); }
 .whatsapp-tooltip.folded { opacity:0; pointer-events:none; }
 .whatsapp-tooltip span { width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; box-shadow:0 0 8px #22c55e; }
 
-/* Modal & Clean Auth Styling */
 .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.65); backdrop-filter:blur(8px); display:none; justify-content:center; align-items:center; z-index:100000; padding:16px; }
 .modal-overlay.active { display:flex; animation:fadeIn 0.25s ease; }
 .modal-box { background:rgba(255,255,255,0.96); backdrop-filter:blur(20px); border-radius:24px; padding:28px 24px; max-width:400px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.3); text-align:center; max-height:92vh; overflow-y:auto; scrollbar-width:none; }
@@ -343,7 +342,6 @@ nav a:hover { color:var(--primary); }
 .auth-input { width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; color:var(--text); font-family:'Outfit'; font-size:14px; outline:none; margin-bottom:12px; font-weight:600;}
 .auth-input:focus { border-color:var(--primary); }
 .btn-primary-full { width:100%; background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; padding:13px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.3s; font-family:'Outfit'; box-shadow:0 4px 15px rgba(14,165,233,0.3); }
-
 .auth-mode-switch { display:flex; background:rgba(14,165,233,0.08); border-radius:12px; padding:3px; gap:4px; margin-bottom:14px; }
 .auth-mode-tab { flex:1; border:none; background:transparent; padding:8px 10px; font-size:12px; font-weight:800; color:var(--text-muted); border-radius:10px; cursor:pointer; transition:.2s; font-family:'Outfit'; }
 .auth-mode-tab.active { background:var(--surface); color:var(--primary); box-shadow:var(--shadow-sm); }
@@ -600,7 +598,6 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </section>
 <div class="map-section"><iframe class="map-iframe" id="contactMapIframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.555555555555!2d80.987654!3d26.8467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd1111111111%3A0xabcdef!2sSai%20Baba%20Eshwar%20Dham%20Mandir!5e0!3m2!1sen!2sin!4v1610000000000" allowfullscreen="" loading="lazy"></iframe></div>
 
-<!-- Authentication Modal (Clean SMS / Email / Google Mode) -->
 <div class="modal-overlay" id="authModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('authModal')" aria-label="Close">&times;</button>
@@ -617,7 +614,6 @@ Continue with Google
 <button type="button" class="auth-mode-tab" id="tabEmailBtn" onclick="switchAuthMode('email')"><i class="fas fa-envelope"></i> Email Link</button>
 </div>
 
-<!-- Mobile Auth Container -->
 <div id="mobileAuthContainer">
 <div id="phoneAuthSection">
 <div id="recaptcha-container"></div>
@@ -649,7 +645,6 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 
-<!-- Email Magic Link Container -->
 <div id="emailAuthContainer" style="display:none;">
 <input type="email" id="emailMagicInput" class="auth-input" placeholder="Enter your email address" style="text-align:left;" />
 <button type="button" class="btn-primary-full" id="sendEmailLinkBtn" onclick="sendEmailMagicLink()"><i class="fas fa-paper-plane"></i> Send Magic Sign-in Link</button>
@@ -658,7 +653,6 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 
-<!-- Onboarding Modal (First time profile setup) -->
 <div class="modal-overlay" id="onboardingModal">
 <div class="modal-box">
 <h2 style="color:var(--primary); margin-bottom:6px; font-size:20px;"><i class="fas fa-user-plus"></i> Complete Profile</h2>
@@ -669,7 +663,6 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 
-<!-- User Profile Modal -->
 <div class="modal-overlay" id="profileModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
@@ -688,19 +681,16 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 <div class="profile-field"><i class="fas fa-phone"></i><input type="tel" id="profPhone" placeholder="10-digit mobile number" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="10" /></div>
 <div class="profile-field"><i class="fas fa-location-dot area-icon"></i><textarea id="profAddress" rows="2" placeholder="Full pickup address"></textarea></div>
 <button type="button" class="btn-primary-full" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
-
-<!-- FCM Notification Enable Block (NEW in Gen7.5) -->
-<div style="margin-top:16px; background:var(--bg); padding:14px; border-radius:14px; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px;">
-  <div style="display:flex; align-items:center; gap:10px; flex:1;">
-    <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;"><i class="fas fa-bell"></i></div>
+<div style="margin:14px 0 12px; display:flex; align-items:center; justify-content:space-between; background:rgba(14,165,233,0.06); border:1px solid rgba(14,165,233,0.2); border-radius:12px; padding:12px;">
+  <div style="display:flex; align-items:center; gap:10px; text-align:left;">
+    <i class="fas fa-bell" style="color:var(--primary); font-size:18px;"></i>
     <div>
-      <div style="font-size:13px; font-weight:800; color:var(--text);">Live Order Updates</div>
-      <div style="font-size:11px; color:var(--text-muted); font-weight:600;">Get push notifications for status changes</div>
+      <div style="font-weight:800; font-size:13px; color:var(--text);">Live Order Updates</div>
+      <div style="font-size:11px; color:var(--text-muted);">Get push notifications for order status</div>
     </div>
   </div>
-  <button type="button" class="care-btn primary" onclick="requestFCMPermission()" style="padding:8px 14px; font-size:11px; white-space:nowrap;">Enable</button>
+  <button onclick="requestFCMPermission()" style="background:var(--primary); color:#fff; border:none; padding:8px 16px; border-radius:30px; font-weight:800; font-size:12px; cursor:pointer;">Enable</button>
 </div>
-
 <div class="profile-quick-actions">
 <button type="button" class="profile-action-btn orders" onclick="openModal('ordersModal'); loadOrderHistory();"><i class="fas fa-history"></i> My Orders</button>
 <button type="button" class="profile-action-btn logout" onclick="logoutUser()"><i class="fas fa-power-off"></i> Logout</button>
@@ -708,7 +698,6 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 
-<!-- Orders History Modal -->
 <div class="modal-overlay" id="ordersModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')" aria-label="Close">&times;</button>
@@ -725,76 +714,65 @@ const firebaseConfig = { apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", auth
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
 
-// ===== FCM NOTIFICATION SETUP (SAFE - try-catch wrapped) =====
+const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 let messaging = null;
-try {
-  if ('serviceWorker' in navigator && 'PushManager' in window) {
+let fcmSWRegistration = null;
+
+function initFCM() {
+  try {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      console.warn('Push notifications not supported');
+      return;
+    }
     messaging = firebase.messaging();
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      .then((registration) => {
-        console.log('Service Worker registered:', registration.scope);
-        messaging.useServiceWorker(registration);
-      })
-      .catch((err) => console.log('SW registration failed:', err));
+    navigator.serviceWorker.register('/firebase-messaging-sw.js').then(reg => {
+      fcmSWRegistration = reg;
+      messaging.onTokenRefresh(() => {
+        messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg }).then(token => {
+          const u = auth.currentUser;
+          if (u && token) db.ref('customers/' + u.uid).update({ fcmToken: token }).catch(() => {});
+        }).catch(() => {});
+      });
+      messaging.onMessage(payload => {
+        const title = payload.notification?.title || 'Parth Dry Clean';
+        const body = payload.notification?.body || 'Live order update';
+        showToast(`${title}: ${body}`, 'info');
+      });
+    }).catch(() => { messaging = null; });
+  } catch(e) {
+    messaging = null;
+    console.warn('FCM init failed', e);
   }
-} catch (e) {
-  console.log('FCM not available:', e.message);
-  messaging = null;
 }
 
 async function requestFCMPermission() {
-  if (!messaging) {
-    showToast('Push notifications not supported in this browser.', 'warning');
-    return;
+  const user = auth.currentUser;
+  if (!user) { showToast('Please login first', 'warning'); return; }
+  if (!('Notification' in window) || !('PushManager' in window)) {
+    showToast('Notifications not supported on this device', 'error'); return;
   }
   try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      showToast('Requesting notification token...', 'info');
-      const token = await messaging.getToken({ vapidKey: 'BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w' });
-      console.log('FCM Token:', token);
-      const user = auth.currentUser;
-      if (user) {
-        await db.ref(`customers/${user.uid}`).update({
-          fcmToken: token,
-          fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
-        });
-        showToast('🔔 Notifications enabled! You will receive live order updates.', 'success');
-      }
-    } else {
-      showToast('Notification permission denied. You can enable it in browser settings.', 'warning');
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') {
+      showToast('Notification permission denied', 'error'); return;
     }
-  } catch (error) {
-    console.error('Error getting FCM token:', error);
-    showToast('Failed to enable notifications. Please try again.', 'error');
+    if (!messaging) { showToast('Notifications not ready yet, try again', 'warning'); return; }
+    let reg = fcmSWRegistration;
+    if (!reg) {
+      reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+    }
+    if (!reg) { showToast('Service worker not ready, try again', 'warning'); return; }
+    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    if (!token) { showToast('Could not get token', 'error'); return; }
+    await db.ref('customers/' + user.uid).update({ fcmToken: token });
+    showToast('🔔 Live order updates enabled!', 'success');
+  } catch(e) {
+    console.warn('FCM permission failed', e);
+    showToast('Failed to enable notifications', 'error');
   }
 }
 
-try {
-  if (messaging) {
-    messaging.onTokenRefresh(async () => {
-      try {
-        const newToken = await messaging.getToken({ vapidKey: 'BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w' });
-        const user = auth.currentUser;
-        if (user) {
-          await db.ref(`customers/${user.uid}`).update({ fcmToken: newToken });
-        }
-      } catch (error) {
-        console.error('Token refresh failed:', error);
-      }
-    });
-
-    messaging.onMessage((payload) => {
-      console.log('Foreground message:', payload);
-      if (payload.notification) {
-        showToast(`🔔 ${payload.notification.title}: ${payload.notification.body}`, 'info');
-      }
-    });
-  }
-} catch (e) {
-  console.log('FCM listeners error:', e.message);
-}
-// ===== END FCM SETUP =====
+window.addEventListener('load', () => setTimeout(initFCM, 1000));
 
 const sanitizeHTML = (str) => String(str ?? '').replace(/[<>"']/g, '');
 const SITE_SETTINGS = { expressPercent: 90 };
@@ -839,7 +817,7 @@ function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-p
 
 function renderPricing() { const chipsWrapper = document.getElementById('pricingChipsWrapper'); const container = document.getElementById('pricingContainer'); chipsWrapper.innerHTML = ''; let chipsHTML = `<button class="price-chip" onclick="filterCategory('all', this)">All Items</button>`; let itemsHTML = ''; Object.keys(categories).forEach(cat => { const items = categories[cat]; const isActive = (cat === activeCategory) ? 'active' : ''; chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${categoryNames[cat]}</button>`; const displayStyle = (cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;'; itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; itemsHTML += `<h3 class="category-group-title">${categoryNames[cat]}</h3>`; items.forEach(item => { const priceText = item.price > 0 ? `₹${item.price}` : '₹—'; const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : ''; itemsHTML += `<div class="price-item" data-name="${item.name.toLowerCase()}"><span class="price-name">${item.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }); itemsHTML += `</div>`; }); chipsWrapper.innerHTML = chipsHTML; container.innerHTML = itemsHTML; }
 function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
-window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'; return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
+window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'); return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
 function globalSearch(val) { val = val.trim(); const container = document.getElementById('pricingContainer'); const clearBtn = document.getElementById('searchClearBtn'); if (!val) { clearBtn.style.display = 'none'; renderPricing(); return; } clearBtn.style.display = 'flex'; let results = []; for (let cat in categories) categories[cat].forEach(item => { if (item.name.toLowerCase().includes(val.toLowerCase())) results.push(item); }); let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${sanitizeHTML(val)}"</h3>`; html += results.length ? results.map(i => { const priceText = i.price > 0 ? `₹${i.price}` : '₹—'; const originalText = i.originalPrice ? `<span class="price-original">₹${i.originalPrice}</span>` : ''; return `<div class="price-item"><span class="price-name">${sanitizeHTML(i.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }).join('') : `<p style="padding:20px; text-align:center; color:var(--text-muted);">No items found</p>`; html += `</div>`; container.innerHTML = html; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); }
 let searchTimeout; function debouncedSearch(val) { const clearBtn = document.getElementById('searchClearBtn'); if (clearBtn) clearBtn.style.display = val.trim() ? 'flex' : 'none'; clearTimeout(searchTimeout); searchTimeout = setTimeout(() => globalSearch(val), 300); }
 function clearSearch() { document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; globalSearch(''); document.getElementById('priceSearchInput').focus(); }
@@ -1115,7 +1093,6 @@ function signInWithGoogle() {
   }).catch(e => showToast(e.message, 'error'));
 }
 
-// Profile Sync (keeps the current Firebase UID; it does not migrate or merge old order records)
 function syncCanonicalAccount(user) {
   const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : '';
   const email = (user.email || '').toLowerCase();
@@ -1266,7 +1243,6 @@ function loadOrderHistory() {
   });
 }
 
-// ===== REALTIME DYNAMIC TAX INVOICE WITH LIVE CLOUD SYNC =====
 function downloadInvoice(id) {
   showToast('Fetching latest cloud sync invoice...', 'info');
   db.ref('orders/' + id).once('value').then(snap => {
@@ -1546,7 +1522,7 @@ document.getElementById('closeBanner').addEventListener('click', () => document.
 
 renderPricing();
 enableListSwipe();
-console.log('🧺 ParthindexGen7.5 Active (Refined Auth, Order History, Live Invoice & FCM Notifications - SAFE)');
+console.log('🧺 ParthindexGen7.5 Active (Refined Auth, Order History, Live Invoice + FCM Push)');
 </script>
 </body>
 </html>
