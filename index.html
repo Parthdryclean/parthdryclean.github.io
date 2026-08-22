@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen7.2 : Clean Dual Auth (SMS/Email/Google) + Realtime Synced Tax Invoice (FULL) -->
+<!-- ParthindexGen7.5 : Refined Dual Auth + Realtime Synced Order Invoice + FCM Notifications (SAFE) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -16,6 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root {
@@ -479,7 +480,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <h1 id="dynamicGreeting">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
 <p id="heroSubtitle">Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
 <div class="action-buttons">
-<a href="booking.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
+<a href="ParthbookGen26.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
 <button type="button" class="btn btn-install installAppBtn"><i class="fas fa-download"></i> Install App</button>
 <a href="https://wa.me/919235601645?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup." target="_blank" class="btn btn-whatsapp-sm" id="heroWaBtn"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
 </div>
@@ -687,6 +688,19 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 <div class="profile-field"><i class="fas fa-phone"></i><input type="tel" id="profPhone" placeholder="10-digit mobile number" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="10" /></div>
 <div class="profile-field"><i class="fas fa-location-dot area-icon"></i><textarea id="profAddress" rows="2" placeholder="Full pickup address"></textarea></div>
 <button type="button" class="btn-primary-full" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+
+<!-- FCM Notification Enable Block (NEW in Gen7.5) -->
+<div style="margin-top:16px; background:var(--bg); padding:14px; border-radius:14px; border:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px;">
+  <div style="display:flex; align-items:center; gap:10px; flex:1;">
+    <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;"><i class="fas fa-bell"></i></div>
+    <div>
+      <div style="font-size:13px; font-weight:800; color:var(--text);">Live Order Updates</div>
+      <div style="font-size:11px; color:var(--text-muted); font-weight:600;">Get push notifications for status changes</div>
+    </div>
+  </div>
+  <button type="button" class="care-btn primary" onclick="requestFCMPermission()" style="padding:8px 14px; font-size:11px; white-space:nowrap;">Enable</button>
+</div>
+
 <div class="profile-quick-actions">
 <button type="button" class="profile-action-btn orders" onclick="openModal('ordersModal'); loadOrderHistory();"><i class="fas fa-history"></i> My Orders</button>
 <button type="button" class="profile-action-btn logout" onclick="logoutUser()"><i class="fas fa-power-off"></i> Logout</button>
@@ -711,7 +725,80 @@ const firebaseConfig = { apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", auth
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
 
-const sanitizeHTML = (str) => String(str || '').replace(/[<>"']/g, '');
+// ===== FCM NOTIFICATION SETUP (SAFE - try-catch wrapped) =====
+let messaging = null;
+try {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    messaging = firebase.messaging();
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then((registration) => {
+        console.log('Service Worker registered:', registration.scope);
+        messaging.useServiceWorker(registration);
+      })
+      .catch((err) => console.log('SW registration failed:', err));
+  }
+} catch (e) {
+  console.log('FCM not available:', e.message);
+  messaging = null;
+}
+
+async function requestFCMPermission() {
+  if (!messaging) {
+    showToast('Push notifications not supported in this browser.', 'warning');
+    return;
+  }
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      showToast('Requesting notification token...', 'info');
+      const token = await messaging.getToken({ vapidKey: 'BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w' });
+      console.log('FCM Token:', token);
+      const user = auth.currentUser;
+      if (user) {
+        await db.ref(`customers/${user.uid}`).update({
+          fcmToken: token,
+          fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+        showToast('🔔 Notifications enabled! You will receive live order updates.', 'success');
+      }
+    } else {
+      showToast('Notification permission denied. You can enable it in browser settings.', 'warning');
+    }
+  } catch (error) {
+    console.error('Error getting FCM token:', error);
+    showToast('Failed to enable notifications. Please try again.', 'error');
+  }
+}
+
+try {
+  if (messaging) {
+    messaging.onTokenRefresh(async () => {
+      try {
+        const newToken = await messaging.getToken({ vapidKey: 'BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w' });
+        const user = auth.currentUser;
+        if (user) {
+          await db.ref(`customers/${user.uid}`).update({ fcmToken: newToken });
+        }
+      } catch (error) {
+        console.error('Token refresh failed:', error);
+      }
+    });
+
+    messaging.onMessage((payload) => {
+      console.log('Foreground message:', payload);
+      if (payload.notification) {
+        showToast(`🔔 ${payload.notification.title}: ${payload.notification.body}`, 'info');
+      }
+    });
+  }
+} catch (e) {
+  console.log('FCM listeners error:', e.message);
+}
+// ===== END FCM SETUP =====
+
+const sanitizeHTML = (str) => String(str ?? '').replace(/[<>"']/g, '');
+const SITE_SETTINGS = { expressPercent: 90 };
+const getNumeric = (value, fallback = 0) => { const n = Number(value); return Number.isFinite(n) ? n : fallback; };
 const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
 const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
 
@@ -752,7 +839,7 @@ function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-p
 
 function renderPricing() { const chipsWrapper = document.getElementById('pricingChipsWrapper'); const container = document.getElementById('pricingContainer'); chipsWrapper.innerHTML = ''; let chipsHTML = `<button class="price-chip" onclick="filterCategory('all', this)">All Items</button>`; let itemsHTML = ''; Object.keys(categories).forEach(cat => { const items = categories[cat]; const isActive = (cat === activeCategory) ? 'active' : ''; chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${categoryNames[cat]}</button>`; const displayStyle = (cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;'; itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; itemsHTML += `<h3 class="category-group-title">${categoryNames[cat]}</h3>`; items.forEach(item => { const priceText = item.price > 0 ? `₹${item.price}` : '₹—'; const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : ''; itemsHTML += `<div class="price-item" data-name="${item.name.toLowerCase()}"><span class="price-name">${item.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }); itemsHTML += `</div>`; }); chipsWrapper.innerHTML = chipsHTML; container.innerHTML = itemsHTML; }
 function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
-window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'); return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
+window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'; return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
 function globalSearch(val) { val = val.trim(); const container = document.getElementById('pricingContainer'); const clearBtn = document.getElementById('searchClearBtn'); if (!val) { clearBtn.style.display = 'none'; renderPricing(); return; } clearBtn.style.display = 'flex'; let results = []; for (let cat in categories) categories[cat].forEach(item => { if (item.name.toLowerCase().includes(val.toLowerCase())) results.push(item); }); let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${sanitizeHTML(val)}"</h3>`; html += results.length ? results.map(i => { const priceText = i.price > 0 ? `₹${i.price}` : '₹—'; const originalText = i.originalPrice ? `<span class="price-original">₹${i.originalPrice}</span>` : ''; return `<div class="price-item"><span class="price-name">${sanitizeHTML(i.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }).join('') : `<p style="padding:20px; text-align:center; color:var(--text-muted);">No items found</p>`; html += `</div>`; container.innerHTML = html; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); }
 let searchTimeout; function debouncedSearch(val) { const clearBtn = document.getElementById('searchClearBtn'); if (clearBtn) clearBtn.style.display = val.trim() ? 'flex' : 'none'; clearTimeout(searchTimeout); searchTimeout = setTimeout(() => globalSearch(val), 300); }
 function clearSearch() { document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; globalSearch(''); document.getElementById('priceSearchInput').focus(); }
@@ -760,7 +847,7 @@ function enableListSwipe() { const container = document.getElementById('pricingC
 
 function getOrderEtaDate(order) { if (order.eta) { const d = new Date(order.eta); if (!isNaN(d)) return d; } const base = order.createdAt ? new Date(order.createdAt) : new Date(); const hours = order.express === 'Yes' ? 24 : 72; return new Date(base.getTime() + hours * 60 * 60 * 1000); }
 function formatEta(order) { const etaDate = getOrderEtaDate(order); const now = new Date(); if (etaDate <= now) return 'Very soon'; const diffMs = etaDate - now; const hours = Math.floor(diffMs / 3600000); if (hours < 1) return 'Under 1 hour'; if (hours < 24) return `${hours}h left`; const day = etaDate.toLocaleDateString('en-IN', { weekday: 'short' }); const time = etaDate.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }); return `${day}, ${time}`; }
-function getOrderItemSummary(order) { if (!order.items) return '0 items'; const entries = Object.entries(order.items); const count = entries.reduce((sum, [, qty]) => sum + Number(qty || 0), 0); return `${count} item${count === 1 ? '' : 's'}`; }
+function getOrderItemSummary(order) { if (!order.items) return '0 items'; const entries = Object.entries(order.items); const count = entries.reduce((sum, [, value]) => { const qty = (value && typeof value === 'object') ? value.qty : value; return sum + getNumeric(qty); }, 0); return `${count} item${count === 1 ? '' : 's'}`; }
 function maybeShowCareHint() { if (localStorage.getItem('pdc_care_hint_shown')) return; const hint = document.getElementById('careHint'); if (!hint) return; localStorage.setItem('pdc_care_hint_shown', '1'); setTimeout(() => { hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 4000); }, 800); }
 
 function renderMiniTimeline(order) { const label = statusLabels[order.status] || 'Live Update'; const icon = statusIcons[order.status] || 'fa-circle-notch'; const eta = formatEta(order); const orderId = sanitizeHTML(order.orderId); return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div><div class="pill-id">#${orderId}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`; }
@@ -1028,7 +1115,7 @@ function signInWithGoogle() {
   }).catch(e => showToast(e.message, 'error'));
 }
 
-// Canonical Merging Strategy (Ensures profile and name sync correctly)
+// Profile Sync (keeps the current Firebase UID; it does not migrate or merge old order records)
 function syncCanonicalAccount(user) {
   const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : '';
   const email = (user.email || '').toLowerCase();
@@ -1161,7 +1248,7 @@ function loadOrderHistory() {
     });
     orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     if (!orders.length) {
-      list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`;
+      list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="ParthbookGen26.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`;
       return;
     }
     let html = '';
@@ -1173,7 +1260,7 @@ function loadOrderHistory() {
       const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today';
       const itemCount = getOrderItemSummary(o);
       const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : '';
-      html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`;
+      html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="ParthbookGen26.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`;
     });
     list.innerHTML = html;
   });
@@ -1208,21 +1295,20 @@ function buildInvoicePDF(o, prof, orderId) {
   let rows = '';
   let computedSubtotal = 0;
   const items = o.items || {};
-  const totalItemCount = Object.values(items).reduce((s, q) => s + (Number(q) || 0), 0);
 
-  for (let k in items) {
-    const qty = Number(items[k]) || 0;
-    let rate = getItemRate(k);
-    if (rate === null) {
-      rate = (totalItemCount > 0 && o.subtotal) ? Math.round(o.subtotal / totalItemCount) : 0;
-    }
-    const amt = rate * qty;
+  for (const [k, rawValue] of Object.entries(items)) {
+    const snapshot = rawValue && typeof rawValue === 'object' ? rawValue : null;
+    const qty = snapshot ? getNumeric(snapshot.qty, 0) : getNumeric(rawValue, 0);
+    let rate = snapshot && Number.isFinite(Number(snapshot.rate)) ? getNumeric(snapshot.rate, 0) : getItemRate(k);
+    if (rate === null) rate = 0;
+    const storedAmount = snapshot && Number.isFinite(Number(snapshot.amount)) ? getNumeric(snapshot.amount, 0) : null;
+    const amt = storedAmount !== null ? storedAmount : rate * qty;
     computedSubtotal += amt;
     rows += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:8px 6px; font-weight:600;">${sanitizeHTML(k)}</td><td style="padding:8px 6px; text-align:center;">998714</td><td style="padding:8px 6px; text-align:center;">${qty}</td><td style="padding:8px 6px; text-align:right;">₹${rate}</td><td style="padding:8px 6px; text-align:right; font-weight:700;">₹${amt}</td></tr>`;
   }
 
-  const baseSubtotal = o.subtotal || computedSubtotal;
-  const expressFee = isExpress ? (o.expressFee || Math.round(baseSubtotal * 0.9)) : 0;
+  const baseSubtotal = getNumeric(o.subtotal, computedSubtotal);
+  const expressFee = isExpress ? getNumeric(o.expressFee, Math.round(baseSubtotal * (getNumeric(SITE_SETTINGS.expressPercent, 90) / 100))) : 0;
   const discount = o.discount || 0;
   const couponApplied = o.couponCode ? sanitizeHTML(o.couponCode) : '';
   const grandTotal = o.total || (baseSubtotal + expressFee - discount);
@@ -1236,7 +1322,7 @@ function buildInvoicePDF(o, prof, orderId) {
   const couponRow = discount > 0 ? `<div style="display:flex; justify-content:space-between; color:#16a34a; margin-bottom:4px;"><span>Coupon Discount ${couponApplied ? `(${couponApplied})` : ''}</span><span>-₹${discount}</span></div>` : '';
 
   const element = document.createElement('div');
-  element.innerHTML = `<div style="padding:24px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:12px; margin-bottom:14px;"><div style="font-size:22px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div><div style="font-size:10px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM LAUNDRY & DRY CLEANING SERVICES</div><div style="font-size:10px; color:#64748b; margin-top:4px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><div style="font-size:15px; font-weight:800; color:#0f172a;">TAX INVOICE / BILL OF SUPPLY</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800;">${statusLabel}</div></div>${expressBanner}<div style="background:#f8fafc; padding:10px 12px; border-radius:10px; margin-bottom:12px; font-size:10.5px;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Order / Invoice Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Estimated Delivery (ESDT):</span><strong style="color:#0ea5e9;">${esdtDate} (${esdtWindow})</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment Status:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:10.5px;"><div style="font-size:9.5px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Customer Details</div><div style="font-weight:800; font-size:12px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:11px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px; text-align:left; font-size:9.5px; color:#64748b; text-transform:uppercase;">Item Description</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">SAC</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:14px; border-top:2px dashed #e2e8f0; padding-top:10px; font-size:11px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-bottom:4px;"><span>Express 24hr Surcharge</span><span>+₹${expressFee}</span></div>` : ''}${couponRow}<div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:4px;"><span>Taxable Value (Incl. in Total): ₹${taxableValue}</span><span>CGST (9%): ₹${cgst} | SGST (9%): ₹${sgst}</span></div><div style="display:flex; justify-content:space-between; font-size:16px; font-weight:800; margin-top:8px; padding-top:8px; border-top:1px solid #e2e8f0;"><span>Grand Total (INR)</span><span style="color:#0ea5e9;">₹${grandTotal}</span></div></div><div style="margin-top:14px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 10px; font-size:9.5px; color:#166534; font-weight:600;">💚 Live Realtime Synced Invoice • Garments processed with eco-friendly solvents & steam finishing.</div><div style="margin-top:8px; font-size:8.5px; color:#94a3b8; text-align:center;">* Computer generated legal tax bill under GST SAC 998714. Updates automatically with status changes.</div></div>`;
+  element.innerHTML = `<div style="padding:24px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:12px; margin-bottom:14px;"><div style="font-size:22px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div><div style="font-size:10px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM LAUNDRY & DRY CLEANING SERVICES</div><div style="font-size:10px; color:#64748b; margin-top:4px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><div style="font-size:15px; font-weight:800; color:#0f172a;">ORDER INVOICE / RECEIPT</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800;">${statusLabel}</div></div>${expressBanner}<div style="background:#f8fafc; padding:10px 12px; border-radius:10px; margin-bottom:12px; font-size:10.5px;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Order / Invoice Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Estimated Delivery (ESDT):</span><strong style="color:#0ea5e9;">${esdtDate} (${esdtWindow})</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment Status:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:10.5px;"><div style="font-size:9.5px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Customer Details</div><div style="font-weight:800; font-size:12px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:11px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px; text-align:left; font-size:9.5px; color:#64748b; text-transform:uppercase;">Item Description</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">SAC</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:14px; border-top:2px dashed #e2e8f0; padding-top:10px; font-size:11px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-bottom:4px;"><span>Express 24hr Surcharge</span><span>+₹${expressFee}</span></div>` : ''}${couponRow}<div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:4px;"><span>Taxable Value (Incl. in Total): ₹${taxableValue}</span><span>CGST (9%): ₹${cgst} | SGST (9%): ₹${sgst}</span></div><div style="display:flex; justify-content:space-between; font-size:16px; font-weight:800; margin-top:8px; padding-top:8px; border-top:1px solid #e2e8f0;"><span>Grand Total (INR)</span><span style="color:#0ea5e9;">₹${grandTotal}</span></div></div><div style="margin-top:14px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 10px; font-size:9.5px; color:#166534; font-weight:600;">💚 Live Realtime Synced Invoice • Garments processed with eco-friendly solvents & steam finishing.</div><div style="margin-top:8px; font-size:8.5px; color:#94a3b8; text-align:center;">* Computer generated order invoice. Tax treatment shown here is based on the order data and should be verified against the business's actual tax registration.</div></div>`;
   
   html2pdf().set({ margin: 8, filename: 'ParthDryClean_Invoice_' + orderId + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Invoice downloaded successfully!', 'success'));
 }
@@ -1310,6 +1396,7 @@ function loadSiteSettings() {
   db.ref('settings/general').once('value').then(s => {
     if (!s.exists()) return;
     const v = s.val() || {};
+    Object.assign(SITE_SETTINGS, { ...v, expressPercent: getNumeric(v.expressPercent, SITE_SETTINGS.expressPercent) });
     const banner = document.getElementById('topBanner');
     if (v.announcement) {
       banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>';
@@ -1459,7 +1546,7 @@ document.getElementById('closeBanner').addEventListener('click', () => document.
 
 renderPricing();
 enableListSwipe();
-console.log('🧺 ParthindexGen7.2 Active (Clean SMS/Email/Google Auth & Live Invoice)');
+console.log('🧺 ParthindexGen7.5 Active (Refined Auth, Order History, Live Invoice & FCM Notifications - SAFE)');
 </script>
 </body>
 </html>
