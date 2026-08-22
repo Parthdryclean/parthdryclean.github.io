@@ -14,35 +14,25 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  
-  const notificationTitle = payload.notification.title || 'Parth Dry Clean';
+  const notificationTitle = payload.notification?.title || 'Parth Dry Clean';
   const notificationOptions = {
-    body: payload.notification.body || 'Your order status has been updated.',
+    body: payload.notification?.body || 'Your order status has been updated.',
     icon: '/assets/icon-192.png',
     badge: '/assets/icon-192.png',
-    data: payload.data
+    data: payload.data || {}
   };
-
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 self.addEventListener('notificationclick', (event) => {
-  console.log('[firebase-messaging-sw.js] Notification click received.', event);
   event.notification.close();
-  
   const urlToOpen = event.notification.data?.url || '/index.html';
-  
   event.waitUntil(
-    clients.matchAll({type: 'window', includeUncontrolled: true}).then((windowClients) => {
-      for (let client of windowClients) {
-        if (client.url.includes(urlToOpen) && 'focus' in client) {
-          return client.focus();
-        }
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url.includes(urlToOpen) && 'focus' in client) return client.focus();
       }
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
+      if (clients.openWindow) return clients.openWindow(urlToOpen);
     })
   );
 });
