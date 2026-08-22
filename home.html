@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen7.5 : Refined Dual Auth + Realtime Synced Order Invoice + FCM Push (FULL) -->
+<!-- ParthindexGen7.6 : Refined Dual Auth + Realtime Synced Order Invoice + FCM Push (FULL) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -421,7 +421,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>
 </div>
 <header>
-<a href="index.html" class="logo">
+<a href="home.html" class="logo">
 <div class="logo-text-wrapper">
 <div class="logo-row"><span class="logo-main" id="brandLogoMain">Parth</span><span class="logo-sub" id="brandLogoSub">Dry Clean</span></div>
 <span class="logo-tagline" id="brandTagline">Premium For Everyone</span>
@@ -478,7 +478,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <h1 id="dynamicGreeting">Your Clothes Deserve <span class="text-gradient">Royal Treatment</span></h1>
 <p id="heroSubtitle">Experience 5-star dry cleaning & laundry with free doorstep pickup service across various locations in Lucknow.</p>
 <div class="action-buttons">
-<a href="ParthbookGen26.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
+<a href="booking.html" class="btn btn-book-now" style="text-decoration:none;"><i class="fas fa-calendar-check"></i> Book Now</a>
 <button type="button" class="btn btn-install installAppBtn"><i class="fas fa-download"></i> Install App</button>
 <a href="https://wa.me/919235601645?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup." target="_blank" class="btn btn-whatsapp-sm" id="heroWaBtn"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
 </div>
@@ -603,17 +603,14 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <button type="button" class="close-modal-btn" onclick="closeModal('authModal')" aria-label="Close">&times;</button>
 <h2 style="color:var(--primary); margin-bottom:4px; font-size:20px;"><i class="fas fa-bolt"></i> Fast Access Login</h2>
 <p style="color:var(--text-muted); margin-bottom:14px; font-size:12px; font-weight:600;">Choose your preferred login method</p>
-
 <button type="button" class="btn-google" onclick="signInWithGoogle()">
 <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
 Continue with Google
 </button>
-
 <div class="auth-mode-switch">
 <button type="button" class="auth-mode-tab active" id="tabMobileBtn" onclick="switchAuthMode('mobile')"><i class="fas fa-mobile-alt"></i> Mobile Number (SMS)</button>
 <button type="button" class="auth-mode-tab" id="tabEmailBtn" onclick="switchAuthMode('email')"><i class="fas fa-envelope"></i> Email Link</button>
 </div>
-
 <div id="mobileAuthContainer">
 <div id="phoneAuthSection">
 <div id="recaptcha-container"></div>
@@ -623,7 +620,6 @@ Continue with Google
 </div>
 <button type="button" class="btn-primary-full" id="sendOtpBtn" onclick="sendOTP()"><i class="fas fa-comment-sms"></i> Send SMS OTP</button>
 </div>
-
 <div id="otpSection" style="display: none;">
 <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px; font-weight:700;">
 OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight:800;"></span> 
@@ -644,15 +640,12 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 <button type="button" class="btn-primary-full" id="verifyOtpBtn" onclick="verifyOTP()"><i class="fas fa-check-circle"></i> Verify & Login</button>
 </div>
 </div>
-
 <div id="emailAuthContainer" style="display:none;">
 <input type="email" id="emailMagicInput" class="auth-input" placeholder="Enter your email address" style="text-align:left;" />
 <button type="button" class="btn-primary-full" id="sendEmailLinkBtn" onclick="sendEmailMagicLink()"><i class="fas fa-paper-plane"></i> Send Magic Sign-in Link</button>
 </div>
-
 </div>
 </div>
-
 <div class="modal-overlay" id="onboardingModal">
 <div class="modal-box">
 <h2 style="color:var(--primary); margin-bottom:6px; font-size:20px;"><i class="fas fa-user-plus"></i> Complete Profile</h2>
@@ -662,7 +655,6 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 <button type="button" class="btn-primary-full" onclick="completeOnboarding()"><i class="fas fa-check"></i> Save & Continue</button>
 </div>
 </div>
-
 <div class="modal-overlay" id="profileModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('profileModal')" aria-label="Close">&times;</button>
@@ -697,7 +689,6 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 </div>
-
 <div class="modal-overlay" id="ordersModal">
 <div class="modal-box">
 <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')" aria-label="Close">&times;</button>
@@ -708,16 +699,13 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 </div>
-
 <script>
 const firebaseConfig = { apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain: "parth-dry-clean.firebaseapp.com", databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "parth-dry-clean", storageBucket: "parth-dry-clean.firebasestorage.app", messagingSenderId: "673481985335", appId: "1:673481985335:web:eb4194b4860cf979b21eb2" };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
-
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 let messaging = null;
 let fcmSWRegistration = null;
-
 function initFCM() {
   try {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
@@ -744,7 +732,6 @@ function initFCM() {
     console.warn('FCM init failed', e);
   }
 }
-
 async function requestFCMPermission() {
   const user = auth.currentUser;
   if (!user) { showToast('Please login first', 'warning'); return; }
@@ -771,20 +758,16 @@ async function requestFCMPermission() {
     showToast('Failed to enable notifications', 'error');
   }
 }
-
 window.addEventListener('load', () => setTimeout(initFCM, 1000));
-
 const sanitizeHTML = (str) => String(str ?? '').replace(/[<>"']/g, '');
 const SITE_SETTINGS = { expressPercent: 90 };
 const getNumeric = (value, fallback = 0) => { const n = Number(value); return Number.isFinite(n) ? n : fallback; };
 const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
 const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
-
 const USER_CACHE_KEY = 'pdc_cached_user';
 function cacheUser(user) { try { localStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid: user.uid, name: user.displayName || '', email: user.email || '' })); } catch(e) {} }
 function getCachedUser() { try { const raw = localStorage.getItem(USER_CACHE_KEY); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
 function clearCachedUser() { try { localStorage.removeItem(USER_CACHE_KEY); } catch(e) {} }
-
 const categories = {
 combos: [ { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150 }, { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550 } ],
 mens: [ { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80 }, { id:'mens-pant', name:'Pant', price:60, originalPrice:80 }, { id:'mens-tshirt', name:'T‑Shirt', price:0 }, { id:'mens-kurta', name:'Kurta', price:60, originalPrice:80 }, { id:'mens-pajama', name:'Pajama', price:0 }, { id:'mens-lower', name:'Lower', price:0 }, { id:'mens-jeans', name:'Jeans', price:0 }, { id:'mens-shoes', name:'Shoes', price:0 } ],
@@ -801,20 +784,16 @@ let activeCategory = 'combos';
 let activeOrderListeners = [];
 const priceLookup = (() => { const map = {}; for (const cat in categories) categories[cat].forEach(item => { map[item.name.toLowerCase()] = item.price; }); return map; })();
 function getItemRate(name) { const p = priceLookup[String(name || '').toLowerCase()]; return (p && p > 0) ? p : null; }
-
 const activeStatuses = ['pending','picked_up','processing','quality_check','out_for_delivery'];
 const statusLabels = { pending: 'Pickup Scheduled', picked_up: 'Garments Collected', processing: 'Premium Cleaning', quality_check: 'Quality Check', out_for_delivery: 'Fresh Clothes on the Way', delivered: 'Delivered Successfully', cancelled: 'Cancelled' };
 const statusIcons = { pending: 'fa-clock', picked_up: 'fa-truck', processing: 'fa-tshirt', quality_check: 'fa-circle-check', out_for_delivery: 'fa-truck-fast', delivered: 'fa-box-open', cancelled: 'fa-ban' };
 const careSteps = [ { key:'pending', label:'Pickup', icon:'fa-calendar-check' }, { key:'picked_up', label:'Collected', icon:'fa-truck' }, { key:'processing', label:'Premium Cleaning', icon:'fa-tshirt' }, { key:'quality_check', label:'Quality Check', icon:'fa-circle-check' }, { key:'out_for_delivery', label:'On the Way', icon:'fa-truck-fast' } ];
-
 function setTrustBarVisible(visible) { const wrapper = document.getElementById('trustBarWrapper'); if (!wrapper) return; wrapper.style.display = visible ? '' : 'none'; }
 function setTimeGreeting(userName) { const hour = new Date().getHours(); const nm = userName ? `, ${sanitizeHTML(userName)}` : ''; let greeting; if(hour >= 5 && hour < 12) greeting = `Good Morning${nm}! <span class='text-gradient'>Ready for Fresh Clothes?</span> ☀️`; else if(hour >= 12 && hour < 17) greeting = `Good Afternoon${nm}! <span class='text-gradient'>Relax & Unwind</span> 🌤️`; else if(hour >= 17 && hour < 22) greeting = `Good Evening${nm}! <span class='text-gradient'>Got Plans?</span> 🌙`; else greeting = `Late Night${nm}? <span class='text-gradient'>We've Got You</span> 🦉`; document.getElementById('dynamicGreeting').innerHTML = greeting; }
 function applyLoggedInUI(displayName) { const firstName = (displayName || 'User').split(' ')[0]; const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${sanitizeHTML(firstName)}</span>`; loginBtn.style.background = 'var(--accent)'; loginBtn.style.color = '#fff'; document.getElementById('myOrdersNavItem').style.display = 'block'; setTimeGreeting(firstName); }
 function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`; loginBtn.style.background = ''; loginBtn.style.color = ''; document.getElementById('myOrdersNavItem').style.display = 'none'; setTimeGreeting(null); }
-
 function updateSlider(val) { document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`; document.getElementById('baSliderLine').style.left = `${val}%`; document.getElementById('baSliderBtn').style.left = `${val}%`; }
 function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); if(floatingImg){ floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); } }
-
 function renderPricing() { const chipsWrapper = document.getElementById('pricingChipsWrapper'); const container = document.getElementById('pricingContainer'); chipsWrapper.innerHTML = ''; let chipsHTML = `<button class="price-chip" onclick="filterCategory('all', this)">All Items</button>`; let itemsHTML = ''; Object.keys(categories).forEach(cat => { const items = categories[cat]; const isActive = (cat === activeCategory) ? 'active' : ''; chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${categoryNames[cat]}</button>`; const displayStyle = (cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;'; itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; itemsHTML += `<h3 class="category-group-title">${categoryNames[cat]}</h3>`; items.forEach(item => { const priceText = item.price > 0 ? `₹${item.price}` : '₹—'; const originalText = item.originalPrice ? `<span class="price-original">₹${item.originalPrice}</span>` : ''; itemsHTML += `<div class="price-item" data-name="${item.name.toLowerCase()}"><span class="price-name">${item.name}</span><span class="price-tag">${priceText}${originalText}</span></div>`; }); itemsHTML += `</div>`; }); chipsWrapper.innerHTML = chipsHTML; container.innerHTML = itemsHTML; }
 function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
 window.filterCategory = function(cat, btn) { if (btn && btn.classList.contains('active')) { btn.classList.remove('active'); activeCategory = null; document.querySelectorAll('.price-category-group').forEach(g => g.style.display = 'none'); return; } activeCategory = cat; document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; document.querySelectorAll('.price-category-group').forEach(g => { g.style.display = (cat === 'all' || g.dataset.category === cat) ? 'block' : 'none'; }); };
@@ -822,16 +801,13 @@ function globalSearch(val) { val = val.trim(); const container = document.getEle
 let searchTimeout; function debouncedSearch(val) { const clearBtn = document.getElementById('searchClearBtn'); if (clearBtn) clearBtn.style.display = val.trim() ? 'flex' : 'none'; clearTimeout(searchTimeout); searchTimeout = setTimeout(() => globalSearch(val), 300); }
 function clearSearch() { document.getElementById('priceSearchInput').value = ''; document.getElementById('searchClearBtn').style.display = 'none'; globalSearch(''); document.getElementById('priceSearchInput').focus(); }
 function enableListSwipe() { const container = document.getElementById('pricingContainer'); let startX = 0, startY = 0, swiping = false; container.addEventListener('touchstart', e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; swiping = false; }, {passive: true}); container.addEventListener('touchmove', e => { if (swiping) return; const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY; if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) { e.preventDefault(); swiping = true; const idx = catOrder.indexOf(activeCategory); if (dx < -30 && idx < catOrder.length - 1) { const next = catOrder[idx + 1]; const btn = document.querySelector(`.price-chip[onclick*="${next}"]`); filterCategory(next, btn); } else if (dx > 30 && idx > 0) { const prev = catOrder[idx - 1]; const btn = document.querySelector(`.price-chip[onclick*="${prev}"]`); filterCategory(prev, btn); } } }, {passive: false}); container.addEventListener('touchend', () => { swiping = false; }); }
-
 function getOrderEtaDate(order) { if (order.eta) { const d = new Date(order.eta); if (!isNaN(d)) return d; } const base = order.createdAt ? new Date(order.createdAt) : new Date(); const hours = order.express === 'Yes' ? 24 : 72; return new Date(base.getTime() + hours * 60 * 60 * 1000); }
 function formatEta(order) { const etaDate = getOrderEtaDate(order); const now = new Date(); if (etaDate <= now) return 'Very soon'; const diffMs = etaDate - now; const hours = Math.floor(diffMs / 3600000); if (hours < 1) return 'Under 1 hour'; if (hours < 24) return `${hours}h left`; const day = etaDate.toLocaleDateString('en-IN', { weekday: 'short' }); const time = etaDate.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }); return `${day}, ${time}`; }
 function getOrderItemSummary(order) { if (!order.items) return '0 items'; const entries = Object.entries(order.items); const count = entries.reduce((sum, [, value]) => { const qty = (value && typeof value === 'object') ? value.qty : value; return sum + getNumeric(qty); }, 0); return `${count} item${count === 1 ? '' : 's'}`; }
 function maybeShowCareHint() { if (localStorage.getItem('pdc_care_hint_shown')) return; const hint = document.getElementById('careHint'); if (!hint) return; localStorage.setItem('pdc_care_hint_shown', '1'); setTimeout(() => { hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 4000); }, 800); }
-
 function renderMiniTimeline(order) { const label = statusLabels[order.status] || 'Live Update'; const icon = statusIcons[order.status] || 'fa-circle-notch'; const eta = formatEta(order); const orderId = sanitizeHTML(order.orderId); return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div><div class="pill-id">#${orderId}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`; }
 function renderCareProgress(order) { let currentIdx = careSteps.findIndex(step => step.key === order.status); if (currentIdx < 0) currentIdx = 0; return `<div class="care-progress">${careSteps.map((step, idx) => { let cls = ''; if (order.status === 'delivered' || idx < currentIdx) cls = 'done'; else if (idx === currentIdx) cls = 'current'; const icon = cls === 'done' ? 'fa-check' : step.icon; return `<div class="progress-step ${cls}"><div class="step-dot"><i class="fas ${icon}"></i></div><div class="step-label">${step.label}</div></div>`; }).join('')}</div>`; }
 function renderActiveOrderCard(order) { const label = statusLabels[order.status] || 'Live Update'; const expressHtml = order.express === 'Yes' ? `<span class="express-badge"><i class="fas fa-bolt"></i> Express</span>` : ''; const itemCount = getOrderItemSummary(order); const eta = formatEta(order); const orderIdRaw = safeId(order.orderId); const orderIdDisplay = sanitizeHTML(order.orderId); const dateText = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Today'; const waLink = `https://wa.me/919235601645?text=${encodeURIComponent(`Hello, I need support for my order ${orderIdRaw}. Current status: ${label}.`)}`; return `<div class="care-card"><div class="care-card-top"><div><div class="care-card-title">#${orderIdDisplay} ${expressHtml}</div><div class="care-card-meta"><span class="meta-pill">${dateText}</span><span class="meta-pill">${itemCount}</span><span class="meta-pill">₹${order.total || 0}</span><span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span></div></div><div class="live-indicator"><span class="live-care-dot"></span> LIVE</div></div>${renderCareProgress(order)}<div class="care-card-actions"><button class="care-btn primary" onclick="event.stopPropagation(); downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a class="care-btn whatsapp" href="${waLink}" target="_blank" onclick="event.stopPropagation();"><i class="fab fa-whatsapp"></i> Support</a><button class="care-btn secondary" onclick="event.stopPropagation(); showToast('Live tracking updates automatically.', 'info')"><i class="fas fa-location-dot"></i> Track</button></div></div>`; }
-
 function attachActiveOrderListener(uid) {
   activeOrderListeners.forEach(ref => ref.off('value'));
   activeOrderListeners = [];
@@ -865,17 +841,13 @@ function attachActiveOrderListener(uid) {
   });
   activeOrderListeners.push(ordersRef);
 }
-
 function toggleActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (dropdown.classList.contains('open')) closeActiveOrders(); else openActiveOrders(); }
 function openActiveOrders() { document.getElementById('activeOrderDropdown').classList.add('open'); history.pushState({ careDropdown: true }, '', '#active-orders'); }
 function closeActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (!dropdown.classList.contains('open')) return; dropdown.classList.remove('open'); if (history.state && history.state.careDropdown) history.back(); }
-
 document.addEventListener('click', (e) => { const dropdown = document.getElementById('activeOrderDropdown'); const bar = document.getElementById('activeOrderBar'); if (!dropdown || !dropdown.classList.contains('open')) return; if (dropdown.contains(e.target) || bar.contains(e.target)) return; dropdown.classList.remove('open'); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const dropdown = document.getElementById('activeOrderDropdown'); if (dropdown && dropdown.classList.contains('open')) dropdown.classList.remove('open'); } });
-
 function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); if (html.hasAttribute('data-theme')) { html.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); icon.className = 'fas fa-moon'; } else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); icon.className = 'fas fa-sun'; } }
 (() => { if (localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.querySelector('#themeToggle i').className = 'fas fa-sun'; } })();
-
 function openModal(id) {
   document.getElementById(id).classList.add('active');
   document.body.style.overflow = 'hidden';
@@ -901,17 +873,14 @@ window.addEventListener('popstate', (e) => {
     document.body.style.overflow = 'hidden';
   }
 });
-
 // ===== AUTHENTICATION ENGINE (SMS / Email / Google) =====
 let confirmationResult = null;
 let resendTimerInterval = null;
-
 function switchAuthMode(mode) {
   const tabMobile = document.getElementById('tabMobileBtn');
   const tabEmail = document.getElementById('tabEmailBtn');
   const mobileContainer = document.getElementById('mobileAuthContainer');
   const emailContainer = document.getElementById('emailAuthContainer');
-  
   if (mode === 'mobile') {
     tabMobile.classList.add('active');
     tabEmail.classList.remove('active');
@@ -924,7 +893,6 @@ function switchAuthMode(mode) {
     mobileContainer.style.display = 'none';
   }
 }
-
 function initRecaptcha() {
   if (!window.recaptchaVerifier) {
     try {
@@ -935,7 +903,6 @@ function initRecaptcha() {
     } catch(e) {}
   }
 }
-
 function startResendTimer() {
   clearInterval(resendTimerInterval);
   let timeLeft = 30;
@@ -955,7 +922,6 @@ function startResendTimer() {
     }
   }, 1000);
 }
-
 function sendOTP() {
   const num = document.getElementById('phoneInput').value.trim();
   if (num.length !== 10) return showToast('Enter valid 10-digit number', 'warning');
@@ -979,7 +945,6 @@ function sendOTP() {
     if (window.recaptchaVerifier) window.recaptchaVerifier.render().then(wId => grecaptcha.reset(wId));
   });
 }
-
 function resendOTP() {
   const num = document.getElementById('phoneInput').value.trim();
   if (num.length !== 10) return;
@@ -995,7 +960,6 @@ function resendOTP() {
     document.getElementById('resendOtpBtn').textContent = 'Resend OTP';
   });
 }
-
 function editPhoneNumber() {
   clearInterval(resendTimerInterval);
   document.getElementById('otpSection').style.display = 'none';
@@ -1003,13 +967,11 @@ function editPhoneNumber() {
   document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-comment-sms"></i> Send SMS OTP';
   document.getElementById('phoneInput').focus();
 }
-
 function clearOtpBoxes() {
   const boxes = document.querySelectorAll('.otp-digit-input');
   boxes.forEach(b => b.value = '');
   if (boxes[0]) boxes[0].focus();
 }
-
 function handleOtpInput(input, index) {
   input.value = input.value.replace(/[^0-9]/g, '');
   const boxes = document.querySelectorAll('.otp-digit-input');
@@ -1019,14 +981,12 @@ function handleOtpInput(input, index) {
   const fullCode = Array.from(boxes).map(b => b.value).join('');
   if (fullCode.length === 6) verifyOTP();
 }
-
 function handleOtpKeydown(e, index) {
   const boxes = document.querySelectorAll('.otp-digit-input');
   if (e.key === 'Backspace' && !boxes[index].value && index > 0) {
     boxes[index - 1].focus();
   }
 }
-
 function handleOtpPaste(e) {
   e.preventDefault();
   const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
@@ -1036,13 +996,11 @@ function handleOtpPaste(e) {
   if (paste.length === 6) verifyOTP();
   else if (boxes[paste.length]) boxes[paste.length].focus();
 }
-
 function verifyOTP() {
   const boxes = document.querySelectorAll('.otp-digit-input');
   const code = Array.from(boxes).map(b => b.value).join('');
   if (code.length !== 6) return showToast('Enter complete 6-digit OTP', 'warning');
   document.getElementById('verifyOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-  
   confirmationResult.confirm(code).then(res => {
     const user = res.user;
     showToast('Mobile Verified!', 'success');
@@ -1054,23 +1012,19 @@ function verifyOTP() {
     document.getElementById('verifyOtpBtn').innerHTML = '<i class="fas fa-check-circle"></i> Verify & Login';
   });
 }
-
 function sendEmailMagicLink() {
   const email = document.getElementById('emailMagicInput').value.trim();
   if (!email || !email.includes('@')) return showToast('Enter valid email address', 'warning');
-  
   const actionCodeSettings = {
     url: window.location.href,
     handleCodeInApp: true
   };
-  
   auth.sendSignInLinkToEmail(email, actionCodeSettings).then(() => {
     window.localStorage.setItem('emailForSignIn', email);
     showToast('Magic link sent to your email!', 'success');
     closeModal('authModal');
   }).catch(e => showToast(e.message, 'error'));
 }
-
 if (auth.isSignInWithEmailLink(window.location.href)) {
   let email = window.localStorage.getItem('emailForSignIn');
   if (!email) {
@@ -1082,7 +1036,6 @@ if (auth.isSignInWithEmailLink(window.location.href)) {
     syncCanonicalAccount(res.user);
   }).catch(e => showToast(e.message, 'error'));
 }
-
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider).then(res => {
@@ -1092,22 +1045,18 @@ function signInWithGoogle() {
     syncCanonicalAccount(user);
   }).catch(e => showToast(e.message, 'error'));
 }
-
 function syncCanonicalAccount(user) {
   const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : '';
   const email = (user.email || '').toLowerCase();
-  
   db.ref('customers/' + user.uid).once('value').then(snap => {
     if (snap.exists() && snap.val().name) {
       applyLoggedInUI(snap.val().name);
       return;
     }
-    
     if (phone && phone.length === 10) {
       db.ref('customers').orderByChild('phone').equalTo(phone).once('value').then(pSnap => {
         let matched = null;
         pSnap.forEach(c => { if (c.key !== user.uid && c.val().name) matched = c.val(); });
-        
         if (matched) {
           db.ref('customers/' + user.uid).update({
             name: matched.name,
@@ -1136,7 +1085,6 @@ function syncCanonicalAccount(user) {
     }
   });
 }
-
 function completeOnboarding() {
   const name = document.getElementById('onboardName').value.trim();
   const email = document.getElementById('onboardEmail').value.trim();
@@ -1144,7 +1092,6 @@ function completeOnboarding() {
   const user = auth.currentUser;
   if (!user) return;
   const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : '';
-  
   db.ref('customers/' + user.uid).update({
     name: name,
     email: email,
@@ -1155,7 +1102,6 @@ function completeOnboarding() {
     applyLoggedInUI(name);
   }).catch(() => showToast('Error saving profile', 'error'));
 }
-
 function saveProfile() {
   const user = auth.currentUser;
   if (!user) return;
@@ -1164,7 +1110,6 @@ function saveProfile() {
   const newName = document.getElementById('profName').value.trim() || 'User';
   const newEmail = document.getElementById('profEmail').value.trim();
   const newAddress = document.getElementById('profAddress').value.trim();
-
   db.ref('customers/' + user.uid).update({
     name: newName,
     email: newEmail,
@@ -1177,7 +1122,6 @@ function saveProfile() {
     document.getElementById('profEmailDisplay').textContent = newEmail || 'Phone verified member';
   }).catch(() => showToast('Error saving profile', 'error'));
 }
-
 function logoutUser() {
   auth.signOut().then(() => {
     closeModal('profileModal');
@@ -1187,7 +1131,6 @@ function logoutUser() {
     setTrustBarVisible(true);
   });
 }
-
 function setProfileHeader(user) {
   const name = user.displayName || document.getElementById('profName').value || 'User';
   const parts = name.trim().split(/\s+/);
@@ -1196,7 +1139,6 @@ function setProfileHeader(user) {
   document.getElementById('profNameDisplay').textContent = name;
   document.getElementById('profEmailDisplay').textContent = user.email || 'Phone verified member';
 }
-
 function loadProfileStats(uid) {
   db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => {
     let count = 0, items = 0;
@@ -1210,13 +1152,11 @@ function loadProfileStats(uid) {
     document.getElementById('statItems').textContent = items;
   });
 }
-
 function loadOrderHistory() {
   const list = document.getElementById('orderHistoryList');
   if (!auth.currentUser) return;
   const uid = auth.currentUser.uid;
   list.innerHTML = `<div class="history-card" style="opacity:.6;"><div style="height:14px; background:var(--border); border-radius:6px; margin-bottom:10px; width:60%;"></div><div style="height:10px; background:var(--border); border-radius:6px; width:85%;"></div></div>`;
-  
   db.ref('orders').orderByChild('uid').equalTo(uid).limitToLast(300).once('value').then(snap => {
     const orders = [];
     snap.forEach(child => {
@@ -1225,7 +1165,7 @@ function loadOrderHistory() {
     });
     orders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     if (!orders.length) {
-      list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="ParthbookGen26.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`;
+      list.innerHTML = `<div class="history-empty"><i class="fas fa-box-open"></i>Abhi koi order nahi hai.<br>Apna pehla premium order book karo!<br><a href="booking.html" class="care-btn primary" style="display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div>`;
       return;
     }
     let html = '';
@@ -1237,12 +1177,11 @@ function loadOrderHistory() {
       const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today';
       const itemCount = getOrderItemSummary(o);
       const expressHtml = o.express === 'Yes' ? `<span style="color:var(--gold); font-weight:800;"><i class="fas fa-bolt"></i> Express</span>` : '';
-      html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="ParthbookGen26.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`;
+      html += `<div class="history-card"><div class="history-top"><span class="history-id">#${orderIdDisplay}</span><span class="status-badge ${statusClass}"><i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}</span></div><div class="history-meta"><span><i class="fas fa-calendar"></i> ${dateText}</span><span><i class="fas fa-tshirt"></i> ${itemCount}</span><span style="color:var(--primary); font-weight:800;">₹${o.total || 0}</span>${expressHtml}</div><div class="history-actions"><button class="care-btn primary" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button><a href="booking.html" class="care-btn secondary"><i class="fas fa-redo"></i> Book Again</a></div></div>`;
     });
     list.innerHTML = html;
   });
 }
-
 function downloadInvoice(id) {
   showToast('Fetching latest cloud sync invoice...', 'info');
   db.ref('orders/' + id).once('value').then(snap => {
@@ -1255,7 +1194,6 @@ function downloadInvoice(id) {
     }).catch(() => buildInvoicePDF(o, {}, id));
   });
 }
-
 function buildInvoicePDF(o, prof, orderId) {
   const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer');
   const custPhone = sanitizeHTML(o.phone || prof.phone || '—');
@@ -1263,15 +1201,12 @@ function buildInvoicePDF(o, prof, orderId) {
   const statusLabel = statusLabels[o.status] || (o.status || 'Confirmed');
   const payStatus = sanitizeHTML(o.paymentStatus || 'Pay on Delivery');
   const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—';
-  
   const isExpress = o.express === 'Yes';
   const esdtWindow = isExpress ? '24 Hours (Express Guaranteed)' : '48 - 72 Hours (Standard)';
   const esdtDate = formatEta(o);
-
   let rows = '';
   let computedSubtotal = 0;
   const items = o.items || {};
-
   for (const [k, rawValue] of Object.entries(items)) {
     const snapshot = rawValue && typeof rawValue === 'object' ? rawValue : null;
     const qty = snapshot ? getNumeric(snapshot.qty, 0) : getNumeric(rawValue, 0);
@@ -1282,28 +1217,21 @@ function buildInvoicePDF(o, prof, orderId) {
     computedSubtotal += amt;
     rows += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:8px 6px; font-weight:600;">${sanitizeHTML(k)}</td><td style="padding:8px 6px; text-align:center;">998714</td><td style="padding:8px 6px; text-align:center;">${qty}</td><td style="padding:8px 6px; text-align:right;">₹${rate}</td><td style="padding:8px 6px; text-align:right; font-weight:700;">₹${amt}</td></tr>`;
   }
-
   const baseSubtotal = getNumeric(o.subtotal, computedSubtotal);
   const expressFee = isExpress ? getNumeric(o.expressFee, Math.round(baseSubtotal * (getNumeric(SITE_SETTINGS.expressPercent, 90) / 100))) : 0;
   const discount = o.discount || 0;
   const couponApplied = o.couponCode ? sanitizeHTML(o.couponCode) : '';
   const grandTotal = o.total || (baseSubtotal + expressFee - discount);
-  
   const taxableValue = Math.round(grandTotal / 1.18);
   const totalGST = grandTotal - taxableValue;
   const cgst = (totalGST / 2).toFixed(2);
   const sgst = (totalGST / 2).toFixed(2);
-
   const expressBanner = isExpress ? `<div style="background:#fef3c7; color:#92400e; padding:6px 12px; border-radius:8px; font-size:10.5px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;"><span>⚡ Express 24-Hour Priority Care</span><span>Turnaround: 24 Hours</span></div>` : '';
   const couponRow = discount > 0 ? `<div style="display:flex; justify-content:space-between; color:#16a34a; margin-bottom:4px;"><span>Coupon Discount ${couponApplied ? `(${couponApplied})` : ''}</span><span>-₹${discount}</span></div>` : '';
-
   const element = document.createElement('div');
   element.innerHTML = `<div style="padding:24px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:12px; margin-bottom:14px;"><div style="font-size:22px; font-weight:800; color:#0ea5e9;">Parth Dry Clean</div><div style="font-size:10px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">PREMIUM LAUNDRY & DRY CLEANING SERVICES</div><div style="font-size:10px; color:#64748b; margin-top:4px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><div style="font-size:15px; font-weight:800; color:#0f172a;">ORDER INVOICE / RECEIPT</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800;">${statusLabel}</div></div>${expressBanner}<div style="background:#f8fafc; padding:10px 12px; border-radius:10px; margin-bottom:12px; font-size:10.5px;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Order / Invoice Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Estimated Delivery (ESDT):</span><strong style="color:#0ea5e9;">${esdtDate} (${esdtWindow})</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment Status:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:10.5px;"><div style="font-size:9.5px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Customer Details</div><div style="font-weight:800; font-size:12px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:11px;"><thead><tr style="background:#f1f5f9;"><th style="padding:6px; text-align:left; font-size:9.5px; color:#64748b; text-transform:uppercase;">Item Description</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">SAC</th><th style="padding:6px; text-align:center; font-size:9.5px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:6px; text-align:right; font-size:9.5px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:14px; border-top:2px dashed #e2e8f0; padding-top:10px; font-size:11px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:#64748b;">Subtotal</span><span>₹${baseSubtotal}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-bottom:4px;"><span>Express 24hr Surcharge</span><span>+₹${expressFee}</span></div>` : ''}${couponRow}<div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-top:6px; border-top:1px solid #f1f5f9; padding-top:4px;"><span>Taxable Value (Incl. in Total): ₹${taxableValue}</span><span>CGST (9%): ₹${cgst} | SGST (9%): ₹${sgst}</span></div><div style="display:flex; justify-content:space-between; font-size:16px; font-weight:800; margin-top:8px; padding-top:8px; border-top:1px solid #e2e8f0;"><span>Grand Total (INR)</span><span style="color:#0ea5e9;">₹${grandTotal}</span></div></div><div style="margin-top:14px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:8px 10px; font-size:9.5px; color:#166534; font-weight:600;">💚 Live Realtime Synced Invoice • Garments processed with eco-friendly solvents & steam finishing.</div><div style="margin-top:8px; font-size:8.5px; color:#94a3b8; text-align:center;">* Computer generated order invoice. Tax treatment shown here is based on the order data and should be verified against the business's actual tax registration.</div></div>`;
-  
   html2pdf().set({ margin: 8, filename: 'ParthDryClean_Invoice_' + orderId + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => showToast('Invoice downloaded successfully!', 'success'));
 }
-
-// Auth Observer
 auth.onAuthStateChanged(user => {
   const loginBtn = document.getElementById('loginBtn');
   const myOrdersItem = document.getElementById('myOrdersNavItem');
@@ -1336,13 +1264,10 @@ auth.onAuthStateChanged(user => {
     setTrustBarVisible(true);
   }
 });
-
 document.getElementById('mobileMenuBtn').addEventListener('click', () => { document.getElementById('navLinks').classList.toggle('active'); });
 document.querySelectorAll('#navLinks a').forEach(link => link.addEventListener('click', () => { document.getElementById('navLinks').classList.remove('active'); }));
 window.addEventListener('scroll', () => { const nav = document.getElementById('navLinks'); if (window.scrollY > 30 && nav.classList.contains('active')) nav.classList.remove('active'); });
-
 function rebuildPriceLookup() { Object.keys(priceLookup).forEach(k => delete priceLookup[k]); for (const cat in categories) categories[cat].forEach(it => { priceLookup[it.name.toLowerCase()] = it.price; }); }
-
 function loadDynamicCategories() {
   db.ref('services/categories').once('value').then(s => {
     if (!s.exists()) return;
@@ -1367,7 +1292,6 @@ function loadDynamicCategories() {
     renderPricing();
   }).catch(() => {});
 }
-
 function loadSiteSettings() {
   db.ref('settings/general').once('value').then(s => {
     if (!s.exists()) return;
@@ -1383,24 +1307,20 @@ function loadSiteSettings() {
     }
   }).catch(() => {});
 }
-
 function loadSiteCMSContent() {
   db.ref('site_content').on('value', snap => {
     if (!snap.exists()) return;
     const cms = snap.val() || {};
-
     if (cms.hero) {
       if (cms.hero.badge) document.getElementById('heroBadge').innerHTML = `<i class="fas fa-crown"></i> ${sanitizeHTML(cms.hero.badge)}`;
       if (cms.hero.subtitle) document.getElementById('heroSubtitle').textContent = cms.hero.subtitle;
       if (cms.hero.rating) document.getElementById('heroRatingBadge').innerHTML = `<i class="fas fa-star" style="color:var(--gold);"></i> ${sanitizeHTML(cms.hero.rating)}`;
     }
-
     if (cms.trustItems && cms.trustItems.length) {
       const track = document.getElementById('trustBarTrack');
       const itemsHtml = cms.trustItems.map(it => `<div class="trust-item"><i class="fas ${sanitizeHTML(it.icon || 'fa-check')}"></i> ${sanitizeHTML(it.text)}</div>`).join('');
       track.innerHTML = itemsHtml + itemsHtml;
     }
-
     if (cms.fabrics && cms.fabrics.length) {
       const pillsContainer = document.getElementById('fabricPillsContainer');
       const cardsContainer = document.getElementById('fabricCardsContainer');
@@ -1415,15 +1335,12 @@ function loadSiteCMSContent() {
       pillsContainer.innerHTML = pillsHtml;
       cardsContainer.innerHTML = cardsHtml;
     }
-
     if (cms.howItWorks && cms.howItWorks.length) {
       document.getElementById('howItWorksGrid').innerHTML = cms.howItWorks.map(h => `<div class="step-card"><div class="step-icon"><i class="fas ${sanitizeHTML(h.icon || 'fa-check')}"></i></div><h3>${sanitizeHTML(h.title)}</h3><p>${sanitizeHTML(h.desc)}</p></div>`).join('');
     }
-
     if (cms.whyUs && cms.whyUs.length) {
       document.getElementById('whyChooseUsGrid').innerHTML = cms.whyUs.map(w => `<div class="service-card"><div class="icon-box"><i class="fas ${sanitizeHTML(w.icon || 'fa-star')}"></i></div><h3>${sanitizeHTML(w.title)}</h3><p>${sanitizeHTML(w.desc)}</p></div>`).join('');
     }
-
     if (cms.reviews && cms.reviews.length) {
       const reviewsHtml = cms.reviews.map(r => {
         const fullStars = Math.floor(r.stars || 5);
@@ -1435,7 +1352,6 @@ function loadSiteCMSContent() {
       document.getElementById('reviewsSlider').innerHTML = reviewsHtml + reviewsHtml;
       if (cms.reviewsRatingHeader) document.getElementById('reviewsHeaderBadge').innerHTML = `<i class="fab fa-google"></i> ${sanitizeHTML(cms.reviewsRatingHeader)}`;
     }
-
     if (cms.faqs && cms.faqs.length) {
       document.getElementById('faqList').innerHTML = cms.faqs.map(f => `<div class="faq-item"><div class="faq-question">${sanitizeHTML(f.q)} <i class="fas fa-chevron-down"></i></div><div class="faq-answer">${sanitizeHTML(f.a)}</div></div>`).join('');
       document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
@@ -1444,7 +1360,6 @@ function loadSiteCMSContent() {
         parent.classList.toggle('active');
       }));
     }
-
     if (cms.contact) {
       if (cms.contact.address) document.getElementById('contactAddressText').textContent = cms.contact.address;
       if (cms.contact.hours) document.getElementById('contactHoursText').textContent = cms.contact.hours;
@@ -1464,7 +1379,6 @@ function loadSiteCMSContent() {
     }
   });
 }
-
 function checkBookingOpen() {
   db.ref('settings/general').on('value', s => {
     const v = s.val() || {};
@@ -1483,18 +1397,14 @@ function checkBookingOpen() {
     }
   });
 }
-
 const cachedUser = getCachedUser();
 if (cachedUser && cachedUser.name) applyLoggedInUI(cachedUser.name); else setTimeGreeting(null);
-
 loadDynamicCategories();
 loadSiteSettings();
 loadSiteCMSContent();
 checkBookingOpen();
-
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => { if (!waTooltip) return; if (window.scrollY > 60) waTooltip.classList.add('folded'); else waTooltip.classList.remove('folded'); }, { passive: true });
-
 function showToast(msg, type='info'){
   const container = document.getElementById('toastContainer');
   while(container.children.length > 3) container.removeChild(container.firstChild);
@@ -1506,23 +1416,19 @@ function showToast(msg, type='info'){
   container.appendChild(t);
   setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
 }
-
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
 document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
-
 document.querySelectorAll('.faq-question').forEach(q => q.addEventListener('click', function() {
   const parent = this.parentElement;
   document.querySelectorAll('.faq-item.active').forEach(item => { if (item !== parent) item.classList.remove('active'); });
   parent.classList.toggle('active');
 }));
-
 if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topBanner').style.display = 'block';
 document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
-
 renderPricing();
 enableListSwipe();
-console.log('🧺 ParthindexGen7.5 Active (Refined Auth, Order History, Live Invoice + FCM Push)');
+console.log('🧺 ParthindexGen7.6 Active (Refined Auth, Order History, Live Invoice + FCM Push)');
 </script>
 </body>
 </html>
