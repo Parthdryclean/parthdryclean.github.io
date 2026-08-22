@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- ParthbookGen27 : Enterprise Auth Sync, Realtime Dynamic Invoice, Smart Slot Engine + FCM Push (FULL) -->
+<!-- ParthbookGen28 : Enterprise Auth Sync, Realtime Dynamic Invoice, Smart Slot Engine + FCM Push (FULL) -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0ea5e9" />
-    <meta name="app-version" content="ParthbookGen27" />
+    <meta name="app-version" content="ParthbookGen28" />
     <meta name="description" content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup & delivery in Lucknow.">
     <title>Book Pickup | Parth Dry Clean</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
@@ -13,7 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <!-- FCM Messaging SDK (NEW) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -271,7 +270,7 @@
     </div>
 
     <header>
-        <a href="index.html" class="logo">
+        <a href="home.html" class="logo">
             <div class="logo-text-wrapper">
                 <div class="logo-row"><span class="logo-main">Parth</span><span class="logo-sub">Dry Clean</span></div>
                 <span class="logo-tagline">Premium For Everyone</span>
@@ -430,19 +429,18 @@
             <div class="success-order-box"><span class="label">Order ID</span><div class="order-id" id="successOrderId">PDC-XXXX</div></div>
             <div class="success-details-card" id="successDetails"></div>
             <div class="success-actions">
-                <a href="index.html" class="btn-secondary"><i class="fas fa-home"></i> Home</a>
+                <a href="home.html" class="btn-secondary"><i class="fas fa-home"></i> Home</a>
                 <button class="btn-primary-full" onclick="App.Order.downloadInvoice()"><i class="fas fa-file-invoice"></i> Download Invoice</button>
             </div>
         </div>
     </div>
 
     <script>
-        console.log('🧺 ParthbookGen27 Live (Enterprise Auth Sync, Invoice Engine + FCM Push)');
+        console.log('🧺 ParthbookGen28 Live (Enterprise Auth Sync, Invoice Engine + FCM Push)');
         const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(); const db = firebase.database();
         
-        // VAPID key for FCM (NEW)
         const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
         
         function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -512,7 +510,6 @@
         function findItemById(id){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.id===id); if(f) return f; } return null; }
         function getItemRateByName(name){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.name.toLowerCase()===String(name).toLowerCase()); if(f && f.price>0) return f.price; } return null; }
 
-        // FCM helper function (NEW)
         async function saveFCMTokenAfterOrder(){
             try {
                 const user = auth.currentUser;
@@ -979,7 +976,6 @@
                         if(usedGeneral){ await db.ref('customers/'+auth.currentUser.uid+'/usedCoupons/'+usedGeneral).set(true).catch(()=>{}); }
                         try{ fetch('https://script.google.com/macros/s/AKfycbwwQEFWAWOw19gL38pLi_59Evxqbef7D-jKXmGOkO1rFKTEgCv70Qxn_IFJAq0DSkE/exec',{method:'POST',mode:'no-cors',body:JSON.stringify(orderData)}); }catch(e){}
                         
-                        // FCM: Save token after order success (fire and forget) (NEW)
                         saveFCMTokenAfterOrder();
                         
                         if(!localStorage.getItem('pdc_first_order_used'))localStorage.setItem('pdc_first_order_used','true');
