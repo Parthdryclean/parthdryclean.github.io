@@ -1643,15 +1643,18 @@ const auth = firebase.auth(); const db = firebase.database();
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 let messaging = null;
 let fcmSWRegistration = null;
+let fcmInitPromise = null;
 
 function initFCM() {
-  try {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      console.warn('Push notifications not supported');
-      return;
-    }
-    messaging = firebase.messaging();
-    navigator.serviceWorker.register('/firebase-messaging-sw.js').then(reg => {
+  if (fcmInitPromise) return fcmInitPromise;
+  fcmInitPromise = (async () => {
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.warn('Push notifications not supported');
+        return false;
+      }
+      messaging = firebase.messaging();
+      const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
       fcmSWRegistration = reg;
       messaging.onTokenRefresh(() => {
         messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg }).then(token => {
@@ -1664,10 +1667,44 @@ function initFCM() {
         const body = payload.notification?.body || 'Live order update';
         showToast(`${title}: ${body}`, 'info');
       });
-    }).catch(() => { messaging = null; });
-  } catch(e) {
-    messaging = null;
-    console.warn('FCM init failed', e);
+      return true;
+    } catch(e) {
+      messaging = null;
+      fcmSWRegistration = null;
+      console.warn('FCM init failed', e);
+      return false;
+    }
+  })();
+  return fcmInitPromise;
+}
+
+function setNotificationButtonState(state) {
+  const notifBtn = document.getElementById('notifEnableBtn');
+  if (!notifBtn) return;
+  if (state === 'enabled') {
+    notifBtn.innerHTML = 'Enabled';
+    notifBtn.style.background = 'rgba(var(--success-rgb),0.1)';
+    notifBtn.style.color = 'var(--success)';
+    notifBtn.style.borderColor = 'transparent';
+    notifBtn.disabled = true;
+  } else if (state === 'blocked') {
+    notifBtn.innerHTML = 'Blocked';
+    notifBtn.style.background = 'rgba(var(--danger-rgb),0.1)';
+    notifBtn.style.color = 'var(--danger)';
+    notifBtn.style.borderColor = 'transparent';
+    notifBtn.disabled = true;
+  } else if (state === 'enabling') {
+    notifBtn.innerHTML = 'Enabling…';
+    notifBtn.style.background = 'var(--surface)';
+    notifBtn.style.color = 'var(--text-muted)';
+    notifBtn.style.borderColor = 'var(--border)';
+    notifBtn.disabled = true;
+  } else {
+    notifBtn.innerHTML = 'Enable';
+    notifBtn.style.background = 'var(--surface)';
+    notifBtn.style.color = 'var(--text)';
+    notifBtn.style.borderColor = 'var(--border)';
+    notifBtn.disabled = false;
   }
 }
 
@@ -1677,37 +1714,65 @@ async function requestFCMPermission() {
   if (!('Notification' in window) || !('PushManager' in window)) {
     showToast('Notifications not supported on this device', 'error'); return;
   }
+
+  const currentPermission = Notification.permission;
+  if (currentPermission === 'denied') {
+    setNotificationButtonState('blocked');
+    showToast('Notifications are blocked in your browser settings', 'warning');
+    return;
+  }
+  setNotificationButtonState('enabling');
+
   try {
-    const perm = await Notification.requestPermission();
+    // Start FCM setup before the native permission prompt so the service worker
+    // can be ready by the time the user taps Allow.
+    const setupPromise = initFCM();
+    const perm = currentPermission === 'granted' ? 'granted' : await Notification.requestPermission();
+
     if (perm !== 'granted') {
-      showToast('Notification permission denied', 'error'); return;
-    }
-    if (!messaging) { showToast('Notifications not ready yet, try again', 'warning'); return; }
-    let reg = fcmSWRegistration;
-    if (!reg) {
-      reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-    }
-    if (!reg) { showToast('Service worker not ready, try again', 'warning'); return; }
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    if (!token) { showToast('Could not get token', 'error'); return; }
-    await db.ref('customers/' + user.uid).update({ fcmToken: token });
-    showToast('🔔 Live order updates enabled!', 'success');
-    
-    const notifBtn = document.getElementById('notifEnableBtn');
-    if(notifBtn) {
-      notifBtn.innerHTML = 'Enabled';
-      notifBtn.style.background = 'rgba(var(--success-rgb),0.1)';
-      notifBtn.style.color = 'var(--success)';
-      notifBtn.style.borderColor = 'transparent';
-      notifBtn.disabled = true;
+      setNotificationButtonState('blocked');
+      showToast('Notification permission denied', 'error');
+      return;
     }
 
+    const ready = await setupPromise;
+    if (!ready || !messaging) {
+      setNotificationButtonState('default');
+      showToast('Could not set up notifications. Please try again', 'warning');
+      return;
+    }
+
+    let reg = fcmSWRegistration;
+    if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+    if (!reg) {
+      setNotificationButtonState('default');
+      showToast('Could not set up notifications. Please try again', 'warning');
+      return;
+    }
+
+    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    if (!token) {
+      setNotificationButtonState('default');
+      showToast('Could not enable notifications. Please try again', 'warning');
+      return;
+    }
+
+    await db.ref('customers/' + user.uid).update({
+      fcmToken: token,
+      fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    setNotificationButtonState('enabled');
+    showToast('Live order updates enabled', 'success');
   } catch(e) {
     console.warn('FCM permission failed', e);
-    showToast('Failed to enable notifications', 'error');
+    if (Notification.permission === 'denied') setNotificationButtonState('blocked');
+    else setNotificationButtonState('default');
+    showToast('Could not enable notifications. Please try again', 'error');
   }
 }
-window.addEventListener('load', () => setTimeout(initFCM, 1000));
+
+window.addEventListener('load', () => { initFCM(); });
 
 const sanitizeHTML = (str) => String(str ?? '').replace(/[<>"']/g, '');
 const formatMoney = (amount) => { return Number(amount).toLocaleString('en-IN'); };
@@ -2472,27 +2537,12 @@ function setProfileHeader(user) {
   const notifRow = document.getElementById('notifRow');
   if (notifBtn) {
     if (!('Notification' in window)) {
-        notifRow.style.display = 'none';
+      notifRow.style.display = 'none';
     } else {
-        notifRow.style.display = 'flex';
-        if (Notification.permission === 'granted') {
-          notifBtn.innerHTML = 'Enabled';
-          notifBtn.style.background = 'rgba(var(--success-rgb),0.1)';
-          notifBtn.style.color = 'var(--success)';
-          notifBtn.style.borderColor = 'transparent';
-          notifBtn.disabled = true;
-        } else if (Notification.permission === 'denied') {
-          notifBtn.innerHTML = 'Blocked';
-          notifBtn.style.background = 'rgba(var(--danger-rgb),0.1)';
-          notifBtn.style.color = 'var(--danger)';
-          notifBtn.style.borderColor = 'transparent';
-          notifBtn.disabled = true;
-        } else {
-          notifBtn.innerHTML = 'Enable';
-          notifBtn.style.background = 'var(--surface)';
-          notifBtn.style.color = 'var(--text)';
-          notifBtn.disabled = false;
-        }
+      notifRow.style.display = 'flex';
+      if (Notification.permission === 'granted') setNotificationButtonState('enabled');
+      else if (Notification.permission === 'denied') setNotificationButtonState('blocked');
+      else setNotificationButtonState('default');
     }
   }
 }
@@ -2966,16 +3016,16 @@ loadSiteCMSContent();
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => { if (!waTooltip) return; if (window.scrollY > 0) waTooltip.classList.add('folded'); else waTooltip.classList.remove('folded'); }, { passive: true });
 
-function showToast(msg, type='info'){
-  const container = document.getElementById('toastContainer');
-  while(container.children.length > 3) container.removeChild(container.firstChild);
-  const t = document.createElement('div');
-  t.style.cssText = 'padding:12px 16px; border-radius:12px; background:var(--surface); color:var(--text); border:1px solid var(--border); box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:8px; font-weight:700; transition: opacity 0.3s;';
-  const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
-  const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#2563EB';
-  t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`;
-  container.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
+function showToast(msg,type='info'){
+  const c=document.getElementById('toastContainer');
+  while(c.childElementCount>=2)c.removeChild(c.firstChild);
+  const t=document.createElement('div');
+  t.style.cssText='padding:12px 16px;border-radius:12px;background:var(--surface);color:var(--text);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;font-weight:700;border:1px solid var(--border);transition:.3s;';
+  const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'triangle-exclamation' : 'info-circle';
+  const color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : type === 'warning' ? 'var(--gold)' : 'var(--primary)';
+  t.innerHTML=`<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),300);},3000);
 }
 
 let deferredPrompt;
