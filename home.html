@@ -2081,7 +2081,7 @@ function sendOTP() {
     document.getElementById('otpSection').style.display = 'block';
     startResendTimer();
     clearOtpBoxes();
-    showToast('OTP sent successfully!', 'success');
+    showToast('OTP sent.', 'success');
   }).catch(err => {
     let msg = err.message;
     if (err.code === 'auth/too-many-requests') {
@@ -2102,7 +2102,7 @@ function resendOTP() {
     confirmationResult = res;
     startResendTimer();
     document.getElementById('resendOtpBtn').textContent = 'Resend OTP';
-    showToast('OTP resent!', 'success');
+    showToast('OTP resent.', 'success');
   }).catch(err => {
     showToast(err.code === 'auth/too-many-requests' ? 'Limit reached. Try again later.' : err.message, 'error');
     document.getElementById('resendOtpBtn').textContent = 'Resend OTP';
@@ -2157,7 +2157,7 @@ function verifyOTP() {
   document.getElementById('verifyOtpBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
   confirmationResult.confirm(code).then(res => {
     const user = res.user;
-    showToast('Mobile Verified!', 'success');
+    showToast('Mobile verified.', 'success');
     closeModal('authModal');
     editPhoneNumber();
     syncCanonicalAccount(user);
@@ -2171,7 +2171,7 @@ function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider).then(res => {
     const user = res.user;
-    showToast('Google Verified!', 'success');
+    showToast('Google sign-in successful.', 'success');
     closeModal('authModal');
     syncCanonicalAccount(user);
   }).catch(e => showToast(e.message, 'error'));
@@ -2179,9 +2179,9 @@ function signInWithGoogle() {
 
 
 /* ================================================================
-   PARTH IDENTITY GATE — ONE CUSTOMER IDENTITY ACROSS HOME + BOOKING
-   Identity keys are email/phone -> Firebase Auth UID.
-   No silent Auth UID merging: conflicts are blocked safely.
+   PARTH IDENTITY — SAFE CUSTOMER IDENTITY RESOLUTION
+   Identity registry is validated against the real customer record.
+   Login hydration and profile identity validation are separate flows.
 ================================================================ */
 function pdcNormalizeEmail(value){ return String(value||'').trim().toLowerCase(); }
 function pdcNormalizePhone(value){
@@ -2201,27 +2201,43 @@ async function pdcFindCustomer(kind,value){
   const v=String(value||''); if(!v) return null;
   const snap=await db.ref('customers').orderByChild(kind).equalTo(v).once('value');
   let found=null;
-  snap.forEach(c=>{ if(!found && c.val()) found={uid:c.key,data:c.val()||{}}; });
+  snap.forEach(c=>{
+    if(!found && c.val()) found={uid:c.key,data:c.val()||{}};
+  });
   return found;
+}
+function pdcCustomerOwns(kind,data,value){
+  if(!data) return false;
+  const v=String(value||'');
+  if(kind==='email') return pdcNormalizeEmail(data.email)===pdcNormalizeEmail(v);
+  if(kind==='phone') return pdcNormalizePhone(data.phone)===pdcNormalizePhone(v);
+  return false;
+}
+async function pdcResolveOwner(kind,value,currentUid){
+  const v=String(value||''); if(!v) return null;
+  const [registered,customer]=await Promise.all([
+    pdcReadIdentity(kind,v),
+    pdcFindCustomer(kind,v)
+  ]);
+  const owners=[];
+  // Registry is trusted only when its customer record still owns this identity.
+  if(registered && registered!==currentUid){
+    const ownerSnap=await db.ref('customers/'+registered).once('value');
+    const ownerData=ownerSnap.exists()?(ownerSnap.val()||{}):null;
+    if(ownerData && pdcCustomerOwns(kind,ownerData,v)) owners.push(registered);
+  }
+  if(customer && customer.uid!==currentUid && pdcCustomerOwns(kind,customer.data,v)) owners.push(customer.uid);
+  return [...new Set(owners)][0] || null;
 }
 async function pdcResolveIdentity(email,phone,currentUid){
   const e=pdcNormalizeEmail(email), p=pdcNormalizePhone(phone);
-  const checks=[];
-  if(e) checks.push(Promise.all([pdcReadIdentity('email',e),pdcFindCustomer('email',e)]));
-  else checks.push(Promise.resolve([null,null]));
-  if(p && p.length===10) checks.push(Promise.all([pdcReadIdentity('phone',p),pdcFindCustomer('phone',p)]));
-  else checks.push(Promise.resolve([null,null]));
-  const [[eReg,eCustomer],[pReg,pCustomer]]=await Promise.all(checks);
-  const owners=[];
-  if(eReg) owners.push(eReg);
-  if(eCustomer && eCustomer.uid) owners.push(eCustomer.uid);
-  if(pReg) owners.push(pReg);
-  if(pCustomer && pCustomer.uid) owners.push(pCustomer.uid);
-  const unique=[...new Set(owners.filter(Boolean))];
-  const foreign=unique.filter(uid=>uid!==currentUid);
-  if(foreign.length) return {ok:false,reason:unique.length>1?'identity-conflict':'identity-already-linked',ownerUid:foreign[0]};
-  if(unique.length>1) return {ok:false,reason:'identity-conflict',ownerUid:unique[0]};
-  return {ok:true,ownerUid:unique[0]||currentUid,email:e,phone:p};
+  const [emailOwner,phoneOwner]=await Promise.all([
+    e ? pdcResolveOwner('email',e,currentUid) : Promise.resolve(null),
+    p && p.length===10 ? pdcResolveOwner('phone',p,currentUid) : Promise.resolve(null)
+  ]);
+  if(emailOwner && phoneOwner && emailOwner!==phoneOwner) return {ok:false,reason:'identity-conflict',ownerUid:emailOwner};
+  if(emailOwner || phoneOwner) return {ok:false,reason:'identity-already-linked',ownerUid:emailOwner||phoneOwner};
+  return {ok:true,email:e,phone:p};
 }
 async function pdcClaimIdentity(kind,value,uid){
   const v=String(value||''); if(!v) return true;
@@ -2241,7 +2257,8 @@ async function pdcClaimIdentities(email,phone,uid){
   }catch(err){
     if(e){
       const r=db.ref('identity/'+pdcIdentityKey('email',e));
-      const snap=await r.once('value'); if(snap.val()?.uid===String(uid)) await r.remove();
+      const snap=await r.once('value');
+      if(snap.val()?.uid===String(uid)) await r.remove();
     }
     throw err;
   }
@@ -2256,11 +2273,11 @@ async function pdcIdentityGate(user,profileEmail,profilePhone){
   return {ok:true,email,phone};
 }
 function pdcIdentityErrorMessage(reason){
-  if(reason==='identity-already-linked') return 'Ye email/phone pehle se ek existing account se linked hai. Please usi account se login karein.';
-  if(reason==='identity-conflict') return 'Email aur phone alag-alag accounts se linked hain. Duplicate account create nahi kiya gaya.';
-  if(reason==='EMAIL_ALREADY_LINKED') return 'Ye Gmail pehle se linked hai. Please doosra Gmail use karein.';
-  if(reason==='PHONE_ALREADY_LINKED') return 'Ye mobile number pehle se linked hai. Please doosra number use karein.';
-  return 'Account identity verify nahi ho saki. Please dobara try karein.';
+  if(reason==='identity-already-linked') return 'Account already linked. Please use the original login.';
+  if(reason==='identity-conflict') return 'Email and phone belong to different accounts.';
+  if(reason==='EMAIL_ALREADY_LINKED') return 'Email already linked to another account.';
+  if(reason==='PHONE_ALREADY_LINKED') return 'Phone already linked to another account.';
+  return 'Account verification failed. Please try again.';
 }
 
 function syncCanonicalAccount(user) {
@@ -2270,12 +2287,25 @@ function syncCanonicalAccount(user) {
   db.ref('customers/'+user.uid).once('value').then(async snap=>{
     const current=snap.exists()?(snap.val()||{}):{};
     try{
+      // Page/session hydration must never run the profile identity gate.
+      // The gate is reserved for creating/changing identity data.
+      if(current.name){
+        applyLoggedInUI(current.name);
+        loadProfileAddresses(user.uid,current);
+        return;
+      }
+      // A brand-new Firebase UID must pass the identity gate before a customer is created.
       const gate=await pdcIdentityGate(user,email,phone);
-      if(!gate.ok){ await auth.signOut(); return showToast(pdcIdentityErrorMessage(gate.reason),'warning'); }
-      if(current.name){ applyLoggedInUI(current.name); return; }
+      if(!gate.ok){
+        await auth.signOut();
+        return showToast(pdcIdentityErrorMessage(gate.reason),'warning');
+      }
       await db.ref('customers/'+user.uid).update({name:user.displayName||'',email,phone});
       if(user.displayName) applyLoggedInUI(user.displayName); else openModal('onboardingModal');
-    }catch(err){ console.warn('Identity gate failed',err); await auth.signOut().catch(()=>{}); showToast(pdcIdentityErrorMessage(err?.message),'warning'); }
+    }catch(err){
+      console.warn('Account profile sync failed',err);
+      showToast('Unable to load account profile','error');
+    }
   }).catch(()=>showToast('Unable to load account profile','error'));
 }
 
