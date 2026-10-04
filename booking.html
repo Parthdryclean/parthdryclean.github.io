@@ -1029,6 +1029,42 @@ if(token){
 } catch(e) { console.warn('FCM token save failed:', e?.message || e); }
 }
 
+/* ================================================================
+   PARTH IDENTITY GATE — ONE CUSTOMER IDENTITY ACROSS HOME + BOOKING
+   Identity keys are email/phone -> Firebase Auth UID.
+   No silent Auth UID merging: conflicts are blocked safely.
+================================================================ */
+function pdcNormalizeEmail(value){ return String(value||'').trim().toLowerCase(); }
+function pdcNormalizePhone(value){ const raw=String(value||'').replace(/\D/g,''); return raw.length>=10 ? raw.slice(-10) : raw; }
+function pdcIdentityKey(kind,value){ const encoded=encodeURIComponent(String(value||'')).replace(/\./g,'%2E'); return kind+'/'+encoded; }
+async function pdcReadIdentity(kind,value){ const v=String(value||''); if(!v) return null; const snap=await db.ref('identity/'+pdcIdentityKey(kind,v)).once('value'); const d=snap.val(); return d&&d.uid ? String(d.uid) : null; }
+async function pdcFindCustomer(kind,value){ const v=String(value||''); if(!v) return null; const snap=await db.ref('customers').orderByChild(kind).equalTo(v).once('value'); let found=null; snap.forEach(c=>{ if(!found && c.val()) found={uid:c.key,data:c.val()||{}}; }); return found; }
+async function pdcResolveIdentity(email,phone,currentUid){
+  const e=pdcNormalizeEmail(email), p=pdcNormalizePhone(phone);
+  const checks=[];
+  if(e) checks.push(Promise.all([pdcReadIdentity('email',e),pdcFindCustomer('email',e)])); else checks.push(Promise.resolve([null,null]));
+  if(p && p.length===10) checks.push(Promise.all([pdcReadIdentity('phone',p),pdcFindCustomer('phone',p)])); else checks.push(Promise.resolve([null,null]));
+  const [[eReg,eCustomer],[pReg,pCustomer]]=await Promise.all(checks);
+  const owners=[]; if(eReg) owners.push(eReg); if(eCustomer&&eCustomer.uid) owners.push(eCustomer.uid); if(pReg) owners.push(pReg); if(pCustomer&&pCustomer.uid) owners.push(pCustomer.uid);
+  const unique=[...new Set(owners.filter(Boolean))]; const foreign=unique.filter(uid=>uid!==currentUid);
+  if(foreign.length) return {ok:false,reason:unique.length>1?'identity-conflict':'identity-already-linked',ownerUid:foreign[0]};
+  if(unique.length>1) return {ok:false,reason:'identity-conflict',ownerUid:unique[0]};
+  return {ok:true,ownerUid:unique[0]||currentUid,email:e,phone:p};
+}
+async function pdcClaimIdentity(kind,value,uid){
+  const v=String(value||''); if(!v) return true; const ref=db.ref('identity/'+pdcIdentityKey(kind,v));
+  const result=await ref.transaction(current=>{ if(current&&current.uid&&String(current.uid)!==String(uid)) return; return {uid:String(uid),updatedAt:Date.now()}; });
+  const val=result.snapshot.val(); return !!(val&&String(val.uid)===String(uid));
+}
+async function pdcClaimIdentities(email,phone,uid){
+  const e=pdcNormalizeEmail(email), p=pdcNormalizePhone(phone);
+  if(e && !(await pdcClaimIdentity('email',e,uid))) throw new Error('EMAIL_ALREADY_LINKED');
+  try{ if(p&&p.length===10 && !(await pdcClaimIdentity('phone',p,uid))) throw new Error('PHONE_ALREADY_LINKED'); }catch(err){ if(e){ const r=db.ref('identity/'+pdcIdentityKey('email',e)); const snap=await r.once('value'); if(snap.val()?.uid===String(uid)) await r.remove(); } throw err; }
+  return true;
+}
+async function pdcIdentityGate(user,profileEmail,profilePhone){ const email=pdcNormalizeEmail(profileEmail||user?.email||''); const phone=pdcNormalizePhone(profilePhone||(user?.phoneNumber||'')); const result=await pdcResolveIdentity(email,phone,user.uid); if(!result.ok) return result; await pdcClaimIdentities(email,phone,user.uid); return {ok:true,email,phone}; }
+function pdcIdentityErrorMessage(reason){ if(reason==='identity-already-linked') return 'Ye email/phone pehle se ek existing account se linked hai. Please usi account se login karein.'; if(reason==='identity-conflict') return 'Email aur phone alag-alag accounts se linked hain. Duplicate account create nahi kiya gaya.'; if(reason==='EMAIL_ALREADY_LINKED') return 'Ye Gmail pehle se linked hai. Please doosra Gmail use karein.'; if(reason==='PHONE_ALREADY_LINKED') return 'Ye mobile number pehle se linked hai. Please doosra number use karein.'; return 'Account identity verify nahi ho saki. Please dobara try karein.'; }
+
 const App = {
 init: function(){
 setTimeout(() => document.body.classList.remove('preload'), 100);
@@ -2355,60 +2391,14 @@ signInWithGoogle: async function(){
 },
 
 syncCanonicalAccount: function(user){
-if(!user) return;
-STATE.isLoggedIn=true;
-if(STATE.authProcessing && STATE.authSyncUid===user.uid) return;
-STATE.authProcessing=true; STATE.authSyncUid=user.uid;
-
-const phone=user.phoneNumber?last10Digits(user.phoneNumber):(STATE.userProfile.phone||'');
-const email=(user.email||'').toLowerCase();
-const releaseAndHandle=()=>{ STATE.authProcessing=false; STATE.authSyncUid=null; this.handleStateChange(user); };
-const ref=db.ref('customers/'+user.uid);
-
-ref.once('value').then(snap=>{
-  const current=snap.exists()?(snap.val()||{}):null;
-  if(current && current.name){ releaseAndHandle(); return; }
-
-  const adoptCustomer=(source)=>{
-    const d=source||{};
-    const updates={name:d.name||user.displayName||'',email:d.email||email,phone:d.phone||phone};
-    // Shared Home/Booking profile contract. Existing customer data is preserved.
-    ['addresses','selectedAddressId','address','addressType','houseNumber','floor','landmark','area','pincode','latitude','longitude','locationSource'].forEach(k=>{ if(d[k]!==undefined) updates[k]=d[k]; });
-    return ref.update(updates);
-  };
-
-  if(phone && phone.length===10){
-    return db.ref('customers').orderByChild('phone').equalTo(phone).once('value').then(pSnap=>{
-      let matched=null;
-      pSnap.forEach(c=>{ if(c.key!==user.uid && c.val() && c.val().name) matched=c.val(); });
-      if(matched) return adoptCustomer(matched).then(releaseAndHandle);
-      if(user.displayName) return adoptCustomer({name:user.displayName,email,phone}).then(releaseAndHandle);
-      releaseAndHandle(); App.UI.openModal('onboardingModal');
-    });
-  }
-  if(user.displayName) return adoptCustomer({name:user.displayName,email,phone}).then(releaseAndHandle);
-  releaseAndHandle(); App.UI.openModal('onboardingModal');
-}).catch(releaseAndHandle);
+if(!user) return; STATE.isLoggedIn=true; if(STATE.authProcessing&&STATE.authSyncUid===user.uid) return; STATE.authProcessing=true; STATE.authSyncUid=user.uid;
+const phone=user.phoneNumber?last10Digits(user.phoneNumber):(STATE.userProfile.phone||''); const email=pdcNormalizeEmail(user.email||'');
+const release=()=>{STATE.authProcessing=false;STATE.authSyncUid=null;this.handleStateChange(user);};
+(async()=>{ try{ const gate=await pdcIdentityGate(user,email,phone); if(!gate.ok){ await auth.signOut(); STATE.authProcessing=false;STATE.authSyncUid=null; return App.showToast(pdcIdentityErrorMessage(gate.reason),'warning'); } const snap=await db.ref('customers/'+user.uid).once('value'); const current=snap.exists()?(snap.val()||{}):{}; if(current.name){release();return;} await db.ref('customers/'+user.uid).update({name:user.displayName||'',email,phone}); release(); if(!user.displayName) App.UI.openModal('onboardingModal'); }catch(err){ console.warn('Identity gate failed',err); await auth.signOut().catch(()=>{}); STATE.authProcessing=false;STATE.authSyncUid=null; App.showToast(pdcIdentityErrorMessage(err?.message),'warning'); } })();
 },
-
 completeOnboarding: function(){
-const nameInp = document.getElementById('onboardName');
-const emailInp = document.getElementById('onboardEmail');
-const name = nameInp ? nameInp.value.trim() : '';
-const email = emailInp ? emailInp.value.trim() : '';
-if (!name) return App.showToast('Please enter your full name', 'warning');
-const user = auth.currentUser;
-if (!user) return;
-const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : (STATE.userProfile.phone || '');
-
-db.ref('customers/' + user.uid).update({ name, email, phone }).then(() => {
-  STATE.userProfile.name = name;
-  if(email) STATE.userProfile.email = email;
-  if(phone) STATE.userProfile.phone = phone;
-  App.showToast('Profile created successfully!', 'success');
-  App.UI.closeModal('onboardingModal');
-  this.handleStateChange(user);
-}).catch(() => App.showToast('Error saving profile', 'error'));
+const nameInp=document.getElementById('onboardName'),emailInp=document.getElementById('onboardEmail'); const name=nameInp?nameInp.value.trim():''; const email=pdcNormalizeEmail(emailInp?emailInp.value:''); if(!name) return App.showToast('Please enter your full name','warning'); const user=auth.currentUser; if(!user) return; const phone=user.phoneNumber?last10Digits(user.phoneNumber):(STATE.userProfile.phone||'');
+pdcIdentityGate(user,email,phone).then(gate=>{if(!gate.ok) throw new Error(gate.reason); return db.ref('customers/'+user.uid).update({name,email,phone});}).then(()=>{STATE.userProfile.name=name;STATE.userProfile.email=email;STATE.userProfile.phone=phone;App.showToast('Profile created successfully!','success');App.UI.closeModal('onboardingModal');this.handleStateChange(user);}).catch(err=>App.showToast(pdcIdentityErrorMessage(err?.message),'warning'));
 },
 
 resumePendingCheckout: function(){
