@@ -2420,7 +2420,7 @@ function saveProfile(){
   if(!phoneInput.disabled&&!/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number','warning');
   const newName=document.getElementById('profName').value.trim()||'Guest'; const newEmail=pdcNormalizeEmail(document.getElementById('profEmail').value);
   if(!newEmail&&!phone) return showToast('Email ya verified phone required hai','warning');
-  pdcIdentityGate(user,newEmail,phone).then(gate=>{ if(!gate.ok) throw new Error(gate.reason); return db.ref('customers/'+user.uid).update({name:newName,email:newEmail,phone}); }).then(()=>{ applyLoggedInUI(newName); document.getElementById('profNameDisplay').textContent=newName; document.getElementById('profEmailDisplay').textContent=newEmail||'Phone verified member'; return persistProfileAddresses(false); }).then(()=>showToast('Profile saved!','success')).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
+  pdcIdentityGate(user,newEmail,phone).then(gate=>{ if(!gate.ok) throw new Error(gate.reason); return db.ref('customers/'+user.uid).update({name:newName,email:newEmail,phone}); }).then(()=>{ applyLoggedInUI(newName); document.getElementById('profNameDisplay').textContent=newName; document.getElementById('profEmailDisplay').textContent=newEmail||'Phone verified member'; setProfileHeader(user); return persistProfileAddresses(false); }).then(()=>showToast('Profile saved!','success')).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
 }
 
 function logoutUser() {
@@ -2458,7 +2458,14 @@ function setProfileHeader(user) {
     });
   }
   
-  if(isGoogle && user.email) { emailInput.disabled = true; hintEmail.style.display = 'block'; }
+  // A linked/saved email is a protected account identity, regardless of
+  // whether the current session was created with Google or Phone OTP.
+  const linkedEmail = pdcNormalizeEmail(emailInput.value || user.email || '');
+  if(linkedEmail) {
+    emailInput.disabled = true;
+    hintEmail.textContent = isGoogle ? 'Verified via Google' : 'Linked to this account';
+    hintEmail.style.display = 'block';
+  }
   if(isPhone && user.phoneNumber) { phoneInput.disabled = true; hintPhone.style.display = 'block'; }
 
   const notifBtn = document.getElementById('notifEnableBtn');
