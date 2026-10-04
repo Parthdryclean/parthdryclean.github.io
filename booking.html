@@ -488,7 +488,7 @@
 <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:999999;display:flex;flex-direction:column;gap:8px;"></div>
 <!-- HEADER (Original Gen50.45 Logo) -->
 <header>
-<a class="logo" href="/">
+<a class="logo" href="/" onclick="event.preventDefault(); window.location.replace('/');">
 <div class="logo-text-wrapper">
 <div class="logo-row">
 <span class="logo-main">Parth</span>
@@ -1122,7 +1122,7 @@ UI: {
       return;
     }
     if(this.postOrderCatalogBoundary){
-      window.location.href='index.html';
+      window.location.replace('/');
       return;
     }
     if(STATE.checkoutStep>1) this.goBackStep();
