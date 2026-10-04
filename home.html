@@ -83,26 +83,25 @@ section { scroll-margin-top: 80px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
 
 :root {
---bg: #f4f7fc; --surface: #ffffff; --text: #0f172a; --text-secondary: #334155; --text-muted: #475569;
---primary: #0ea5e9; --primary-dark: #0284c7; --accent: #6366f1; --accent-light: #eef2ff;
---success: #10b981; --gold: #f59e0b; --danger: #ef4444; --border: #e2e8f0;
---radius: 16px; --radius-sm: 12px; --shadow-sm: 0 4px 15px rgba(0,0,0,0.03); --shadow: 0 8px 30px rgba(0,0,0,0.06);
+--bg: #F8FAFC; --surface: #FFFFFF; --surface-soft:#F1F5F9; --text: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
+--primary: #2563EB; --primary-dark: #1D4ED8; --accent: #6366f1; --accent-light: #EFF6FF;
+--success: #059669; --gold: #f59e0b; --danger: #EF4444; --border: #E2E8F0;
+--radius: 18px; --radius-sm: 12px; --shadow-sm: 0 4px 18px -4px rgba(var(--ink-rgb),0.05); --shadow: 0 6px 24px -6px rgba(var(--ink-rgb),0.06);
 --transition: 0.25s ease; --header-height: 60px;
+--primary-rgb:37,99,235; --accent-rgb:99,102,241; --ink-rgb:15,23,42; --success-rgb:5,150,105; --danger-rgb:239,68,68; --gold-rgb:217,119,6;
+--success-soft:#ECFDF5; --danger-soft:#FEF2F2; --gold-soft:#FFFBEB;
+--gradient:linear-gradient(135deg,#2563EB,#6366F1); --pill-radius:999px; --radius-lg:22px;
+--shadow-card:0 8px 28px -8px rgba(var(--ink-rgb),.08); --shadow-float:0 18px 45px -10px rgba(var(--primary-rgb),.18);
 }
-[data-theme="dark"] {
---bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --text-secondary: #cbd5e1; --text-muted: #94a3b8;
---primary: #38bdf8; --accent: #818cf8; --accent-light: #312e81; --border: #334155;
---shadow-sm: 0 4px 15px rgba(0,0,0,0.2); --shadow: 0 8px 30px rgba(0,0,0,0.3);
---success: #34d399; --danger: #f87171; --gold: #fbbf24;
-}
+
 * { margin:0; padding:0; box-sizing:border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height:1.6; padding-bottom:0px; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; line-height:1.6; padding-bottom:0px; overflow-x: clip; transition: background 0.3s, color 0.3s; }
 button, a, input, textarea { -webkit-tap-highlight-color: transparent; outline: none; }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
 /* TOUCH SAFE HOVERS */
 @media (hover: hover) {
-  .btn-book-now:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(99,102,241,0.35); }
+  .btn-book-now:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(var(--accent-rgb),0.35); }
   .btn-outline:hover { background: var(--surface); color: var(--primary); border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
   .service-card:hover { transform:translateY(-5px); }
   .step-card:hover { transform: translateY(-5px); }
@@ -110,41 +109,50 @@ button, a, input, textarea { -webkit-tap-highlight-color: transparent; outline: 
   .close-banner:hover { opacity: 1; }
   .theme-toggle:hover { color: var(--primary); }
   nav a:hover { color:var(--primary); }
-  .btn-login:hover { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+  .btn-login:hover { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(var(--accent-rgb),0.3); }
   .care-btn:hover { transform: translateY(-1px); }
 }
 
-[data-theme="dark"] header { background: rgba(15,23,42,0.88); }
-[data-theme="dark"] .auth-input { background:#0f172a; color:var(--text); border-color:var(--border); }
-[data-theme="dark"] .btn-google { background:#1e293b; color:var(--text); border-color:var(--border); }
-[data-theme="dark"] .whatsapp-tooltip { background:var(--surface); color:var(--text); border-color:var(--border); }
-[data-theme="dark"] .hero-floating-badge { background:rgba(30,41,59,0.88); border-color:rgba(255,255,255,0.12); color:var(--text); }
-[data-theme="dark"] .img-2 { border-color:var(--surface); }
-[data-theme="dark"] .search-clear-btn { background:#334155; border-color:#475569; }
-[data-theme="dark"] ::placeholder { color:var(--text-muted); opacity:1; }
-[data-theme="dark"] .care-hint { background:var(--surface); }
-[data-theme="dark"] .step-dot { background:#1e293b; }
-[data-theme="dark"] .progress-step.done .step-dot { background:var(--primary); }
-[data-theme="dark"] .progress-step.current .step-dot { background:#1e293b; }
-[data-theme="dark"] .flag-pill { background:#0f172a; border-color:var(--border); color:var(--text); }
-[data-theme="dark"] .otp-digit-input { background:#0f172a; border-color:var(--border); color:var(--text); }
-[data-theme="dark"] .profile-clean-field input, [data-theme="dark"] .profile-clean-field textarea { background: #0f172a; border-color: var(--border); }
-[data-theme="dark"] .top-banner { background: #1e293b; color: var(--primary); }
-[data-theme="dark"] .care-btn.soft-blue { background: rgba(14,165,233,0.15); color: #38bdf8; }
-[data-theme="dark"] .care-btn.soft-green { background: rgba(34,197,94,0.15); color: #4ade80; }
-[data-theme="dark"] .care-btn.soft-red { background: rgba(239,68,68,0.15); color: #f87171; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .top-banner { background: var(--accent-light); color: var(--primary-dark); text-align:center; padding:10px 20px; font-size:13px; font-weight:700; position:relative; }
 .top-banner span { color: var(--primary); font-weight:800; font-size:14px; letter-spacing:0.5px; margin:0 4px; }
 .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:currentColor; font-size:20px; cursor:pointer; transition:0.2s; opacity: 0.6; }
+
+/* BOOKING UI BRAND BRIDGE — shared visual language, Home layout preserved */
+.booking-ui-brand { --booking-blue: var(--primary); --booking-blue-soft: var(--accent-light); }
+.icon-btn.booking-account-btn { position:relative; width:40px; height:40px; border-radius:999px; background:var(--surface); border:1px solid var(--border); color:var(--text-secondary); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:var(--shadow-sm); transition:.2s; }
+.icon-btn.booking-account-btn:hover { color:var(--primary); border-color:var(--primary); transform:translateY(-1px); }
+.account-initial { width:25px; height:25px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--accent-light); color:var(--primary); font-size:11px; font-weight:900; line-height:1; }
+.account-online-dot { position:absolute; right:4px; bottom:4px; width:8px; height:8px; border-radius:50%; background:var(--success); border:2px solid var(--surface); }
+
+
 
 /* HEADER */
 header { background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 8px 5%; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; min-height:var(--header-height); box-shadow:0 2px 12px rgba(0,0,0,0.03); flex-wrap: nowrap; }
 .logo { display:flex; align-items:center; gap:0; text-decoration:none; flex-shrink:0; }
 .logo-text-wrapper { display:flex; flex-direction:column; line-height:1; }
 .logo-row { display:flex; align-items:baseline; gap:6px; position: relative; }
-.logo-main { font-family: 'Pacifico', cursive; font-size: 2rem; font-weight: 400; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; display: inline-block; line-height: 1.3; }
-.logo-row::after { content: '✦'; position: absolute; bottom: -8px; right: -20px; font-size: 1rem; background: none; -webkit-text-fill-color: var(--primary); color: var(--primary); animation: sparkle 2s infinite; }
+.logo-main { font-family: 'Pacifico', cursive; font-size: 2rem; font-weight: 400; color: var(--primary); -webkit-text-fill-color: var(--primary); position: relative; display: inline-block; line-height: 1.25; }
+.logo-row::after { content: '✦'; position: absolute; bottom: -6px; right: -18px; font-size: 1rem; background: none; -webkit-text-fill-color: var(--primary); color: var(--primary); animation: sparkle 2s infinite ease-in-out; }
 @keyframes sparkle { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.3); } }
 .logo-sub { font-size: 1rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.3px; text-transform: uppercase; display: inline-block; }
 .logo-tagline { font-size:10px; font-weight:700; color: var(--text-muted); letter-spacing:0.5px; margin-top:2px; }
@@ -152,7 +160,7 @@ header { background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); -webkit
 nav ul { list-style:none; display:flex; gap:18px; align-items:center; margin:0; padding:0; }
 nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-size:14px; transition:0.3s; white-space:nowrap; cursor:pointer; }
 .btn-login { background: transparent; color: var(--accent); padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 14px; border: 1.5px solid var(--accent); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.3s; white-space: nowrap; font-family: 'Outfit', sans-serif; }
-.btn-login.is-authed { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(99,102,241,0.3); }
+.btn-login.is-authed { background: var(--accent); color: #fff; box-shadow: 0 4px 15px rgba(var(--accent-rgb),0.3); }
 .theme-toggle { background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
 .mobile-menu-btn { display:none; background:none; border:none; font-size:24px; color:var(--text); cursor:pointer; z-index:1001; padding:4px 8px; transition:0.2s; }
 .install-pill { background: linear-gradient(135deg, #f59e0b, #f97316); color:#fff; border:none; padding:8px 14px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; display:none; align-items:center; gap:6px; font-family:'Outfit'; }
@@ -167,7 +175,14 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* ACTIVE CARE STRIP */
-.active-care-strip { background: linear-gradient(135deg, rgba(14,165,233,0.12), rgba(99,102,241,0.12)); border-bottom: 1px solid var(--border); padding: 8px 5%; display: none; align-items: center; justify-content: space-between; gap: 14px; cursor: pointer; position: sticky; top: var(--header-height); z-index: 99; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.active-care-wrapper {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 99;
+  display: none;
+  width: 100%;
+}
+.active-care-strip { background: var(--surface); background-image: linear-gradient(135deg, rgba(var(--primary-rgb),0.12), rgba(var(--accent-rgb),0.12)); border-bottom: 1px solid var(--border); padding: 8px 5%; display: flex; align-items: center; justify-content: space-between; gap: 14px; cursor: pointer; position: relative; z-index: 1; }
 .active-care-strip::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent); background-size:200% 100%; animation: shimmerLine 3s linear infinite; pointer-events:none; }
 @keyframes shimmerLine { 0% { background-position:200% 0; } 100% { background-position:-200% 0; } }
 .active-care-left { display:flex; align-items:center; gap:10px; flex-shrink:0; }
@@ -183,14 +198,35 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .care-order-pill .pill-status { font-size:11px; font-weight:700; color:var(--text-muted); }
 .care-order-pill .pill-eta { font-size:11px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:5px; }
 .pill-status.status-pending { color:var(--gold); } .pill-status.status-picked_up { color:var(--primary); } .pill-status.status-processing { color:var(--accent); } .pill-status.status-quality_check { color:var(--success); } .pill-status.status-out_for_delivery { color:var(--primary-dark); }
-.care-scroll-arrow { flex-shrink:0; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; margin-left:6px; box-shadow:0 3px 10px rgba(14,165,233,0.35); animation:arrowBounce 1.8s ease-in-out infinite; transition:opacity 0.3s; }
+.care-scroll-arrow { flex-shrink:0; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; margin-left:6px; box-shadow:0 3px 10px rgba(var(--primary-rgb),0.35); animation:arrowBounce 1.8s ease-in-out infinite; transition:opacity 0.3s; }
 @keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity:0.7; } 50% { transform: translateX(4px); opacity:1; } }
 .care-scroll-arrow.hide { opacity:0; pointer-events:none; }
 .care-hint { position:absolute; top:calc(100% + 8px); right:5%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:8px 14px; border-radius:12px; font-size:12px; font-weight:700; box-shadow:var(--shadow); display:flex; align-items:center; gap:8px; opacity:0; transform:translateY(-6px); pointer-events:none; transition:all .4s ease; z-index:97; }
 .care-hint.show { opacity:1; transform:translateY(0); }
 .care-hint i { color:var(--primary); }
-.active-care-dropdown { max-height:0; overflow:hidden; transition:max-height .35s ease; background:var(--surface); position:sticky; top:calc(var(--header-height) + 40px); z-index:98; overscroll-behavior: contain; }
-.active-care-dropdown.open { max-height:560px; overflow-y:auto; border-bottom:1px solid var(--border); }
+
+/* ACTIVE CARE DROPDOWN — smooth animated expansion */
+.active-care-dropdown {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-14px);
+  overflow: hidden;
+  background: var(--surface);
+  position: relative;
+  z-index: 0;
+  overscroll-behavior: contain;
+  pointer-events: none;
+  will-change: max-height, opacity, transform;
+  transition: max-height .42s cubic-bezier(.22,1,.36,1), opacity .28s ease, transform .34s cubic-bezier(.22,1,.36,1);
+}
+.active-care-dropdown.open {
+  max-height: 600px;
+  opacity: 1;
+  transform: translateY(0);
+  overflow-y: auto;
+  border-bottom: 1px solid var(--border);
+  pointer-events: auto;
+}
 .dropdown-close-row { display:flex; justify-content:space-between; align-items:center; padding:14px 5% 0; position:sticky; top:0; background:var(--surface); z-index:2; }
 .dropdown-close-row > span { font-weight:800; font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.6px; display:flex; align-items:center; gap:6px; }
 .dropdown-close-row > span b { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
@@ -203,18 +239,18 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .care-card-meta { font-size:12px; color:var(--text-muted); font-weight:700; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
 .meta-pill { background:var(--surface); border:1px solid var(--border); padding:5px 10px; border-radius:999px; }
 .eta-highlight { color:var(--primary); font-weight:800; }
-.live-indicator { display:inline-flex; align-items:center; gap:6px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); color:var(--success); padding:5px 12px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.8px; flex-shrink:0; margin-left:auto; }
+.live-indicator { display:inline-flex; align-items:center; gap:6px; background:rgba(var(--success-rgb),0.12); border:1px solid rgba(var(--success-rgb),0.35); color:var(--success); padding:5px 12px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.8px; flex-shrink:0; margin-left:auto; }
 .live-indicator .live-care-dot { width:8px; height:8px; }
 .care-progress { display:flex; align-items:flex-start; justify-content:space-between; gap:4px; margin:18px 0 10px; position:relative; }
 .care-progress::before { content:''; position:absolute; top:15px; left:20px; right:20px; height:3px; background:var(--border); border-radius:999px; z-index:0; }
 .progress-step { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px; min-width:0; }
 .step-dot { width:32px; height:32px; border-radius:50%; background:var(--surface); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px; transition:.3s; }
 .step-dot i { line-height:1; color:inherit; }
-.progress-step.done .step-dot { background:var(--primary); border-color:transparent; color:#fff; box-shadow:0 4px 12px rgba(14,165,233,.3); }
+.progress-step.done .step-dot { background:var(--primary); border-color:transparent; color:#fff; box-shadow:0 4px 12px rgba(var(--primary-rgb),.3); }
 .progress-step.done .step-dot i { color:#fff; }
 .progress-step.current .step-dot { background:var(--surface); border-color:var(--primary); color:var(--primary); animation:currentPulse 1.8s infinite; }
 .progress-step.current .step-dot i { color:var(--primary); }
-@keyframes currentPulse { 0%,100% { box-shadow:0 0 0 4px rgba(14,165,233,.12); } 50% { box-shadow:0 0 0 8px rgba(14,165,233,.16); } }
+@keyframes currentPulse { 0%,100% { box-shadow:0 0 0 4px rgba(var(--primary-rgb),.12); } 50% { box-shadow:0 0 0 8px rgba(var(--primary-rgb),.16); } }
 .step-label { font-size:10px; font-weight:800; color:var(--text-muted); line-height:1.25; }
 .progress-step.done .step-label, .progress-step.current .step-label { color:var(--text); }
 .care-card-actions { display:flex; gap:8px; flex-wrap:nowrap; margin-top:18px; }
@@ -222,9 +258,9 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .care-btn i { font-size: 13px; }
 
 /* COMPACT SOFT BUTTONS FOR ORDERS */
-.care-btn.soft-blue { background: #e0f2fe; color: #0284c7; }
-.care-btn.soft-green { background: #dcfce7; color: #166534; }
-.care-btn.soft-red { background: #fee2e2; color: #b91c1c; }
+.care-btn.soft-blue { background: var(--accent-light); color: var(--primary-dark); }
+.care-btn.soft-green { background: var(--success-soft); color: var(--success); }
+.care-btn.soft-red { background: var(--danger-soft); color: var(--danger); }
 
 .express-badge { background: #fbbf24; color: #1e293b; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
 .express-badge i { font-size: 10px; }
@@ -232,7 +268,7 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 /* HERO STYLES (ORIGINAL GREETING + HIDDEN SEO) */
 .hero { display:flex; align-items:center; justify-content:space-between; padding:60px 5%; gap:40px; flex-wrap:wrap; }
 .hero-content { max-width:550px; }
-.premium-tag { display:inline-flex; align-items:center; gap:8px; background: rgba(14,165,233,0.1); color:var(--primary); padding:6px 16px; border-radius:30px; font-size:13px; font-weight:800; border:1px solid rgba(14,165,233,0.2); margin-bottom:18px; }
+.premium-tag { display:inline-flex; align-items:center; gap:8px; background: rgba(var(--primary-rgb),0.1); color:var(--primary); padding:6px 16px; border-radius:30px; font-size:13px; font-weight:800; border:1px solid rgba(var(--primary-rgb),0.2); margin-bottom:18px; }
 
 .hero-content h1 { font-size:clamp(36px,5vw,52px); font-weight:800; line-height:1.1; margin-bottom:15px; color:var(--text); letter-spacing:-0.5px; display: flex; flex-direction: column; gap: 8px; }
 .text-gradient { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
@@ -241,7 +277,7 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 /* BALANCED HERO BUTTONS */
 .action-buttons { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:18px; }
 .btn { padding:14px 28px; border-radius:50px; font-size:15px; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s; cursor:pointer; border:none; font-family:'Outfit'; }
-.btn-book-now { background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; box-shadow:0 8px 20px rgba(99,102,241,0.25); }
+.btn-book-now { background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; box-shadow:0 8px 20px rgba(var(--accent-rgb),0.25); }
 .btn-outline { background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); }
 
 /* PERFECTED HERO BADGES CENTER ALIGNED */
@@ -267,34 +303,71 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .ba-slider-line { position: absolute; top: 0; left: 50%; width: 3px; height: 100%; background: #ffffff; z-index: 3; box-shadow: 0 0 10px rgba(0,0,0,0.3); transform: translateX(-50%); pointer-events: none; }
 .ba-slider-btn { position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; background: #ffffff; border-radius: 50%; z-index: 4; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); pointer-events: none; }
 .ba-badge { position:absolute; top:15px; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:800; color:#fff; pointer-events:none; z-index:5; }
-.badge-dirty { right:15px; background:rgba(239,68,68,0.8); backdrop-filter:blur(4px); -webkit-backdrop-filter: blur(4px); }
-.badge-clean { left:15px; background:rgba(16,185,129,0.8); backdrop-filter:blur(4px); -webkit-backdrop-filter: blur(4px); }
+.badge-dirty { right:15px; background:rgba(var(--danger-rgb),0.8); backdrop-filter:blur(4px); -webkit-backdrop-filter: blur(4px); }
+.badge-clean { left:15px; background:rgba(var(--success-rgb),0.8); backdrop-filter:blur(4px); -webkit-backdrop-filter: blur(4px); }
 
-.master-section { padding: 80px 5%; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow-x: clip; margin-top:20px; }
-.master-container { display: flex; align-items: center; justify-content: space-between; max-width: 1100px; margin: 0 auto; gap: 50px; }
-.master-left { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; min-height: 420px; }
-.stain-arch { position: absolute; width: 280px; height: 380px; background-color: var(--bg); border-top-left-radius: 140px; border-top-right-radius: 140px; box-shadow: inset 0px 8px 20px rgba(0,0,0,0.03); z-index: 1; bottom: 10px; }
-.stain-saree-bg { position: absolute; width: 130px; left: -25px; top: 40px; z-index: 0; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.08)) blur(0.8px); animation: float-bg-saree 6s ease-in-out infinite; opacity: 0.8; }
-.stain-blazer-bg { position: absolute; width: 140px; right: -15px; bottom: 60px; z-index: 0; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.08)) blur(0.8px); animation: float-bg-blazer 5s ease-in-out infinite alternate; opacity: 0.8; }
-.stain-main-img { position: relative; z-index: 2; width: 260px; filter: drop-shadow(0 25px 30px rgba(0,0,0,0.12)); animation: float-stain 4s ease-in-out infinite; transition: opacity 0.3s ease, transform 0.3s ease; }
-.stain-decor-left { position: absolute; bottom: -15px; left: -30px; width: 160px; z-index: 3; }
-.stain-spray { position: absolute; top: -60px; right: 0px; width: 160px; z-index: 15; animation: gentle-swing 3s ease-in-out infinite alternate; transform-origin: top center; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); }
-.stain-hanger { position: absolute; bottom: -80px; right: 70px; width: 220px; z-index: 15; animation: float-delayed 5s ease-in-out infinite; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15)); }
+.master-section {
+  padding:80px 5%;
+  background:var(--bg);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+  margin-top:20px;
+}
+.master-container{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1100px;margin:0 auto;gap:50px;
+}
+.master-left{flex:1;position:relative;display:flex;justify-content:center;align-items:center;min-height:420px;}
+.stain-arch{
+  position:absolute;width:280px;height:380px;bottom:10px;z-index:1;
+  background:var(--surface);border:1px solid var(--border);
+  border-top-left-radius:140px;border-top-right-radius:140px;
+  box-shadow:inset 0 8px 20px rgba(var(--ink-rgb),.025),var(--shadow-sm);
+}
+.stain-saree-bg{position:absolute;width:130px;left:-25px;top:40px;z-index:0;filter:drop-shadow(0 15px 20px rgba(var(--ink-rgb),.08)) blur(.8px);animation:float-bg-saree 6s ease-in-out infinite;opacity:.8;}
+.stain-blazer-bg{position:absolute;width:140px;right:-15px;bottom:60px;z-index:0;filter:drop-shadow(0 15px 20px rgba(var(--ink-rgb),.08)) blur(.8px);animation:float-bg-blazer 5s ease-in-out infinite alternate;opacity:.8;}
+.stain-main-img{position:relative;z-index:2;width:260px;filter:drop-shadow(0 25px 30px rgba(var(--ink-rgb),.12));animation:float-stain 4s ease-in-out infinite;transition:opacity .3s ease,transform .3s ease;}
+.stain-decor-left{position:absolute;bottom:-15px;left:-30px;width:160px;z-index:3;}
+.stain-spray{position:absolute;top:-60px;right:0;width:160px;z-index:15;animation:gentle-swing 3s ease-in-out infinite alternate;transform-origin:top center;filter:drop-shadow(0 15px 20px rgba(var(--ink-rgb),.12));}
+.stain-hanger{position:absolute;bottom:-80px;right:70px;width:220px;z-index:15;animation:float-delayed 5s ease-in-out infinite;filter:drop-shadow(0 15px 20px rgba(var(--ink-rgb),.12));}
+.master-right{flex:1.1;display:flex;flex-direction:column;justify-content:center;min-width:0;max-width:100%;padding-top:10px;box-sizing:border-box;}
+.stain-brand-text{font-size:10px;font-weight:900;color:var(--text-muted);margin-bottom:9px;text-transform:uppercase;letter-spacing:1.2px;}
+.stain-main-title{font-size:clamp(2.2rem,3.5vw,3rem);line-height:1.08;font-weight:900;color:var(--text);margin-bottom:18px;letter-spacing:-1px;word-break:break-word;}
+.fabric-pills{display:flex;gap:8px;margin-bottom:8px;overflow-x:auto;scrollbar-width:none;padding:4px 2px 14px;flex-wrap:nowrap;max-width:100%;box-sizing:border-box;}
+.fabric-pills::-webkit-scrollbar{display:none;}
+.fabric-pill{
+  white-space:nowrap;padding:10px 15px;border-radius:var(--pill-radius);
+  background:var(--surface);border:1px solid var(--border);
+  font-size:12px;font-weight:800;cursor:pointer;transition:.2s;color:var(--text-muted);
+  font-family:'Outfit';flex-shrink:0;box-shadow:var(--shadow-sm);
+}
+.fabric-pill:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px);}
+.fabric-pill.active{background:var(--accent-light);color:var(--primary);border-color:var(--primary);box-shadow:none;}
+.fabric-content-card{
+  padding:20px;margin-bottom:20px;display:none;background:var(--surface);
+  border:1px solid var(--border);box-shadow:var(--shadow-card);border-radius:20px;
+  word-wrap:break-word;overflow-wrap:break-word;width:100%;box-sizing:border-box;
+}
+.fabric-content-card.active{display:block;animation:fadeIn .3s ease;}
+.fabric-content-card h3{color:var(--text);margin-bottom:8px;font-size:18px;display:flex;align-items:center;gap:8px;}
+.fabric-content-card h3 i{color:var(--primary)!important;}
+.fabric-content-card p{color:var(--text-muted);font-size:13px;font-weight:550;line-height:1.65;margin:0;}
+.fabric-content-card .trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:15px;font-size:10px;font-weight:850;color:var(--primary);background:var(--accent-light);padding:8px 12px;border-radius:var(--pill-radius);border:1px solid rgba(var(--primary-rgb),.14);width:fit-content;}
+.trust-badge-small{color:var(--primary);background:var(--accent-light);border-color:rgba(var(--primary-rgb),.14);}
 
-.master-right { flex: 1.1; display: flex; flex-direction: column; justify-content: center; min-width: 0; max-width: 100%; padding-top: 10px; box-sizing: border-box; }
-.stain-brand-text { font-size: 1.1rem; font-weight: 800; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-.stain-main-title { font-size: clamp(2.2rem, 3.5vw, 3rem); line-height: 1.1; font-weight: 800; color: var(--text); margin-bottom: 1.5rem; letter-spacing: -1px; word-break: break-word; }
 
-.fabric-pills { display:flex; gap:10px; margin-bottom:5px; overflow-x: auto; scrollbar-width: none; padding: 15px 15px 25px 10px; flex-wrap: nowrap; max-width: 100%; box-sizing: border-box; }
-.fabric-pills::-webkit-scrollbar { display: none; }
-.fabric-pill { white-space: nowrap; padding:10px 18px; border-radius:30px; background:var(--bg); border:1.5px solid var(--border); font-size:13px; font-weight:700; cursor:pointer; transition:0.2s; color: var(--text-muted); font-family: 'Outfit'; flex-shrink: 0;}
-.fabric-pill.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.3); }
 
-.fabric-content-card { padding:20px; margin-bottom: 20px; display:none; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); border-radius: 20px; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
-.fabric-content-card.active { display:block; animation:fadeIn 0.3s ease; }
-.fabric-content-card h3 { color:var(--primary); margin-bottom:8px; font-size: 18px; display:flex; align-items:center; gap:8px;}
-.fabric-content-card p { color:var(--text-muted); font-size:14px; font-weight:500; line-height: 1.6;}
-.trust-badge-small { display:inline-flex; align-items:center; gap:10px; font-size:14px; font-weight:700; color:var(--text); background:rgba(14,165,233,0.05); padding:10px 20px; border-radius:50px; border:1px solid rgba(14,165,233,0.2); width: fit-content; }
+
+
+
+
+
+
+
+
+
+
 
 @keyframes float-stain { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 @keyframes gentle-swing { 0% { transform: rotate(0deg); } 100% { transform: rotate(8deg); } }
@@ -310,14 +383,14 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .price-search-container { max-width:700px; margin: 0 auto 20px auto; position:relative; }
 .price-search-container > i.fa-search { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:18px; pointer-events:none; }
 .price-search-input { width:100%; padding:16px 58px 16px 45px; border-radius:30px; border:2px solid var(--border); font-size:15px; font-family:'Outfit'; outline:none; transition:0.3s; box-shadow:var(--shadow-sm); background: var(--surface); color: var(--text); }
-.price-search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.15); }
+.price-search-input:focus { border-color:var(--primary); box-shadow:0 4px 15px rgba(var(--primary-rgb),0.15); }
 .search-clear-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:34px; height:34px; border-radius:50%; background:var(--bg); border:1px solid var(--border); color:var(--text-muted); font-size:15px; cursor:pointer; display:none; align-items:center; justify-content:center; transition:.2s; z-index:3; line-height:1; }
 
 .chips-scroll-wrapper { position: relative; max-width: 700px; margin: 0 auto; padding-bottom: 5px; }
 .pricing-chips-wrapper { display:flex; gap:10px; overflow-x:auto; padding:15px 15px 30px 15px; margin-bottom: -15px; scrollbar-width: none; scroll-behavior: smooth; }
 .pricing-chips-wrapper::-webkit-scrollbar { display:none; }
 .price-chip { white-space:nowrap; padding:10px 20px; border-radius:30px; background:var(--surface); border:1.5px solid var(--border); font-size:14px; font-weight:700; color:var(--text-muted); cursor:pointer; transition:0.3s; font-family:'Outfit'; flex-shrink: 0; }
-.price-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:0 4px 15px rgba(14,165,233,0.3); }
+.price-chip.active { background:var(--accent-light); color:var(--primary); border-color:var(--primary); box-shadow:none; }
 
 /* LIST SWIPE HINT ARROWS (PULSING) */
 .list-wrapper-relative { position: relative; max-width: 700px; margin: 0 auto; }
@@ -335,12 +408,13 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .price-name { font-size:15px; font-weight:600; color:var(--text); }
 .price-tag { font-size:15px; font-weight:800; color:var(--primary); }
 .price-original { font-size:12px; color:var(--text-muted); text-decoration:line-through; margin-left:6px; font-weight: 500; }
+.price-on-request { display:inline-flex; align-items:center; padding:4px 9px; border-radius:999px; background:var(--accent-light); color:var(--primary); border:1px solid rgba(var(--primary-rgb),.14); font-size:11px; font-weight:800; white-space:nowrap; }
 
 /* HOW IT WORKS */
 .how-it-works { padding: 60px 5%; background: var(--surface); }
 .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; max-width: 900px; margin: 0 auto; }
 .step-card { background: transparent; border: none; padding: 10px; text-align: center; box-shadow: none; transition: transform 0.3s; }
-.step-icon { width: 70px; height: 70px; margin: 0 auto 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; box-shadow: 0 8px 20px rgba(14,165,233,0.25); }
+.step-icon { width: 70px; height: 70px; margin: 0 auto 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; box-shadow: 0 8px 20px rgba(var(--primary-rgb),0.25); }
 .step-card h3 { font-size: 20px; margin-bottom: 10px; color: var(--text); font-weight: 800; }
 .step-card p { color: var(--text-muted); font-size: 15px; font-weight: 500; line-height: 1.6;}
 
@@ -348,7 +422,7 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .services-section { padding:80px 5%; background:var(--bg); border-top: 1px solid var(--border); }
 .services-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:40px; max-width: 1100px; margin: 0 auto; }
 .service-card { background: transparent; border: none; padding: 10px; text-align: left; box-shadow: none; transition:all 0.3s; }
-.icon-box { width:65px; height:65px; background:linear-gradient(135deg, rgba(14,165,233,0.1), rgba(99,102,241,0.1)); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; color:var(--primary); margin-bottom: 20px; border: 1px solid rgba(14,165,233,0.2); }
+.icon-box { width:65px; height:65px; background:linear-gradient(135deg, rgba(var(--primary-rgb),0.1), rgba(var(--accent-rgb),0.1)); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; color:var(--primary); margin-bottom: 20px; border: 1px solid rgba(var(--primary-rgb),0.2); }
 .service-card h3 { font-size:18px; margin-bottom:12px; font-weight:800; color:var(--text); line-height:1.2; }
 .service-card p { color:var(--text-muted); font-size:14.5px; font-weight:500; line-height:1.6; }
 
@@ -359,21 +433,139 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .review-card { background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding:24px; flex-shrink:0; min-width:280px; max-width:320px; box-shadow: var(--shadow-sm); scroll-snap-align: center; }
 .review-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
 .stars { color:var(--gold); font-size:13px; }
-.verified-badge { font-size:11px; color:#10b981; font-weight:800; display:flex; align-items:center; gap:4px; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 20px; }
+.verified-badge { font-size:11px; color:#10b981; font-weight:800; display:flex; align-items:center; gap:4px; background: rgba(var(--success-rgb),0.1); padding: 4px 8px; border-radius: 20px; }
 .review-text { font-size:14px; color:var(--text); font-style:italic; margin-bottom:14px; font-weight:500; line-height: 1.6; }
 .customer-name { font-weight:800; color:var(--text); display: block; }
 .customer-loc { font-size:12px; color:var(--text-muted); font-weight:600; }
 
-/* FAQ UPGRADED (Fixed Spacing & Padding) */
-.faq-section { padding:80px 5% 60px 5%; margin-bottom:80px; max-width:800px; margin-inline:auto; background: var(--bg); }
-.faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom:12px; overflow:hidden; }
-.faq-question { width: 100%; padding:18px 22px; font-size:15px; font-weight:800; cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--text); transition:0.2s; background: transparent; border: none; text-align: left; font-family: 'Outfit'; }
-.faq-icon-title { display: flex; align-items: center; gap: 12px; }
-.faq-cat-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(14,165,233,0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 14px; }
-.faq-chevron { transition: transform 0.3s ease; }
-.faq-answer { padding:0 22px 18px 66px; color:var(--text-muted); font-size:14px; display:none; font-weight:500; line-height: 1.6; }
-.faq-item.active .faq-answer { display:block; }
-.faq-item.active .faq-question .faq-chevron { transform:rotate(180deg); color:var(--primary); }
+/* FAQ — NEW UI COMPOSITION */
+.faq-section{padding:78px 5% 70px;max-width:900px;margin:0 auto;background:var(--bg);}
+.faq-section .section-header{margin-bottom:30px;text-align:left;}
+.faq-section .section-header h2{font-size:clamp(26px,4vw,34px);letter-spacing:-.7px;}
+.faq-section .section-header:after{content:'Everything you need to know before booking.';display:block;margin-top:8px;color:var(--text-muted);font-size:13px;font-weight:550;}
+/* FAQ — clean new composition; structure preserved, no functional JS changes */
+.faq-item{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  margin-bottom:14px;
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+  transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;
+}
+.faq-question{
+  width:100%;
+  min-height:82px;
+  padding:13px 14px 13px 12px;
+  font-family:'Outfit',sans-serif;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 38px;
+  align-items:center;
+  gap:14px;
+  color:var(--text);
+  background:transparent;
+  border:0;
+  text-align:left;
+}
+.faq-icon-title{
+  grid-column:1/3;
+  min-width:0;
+  display:grid;
+  grid-template-columns:42px 42px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+}
+.faq-number{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:var(--accent-light);
+  border:1px solid rgba(var(--primary-rgb),.14);
+  color:var(--primary);
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.4px;
+}
+.faq-cat-icon{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  border:1px solid var(--border)!important;
+  background:var(--surface-soft)!important;
+  color:var(--primary)!important;
+  display:grid!important;
+  place-items:center;
+  font-size:13px;
+}
+.faq-question-text{
+  min-width:0;
+  font-size:14px;
+  font-weight:850;
+  line-height:1.4;
+  color:var(--text);
+}
+.faq-chevron{
+  grid-column:3;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--bg);
+  border:1px solid var(--border);
+  color:var(--text-muted);
+  font-size:10px;
+  transition:transform .25s ease,background .25s ease,color .25s ease,border-color .25s ease;
+}
+.faq-answer{
+  position:relative;
+  margin:0 14px 14px 68px;
+  padding:15px 18px 16px;
+  border-left:3px solid var(--primary);
+  border-top:1px solid var(--border);
+  background:var(--bg);
+  border-radius:0 14px 14px 14px;
+  color:var(--text-muted);
+  font-size:13px;
+  line-height:1.7;
+  font-weight:500;
+  display:none;
+}
+.faq-answer:before{
+  content:'ANSWER';
+  display:block;
+  margin-bottom:5px;
+  color:var(--primary);
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:1.2px;
+}
+.faq-item.active{
+  border-color:rgba(var(--primary-rgb),.28);
+  box-shadow:0 10px 30px -14px rgba(var(--primary-rgb),.22);
+}
+.faq-item.active .faq-number{
+  background:var(--accent-light);
+  color:var(--primary);
+  border-color:rgba(var(--primary-rgb),.22);
+}
+.faq-item.active .faq-cat-icon{
+  background:var(--accent-light)!important;
+  border-color:rgba(var(--primary-rgb),.22)!important;
+  color:var(--primary)!important;
+}
+.faq-item.active .faq-chevron{
+  background:var(--accent-light);
+  color:var(--primary);
+  border-color:rgba(var(--primary-rgb),.2);
+  transform:rotate(180deg);
+}
+.faq-item.active .faq-answer{display:block;}
 
 /* FINAL CTA */
 .final-cta-section { padding: 60px 5%; max-width: 1000px; margin: 0 auto; text-align: center; }
@@ -382,8 +574,8 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 
 /* FOOTER */
 .site-footer { padding: 60px 5% 40px; font-family: 'Outfit'; position: relative; overflow: hidden; border-top: 1px solid var(--border); }
-.site-footer::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, var(--bg) 0%, rgba(14,165,233,0.03) 100%); z-index: -1; }
-[data-theme="dark"] .site-footer::before { background: linear-gradient(180deg, var(--bg) 0%, rgba(14,165,233,0.05) 100%); }
+.site-footer::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, var(--bg) 0%, rgba(var(--primary-rgb),0.03) 100%); z-index: -1; }
+
 .footer-content-wrapper { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
 .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; border-bottom: 1px solid var(--border); padding-bottom: 40px; text-align:left; }
 .footer-brand { flex: 1; min-width: 250px; }
@@ -402,12 +594,12 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 /* WHATSAPP FLOATING BUTTON */
 .floating-whatsapp { position:fixed; bottom:25px; right:25px; background:#25d366; color:#fff; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; box-shadow:0 8px 25px rgba(37,211,102,0.4); z-index:9999; text-decoration:none; transition:0.3s; }
 .floating-whatsapp:hover { transform:scale(1.1); }
-.whatsapp-tooltip { position:absolute; right:72px; top:50%; transform:translateY(-50%); background:#fff; color:var(--text); padding:8px 14px; border-radius:12px; font-size:12px; font-weight:800; box-shadow:var(--shadow); white-space:nowrap; border:1px solid var(--border); display:flex; align-items:center; gap:6px; transition: opacity .3s ease; }
+.whatsapp-tooltip { position:absolute; right:72px; top:50%; transform:translateY(-50%); background:var(--surface); color:var(--text); padding:8px 14px; border-radius:12px; font-size:12px; font-weight:800; box-shadow:var(--shadow); white-space:nowrap; border:1px solid var(--border); display:flex; align-items:center; gap:6px; transition: opacity .3s ease; }
 .whatsapp-tooltip.folded { opacity:0; pointer-events:none; }
 .whatsapp-tooltip span { width:8px; height:8px; background:#22c55e; border-radius:50%; display:inline-block; box-shadow:0 0 8px #22c55e; }
 
 /* --- HARDWARE ACCELERATED MODALS --- */
-.modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.65); backdrop-filter:blur(8px); -webkit-backdrop-filter: blur(8px); display:flex; justify-content:center; align-items:center; z-index:100000; padding:16px; transition: opacity 0.3s ease; opacity: 0; pointer-events: none; visibility: hidden; }
+.modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(var(--ink-rgb),0.65); backdrop-filter:blur(8px); -webkit-backdrop-filter: blur(8px); display:flex; justify-content:center; align-items:center; z-index:100000; padding:16px; transition: opacity 0.3s ease; opacity: 0; pointer-events: none; visibility: hidden; }
 .modal-overlay.active { opacity: 1; pointer-events: auto; visibility: visible; }
 .modal-box { background:var(--surface); border-radius:24px; padding:32px 24px; max-width:420px; width:100%; position:relative; box-shadow:0 25px 60px rgba(0,0,0,0.2); border:1px solid var(--border); text-align:center; max-height:92vh; overflow-y:auto; scrollbar-width:none; transform: translate3d(0, 0, 0) scale(0.95); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
 .modal-overlay.active .modal-box { transform: translate3d(0, 0, 0) scale(1); }
@@ -436,43 +628,44 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .google-icon { flex-shrink:0; } 
 .auth-divider { display:flex; align-items:center; margin:18px 0; color:var(--text-muted); font-size:12px; font-weight:800; }
 .auth-divider::before, .auth-divider::after { content:''; flex:1; border-bottom:1px solid var(--border); }
-.auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1px solid var(--border); background:#f8fafc; color:var(--text); font-family:'Outfit'; font-size:14px; outline:none; margin-bottom:14px; font-weight:600; transition:0.2s; }
-.auth-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,233,0.1); background:var(--surface); }
-.btn-primary-full { width:100%; background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; padding:15px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.3s; font-family:'Outfit'; box-shadow:0 6px 20px rgba(14,165,233,0.3); }
+.auth-input { width:100%; padding:14px 16px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Outfit'; font-size:14px; outline:none; margin-bottom:14px; font-weight:600; transition:0.2s; }
+.auth-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(var(--primary-rgb),0.1); background:var(--surface); }
+.btn-primary-full { width:100%; background: linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; border:none; padding:15px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:0.3s; font-family:'Outfit'; box-shadow:0 6px 20px rgba(var(--primary-rgb),0.3); }
 .btn-secondary-full { width:100%; background: transparent; color:var(--text-muted); border:1px solid var(--border); padding:12px; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-top: 10px; transition:0.3s; font-family:'Outfit'; }
 .phone-input-group { display:flex; gap:10px; margin-bottom:16px; }
-.flag-pill { display:inline-flex; align-items:center; gap:6px; padding:0 16px; border-radius:12px; background:#f8fafc; border:1px solid var(--border); font-size:14px; font-weight:800; color:var(--text); flex-shrink:0; }
+.flag-pill { display:inline-flex; align-items:center; gap:6px; padding:0 16px; border-radius:12px; background:var(--surface); border:1px solid var(--border); font-size:14px; font-weight:800; color:var(--text); flex-shrink:0; }
 .phone-number-field { flex:1; margin-bottom:0; text-align:left; letter-spacing:1px; font-size: 15px; }
 .otp-inputs-wrapper { display:flex; gap:8px; justify-content:center; margin:20px 0; }
-.otp-digit-input { width:46px; height:52px; border-radius:12px; border:1.5px solid var(--border); background:#f8fafc; text-align:center; font-size:20px; font-weight:800; color:var(--text); transition:.2s; font-family:'Outfit'; }
-.otp-digit-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(14,165,233,0.15); background:var(--surface); }
+.otp-digit-input { width:46px; height:52px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface); text-align:center; font-size:20px; font-weight:800; color:var(--text); transition:.2s; font-family:'Outfit'; }
+.otp-digit-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(var(--primary-rgb),0.15); background:var(--surface); }
 .resend-timer-wrap { display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:18px; }
 .resend-btn { background:none; border:none; color:var(--primary); font-weight:800; cursor:pointer; font-size:12px; font-family:'Outfit'; }
 .resend-btn[disabled] { color:var(--text-muted); opacity:0.6; cursor:not-allowed; }
 .edit-phone-btn { color:var(--accent); cursor:pointer; text-decoration:underline; font-size:12px; font-weight:700; background:none; border:none; font-family:'Outfit'; }
 
 /* PROFILE MODAL */
-.profile-clean-header { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 24px; }
-.profile-clean-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 8px 20px rgba(14,165,233,0.3); border: 3px solid var(--surface); }
-.profile-clean-header h3 { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 4px; }
-.profile-clean-header p { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
-.member-pill-dark { background: rgba(14,165,233,0.1); color: var(--primary); padding: 5px 14px; border-radius: 20px; font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(14,165,233,0.2); }
-.profile-stats { display:flex; gap:12px; margin-bottom:24px; }
-.profile-stat { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:18px; padding:16px 12px; text-align:center; box-shadow:var(--shadow-sm); }
-.stat-icon { width:36px; height:36px; margin:0 auto 10px; border-radius:12px; background:linear-gradient(135deg,rgba(14,165,233,0.12),rgba(99,102,241,0.12)); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:15px; }
-.stat-value { font-size:20px; font-weight:800; color:var(--text); line-height:1.1; }
-.stat-label { font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-top:4px; }
-.profile-clean-fields { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
-.profile-clean-field { position: relative; }
-.profile-clean-field i { position: absolute; left: 16px; top: 16px; color: var(--text-muted); font-size: 15px; opacity: 0.8; }
-.profile-clean-field input, .profile-clean-field textarea { width: 100%; padding: 15px 16px 15px 44px; border: 1px solid var(--border); background: #f8fafc; border-radius: 14px; font-family: 'Outfit'; font-size: 14px; color: var(--text); font-weight: 600; transition: 0.2s; resize: none; outline: none; }
-.profile-clean-field input:focus, .profile-clean-field textarea:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 4px 15px rgba(14,165,233,0.1); }
-.profile-clean-field input:disabled { background: var(--bg); color: var(--text-muted); cursor: not-allowed; opacity: 0.8; border-color: var(--border); }
-.field-hint-text { display: block; text-align: left; font-size: 10px; font-weight: 600; color: var(--text-muted); margin-top: 4px; padding-left: 6px; }
-.profile-quick-actions { display:flex; gap:12px; margin-top:16px; }
-.profile-action-btn { flex:1; padding:14px 16px; border-radius:14px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:'Outfit'; transition:.2s; text-decoration:none; border:1px solid var(--border); }
+.profile-clean-header { display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:22px; }
+.profile-clean-avatar { width:78px; height:78px; border-radius:24px; background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; font-size:26px; font-weight:900; display:flex; align-items:center; justify-content:center; margin:0 auto 13px; box-shadow:0 10px 26px rgba(var(--primary-rgb),.20); border:4px solid var(--surface); }
+.profile-clean-header h3 { font-size:21px; font-weight:850; color:var(--text); line-height:1.2; margin-bottom:4px; }
+.profile-clean-header p { font-size:12.5px; color:var(--text-muted); margin-bottom:10px; font-weight:600; }
+.member-pill-dark { background:var(--accent-light); color:var(--primary); padding:6px 13px; border-radius:999px; font-size:10px; font-weight:850; text-transform:uppercase; letter-spacing:.55px; border:1px solid rgba(var(--primary-rgb),.16); }
+.profile-stats { display:flex; gap:10px; margin-bottom:22px; }
+.profile-stat { flex:1; background:var(--surface-soft); border:1px solid var(--border); border-radius:18px; padding:14px 10px; text-align:center; box-shadow:var(--shadow-sm); }
+.stat-icon { width:38px; height:38px; margin:0 auto 9px; border-radius:12px; background:var(--accent-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:14px; }
+.stat-value { font-size:20px; font-weight:850; color:var(--text); line-height:1.1; }
+.stat-label { font-size:9.5px; font-weight:850; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; margin-top:5px; }
+.profile-clean-fields { display:flex; flex-direction:column; gap:13px; margin-bottom:20px; }
+.profile-clean-field { position:relative; }
+.profile-clean-field i { position:absolute; left:15px; top:15px; color:var(--text-muted); font-size:14px; opacity:.9; }
+.profile-clean-field input, .profile-clean-field textarea { width:100%; padding:14px 15px 14px 42px; border:1px solid var(--border); background:var(--canvas); border-radius:16px; font-family:'Outfit'; font-size:13.5px; color:var(--text); font-weight:650; transition:.2s; resize:none; outline:none; }
+.profile-clean-field input:focus, .profile-clean-field textarea:focus { border-color:var(--primary); background:var(--surface); box-shadow:0 0 0 3px var(--accent-light); }
+.profile-clean-field input:disabled { background:var(--surface-soft); color:var(--text-muted); cursor:not-allowed; opacity:.9; border-color:var(--border); }
+.field-hint-text { display:block; text-align:left; font-size:9.5px; font-weight:650; color:var(--text-muted); margin-top:4px; padding-left:7px; }
+.profile-quick-actions { display:flex; gap:10px; margin-top:14px; }
+.profile-action-btn { flex:1; padding:13px 14px; border-radius:999px; font-weight:850; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:'Outfit'; transition:.2s; text-decoration:none; border:1px solid var(--border); }
 .profile-action-btn.orders { background:var(--surface); color:var(--text); box-shadow:var(--shadow-sm); }
-.profile-action-btn.logout { background:rgba(239,68,68,0.06); color:var(--danger); border-color:rgba(239,68,68,0.25); }
+.profile-action-btn.logout { background:rgba(var(--danger-rgb),.06); color:var(--danger); border-color:rgba(var(--danger-rgb),.20); }
+
 
 /* ORDERS MODAL & TABS */
 #ordersModal .modal-box { max-width: 550px; padding: 24px 20px; display: flex; flex-direction: column; }
@@ -487,13 +680,19 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .history-card { background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:20px; margin-bottom:16px; box-shadow:var(--shadow-sm); text-align:left; transition:.2s; }
 .history-id { font-weight:800; font-size:17px; color:var(--text); letter-spacing: 0.5px; }
 .status-badge { padding:6px 12px; border-radius:999px; font-size:11.5px; font-weight:800; display:inline-flex; align-items:center; gap:6px; letter-spacing: 0.3px; }
-.status-badge.pending { background:rgba(245,158,11,.15); color:var(--gold); } .status-badge.picked_up { background:rgba(14,165,233,.12); color:var(--primary); } .status-badge.processing { background:rgba(99,102,241,.12); color:var(--accent); } .status-badge.quality_check { background:rgba(16,185,129,.12); color:var(--success); } .status-badge.out_for_delivery { background:rgba(2,132,199,.12); color:var(--primary-dark); } .status-badge.delivered { background:rgba(16,185,129,.15); color:var(--success); } .status-badge.cancelled { background:rgba(239,68,68,.12); color:var(--danger); }
+.status-badge.pending { background:rgba(var(--gold-rgb),.15); color:var(--gold); } .status-badge.picked_up { background:rgba(var(--primary-rgb),.12); color:var(--primary); } .status-badge.processing { background:rgba(var(--accent-rgb),.12); color:var(--accent); } .status-badge.quality_check { background:rgba(var(--success-rgb),.12); color:var(--success); } .status-badge.out_for_delivery { background:rgba(var(--primary-rgb),.12); color:var(--primary-dark); } .status-badge.delivered { background:rgba(var(--success-rgb),.15); color:var(--success); } .status-badge.cancelled { background:rgba(var(--danger-rgb),.12); color:var(--danger); }
 .history-meta { font-size:13.5px; color:var(--text-muted); font-weight:600; display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px; align-items: center; }
 .history-meta span { display:inline-flex; align-items:center; gap:6px; }
 .history-meta i { color: var(--text-secondary); opacity: 0.8; }
 .history-actions { display:flex; gap:8px; flex-wrap:nowrap; margin-top: 14px; }
 
-@media (max-width:900px) { .master-container { flex-direction: column; text-align: center; gap: 30px;} .master-right { align-items: center; } .fabric-content-card h3 { justify-content: center; } }
+@media (max-width:900px) {
+  .booking-ui-home .master-container{flex-direction:column;text-align:center;gap:30px;}
+  .booking-ui-home .master-right{align-items:center;width:100%;padding-top:0;}
+  .booking-ui-home .fabric-pills{width:100%;}
+  .booking-ui-home .fabric-content-card h3{justify-content:center;}
+}
+
 @media (max-width:768px) {
 :root { --header-height: 56px; }
 header { padding: 6px 4%; }
@@ -508,21 +707,20 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 .hero-images-container { max-width: 320px; margin: 0 auto; padding-bottom: 30px; }
 .hero-floating-badge { top: 5%; left: -10px; padding: 10px 15px; font-size: 12px; }
 .hero-trust-badges { justify-content: center; }
-.master-section { padding: 50px 5%; }
-.master-left { min-height: 320px; margin-bottom: 10px; width: 100%;}
-.stain-arch { width: 220px; height: 320px; border-top-left-radius: 110px; border-top-right-radius: 110px; }
-.stain-main-img { width: 200px; }
-.stain-saree-bg { width: 95px; left: -10px; top: 20px; }
-.stain-blazer-bg { width: 100px; right: -5px; bottom: 30px; }
-.stain-decor-left { width: 100px; left: -10px; bottom: -10px; }
-.stain-spray { width: 100px; top: -40px; right: -10px; }
-.stain-hanger { width: 140px; bottom: -50px; right: 20px; opacity: 0.7; }
+.booking-ui-home .master-section{padding:50px 5%;}
+.booking-ui-home .master-left{min-height:320px;margin-bottom:10px;width:100%;}
+.booking-ui-home .stain-arch{width:220px;height:320px;border-top-left-radius:110px;border-top-right-radius:110px;}
+.booking-ui-home .stain-main-img{width:200px;}
+.booking-ui-home .stain-saree-bg{width:95px;left:-10px;top:20px;}
+.booking-ui-home .stain-blazer-bg{width:100px;right:-5px;bottom:30px;}
+.booking-ui-home .stain-decor-left{width:100px;left:-10px;bottom:-10px;}
+.booking-ui-home .stain-spray{width:100px;top:-40px;right:-10px;}
+.booking-ui-home .stain-hanger{width:140px;bottom:-50px;right:20px;opacity:.7;}
 .floating-whatsapp { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 26px; }
 .whatsapp-tooltip { right: 0; left: auto; top: auto; bottom: calc(100% + 12px); transform: none; font-size: 11px; padding: 6px 12px; }
 .active-care-strip { padding:8px 4%; gap:8px; }
 .active-care-label small { display:none; }
-.active-care-dropdown { position: fixed; top: calc(var(--header-height) + 52px); left: 0; width: 100vw; background: var(--surface); z-index: 100; max-height: 0; transition: max-height 0.35s ease; border-bottom: none; overflow-y: auto; overscroll-behavior: contain; }
-.active-care-dropdown.open { max-height: calc(100vh - var(--header-height) - 52px); height: calc(100vh - var(--header-height) - 52px); border-bottom: none; }
+.active-care-dropdown.open { max-height: min(600px, calc(100vh - var(--header-height) - 56px)); }
 .care-card { padding:16px; border-radius:18px; }
 .care-card-title { font-size:16px; }
 .care-progress { gap:2px; }
@@ -543,13 +741,400 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 .faq-answer { padding:0 15px 18px 22px; }
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(15px);} to{opacity:1;transform:translateY(0);} }
+
+/* PROFILE SAVED ADDRESSES — collapsed by default */
+.profile-address-section{margin:0 0 18px;border:1px solid var(--border);border-radius:18px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow-sm)}
+.profile-address-toggle{width:100%;border:0;background:transparent;color:var(--text);padding:14px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;text-align:left}
+.profile-address-toggle-main{display:flex;align-items:center;gap:11px;min-width:0}
+.profile-address-toggle-icon{width:36px;height:36px;border-radius:12px;background:var(--accent-light);color:var(--primary);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.profile-address-toggle-copy strong{display:block;font-size:13px;font-weight:850}
+.profile-address-toggle-copy span{display:block;font-size:10.5px;color:var(--text-muted);margin-top:2px;font-weight:600}
+.profile-address-chevron{transition:transform .2s ease;color:var(--text-muted)}
+.profile-address-section.open .profile-address-chevron{transform:rotate(180deg)}
+.profile-address-body{display:none;padding:0 13px 13px;border-top:1px solid var(--border);background:var(--canvas)}
+.profile-address-section.open .profile-address-body{display:block}
+.profile-address-list{display:grid;gap:9px;margin-top:11px}
+.profile-address-card{border:1px solid var(--border);border-radius:16px;background:var(--surface);padding:13px;cursor:pointer;box-shadow:var(--shadow-sm)}
+.profile-address-card.selected{border-color:var(--primary);background:var(--accent-light);box-shadow:0 0 0 2px rgba(var(--primary-rgb),.07)}
+.profile-address-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.profile-address-type{font-size:9.5px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:var(--primary)}
+.profile-address-selected{font-size:9.5px;font-weight:800;color:var(--success)}
+.profile-address-text{font-size:11.5px;line-height:1.5;color:var(--text);font-weight:650;margin:8px 0}
+.profile-address-actions{display:flex;gap:7px}
+.profile-address-action{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:7px 11px;font-size:10.5px;font-weight:800;cursor:pointer}
+.profile-address-action.delete{color:#dc2626}
+.profile-address-add{width:100%;border:1.5px dashed var(--primary);background:var(--accent-light);color:var(--primary);border-radius:999px;padding:10px;font-size:11px;font-weight:850;cursor:pointer;margin-top:10px}
+.profile-address-form{display:none;margin-top:11px}
+.profile-address-form.active{display:block}
+.profile-address-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profile-address-form-grid .full{grid-column:1/-1}
+.profile-address-form input,.profile-address-form select{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:10px;font-size:11px;outline:none}
+.profile-address-form-actions{display:flex;gap:8px;margin-top:9px}
+.profile-address-form-actions button{flex:1;border-radius:10px;padding:10px;border:0;font-weight:850;font-size:11px;cursor:pointer}
+.profile-address-save{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}.profile-address-cancel{background:var(--surface);color:var(--text);border:1px solid var(--border)!important}
+.profile-address-empty{text-align:center;color:var(--text-muted);font-size:11px;font-weight:650;padding:16px 8px 6px}
+@media(max-width:480px){.profile-address-form-grid{grid-template-columns:1fr}.profile-address-form-grid .full{grid-column:auto}}
+
+/* ================================================================
+   PARTH SHARED UI SYSTEM — HOME CLEAN
+   One clean visual layer. Functional JS/data intentionally untouched.
+================================================================ */
+.booking-ui-home{
+}
+
+/* page surfaces */
+.booking-ui-home .hero,.booking-ui-home .pricing,.booking-ui-home .how-it-works,
+.booking-ui-home .services-section,.booking-ui-home .reviews,.booking-ui-home .faq-section{background:var(--bg);color:var(--text);}
+.booking-ui-home .section-header h2{color:var(--text);}
+.booking-ui-home .section-header p{color:var(--text-muted);}
+.booking-ui-home .hero h1{color:var(--text)!important;}
+.booking-ui-home .hero p{color:var(--text-secondary);}
+.booking-ui-home .hero-trust-badges span{color:var(--text-muted);}
+.booking-ui-home .hero-trust-badges i{color:var(--success);}
+.booking-ui-home .hero .premium-tag{background:var(--accent-light);border-color:rgba(var(--primary-rgb),.18);color:var(--primary);}
+.booking-ui-home .hero-floating-badge{background:var(--surface);border:1px solid var(--border);color:var(--text);box-shadow:var(--shadow-card);}
+.booking-ui-home .btn-book-now,.booking-ui-home .btn-primary,.booking-ui-home .btn-primary-full,.booking-ui-home .care-btn.primary{background:var(--gradient);border:1px solid transparent;color:#fff;box-shadow:0 5px 16px rgba(var(--primary-rgb),.22);}
+.booking-ui-home .btn-outline,.booking-ui-home .btn-secondary-full{background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);box-shadow:var(--shadow-sm);}
+.booking-ui-home .btn-outline:hover,.booking-ui-home .btn-secondary-full:hover{background:var(--accent-light);color:var(--primary);border-color:var(--primary);}
+
+/* search / category controls */
+.booking-ui-home .price-search-container input,.booking-ui-home .search-box,.booking-ui-home .price-search-input,
+.booking-ui-home input.clean-input,.booking-ui-home input[type='search']{background:var(--surface);color:var(--text);border-color:var(--border);box-shadow:var(--shadow-sm);}
+.booking-ui-home .price-search-container input:focus,.booking-ui-home .search-box:focus,.booking-ui-home .price-search-input:focus,
+.booking-ui-home input.clean-input:focus,.booking-ui-home input[type='search']:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--accent-light);}
+.booking-ui-home .price-search-container>i{color:var(--primary);}
+.booking-ui-home .search-clear-btn{background:var(--surface);color:var(--text-muted);border-color:var(--border);}
+.booking-ui-home .pricing-chips-wrapper .chip,.booking-ui-home .pricing-chip,.booking-ui-home .category-chip,.booking-ui-home .price-chip{
+  background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);border-radius:var(--pill-radius);box-shadow:var(--shadow-sm);
+}
+.booking-ui-home .pricing-chips-wrapper .chip.active,.booking-ui-home .pricing-chip.active,.booking-ui-home .category-chip.active,.booking-ui-home .price-chip.active{
+  background:var(--accent-light);color:var(--primary);border-color:var(--primary);box-shadow:none;
+}
+
+/* pricing: rows are intentionally flat; only the section/chips carry surfaces */
+.booking-ui-home .list-wrapper-relative{background:transparent!important;border:0!important;box-shadow:none!important;}
+.booking-ui-home #pricingContainer{background:transparent!important;border:0!important;box-shadow:none!important;}
+.booking-ui-home .price-category-group{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0 4px 14px;}
+.booking-ui-home .category-group-title{color:var(--text);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:0;}
+.booking-ui-home .price-item{
+  background:transparent!important;border:0!important;border-bottom:1px dashed var(--border)!important;
+  box-shadow:none!important;border-radius:0!important;color:var(--text);padding:15px 4px;
+}
+.booking-ui-home .price-item:last-child{border-bottom:0!important;margin-bottom:10px;}
+.booking-ui-home .price-name{color:var(--text);font-weight:750;}
+.booking-ui-home .price-tag{color:var(--primary);font-weight:850;}
+.booking-ui-home .price-original{color:var(--text-muted);}
+.booking-ui-home .price-on-request{background:var(--accent-light);color:var(--primary);border-color:rgba(var(--primary-rgb),.14);}
+
+/* shared surface language */
+.booking-ui-home .service-card,.booking-ui-home .step-card,.booking-ui-home .review-card,.booking-ui-home .history-card,
+.booking-ui-home .care-card,.booking-ui-home .fabric-content-card,.booking-ui-home .profile-clean-card,
+.booking-ui-home .profile-stats,.booking-ui-home .profile-section-card,.booking-ui-home .faq-item{
+  background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-card);color:var(--text);
+}
+.booking-ui-home .service-card,.booking-ui-home .step-card{border-radius:22px;}
+.booking-ui-home .review-card{border-radius:24px;}.booking-ui-home .history-card,.booking-ui-home .care-card{border-radius:20px;}
+.booking-ui-home .service-card h3,.booking-ui-home .step-card h3,.booking-ui-home .review-text,.booking-ui-home .history-card h3,
+.booking-ui-home .care-card-title,.booking-ui-home .price-item{color:var(--text);}
+.booking-ui-home .service-card p,.booking-ui-home .step-card p,.booking-ui-home .customer-loc,
+.booking-ui-home .history-card p,.booking-ui-home .care-card-meta{color:var(--text-muted);}
+
+/* professional care / services: no legacy cyan glow */
+.booking-ui-home .services-grid{gap:16px;}
+.booking-ui-home .service-card{position:relative;overflow:hidden;padding:22px;display:flex;flex-direction:column;min-height:220px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.booking-ui-home .service-card::before{content:'';position:absolute;left:22px;right:22px;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);opacity:.42;}
+.booking-ui-home .service-card::after{display:none!important;}
+.booking-ui-home .service-card:hover{transform:translateY(-2px);border-color:var(--border);box-shadow:0 10px 28px -10px rgba(var(--ink-rgb),.10);}
+.booking-ui-home .service-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;position:relative;z-index:1;}
+.booking-ui-home .service-card .icon-box{width:48px;height:48px;min-width:48px;border-radius:15px;display:grid;place-items:center;font-size:18px;background:var(--accent-light)!important;color:var(--primary)!important;border:1px solid transparent!important;box-shadow:none!important;}
+.booking-ui-home .service-kicker{font-size:10px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;color:var(--text-muted);margin-left:auto;}
+.booking-ui-home .service-number{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface-soft);border:1px solid var(--border);color:var(--text-muted);font-size:10px;font-weight:900;}
+.booking-ui-home .service-card h3{font-size:17px;line-height:1.25;margin-bottom:8px;position:relative;z-index:1;}
+.booking-ui-home .service-card p{font-size:12px;line-height:1.65;margin:0;position:relative;z-index:1;}
+.booking-ui-home .service-card .service-link{display:inline-flex;align-items:center;gap:6px;margin-top:auto;padding-top:16px;color:var(--primary);font-size:11px;font-weight:900;position:relative;z-index:1;}
+
+/* how it works: numbered cards, no empty pseudo-circle */
+.booking-ui-home .steps-grid{gap:16px;max-width:920px;}
+.booking-ui-home .step-card{padding:22px 20px 20px;text-align:left;position:relative;min-height:205px;display:flex;flex-direction:column;}
+.booking-ui-home .step-card::after{display:none!important;}
+.booking-ui-home .step-number{position:absolute;right:17px;top:17px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent-light);border:1px solid rgba(var(--primary-rgb),.18);color:var(--primary);font-size:10px;font-weight:950;letter-spacing:.3px;}
+.booking-ui-home .step-icon{width:50px;height:50px;margin:0 0 18px;border-radius:15px;background:var(--accent-light)!important;color:var(--primary)!important;border:0!important;font-size:19px;box-shadow:none!important;}
+.booking-ui-home .step-card h3{font-size:17px;line-height:1.3;margin-bottom:7px;}.booking-ui-home .step-card p{font-size:12px;line-height:1.65;margin:0;}
+
+/* active order */
+.booking-ui-home .care-order-pill{background:var(--surface);border-color:var(--border);box-shadow:var(--shadow-sm);}
+.booking-ui-home .care-order-pill .pill-id{color:var(--text);}.booking-ui-home .care-order-pill .pill-status{color:var(--text-muted);}
+.booking-ui-home .care-order-pill .pill-icon{background:var(--gradient);}
+.booking-ui-home .care-order-pill .pill-eta{color:var(--primary)!important;font-weight:850;}
+.booking-ui-home .care-order-pill .pill-eta i{color:var(--primary)!important;}
+.booking-ui-home .live-indicator{color:var(--success);}.booking-ui-home .care-btn{border-radius:var(--pill-radius);}
+.booking-ui-home .care-btn.soft-blue{background:var(--accent-light);color:var(--primary);}.booking-ui-home .care-btn.soft-green{background:var(--success-soft);color:var(--success);}
+.booking-ui-home .care-btn.soft-red{background:var(--danger-soft);color:var(--danger);}
+
+/* profile: redesigned composition, not a stack of generic boxes */
+.booking-ui-home .profile-clean-header{position:relative;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:14px;align-items:center;text-align:left;margin:0 0 20px;padding:2px 2px 18px;border-bottom:1px solid var(--border);}
+.booking-ui-home .profile-clean-avatar{grid-row:1/3;width:68px;height:68px;border-radius:20px;background:var(--gradient)!important;color:#fff;font-size:23px;font-weight:900;margin:0;box-shadow:var(--shadow-float);border:0!important;display:grid;place-items:center;}
+.booking-ui-home .profile-clean-header h3{font-size:20px;font-weight:900;color:var(--text);margin:0 0 3px;line-height:1.15;}
+.booking-ui-home .profile-clean-header p{font-size:11.5px;color:var(--text-muted);margin:0;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.booking-ui-home .member-pill-dark{grid-column:2;justify-self:start;background:var(--accent-light);color:var(--primary);padding:5px 10px;border-radius:var(--pill-radius);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;border:1px solid rgba(var(--primary-rgb),.14);margin-top:5px;}
+.booking-ui-home .profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:0!important;box-shadow:none!important;border-radius:16px;overflow:hidden;margin:0 0 20px;}
+.booking-ui-home .profile-stat{background:var(--surface);border:0!important;border-radius:0!important;padding:15px 12px;text-align:left;display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;}
+.booking-ui-home .stat-icon{grid-row:1/3;width:34px;height:34px;border-radius:11px;background:var(--accent-light)!important;color:var(--primary)!important;display:grid;place-items:center;font-size:13px;}
+.booking-ui-home .stat-value{font-size:18px;font-weight:900;color:var(--text);line-height:1;}.booking-ui-home .stat-label{font-size:8.5px;font-weight:850;color:var(--text-muted);text-transform:uppercase;letter-spacing:.35px;margin-top:4px;}
+.booking-ui-home .profile-clean-fields{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.booking-ui-home .profile-clean-field{position:relative;}.booking-ui-home .profile-clean-field i{position:absolute;left:14px;top:14px;color:var(--text-muted);font-size:13px;opacity:1;z-index:1;}
+.booking-ui-home .profile-clean-field input,.booking-ui-home .profile-clean-field textarea{width:100%;padding:13px 14px 13px 39px;border:1px solid var(--border);background:var(--bg);border-radius:13px;font-family:'Outfit';font-size:13px;color:var(--text);font-weight:650;transition:.2s;resize:none;outline:none;}
+.booking-ui-home .profile-clean-field input:focus,.booking-ui-home .profile-clean-field textarea:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--accent-light);}
+.booking-ui-home .profile-clean-field input:disabled{background:var(--surface-soft);color:var(--text-muted);border-color:var(--border);}
+.booking-ui-home .profile-address-section{margin:4px 0 0!important;border:1px solid var(--border)!important;border-radius:16px!important;background:var(--surface)!important;box-shadow:none!important;overflow:hidden;}
+.booking-ui-home .profile-address-toggle{background:transparent!important;color:var(--text)!important;padding:13px 14px!important;}
+.booking-ui-home .profile-address-toggle-icon{background:var(--accent-light)!important;color:var(--primary)!important;border:0!important;}
+.booking-ui-home .profile-address-body{background:var(--bg)!important;border-color:var(--border)!important;}
+.booking-ui-home .profile-address-card{background:var(--surface)!important;border-color:var(--border)!important;box-shadow:none!important;}
+.booking-ui-home .profile-address-card.selected{background:var(--accent-light)!important;border-color:var(--primary)!important;}
+.booking-ui-home .profile-quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;}
+.booking-ui-home .profile-action-btn{padding:12px 13px;border-radius:13px;font-weight:850;font-size:11px;border:1px solid var(--border);}
+.booking-ui-home .profile-action-btn.orders{background:var(--surface);color:var(--text);box-shadow:none;}.booking-ui-home .profile-action-btn.logout{background:rgba(var(--danger-rgb),.06);color:var(--danger);border-color:rgba(var(--danger-rgb),.20);}
+.booking-ui-home #notifRow{background:var(--surface-soft)!important;border-color:var(--border)!important;border-radius:15px!important;box-shadow:none!important;}
+.booking-ui-home #notifRow button{background:var(--surface)!important;border-color:var(--border)!important;color:var(--text)!important;}
+
+/* dark-mode guarantee: every redesigned component uses the shared night palette */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media(max-width:768px){
+  .booking-ui-home .service-card{min-height:0;padding:19px;border-radius:20px;}
+  .booking-ui-home .service-card-top{margin-bottom:14px;}
+  .booking-ui-home .service-card h3{font-size:16px;}
+  .booking-ui-home .service-card p{font-size:11.5px;}
+  .booking-ui-home .step-card{min-height:190px;}
+  .booking-ui-home .profile-clean-header{grid-template-columns:auto 1fr;}
+}
+
+
+
+/* ================================================================
+   PARTH DARK UI SYSTEM — SINGLE CONSOLIDATED SOURCE
+   Brand colors (blue family) inherit from :root — only neutrals
+   are overridden here. To rebrand, edit :root ONLY.
+================================================================ */
+[data-theme="dark"]{
+  /* Neutrals */
+  --bg:#090D16;
+  --surface:#111827;
+  --surface-soft:#1E293B;
+  --text:#F8FAFC;
+  --text-secondary:#CBD5E1;
+  --text-muted:#94A3B8;
+  --border:#263244;
+
+  /* Soft brand tints — same royal-blue RGB family as :root */
+  --accent-light:rgba(37,99,235,.18);
+  --success-soft:rgba(52,211,153,.14);
+  --danger-soft:rgba(248,113,113,.12);
+  --gold-soft:rgba(251,191,36,.12);
+
+  /* Feedback colors */
+  --success:#34D399;
+  --gold:#FBBF24;
+  --danger:#F87171;
+  --success-rgb:52,211,153;
+  --danger-rgb:248,113,113;
+  --gold-rgb:251,191,36;
+
+  /* Shadows */
+  --shadow-sm:0 4px 18px -4px rgba(0,0,0,.24);
+  --shadow:0 8px 28px -8px rgba(0,0,0,.34);
+  --shadow-card:0 8px 28px -8px rgba(0,0,0,.34);
+  --shadow-float:0 18px 45px -10px rgba(37,99,235,.22);
+  --ink-rgb:0,0,0;
+}
+
+/* Core legacy components consume the same dark tokens; no separate color system. */
+[data-theme="dark"] header{
+  background:rgba(9,13,22,.92);
+  border-bottom-color:var(--border);
+  box-shadow:0 2px 16px rgba(0,0,0,.22);
+}
+[data-theme="dark"] .top-banner{
+  background:var(--accent-light);
+  color:var(--text-secondary);
+  border-color:var(--border);
+}
+[data-theme="dark"] .auth-input,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select{
+  background:var(--surface);
+  color:var(--text);
+  border-color:var(--border);
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder{color:var(--text-muted);}
+[data-theme="dark"] .btn-google{
+  background:var(--surface);
+  color:var(--text);
+  border-color:var(--border);
+}
+[data-theme="dark"] .hero-floating-badge,
+[data-theme="dark"] .search-clear-btn,
+[data-theme="dark"] .flag-pill,
+[data-theme="dark"] .otp-digit-input{
+  border-color:var(--border);
+}
+[data-theme="dark"] .search-clear-btn{
+  background:var(--surface);
+  color:var(--text-muted);
+}
+[data-theme="dark"] .step-dot{
+  background:var(--surface);
+  border-color:var(--border);
+}
+[data-theme="dark"] .profile-clean-field input,
+[data-theme="dark"] .profile-clean-field textarea{
+  background:var(--surface);
+  color:var(--text);
+  border-color:var(--border);
+}
+[data-theme="dark"] .care-btn.soft-blue{
+  background:var(--accent-light);
+  color:var(--primary);
+}
+[data-theme="dark"] .whatsapp-tooltip{
+  background:var(--surface);
+  color:var(--text);
+  border-color:var(--border);
+}
+[data-theme="dark"] .swipe-hint{
+  background:rgba(17,24,39,.88);
+  color:var(--primary);
+}
+[data-theme="dark"] .modal-box,
+[data-theme="dark"] .modal-content{
+  background:var(--surface);
+  color:var(--text);
+  border-color:var(--border);
+}
+[data-theme="dark"] .modal-overlay{background:rgba(0,0,0,.68);}
+
+/* Professional Care — uses the same dark surface/border/blue tokens. */
+[data-theme="dark"] .stain-arch{
+  box-shadow:inset 0 8px 20px rgba(0,0,0,.18),var(--shadow-sm);
+}
+[data-theme="dark"] .fabric-pill{
+  background:var(--surface);
+  color:var(--text-muted);
+  border-color:var(--border);
+  box-shadow:var(--shadow-sm);
+}
+[data-theme="dark"] .fabric-pill:hover,
+[data-theme="dark"] .fabric-pill.active{
+  background:var(--accent-light);
+  color:var(--primary);
+  border-color:var(--primary);
+}
+[data-theme="dark"] .fabric-content-card{
+  background:var(--surface);
+  border-color:var(--border);
+  box-shadow:var(--shadow-card);
+}
+
+/* FAQ — same new UI tokens, no second FAQ design. */
+[data-theme="dark"] .faq-item{
+  background:var(--surface);
+  border-color:var(--border);
+  box-shadow:var(--shadow-card);
+}
+[data-theme="dark"] .faq-number{
+  background:var(--accent-light);
+  color:var(--primary);
+  border-color:rgba(37,99,235,.22);
+}
+[data-theme="dark"] .faq-cat-icon{
+  background:var(--surface-soft)!important;
+  color:var(--primary)!important;
+  border-color:var(--border)!important;
+}
+[data-theme="dark"] .faq-question-text{color:var(--text);}
+[data-theme="dark"] .faq-chevron{
+  background:var(--bg);
+  border-color:var(--border);
+  color:var(--text-muted);
+}
+[data-theme="dark"] .faq-answer{
+  background:var(--bg);
+  border-color:var(--border);
+  border-left-color:var(--primary);
+  color:var(--text-muted);
+}
+[data-theme="dark"] .faq-answer:before{color:var(--primary);}
+[data-theme="dark"] .faq-item.active{
+  border-color:rgba(37,99,235,.35);
+  box-shadow:0 12px 34px -16px rgba(var(--primary-rgb),.28);
+}
+[data-theme="dark"] .faq-item.active .faq-number,
+[data-theme="dark"] .faq-item.active .faq-chevron,
+[data-theme="dark"] .faq-item.active .faq-cat-icon{
+  background:var(--accent-light)!important;
+  color:var(--primary)!important;
+  border-color:rgba(37,99,235,.24)!important;
+}
+
+/* Mobile FAQ keeps the same three-part composition without shifting content. */
+@media(max-width:768px){
+  .faq-question{
+    grid-template-columns:36px minmax(0,1fr) 34px;
+    gap:10px;
+    min-height:72px;
+    padding:10px;
+  }
+  .faq-icon-title{
+    grid-template-columns:36px 34px minmax(0,1fr);
+    gap:9px;
+  }
+  .faq-number{
+    width:36px;
+    height:36px;
+    border-radius:12px;
+  }
+  .faq-cat-icon{
+    width:32px;
+    height:32px;
+    border-radius:10px;
+    font-size:12px;
+  }
+  .faq-question-text{font-size:13px;}
+  .faq-chevron{width:32px;height:32px;}
+  .faq-answer{
+    margin-left:56px;
+    padding:14px 15px 15px;
+    font-size:12.5px;
+  }
+}
+
 </style>
 </head>
-<body>
+<body class="booking-ui-home">
 <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999999; display:flex; flex-direction:column; gap:8px;"></div>
 <div class="top-banner" id="topBanner" style="display:none;">
 <span id="topBannerText">🎉 First order? Use code <span>PARTH20</span> for 20% OFF!</span>
-<button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>
+<button class="close-banner" aria-label="Close Banner">&times;</button>
 </div>
 <header>
 <a href="javascript:void(0)" onclick="window.scrollTo(0,0);" class="logo" aria-label="Home">
@@ -567,7 +1152,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </ul></nav>
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
 <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install</button>
-<button class="btn-login" id="loginBtn" onclick="openModal('authModal')"><i class="fas fa-sign-in-alt"></i> <span>Login</span></button>
+<button class="icon-btn booking-account-btn" id="loginBtn" onclick="openModal('authModal')" aria-label="Account" title="Account"><i class="fas fa-user-circle"></i></button>
 <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu"><i class="fas fa-bars"></i></button>
 </div>
 </header>
@@ -585,6 +1170,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="trust-item"><i class="fas fa-tags"></i> Bulk Booking Discounts</div>
 </div>
 </div>
+<div class="active-care-wrapper" id="activeCareWrapper">
 <div class="active-care-strip" id="activeOrderBar" onclick="toggleActiveOrders()" aria-live="polite">
 <div class="active-care-left"><span class="live-care-dot"></span><div class="active-care-label">Active Care<small id="activeOrderCount">0 orders live</small></div></div>
 <div class="active-orders-scroller" id="miniTimelines"></div>
@@ -597,6 +1183,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <button type="button" class="dropdown-close-btn" onclick="event.stopPropagation(); closeActiveOrders();" aria-label="Close orders panel"><i class="fas fa-times"></i></button>
 </div>
 <div class="dropdown-inner" id="dropdownInner"></div>
+</div>
 </div>
 <a href="https://wa.me/919235601645?text=Hello%2C%20I%20need%20help%20with%20my%20laundry%20order." target="_blank" class="floating-whatsapp" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
 <div class="whatsapp-tooltip" id="waTooltip"><span></span> Need help? Chat with us!</div>
@@ -715,19 +1302,19 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <section class="how-it-works" id="steps-section">
 <div class="section-header"><h2>How It <span class="text-gradient">Works</span></h2><p>3 simple steps to fresh clothes</p></div>
 <div class="steps-grid" id="howItWorksGrid">
-<div class="step-card"><div class="step-icon"><i class="fas fa-tshirt"></i></div><h3>Select Garments</h3><p>Pick from our price list the items you need cleaning.</p></div>
-<div class="step-card"><div class="step-icon"><i class="fas fa-calendar-alt"></i></div><h3>Schedule Pickup</h3><p>Choose a convenient date & time slot, we'll come to your doorstep.</p></div>
-<div class="step-card"><div class="step-icon"><i class="fas fa-box-open"></i></div><h3>Get Fresh Delivery</h3><p>We return your clothes fresh, folded, and ready to wear.</p></div>
+<div class="step-card"><span class="step-number">01</span><div class="step-icon"><i class="fas fa-tshirt"></i></div><h3>Select Garments</h3><p>Pick from our price list the items you need cleaning.</p></div>
+<div class="step-card"><span class="step-number">02</span><div class="step-icon"><i class="fas fa-calendar-alt"></i></div><h3>Schedule Pickup</h3><p>Choose a convenient date & time slot, we'll come to your doorstep.</p></div>
+<div class="step-card"><span class="step-number">03</span><div class="step-icon"><i class="fas fa-box-open"></i></div><h3>Get Fresh Delivery</h3><p>We return your clothes fresh, folded, and ready to wear.</p></div>
 </div>
 </section>
 
 <section class="services-section" id="services-section">
 <div class="section-header"><h2>The Parth <span class="text-gradient">Difference</span></h2><p>Real care, reliable tech, and premium quality</p></div>
 <div class="services-grid" id="whyChooseUsGrid">
-<div class="service-card"><div class="icon-box"><i class="fas fa-shield-alt"></i></div><h3>Expert Fabric Care</h3><p>Specialized solvents for delicate Zari, Silk, and Woollens. Anti-shrinkage technology to keep your memories fresh.</p></div>
-<div class="service-card"><div class="icon-box"><i class="fas fa-mobile-alt"></i></div><h3>Tech-Driven Convenience</h3><p>Live order tracking, instant PDF invoices, and seamless WhatsApp support right at your fingertips.</p></div>
-<div class="service-card"><div class="icon-box"><i class="fas fa-tshirt"></i></div><h3>Expert Finishing</h3><p>Crisp steam pressing, contoured hangers, and ready-to-wear crease-free packaging.</p></div>
-<div class="service-card"><div class="icon-box"><i class="fas fa-tags"></i></div><h3>Transparent & Reliable</h3><p>Clear pricing with uncompromising quality. Exact price list matching with a 48-72hr reliable delivery commitment.</p></div>
+<div class="service-card"><div class="service-card-top"><div class="icon-box"><i class="fas fa-shield-alt"></i></div><span class="service-kicker">CARE</span><span class="service-number">01</span></div><h3>Expert Fabric Care</h3><p>Specialized solvents for delicate Zari, Silk, and Woollens. Anti-shrinkage technology to keep your memories fresh.</p><span class="service-link">Premium care <i class="fas fa-arrow-right"></i></span></div>
+<div class="service-card"><div class="service-card-top"><div class="icon-box"><i class="fas fa-mobile-alt"></i></div><span class="service-kicker">CONVENIENCE</span><span class="service-number">02</span></div><h3>Tech-Driven Convenience</h3><p>Live order tracking, instant PDF invoices, and seamless WhatsApp support right at your fingertips.</p><span class="service-link">Track with ease <i class="fas fa-arrow-right"></i></span></div>
+<div class="service-card"><div class="service-card-top"><div class="icon-box"><i class="fas fa-tshirt"></i></div><span class="service-kicker">FINISHING</span><span class="service-number">03</span></div><h3>Expert Finishing</h3><p>Crisp steam pressing, contoured hangers, and ready-to-wear crease-free packaging.</p><span class="service-link">Ready to wear <i class="fas fa-arrow-right"></i></span></div>
+<div class="service-card"><div class="service-card-top"><div class="icon-box"><i class="fas fa-tags"></i></div><span class="service-kicker">VALUE</span><span class="service-number">04</span></div><h3>Transparent & Reliable</h3><p>Clear pricing with uncompromising quality. Exact price list matching with a 48-72hr reliable delivery commitment.</p><span class="service-link">Clear from start <i class="fas fa-arrow-right"></i></span></div>
 </div>
 </section>
 
@@ -735,7 +1322,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="section-header">
 <h2>Loved by <span class="text-gradient">Customers</span></h2>
 <p>Real feedback from our happy clients</p>
-<div id="reviewsHeaderBadge" style="display:inline-flex; align-items:center; gap:6px; background:rgba(14,165,233,0.1); padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; color:var(--primary); margin-top:10px;"><i class="fab fa-google"></i> 4.9 Stars on Google (150+ Reviews)</div>
+<div id="reviewsHeaderBadge" style="display:inline-flex; align-items:center; gap:6px; background:rgba(var(--primary-rgb),0.1); padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; color:var(--primary); margin-top:10px;"><i class="fab fa-google"></i> 4.9 Stars on Google (150+ Reviews)</div>
 </div>
 <div class="reviews-slider" id="reviewsSlider">
 <!-- CMS Ready: Fallback Data -->
@@ -761,12 +1348,12 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 <div class="section-header"><h2>Frequently Asked <span class="text-gradient">Questions</span></h2></div>
 <div id="faqList">
 <!-- CMS Ready: Full 6 Fallback Questions -->
-<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas fa-map-marker-alt"></i></div> What areas do you serve?</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available for eligible PIN codes.</div></div>
-<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas fa-clock"></i></div> How long does dry cleaning take?</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service is available on request with a priority surcharge.</div></div>
-<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas fa-crown"></i></div> Do you clean wedding dresses?</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Yes, we specialize in bridal wear, heavy lehengas, sherwanis, and delicate Zari silk sarees.</div></div>
-<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas fa-tags"></i></div> What about the 20% discount?</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Use code PARTH20 on the booking page to get 20% off your first order (maximum discount ₹200).</div></div>
-<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas fa-rupee-sign"></i></div> Is there a minimum order amount?</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Yes, the minimum order value is ₹300 to avail the free doorstep pickup and delivery service.</div></div>
-<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas fa-times-circle"></i></div> Can I cancel or modify my order?</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Yes! You can instantly cancel your order directly from the <b>'My Orders'</b> section within 2 hours of booking. To modify items, simply cancel within the time limit and book a fresh order.</div></div>
+<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">01</span><div class="faq-cat-icon"><i class="fas fa-map-marker-alt"></i></div><span class="faq-question-text">What areas do you serve?</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">We serve all of Indira Nagar and surrounding areas in Lucknow. Free pickup and delivery available for eligible PIN codes.</div></div>
+<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">02</span><div class="faq-cat-icon"><i class="fas fa-clock"></i></div><span class="faq-question-text">How long does dry cleaning take?</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Standard turnaround is 48-72 hours. Express 24-hr service is available on request with a priority surcharge.</div></div>
+<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">03</span><div class="faq-cat-icon"><i class="fas fa-crown"></i></div><span class="faq-question-text">Do you clean wedding dresses?</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Yes, we specialize in bridal wear, heavy lehengas, sherwanis, and delicate Zari silk sarees.</div></div>
+<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">04</span><div class="faq-cat-icon"><i class="fas fa-tags"></i></div><span class="faq-question-text">What about the 20% discount?</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Use code PARTH20 on the booking page to get 20% off your first order (maximum discount ₹200).</div></div>
+<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">05</span><div class="faq-cat-icon"><i class="fas fa-rupee-sign"></i></div><span class="faq-question-text">Is there a minimum order amount?</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Yes, the minimum order value is ₹300 to avail the free doorstep pickup and delivery service.</div></div>
+<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">06</span><div class="faq-cat-icon"><i class="fas fa-times-circle"></i></div><span class="faq-question-text">Can I cancel or modify my order?</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">Yes! You can instantly cancel your order directly from the <b>'My Orders'</b> section within 2 hours of booking. To modify items, simply cancel within the time limit and book a fresh order.</div></div>
 </div>
 </section>
 
@@ -776,7 +1363,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
     <h2>Ready for a <span style="color:var(--gold);">Flawless</span> Wardrobe?</h2>
     <p>Join thousands of happy customers in Lucknow. Book your free doorstep pickup today and experience expert fabric care.</p>
     <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-      <a href="booking.html" class="btn btn-book-now" style="box-shadow: 0 10px 25px rgba(14,165,233,0.4);"><i class="fas fa-calendar-check"></i> Book Free Pickup</a>
+      <a href="booking.html" class="btn btn-book-now" style="box-shadow: 0 10px 25px rgba(var(--primary-rgb),0.4);"><i class="fas fa-calendar-check"></i> Book Free Pickup</a>
     </div>
   </div>
 </section>
@@ -928,17 +1515,40 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
   <input type="tel" id="profPhone" placeholder="Mobile Number" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="10" />
   <span class="field-hint-text" id="hintPhone" style="display:none;">Verified via SMS</span>
 </div>
-<div class="profile-clean-field">
-  <i class="fas fa-location-dot"></i>
-  <textarea id="profAddress" rows="2" placeholder="Complete Delivery Address"></textarea>
+<div class="profile-address-section" id="profileAddressSection">
+  <button type="button" class="profile-address-toggle" onclick="toggleProfileAddresses()" aria-expanded="false">
+    <span class="profile-address-toggle-main">
+      <span class="profile-address-toggle-icon"><i class="fas fa-location-dot"></i></span>
+      <span class="profile-address-toggle-copy"><strong>Saved Addresses</strong><span id="profileAddressSummary">Add a pickup address for faster booking</span></span>
+    </span>
+    <i class="fas fa-chevron-down profile-address-chevron"></i>
+  </button>
+  <div class="profile-address-body" id="profileAddressBody">
+    <div class="profile-address-list" id="profileAddressList"></div>
+    <button type="button" class="profile-address-add" id="profileAddressAddBtn" onclick="showProfileAddressForm()"><i class="fas fa-plus"></i> Add New Address</button>
+    <div class="profile-address-form" id="profileAddressForm">
+      <div class="profile-address-form-grid">
+        <select id="profileAddrType" aria-label="Address type"><option value="home">Home</option><option value="work">Work</option><option value="other">Other</option></select>
+        <input id="profileAddrPincode" inputmode="numeric" maxlength="6" placeholder="Pincode (optional)" />
+        <input class="full" id="profileAddrHouse" placeholder="House / Flat / Building name" />
+        <input id="profileAddrFloor" placeholder="Floor (optional)" />
+        <input id="profileAddrLandmark" placeholder="Landmark (optional)" />
+        <input class="full" id="profileAddrArea" placeholder="Area / Locality" />
+      </div>
+      <div class="profile-address-form-actions">
+        <button type="button" class="profile-address-cancel" onclick="cancelProfileAddressForm()">Cancel</button>
+        <button type="button" class="profile-address-save" onclick="saveProfileAddress()">Save Address</button>
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 
 <button type="button" class="btn-primary-full" onclick="saveProfile()" style="margin-bottom: 18px;"><i class="fas fa-check"></i> Save Changes</button>
 
-<div id="notifRow" style="display:flex; align-items:center; justify-content:space-between; background:var(--bg); border-radius:14px; padding:14px; margin-bottom:18px; border:1px solid var(--border);">
+<div id="notifRow" style="display:flex; align-items:center; justify-content:space-between; background:var(--surface-soft); border-radius:15px; padding:14px; margin-bottom:18px; border:1px solid var(--border);">
   <div style="display:flex; align-items:center; gap:12px; text-align:left;">
-    <div style="background:rgba(16,185,129,0.1); color:var(--success); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bell"></i></div>
+    <div style="background:rgba(var(--success-rgb),0.1); color:var(--success); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-bell"></i></div>
     <div>
       <div style="font-weight:800; font-size:12.5px; color:var(--text);">Order Updates</div>
       <div style="font-size:10.5px; color:var(--text-muted);">Live push notifications</div>
@@ -961,7 +1571,7 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 <button type="button" class="close-modal-btn" onclick="closeModal('ordersModal')" aria-label="Close">&times;</button>
 <h2 style="color:var(--text); margin-bottom:6px;"><i class="fas fa-history" style="color:var(--primary);"></i> My Orders</h2>
 <p style="color:var(--text-muted); font-size:12px; font-weight:600; margin-bottom:10px;">Track all your expert care orders.</p>
-<div style="font-size:11px; color:var(--text-muted); font-weight:500; margin-bottom:20px; background:rgba(14,165,233,0.05); border:1px solid rgba(14,165,233,0.1); padding:6px 10px; border-radius:8px; display:inline-block;"><i class="fas fa-info-circle" style="color:var(--primary);"></i> Note: Orders can be cancelled within 2 hours of booking.</div>
+<div style="font-size:11px; color:var(--text-muted); font-weight:500; margin-bottom:20px; background:rgba(var(--primary-rgb),0.05); border:1px solid rgba(var(--primary-rgb),0.1); padding:6px 10px; border-radius:8px; display:inline-block;"><i class="fas fa-info-circle" style="color:var(--primary);"></i> Note: Orders can be cancelled within 2 hours of booking.</div>
 
 <!-- TABS FOR ORDERS -->
 <div class="orders-tab-container">
@@ -991,7 +1601,7 @@ document.querySelectorAll('.modal-grabber-wrapper').forEach(wrapper => {
        currentY = e.touches[0].clientY;
        let diff = currentY - startY;
        if (diff > 0) {
-           e.preventDefault(); 
+           if (e.cancelable) e.preventDefault();
            box.style.transform = `translate3d(0, ${diff}px, 0)`;
        }
    }, {passive: false}); 
@@ -1086,7 +1696,7 @@ async function requestFCMPermission() {
     const notifBtn = document.getElementById('notifEnableBtn');
     if(notifBtn) {
       notifBtn.innerHTML = 'Enabled';
-      notifBtn.style.background = 'rgba(16,185,129,0.1)';
+      notifBtn.style.background = 'rgba(var(--success-rgb),0.1)';
       notifBtn.style.color = 'var(--success)';
       notifBtn.style.borderColor = 'transparent';
       notifBtn.disabled = true;
@@ -1104,6 +1714,7 @@ const formatMoney = (amount) => { return Number(amount).toLocaleString('en-IN');
 const SITE_SETTINGS = { expressPercent: 90 };
 const getNumeric = (value, fallback = 0) => { const n = Number(value); return Number.isFinite(n) ? n : fallback; };
 const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
+function formatOrderDisplayId(id) { const raw = String(id || '').trim(); if (!raw) return 'PDC-000000'; return raw.toUpperCase().startsWith('PDC-') ? raw : `PDC-${raw}`; }
 const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
 const USER_CACHE_KEY = 'pdc_cached_user';
 function cacheUser(user) { try { localStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid: user.uid, name: user.displayName || '', email: user.email || '' })); } catch(e) {} }
@@ -1146,8 +1757,9 @@ function setTimeGreeting(userName) {
   document.getElementById('dynamicGreetingText').innerHTML = greeting; 
 }
 
-function applyLoggedInUI(displayName) { const firstName = (displayName || 'Guest').split(' ')[0]; const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> <span>Hi, ${sanitizeHTML(firstName)}</span>`; loginBtn.classList.add('is-authed'); document.getElementById('myOrdersNavItem').style.display = 'block'; setTimeGreeting(firstName); }
-function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn'); loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> <span>Login</span>`; loginBtn.classList.remove('is-authed'); document.getElementById('myOrdersNavItem').style.display = 'none'; setTimeGreeting(null); }
+function getAccountInitial(name) { const n = String(name || 'U').trim(); return sanitizeHTML((n.charAt(0) || 'U').toUpperCase()); }
+function applyLoggedInUI(displayName) { const firstName = (displayName || 'Guest').split(' ')[0]; const loginBtn = document.getElementById('loginBtn'); if(loginBtn) { loginBtn.innerHTML = `<span class="account-initial">${getAccountInitial(displayName)}</span><span class="account-online-dot" aria-hidden="true"></span>`; loginBtn.classList.add('is-authed'); loginBtn.setAttribute('aria-label', `Open ${sanitizeHTML(firstName)} account`); loginBtn.title = `Hi, ${sanitizeHTML(firstName)}`; } const orders = document.getElementById('myOrdersNavItem'); if(orders) orders.style.display = 'block'; setTimeGreeting(firstName); }
+function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn'); if(loginBtn) { loginBtn.innerHTML = `<i class="fas fa-user-circle"></i>`; loginBtn.classList.remove('is-authed'); loginBtn.setAttribute('aria-label','Login / Account'); loginBtn.title='Login / Account'; } const orders = document.getElementById('myOrdersNavItem'); if(orders) orders.style.display = 'none'; setTimeGreeting(null); }
 function updateSlider(val) { document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`; document.getElementById('baSliderLine').style.left = `${val}%`; document.getElementById('baSliderBtn').style.left = `${val}%`; }
 function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); if(floatingImg){ floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); } }
 
@@ -1165,7 +1777,7 @@ function renderPricing() {
     itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; 
     itemsHTML += `<h3 class="category-group-title">${sanitizeHTML(categoryNames[cat])}</h3>`; 
     items.forEach(item => { 
-      const priceText = item.price > 0 ? `₹${formatMoney(item.price)}` : `<span style="font-size:12px; padding:2px 8px; background:rgba(14,165,233,0.1); border-radius:12px; color:var(--primary);">On Request</span>`; 
+      const priceText = item.price > 0 ? `₹${formatMoney(item.price)}` : `<span class="price-on-request">On Request</span>`; 
       const originalText = item.originalPrice ? `<span class="price-original">₹${formatMoney(item.originalPrice)}</span>` : ''; 
       itemsHTML += `<div class="price-item" data-name="${sanitizeHTML(item.name.toLowerCase())}"><span class="price-name">${sanitizeHTML(item.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`; 
     }); 
@@ -1226,7 +1838,7 @@ function globalSearch(val) {
   let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${sanitizeHTML(val)}"</h3>`; 
   if(results.length) {
     html += results.map(i => { 
-      const priceText = i.price > 0 ? `₹${formatMoney(i.price)}` : `<span style="font-size:12px; padding:2px 8px; background:rgba(14,165,233,0.1); border-radius:12px; color:var(--primary);">On Request</span>`; 
+      const priceText = i.price > 0 ? `₹${formatMoney(i.price)}` : `<span class="price-on-request">On Request</span>`; 
       const originalText = i.originalPrice ? `<span class="price-original">₹${formatMoney(i.originalPrice)}</span>` : ''; 
       return `<div class="price-item"><span class="price-name">${sanitizeHTML(i.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`; 
     }).join('');
@@ -1259,7 +1871,8 @@ function enableListSwipe() {
     if (swiping) return; 
     const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY; 
     if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) { 
-      e.preventDefault(); swiping = true; hideSwipeHints();
+      if (e.cancelable) e.preventDefault();
+      swiping = true; hideSwipeHints();
       const idx = catOrder.indexOf(activeCategory); 
       if (dx < -30 && idx < catOrder.length - 1) { 
         const next = catOrder[idx + 1]; const btn = document.querySelector(`.price-chip[onclick*="${next}"]`); filterCategory(next, btn); 
@@ -1272,6 +1885,20 @@ function enableListSwipe() {
 }
 
 function getOrderEtaDate(order) { if (order.eta) { const d = new Date(order.eta); if (!isNaN(d)) return d; } const base = order.createdAt ? new Date(order.createdAt) : new Date(); const hours = order.express === 'Yes' ? 24 : 72; return new Date(base.getTime() + hours * 60 * 60 * 1000); }
+function formatDisplayDate(value) {
+  if (value === null || value === undefined || value === '') return '—';
+  const raw = String(value).trim();
+  if (/^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(raw)) {
+    const parts = raw.split(/[\/-]/).map(Number);
+    let d = parts[0], m = parts[1], y = parts[2];
+    if (y < 100) y += 2000;
+    if (d >= 1 && d <= 31 && m >= 1 && m <= 12) return `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
+  }
+  const date = value instanceof Date ? value : (typeof value === 'number' ? new Date(value) : new Date(raw));
+  if (isNaN(date.getTime())) return raw;
+  return `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth()+1).padStart(2,'0')}/${date.getFullYear()}`;
+}
+
 function formatEta(order) { const etaDate = getOrderEtaDate(order); const now = new Date(); if (etaDate <= now) return 'Very soon'; const diffMs = etaDate - now; const hours = Math.floor(diffMs / 3600000); if (hours < 1) return 'Under 1 hour'; if (hours < 24) return `${hours}h left`; const day = etaDate.toLocaleDateString('en-IN', { weekday: 'short' }); const time = etaDate.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }); return `${day}, ${time}`; }
 function getOrderItemSummary(order) { if (!order.items) return '0 items'; const entries = Object.entries(order.items); const count = entries.reduce((sum, [, value]) => { const qty = (value && typeof value === 'object') ? value.qty : value; return sum + getNumeric(qty); }, 0); return `${count} item${count === 1 ? '' : 's'}`; }
 
@@ -1289,17 +1916,23 @@ window.cancelOrder = function(orderId) {
     }
 };
 
-function renderMiniTimeline(order) { const label = statusLabels[order.status] || 'Live Update'; const icon = statusIcons[order.status] || 'fa-circle-notch'; const eta = formatEta(order); const orderId = sanitizeHTML(order.orderId); return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div><div class="pill-id">#${orderId}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`; }
+function renderMiniTimeline(order) {
+  const label = statusLabels[order.status] || 'Live Update';
+  const icon = statusIcons[order.status] || 'fa-circle-notch';
+  const eta = formatEta(order);
+  const orderIdDisplay = order.orderId ? sanitizeHTML(formatOrderDisplayId(order.orderId)) : 'Order ID unavailable';
+  return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div><div class="pill-id">#${orderIdDisplay}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`;
+}
 function renderCareProgress(order) { let currentIdx = careSteps.findIndex(step => step.key === order.status); if (currentIdx < 0) currentIdx = 0; return `<div class="care-progress">${careSteps.map((step, idx) => { let cls = ''; if (order.status === 'delivered' || idx < currentIdx) cls = 'done'; else if (idx === currentIdx) cls = 'current'; const icon = cls === 'done' ? 'fa-check' : step.icon; return `<div class="progress-step ${cls}"><div class="step-dot"><i class="fas ${icon}"></i></div><div class="step-label">${step.label}</div></div>`; }).join('')}</div>`; }
 function renderActiveOrderCard(order) { 
   const label = statusLabels[order.status] || 'Live Update'; 
   const expressHtml = order.express === 'Yes' ? `<span class="express-badge"><i class="fas fa-bolt"></i> Express</span>` : ''; 
   const itemCount = getOrderItemSummary(order); 
   const eta = formatEta(order); 
-  const orderIdRaw = safeId(order.orderId); 
-  const orderIdDisplay = sanitizeHTML(order.orderId); 
-  const dateText = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Today'; 
-  const waLink = `https://wa.me/919235601645?text=${encodeURIComponent(`Hello, I need support for my order ${orderIdRaw}.`)}`; 
+  const orderRef = safeId(order.firebaseKey || order._firebaseKey || order.orderId);
+  const orderIdDisplay = order.orderId ? sanitizeHTML(formatOrderDisplayId(order.orderId)) : 'Order ID unavailable'; 
+  const dateText = order.createdAt ? formatDisplayDate(order.createdAt) : 'Today'; 
+  const waLink = `https://wa.me/919235601645?text=${encodeURIComponent(`Hello, I need support for my order ${order.orderId ? formatOrderDisplayId(order.orderId) : (order.firebaseKey || order._firebaseKey || 'this order') }.`)}`; 
   
   // 2-Hour Cancel Logic Check
   const createdTime = order.createdAt || Date.now();
@@ -1307,12 +1940,12 @@ function renderActiveOrderCard(order) {
   const isWithin2Hours = diffMs < (2 * 60 * 60 * 1000);
 
   let actionBtnHtml = `
-    <button class="care-btn soft-blue" onclick="event.stopPropagation(); downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button>
+    <button class="care-btn soft-blue" onclick="event.stopPropagation(); downloadInvoice('${orderRef}')"><i class="fas fa-file-invoice"></i> Invoice</button>
     <a class="care-btn soft-green" href="${waLink}" target="_blank" onclick="event.stopPropagation();"><i class="fab fa-whatsapp"></i> Support</a>
   `;
 
   if (order.status === 'pending' && isWithin2Hours) {
-     actionBtnHtml += `<button class="care-btn soft-red" onclick="event.stopPropagation(); cancelOrder('${orderIdRaw}');"><i class="fas fa-times-circle"></i> Cancel</button>`;
+     actionBtnHtml += `<button class="care-btn soft-red" onclick="event.stopPropagation(); cancelOrder('${orderRef}');"><i class="fas fa-times-circle"></i> Cancel</button>`;
   }
 
   return `<div class="care-card"><div class="care-card-top"><div><div class="care-card-title">#${orderIdDisplay} ${expressHtml}</div><div class="care-card-meta"><span class="meta-pill">${dateText}</span><span class="meta-pill">${itemCount}</span><span class="meta-pill">₹${formatMoney(order.total || 0)}</span><span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span></div></div><div class="live-indicator"><span class="live-care-dot"></span> LIVE</div></div>${renderCareProgress(order)}<div class="care-card-actions">${actionBtnHtml}</div></div>`; 
@@ -1326,9 +1959,10 @@ function attachActiveOrderListener(uid) {
     const active = [];
     snap.forEach(child => {
       const o = child.val();
-      if (o && activeStatuses.includes(o.status)) active.push(o);
+      if (o && activeStatuses.includes(o.status)) active.push({ ...o, _firebaseKey: o.firebaseKey || child.key });
     });
     active.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    const wrapper = document.getElementById('activeCareWrapper');
     const bar = document.getElementById('activeOrderBar');
     const dropdown = document.getElementById('activeOrderDropdown');
     const miniContainer = document.getElementById('miniTimelines');
@@ -1336,11 +1970,13 @@ function attachActiveOrderListener(uid) {
     const countText = document.getElementById('activeOrderCount');
     const scrollArrow = document.getElementById('careScrollArrow');
     if (active.length === 0) {
+      wrapper.style.display = 'none';
       bar.style.display = 'none';
       dropdown.classList.remove('open');
       setTrustBarVisible(true);
       return;
     }
+    wrapper.style.display = 'block';
     bar.style.display = 'flex';
     countText.textContent = `${active.length} order${active.length === 1 ? '' : 's'} live`;
     miniContainer.innerHTML = active.map(o => renderMiniTimeline(o)).join('');
@@ -1355,7 +1991,7 @@ function toggleActiveOrders() { const dropdown = document.getElementById('active
 function openActiveOrders() { document.getElementById('activeOrderDropdown').classList.add('open'); history.pushState({ careDropdown: true }, '', '#active-orders'); }
 function closeActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (!dropdown.classList.contains('open')) return; dropdown.classList.remove('open'); if (history.state && history.state.careDropdown) history.back(); }
 
-document.addEventListener('click', (e) => { const dropdown = document.getElementById('activeOrderDropdown'); const bar = document.getElementById('activeOrderBar'); if (!dropdown || !dropdown.classList.contains('open')) return; if (dropdown.contains(e.target) || bar.contains(e.target)) return; dropdown.classList.remove('open'); });
+document.addEventListener('click', (e) => { const wrapper = document.getElementById('activeCareWrapper'); const dropdown = document.getElementById('activeOrderDropdown'); if (!wrapper || !dropdown || !dropdown.classList.contains('open')) return; if (wrapper.contains(e.target)) return; dropdown.classList.remove('open'); });
 
 function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); if (html.hasAttribute('data-theme')) { html.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); icon.className = 'fas fa-moon'; } else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); icon.className = 'fas fa-sun'; } }
 (() => { if (localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.querySelector('#themeToggle i').className = 'fas fa-sun'; } })();
@@ -1544,42 +2180,51 @@ function signInWithGoogle() {
 function syncCanonicalAccount(user) {
   const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : '';
   const email = (user.email || '').toLowerCase();
-  db.ref('customers/' + user.uid).once('value').then(snap => {
-    if (snap.exists() && snap.val().name) {
-      applyLoggedInUI(snap.val().name);
+  const customerRef = db.ref('customers/' + user.uid);
+
+  const finish = (data) => {
+    const d = data || {};
+    applyLoggedInUI(d.name || user.displayName || 'Guest');
+    // Keep the Home profile hydrated from the same canonical customer record.
+    loadProfileAddresses(user.uid, d);
+  };
+
+  customerRef.once('value').then(snap => {
+    const current = snap.exists() ? (snap.val() || {}) : null;
+    if (current && current.name) {
+      finish(current);
       return;
     }
+
+    const adoptCustomer = (source) => {
+      const sourceData = source || {};
+      const updates = {
+        name: sourceData.name || user.displayName || '',
+        email: sourceData.email || email,
+        phone: sourceData.phone || phone
+      };
+      // Carry the complete shared profile contract forward; never reduce it to
+      // only the legacy single-address field.
+      ['addresses','selectedAddressId','address','addressType','houseNumber','floor','landmark','area','pincode','latitude','longitude','locationSource'].forEach(k => {
+        if (sourceData[k] !== undefined) updates[k] = sourceData[k];
+      });
+      return customerRef.update(updates).then(() => finish({...sourceData, ...updates}));
+    };
+
     if (phone && phone.length === 10) {
       db.ref('customers').orderByChild('phone').equalTo(phone).once('value').then(pSnap => {
         let matched = null;
-        pSnap.forEach(c => { if (c.key !== user.uid && c.val().name) matched = c.val(); });
-        if (matched) {
-          db.ref('customers/' + user.uid).update({
-            name: matched.name,
-            email: matched.email || email,
-            phone: phone,
-            address: matched.address || ''
-          }).then(() => applyLoggedInUI(matched.name));
-        } else if (user.displayName) {
-          db.ref('customers/' + user.uid).update({
-            name: user.displayName,
-            email: email,
-            phone: phone
-          }).then(() => applyLoggedInUI(user.displayName));
-        } else {
-          openModal('onboardingModal');
-        }
+        pSnap.forEach(c => { if (c.key !== user.uid && c.val() && c.val().name) matched = c.val(); });
+        if (matched) return adoptCustomer(matched);
+        if (user.displayName) return adoptCustomer({name:user.displayName,email,phone});
+        openModal('onboardingModal');
       });
     } else if (user.displayName) {
-      db.ref('customers/' + user.uid).update({
-        name: user.displayName,
-        email: email,
-        phone: phone
-      }).then(() => applyLoggedInUI(user.displayName));
+      adoptCustomer({name:user.displayName,email,phone});
     } else {
       openModal('onboardingModal');
     }
-  });
+  }).catch(() => applyLoggedInUI(user.displayName || 'Guest'));
 }
 
 function completeOnboarding() {
@@ -1600,6 +2245,124 @@ function completeOnboarding() {
   }).catch(() => showToast('Error saving profile', 'error'));
 }
 
+let profileAddresses = [];
+let profileSelectedAddressId = null;
+let profileAddressDraftId = null;
+let profileAddressesLoadedUid = null;
+
+function profileFormatAddress(a) {
+  if (!a) return '';
+  return [a.house, a.floor ? 'Floor ' + a.floor : '', a.landmark, a.area, a.pincode].filter(Boolean).join(', ');
+}
+function profileNormalizeAddress(a) {
+  return [a.type,a.house,a.floor,a.landmark,a.area,a.pincode].map(v=>String(v||'').trim().toLowerCase().replace(/\s+/g,' ')).join('|');
+}
+function profileEscape(v){ return typeof sanitizeHTML === 'function' ? sanitizeHTML(v) : String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function toggleProfileAddresses(){
+  const section=document.getElementById('profileAddressSection');
+  if(!section) return;
+  const open=section.classList.toggle('open');
+  const btn=section.querySelector('.profile-address-toggle');
+  if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(open) renderProfileAddresses();
+}
+function loadProfileAddresses(uid, customerData){
+  profileAddressesLoadedUid=uid;
+  const raw=customerData && customerData.addresses;
+  profileAddresses=[];
+  if(raw && typeof raw==='object'){
+    Object.keys(raw).forEach(k=>{ const a=raw[k]; if(a && typeof a==='object') profileAddresses.push({...a,id:a.id||k}); });
+  }
+  profileSelectedAddressId=(customerData && customerData.selectedAddressId) || profileAddresses.find(a=>a.isDefault)?.id || profileAddresses[0]?.id || null;
+  profileAddresses.forEach(a=>a.isDefault=a.id===profileSelectedAddressId);
+  // Legacy customer records: migrate the old single-address fields into the list only when no list exists.
+  if(!profileAddresses.length && customerData && (customerData.address || customerData.houseNumber || customerData.area)){
+    const legacy={id:'addr_legacy_'+Date.now(),type:customerData.addressType||'home',house:customerData.houseNumber||customerData.address||'',floor:customerData.floor||'',landmark:customerData.landmark||'',area:customerData.area||'',pincode:customerData.pincode||'',isDefault:true,createdAt:Date.now()};
+    if(customerData.latitude!=null) legacy.latitude=customerData.latitude;
+    if(customerData.longitude!=null) legacy.longitude=customerData.longitude;
+    if(customerData.locationSource) legacy.locationSource=customerData.locationSource;
+    profileAddresses=[legacy]; profileSelectedAddressId=legacy.id;
+    persistProfileAddresses(false);
+  }
+  renderProfileAddresses();
+}
+function renderProfileAddresses(){
+  const list=document.getElementById('profileAddressList');
+  const summary=document.getElementById('profileAddressSummary');
+  if(!list) return;
+  if(!profileAddresses.length){
+    list.innerHTML='<div class="profile-address-empty">No saved address yet. Add your pickup location once and keep it ready for the next booking.</div>';
+    if(summary) summary.textContent='No saved address yet';
+    return;
+  }
+  const selected=profileAddresses.find(a=>a.id===profileSelectedAddressId)||profileAddresses[0];
+  if(summary) summary.textContent=profileFormatAddress(selected).slice(0,80) || 'Saved pickup address';
+  list.innerHTML=profileAddresses.map(a=>{
+    const selectedMark=a.id===profileSelectedAddressId;
+    const icon=a.type==='work'?'fa-building':(a.type==='other'?'fa-map-pin':'fa-home');
+    return `<div class="profile-address-card ${selectedMark?'selected':''}" onclick="selectProfileAddress('${profileEscape(a.id)}')">\
+<div class="profile-address-card-top"><span class="profile-address-type"><i class="fas ${icon}"></i> ${profileEscape(a.type||'home')}</span>${selectedMark?'<span class="profile-address-selected"><i class="fas fa-check"></i> Selected</span>':''}</div>\
+<div class="profile-address-text">${profileEscape(profileFormatAddress(a))}</div>\
+<div class="profile-address-actions"><button type="button" class="profile-address-action" onclick="event.stopPropagation(); editProfileAddress('${profileEscape(a.id)}')"><i class="fas fa-pen"></i> Edit</button><button type="button" class="profile-address-action delete" onclick="event.stopPropagation(); deleteProfileAddress('${profileEscape(a.id)}')"><i class="fas fa-trash"></i> Delete</button></div></div>`;
+  }).join('');
+}
+function persistProfileAddresses(showToastMsg=true){
+  const user=auth.currentUser; if(!user) return Promise.reject(new Error('Not signed in'));
+  const addrMap={};
+  profileAddresses.forEach(a=>{
+    if(!a||!a.id) return;
+    addrMap[a.id]={
+      ...a,
+      id:a.id,
+      type:a.type||'home',
+      house:a.house||'',
+      floor:a.floor||'',
+      landmark:a.landmark||'',
+      area:a.area||'',
+      pincode:a.pincode||'',
+      isDefault:a.id===profileSelectedAddressId,
+      createdAt:a.createdAt||Date.now(),
+      latitude:Number.isFinite(Number(a.latitude))?Number(a.latitude):null,
+      longitude:Number.isFinite(Number(a.longitude))?Number(a.longitude):null,
+      locationSource:a.locationSource||'manual'
+    };
+  });
+  const def=profileAddresses.find(a=>a.id===profileSelectedAddressId)||profileAddresses.find(a=>a.isDefault)||profileAddresses[0]||null;
+  if(def) profileSelectedAddressId=def.id;
+  const updates={addresses:addrMap,selectedAddressId:def?def.id:null};
+  if(def){updates.address=profileFormatAddress(def);updates.addressType=def.type||'home';updates.houseNumber=def.house||'';updates.floor=def.floor||'';updates.landmark=def.landmark||'';updates.area=def.area||'';updates.pincode=def.pincode||'';updates.latitude=Number.isFinite(Number(def.latitude))?Number(def.latitude):null;updates.longitude=Number.isFinite(Number(def.longitude))?Number(def.longitude):null;updates.locationSource=def.locationSource||'manual';}
+  else {updates.address='';updates.addressType='';updates.houseNumber='';updates.floor='';updates.landmark='';updates.area='';updates.pincode='';updates.latitude=null;updates.longitude=null;updates.locationSource='manual';}
+  return db.ref('customers/'+user.uid).update(updates).then(()=>{renderProfileAddresses();if(showToastMsg)showToast('Address saved successfully!','success');});
+}
+function selectProfileAddress(id){ if(!profileAddresses.some(a=>a.id===id))return; profileSelectedAddressId=id; profileAddresses.forEach(a=>a.isDefault=a.id===id); persistProfileAddresses().catch(()=>showToast('Could not update selected address','error')); }
+function showProfileAddressForm(addr){
+  const form=document.getElementById('profileAddressForm'); if(!form)return;
+  const a=addr||{id:null,type:'home',house:'',floor:'',landmark:'',area:'',pincode:''}; profileAddressDraftId=a.id||null;
+  document.getElementById('profileAddrType').value=a.type||'home'; document.getElementById('profileAddrHouse').value=a.house||''; document.getElementById('profileAddrFloor').value=a.floor||''; document.getElementById('profileAddrLandmark').value=a.landmark||''; document.getElementById('profileAddrArea').value=a.area||''; document.getElementById('profileAddrPincode').value=a.pincode||'';
+  form.classList.add('active'); const add=document.getElementById('profileAddressAddBtn'); if(add)add.style.display='none';
+}
+function editProfileAddress(id){const a=profileAddresses.find(x=>x.id===id);if(a)showProfileAddressForm(a);}
+function cancelProfileAddressForm(){const form=document.getElementById('profileAddressForm');if(form)form.classList.remove('active');const add=document.getElementById('profileAddressAddBtn');if(add)add.style.display='block';profileAddressDraftId=null;}
+function saveProfileAddress(){
+  const type=document.getElementById('profileAddrType').value; const house=document.getElementById('profileAddrHouse').value.trim(); const floor=document.getElementById('profileAddrFloor').value.trim(); const landmark=document.getElementById('profileAddrLandmark').value.trim(); const area=document.getElementById('profileAddrArea').value.trim(); const pincode=document.getElementById('profileAddrPincode').value.trim();
+  if(!house||house.length<3)return showToast('Please enter a valid house number/building name','warning');
+  if(!area||area.length<3)return showToast('Please enter a valid Area/Locality','warning');
+  if(pincode && !/^\d{6}$/.test(pincode))return showToast('Enter a valid 6-digit pincode','warning');
+  const draftId=profileAddressDraftId; const key=profileNormalizeAddress({type,house,floor,landmark,area,pincode}); const duplicate=profileAddresses.find(a=>a.id!==draftId&&profileNormalizeAddress(a)===key); if(duplicate){profileSelectedAddressId=duplicate.id;profileAddresses.forEach(a=>a.isDefault=a.id===duplicate.id);return persistProfileAddresses().then(cancelProfileAddressForm).catch(()=>showToast('Could not save address','error'));}
+  const existing=draftId?profileAddresses.find(a=>a.id===draftId):null;
+  const obj={id:draftId||'addr_'+Date.now(),type,house,floor,landmark,area,pincode,isDefault:true,createdAt:existing?.createdAt||Date.now()};
+  // Preserve booking map/location metadata when editing an existing address.
+  if(existing){if(existing.latitude!=null)obj.latitude=existing.latitude;if(existing.longitude!=null)obj.longitude=existing.longitude;if(existing.locationSource)obj.locationSource=existing.locationSource;}
+  if(draftId){const i=profileAddresses.findIndex(a=>a.id===draftId);if(i>=0)profileAddresses[i]=obj;}else profileAddresses.push(obj);
+  profileSelectedAddressId=obj.id;profileAddresses.forEach(a=>a.isDefault=a.id===obj.id);
+  persistProfileAddresses().then(cancelProfileAddressForm).catch(()=>showToast('Could not save address','error'));
+}
+function deleteProfileAddress(id){
+  if(!confirm('Are you sure you want to delete this address?'))return;
+  profileAddresses=profileAddresses.filter(a=>a.id!==id); if(profileSelectedAddressId===id)profileSelectedAddressId=profileAddresses[0]?.id||null; profileAddresses.forEach(a=>a.isDefault=a.id===profileSelectedAddressId);
+  persistProfileAddresses().then(()=>showToast('Address deleted','success')).catch(()=>showToast('Could not delete address','error'));
+}
+
 function saveProfile() {
   const user = auth.currentUser;
   if (!user) return;
@@ -1608,18 +2371,15 @@ function saveProfile() {
   if (!phoneInput.disabled && !/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number', 'warning');
   const newName = document.getElementById('profName').value.trim() || 'Guest';
   const newEmail = document.getElementById('profEmail').value.trim();
-  const newAddress = document.getElementById('profAddress').value.trim();
-  db.ref('customers/' + user.uid).update({
-    name: newName,
-    email: newEmail,
-    phone: phone,
-    address: newAddress
-  }).then(() => {
-    showToast('Profile saved!', 'success');
-    applyLoggedInUI(newName);
-    document.getElementById('profNameDisplay').textContent = newName;
-    document.getElementById('profEmailDisplay').textContent = newEmail || 'Phone verified member';
-  }).catch(() => showToast('Error saving profile', 'error'));
+  db.ref('customers/' + user.uid).update({ name: newName, email: newEmail, phone: phone })
+    .then(() => {
+      applyLoggedInUI(newName);
+      document.getElementById('profNameDisplay').textContent = newName;
+      document.getElementById('profEmailDisplay').textContent = newEmail || 'Phone verified member';
+      return persistProfileAddresses(false);
+    })
+    .then(() => showToast('Profile saved!', 'success'))
+    .catch(() => showToast('Error saving profile', 'error'));
 }
 
 function logoutUser() {
@@ -1669,13 +2429,13 @@ function setProfileHeader(user) {
         notifRow.style.display = 'flex';
         if (Notification.permission === 'granted') {
           notifBtn.innerHTML = 'Enabled';
-          notifBtn.style.background = 'rgba(16,185,129,0.1)';
+          notifBtn.style.background = 'rgba(var(--success-rgb),0.1)';
           notifBtn.style.color = 'var(--success)';
           notifBtn.style.borderColor = 'transparent';
           notifBtn.disabled = true;
         } else if (Notification.permission === 'denied') {
           notifBtn.innerHTML = 'Blocked';
-          notifBtn.style.background = 'rgba(239,68,68,0.1)';
+          notifBtn.style.background = 'rgba(var(--danger-rgb),0.1)';
           notifBtn.style.color = 'var(--danger)';
           notifBtn.style.borderColor = 'transparent';
           notifBtn.disabled = true;
@@ -1727,7 +2487,7 @@ function loadOrderHistory() {
     allFetchedOrders = [];
     snap.forEach(child => {
       const o = child.val();
-      if (o) allFetchedOrders.push(o);
+      if (o) allFetchedOrders.push({...o, _firebaseKey: child.key});
     });
     allFetchedOrders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     renderOrderHistoryList();
@@ -1745,7 +2505,7 @@ function renderOrderHistoryList() {
 
   if (!filteredOrders.length) {
     let emptyMsg = currentOrderTab === 'active' ? 'No active orders right now.' : 'No past orders found.';
-    list.innerHTML = `<div style="text-align:center; padding:34px 10px 20px; color:var(--text-muted); font-weight:600;"><i class="fas fa-box-open" style="font-size:42px; margin-bottom:18px;"></i><br>${emptyMsg}<br><div style="margin-top: 24px;"><a href="booking.html" class="care-btn primary" style="padding: 14px 32px; font-size: 15px; border-radius: 30px; width: 100%; max-width: 240px; box-shadow: 0 8px 25px rgba(14,165,233,0.3); text-decoration:none; display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div></div>`;
+    list.innerHTML = `<div style="text-align:center; padding:34px 10px 20px; color:var(--text-muted); font-weight:600;"><i class="fas fa-box-open" style="font-size:42px; margin-bottom:18px;"></i><br>${emptyMsg}<br><div style="margin-top: 24px;"><a href="booking.html" class="care-btn primary" style="padding: 14px 32px; font-size: 15px; border-radius: 30px; width: 100%; max-width: 240px; box-shadow: 0 8px 25px rgba(var(--primary-rgb),0.3); text-decoration:none; display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div></div>`;
     return;
   }
 
@@ -1753,20 +2513,20 @@ function renderOrderHistoryList() {
   filteredOrders.forEach(o => {
     const statusText = statusLabels[o.status] || 'Order';
     const statusClass = sanitizeHTML(o.status || '');
-    const orderIdRaw = safeId(o.orderId);
-    const orderIdDisplay = sanitizeHTML(o.orderId);
-    const dateText = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'Today';
+    const orderRef = safeId(o.firebaseKey || o._firebaseKey || o.orderId);
+    const orderIdDisplay = o.orderId ? sanitizeHTML(formatOrderDisplayId(o.orderId)) : 'Order ID unavailable';
+    const dateText = o.createdAt ? formatDisplayDate(o.createdAt) : 'Today';
     const itemCount = getOrderItemSummary(o);
     const expressHtml = o.express === 'Yes' ? `<div style="color:var(--gold); font-weight:800; font-size:13px; margin-bottom:14px;"><i class="fas fa-bolt"></i> Express</div>` : '';
     
     const createdTime = o.createdAt || Date.now();
     const isWithin2Hours = (Date.now() - createdTime) < (2 * 60 * 60 * 1000);
     
-    let actionBtnHtml = `<button class="care-btn soft-blue" onclick="downloadInvoice('${orderIdRaw}')"><i class="fas fa-file-invoice"></i> Invoice</button>
+    let actionBtnHtml = `<button class="care-btn soft-blue" onclick="downloadInvoice('${orderRef}')"><i class="fas fa-file-invoice"></i> Invoice</button>
                          <a href="booking.html" class="care-btn soft-green"><i class="fas fa-redo"></i> Book Again</a>`;
                          
     if (o.status === 'pending' && isWithin2Hours) {
-        actionBtnHtml += `<button class="care-btn soft-red" onclick="cancelOrder('${orderIdRaw}')"><i class="fas fa-times-circle"></i> Cancel</button>`;
+        actionBtnHtml += `<button class="care-btn soft-red" onclick="cancelOrder('${orderRef}')"><i class="fas fa-times-circle"></i> Cancel</button>`;
     }
 
     html += `
@@ -1793,66 +2553,146 @@ function renderOrderHistoryList() {
 }
 
 function downloadInvoice(id) {
-  showToast('Fetching latest cloud sync invoice...', 'info');
-  db.ref('orders/' + id).once('value').then(snap => {
-    const o = snap.val();
-    if (!o) { showToast('Order not found', 'error'); return; }
-    const fetchProfile = o.uid ? db.ref('customers/' + o.uid).once('value') : Promise.resolve(null);
-    fetchProfile.then(pSnap => {
-      const prof = (pSnap && pSnap.exists()) ? pSnap.val() : {};
-      buildInvoicePDF(o, prof, id);
-    }).catch(() => buildInvoicePDF(o, {}, id));
-  });
+  const requestedId = String(id || '').trim();
+  if (!requestedId) { showToast('Invoice reference is missing', 'error'); return; }
+  showToast('Fetching invoice...', 'info');
+  const cleanRequestedId = requestedId.replace(/^PDC-/i, '');
+  const readByKey = key => db.ref('orders/' + key).once('value').then(snap => (snap.exists() && snap.val()) ? { data: snap.val(), key } : null);
+  const readByOrderId = orderId => db.ref('orders').orderByChild('orderId').equalTo(orderId).limitToFirst(1).once('value').then(q => { let found=null; q.forEach(child => { if (!found && child.val()) found={data:child.val(),key:child.key}; }); return found; });
+  readByKey(requestedId)
+    .then(result => result || (cleanRequestedId !== requestedId ? readByKey(cleanRequestedId) : null))
+    .then(result => result || readByOrderId(cleanRequestedId))
+    .then(result => {
+      if (!result || !result.data) { showToast('Invoice not found for this order', 'error'); return; }
+      const o = { ...result.data, _firebaseKey: result.key, firebaseKey: result.data.firebaseKey || result.key };
+      const invoiceId = o.orderId ? formatOrderDisplayId(o.orderId) : `Order-${result.key}`;
+      const fetchProfile = o.uid ? db.ref('customers/' + o.uid).once('value') : Promise.resolve(null);
+      return fetchProfile.then(pSnap => buildInvoicePDF(o, (pSnap && pSnap.exists()) ? pSnap.val() : {}, invoiceId)).catch(() => buildInvoicePDF(o, {}, invoiceId));
+    })
+    .catch(err => { console.warn('Invoice lookup failed:', err?.message || err); showToast('Unable to load invoice. Please try again.', 'error'); });
 }
 
 function buildInvoicePDF(o, prof, orderId) {
-  const custName = sanitizeHTML(o.customerName || prof.name || 'Valued Customer');
-  const custPhone = sanitizeHTML(o.phone || prof.phone || '—');
-  const custAddress = sanitizeHTML(o.address || prof.address || 'Not provided');
-  const statusLabel = statusLabels[o.status] || (o.status || 'Confirmed');
-  const payStatus = sanitizeHTML(o.paymentStatus || 'Pay on Delivery');
-  const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—';
-  const isExpress = o.express === 'Yes';
-  const esdtWindow = isExpress ? '24 Hours (Express Guaranteed)' : '48 - 72 Hours (Standard)';
-  const esdtDate = formatEta(o);
+  const profile = prof || {};
+  const custName = sanitizeHTML(o.customerName || o.name || profile.name || 'Valued Customer');
+  const custPhone = sanitizeHTML(o.phone || profile.phone || '—');
+  const custAddress = sanitizeHTML((o.address || profile.address || '—').split('|')[0].trim());
+  const pickupDate = sanitizeHTML(formatDisplayDate(o.pickupDate || '—'));
+  const pickupSlot = sanitizeHTML(o.timeSlot || '—');
+  const specialInst = sanitizeHTML(o.specialInst || '');
+  const dateStr = (typeof o.createdAt === 'number' && !isNaN(new Date(o.createdAt).getTime()))
+    ? formatDisplayDate(o.createdAt)
+    : formatDisplayDate(new Date());
+  const isExpress = String(o.express || '').toLowerCase() === 'yes';
+  const esdtWindow = isExpress ? '24 Hours' : '48–72 Hours';
+  const esdtDate = sanitizeHTML(o.estd || o.estdTime || o.estimatedDelivery || o.deliveryDate || o.ESTD || formatEta(o) || '—');
+
   let rows = '';
   let computedSubtotal = 0;
-  const items = o.items || {};
-  for (const [k, rawValue] of Object.entries(items)) {
-    const snapshot = rawValue && typeof rawValue === 'object' ? rawValue : null;
-    const qty = snapshot ? getNumeric(snapshot.qty, 0) : getNumeric(rawValue, 0);
-    let rate = snapshot && Number.isFinite(Number(snapshot.rate)) ? getNumeric(snapshot.rate, 0) : getItemRate(k);
-    if (rate === null) rate = 0;
-    const storedAmount = snapshot && Number.isFinite(Number(snapshot.amount)) ? getNumeric(snapshot.amount, 0) : null;
-    const amt = storedAmount !== null ? storedAmount : rate * qty;
-    computedSubtotal += amt;
-    rows += `<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 6px; font-weight:600;">${sanitizeHTML(k)}</td><td style="padding:10px 6px; text-align:center;">${qty}</td><td style="padding:10px 6px; text-align:right;">₹${formatMoney(rate)}</td><td style="padding:10px 6px; text-align:right; font-weight:700;">₹${formatMoney(amt)}</td></tr>`;
-  }
-  const baseSubtotal = getNumeric(o.subtotal, computedSubtotal);
-  const expressFee = isExpress ? getNumeric(o.expressFee, Math.round(baseSubtotal * (getNumeric(SITE_SETTINGS.expressPercent, 90) / 100))) : 0;
-  const discount = o.discount || 0;
-  const couponApplied = o.couponCode ? sanitizeHTML(o.couponCode) : '';
-  const grandTotal = o.total || (baseSubtotal + expressFee - discount);
-  
-  const expressBanner = isExpress ? `<div style="background:#fef3c7; color:#92400e; padding:6px 12px; border-radius:8px; font-size:10.5px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;"><span>⚡ Express 24-Hour Priority Care</span><span>Turnaround: 24 Hours</span></div>` : '';
-  const couponRow = discount > 0 ? `<div style="display:flex; justify-content:space-between; color:#16a34a; margin-bottom:6px;"><span>Coupon Discount ${couponApplied ? `(${couponApplied})` : ''}</span><span>-₹${formatMoney(discount)}</span></div>` : '';
-  
-  const element = document.createElement('div');
-  element.innerHTML = `<div style="padding:24px; font-family:'Outfit',sans-serif,Arial; width:460px; color:#0f172a; background:#fff;"><div style="text-align:center; border-bottom:2px solid #0ea5e9; padding-bottom:12px; margin-bottom:14px;"><div style="font-size:24px; font-weight:800; color:#0ea5e9; letter-spacing:-0.5px;">Parth Dry Clean</div><div style="font-size:10px; color:#64748b; font-weight:700; letter-spacing:1px; margin-top:2px;">FLAWLESS LAUNDRY & DRY CLEANING SERVICES</div><div style="font-size:10px; color:#64748b; margin-top:4px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow</div><div style="font-size:10px; color:#64748b;">📞 +91 92356 01645 • ✉️ parthdrycleaning@gmail.com</div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><div style="font-size:15px; font-weight:800; color:#0f172a; letter-spacing:0.5px;">ORDER RECEIPT</div><div style="background:#e0f2fe; color:#0284c7; padding:4px 10px; border-radius:20px; font-size:10px; font-weight:800;">${statusLabel}</div></div>${expressBanner}<div style="background:#f8fafc; padding:12px 14px; border-radius:10px; margin-bottom:12px; font-size:11px;"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Invoice No:</span><strong>#${orderId}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Order Date:</span><strong>${dateStr}</strong></div><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Estimated Delivery (ESDT):</span><strong style="color:#0ea5e9;">${esdtDate} (${esdtWindow})</strong></div><div style="display:flex; justify-content:space-between;"><span style="color:#64748b;">Payment Status:</span><strong>${payStatus}</strong></div></div><div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; margin-bottom:16px; font-size:11px;"><div style="font-size:10px; color:#64748b; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Customer Details</div><div style="font-weight:800; font-size:13px; margin-bottom:2px;">${custName}</div><div style="color:#334155;">📞 ${custPhone}</div><div style="color:#334155; margin-top:2px;">📍 ${custAddress}</div></div><table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:16px;"><thead><tr style="background:#f1f5f9; border-radius:6px;"><th style="padding:8px; text-align:left; font-size:10px; color:#64748b; text-transform:uppercase;">Item Description</th><th style="padding:8px; text-align:center; font-size:10px; color:#64748b; text-transform:uppercase;">Qty</th><th style="padding:8px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Rate</th><th style="padding:8px; text-align:right; font-size:10px; color:#64748b; text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table><div style="margin-top:10px; border-top:2px solid #e2e8f0; padding-top:12px; font-size:12px; font-weight:600;"><div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:#64748b;">Subtotal</span><span>₹${formatMoney(baseSubtotal)}</span></div>${expressFee > 0 ? `<div style="display:flex; justify-content:space-between; color:#ea580c; margin-bottom:6px;"><span>Express Priority Surcharge</span><span>+₹${formatMoney(expressFee)}</span></div>` : ''}${couponRow}<div style="display:flex; justify-content:space-between; font-size:18px; font-weight:800; margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1;"><span>Grand Total</span><span style="color:#0ea5e9;">₹${formatMoney(grandTotal)}</span></div></div><div style="margin-top:24px; padding-top:16px; border-top: 1px solid #f1f5f9; text-align:center;"><div style="font-size:11px; font-weight:700; color:#0f172a; margin-bottom:4px;">Thank you for trusting Parth Dry Clean with your wardrobe.</div><div style="font-size:9.5px; color:#64748b;">Garments processed with eco-friendly solvents & steam finishing.</div></div></div>`;
-  
-  // FIX: Attach to DOM safely invisible so html2pdf renders correctly on mobile
-  element.style.position = 'fixed';
-  element.style.top = '0';
-  element.style.left = '0';
-  element.style.zIndex = '-1000';
-  element.style.opacity = '0';
-  element.style.pointerEvents = 'none';
-  document.body.appendChild(element);
+  const historicalRates = o.itemRates && typeof o.itemRates === 'object' ? o.itemRates : {};
+  const items = o.items && typeof o.items === 'object' ? o.items : historicalRates;
 
-  html2pdf().set({ margin: 8, filename: 'ParthDryClean_Receipt_' + orderId + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => {
-    showToast('Receipt downloaded successfully!', 'success');
-    setTimeout(() => { if (document.body.contains(element)) document.body.removeChild(element); }, 1000);
-  });
+  for (const [key, raw] of Object.entries(items)) {
+    const snapshot = raw && typeof raw === 'object' ? raw : null;
+    const historical = historicalRates[key] && typeof historicalRates[key] === 'object' ? historicalRates[key] : null;
+    const qty = snapshot ? Number(snapshot.qty ?? snapshot.quantity) || 0 : Number(raw) || 0;
+    if (qty <= 0) continue;
+
+    const name = snapshot?.name || historical?.name || key;
+    const rateValue = snapshot?.rate ?? historical?.rate ?? getItemRate(key);
+    const rate = Number.isFinite(Number(rateValue)) ? Number(rateValue) : 0;
+    const amountValue = snapshot?.amount ?? historical?.amount;
+    const amount = Number.isFinite(Number(amountValue)) ? Number(amountValue) : rate * qty;
+    computedSubtotal += amount;
+
+    rows += `<tr><td style="padding:10px 8px;border-top:1px solid #e1e8f2;font-weight:800;color:#172033;">${sanitizeHTML(name)}</td><td style="padding:10px 6px;border-top:1px solid #e1e8f2;text-align:center;color:#475569;">${qty}</td><td style="padding:10px 6px;border-top:1px solid #e1e8f2;text-align:right;color:#475569;">₹${formatMoney(rate)}</td><td style="padding:10px 8px;border-top:1px solid #e1e8f2;text-align:right;font-weight:900;color:#172033;">₹${formatMoney(amount)}</td></tr>`;
+  }
+
+  const baseSubtotal = Number(o.subtotal || computedSubtotal);
+  const expressFee = Number(o.expressFee || 0);
+  const discount = Number(o.discount || 0);
+  const couponApplied = o.couponCode ? sanitizeHTML(o.couponCode) : '';
+  const grandTotal = Number(o.total || (baseSubtotal + expressFee - discount));
+  const expressBanner = isExpress ? `<div style="margin:0 0 14px;padding:10px 12px;border:1px solid #fed7aa;border-radius:14px;background:#fff7ed;color:#9a3412;font-size:10px;font-weight:900;display:flex;justify-content:space-between;gap:12px;"><span>⚡ Express priority care</span><span>24 hours</span></div>` : '';
+  const couponRow = discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;color:#059669;font-weight:800;"><span>Coupon${couponApplied ? ` (${couponApplied})` : ''}</span><span>-₹${formatMoney(discount)}</span></div>` : '';
+
+  // Keep Home's invoice content, but use the same proven HTML-string rendering path as Booking.
+  const invoiceHTML = `<div style="width:470px;box-sizing:border-box;padding:24px;background:#f5f8fc;color:#172033;font-family:'Outfit',Arial,sans-serif;">
+    <div style="background:#ffffff;border:1px solid #dfe7f2;border-radius:24px;overflow:hidden;">
+      <div style="padding:22px 22px 18px;background:#eef5ff;border-bottom:1px solid #dfe7f2;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
+          <div>
+            <div style="font-size:25px;font-weight:900;letter-spacing:-.7px;color:#2563eb;line-height:1;">Parth</div>
+            <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#1e3a8a;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
+            <div style="font-size:8.5px;color:#64748b;font-weight:700;margin-top:7px;">Laundry • Dry Cleaning • Doorstep Pickup</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:8px;font-weight:900;letter-spacing:1.5px;color:#64748b;">INVOICE</div>
+            <div style="font-size:13px;font-weight:900;color:#172033;margin-top:4px;">#${sanitizeHTML(orderId)}</div>
+            <div style="display:inline-block;margin-top:8px;padding:5px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:8px;font-weight:900;">${sanitizeHTML(o.status || 'Confirmed')}</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;display:flex;justify-content:space-between;gap:12px;font-size:8.5px;color:#64748b;font-weight:700;">
+          <span>Issued ${dateStr}</span><span>Pickup & delivery FREE</span>
+        </div>
+      </div>
+
+      <div style="padding:19px 22px 22px;">
+        ${expressBanner}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+          <div style="padding:12px;border:1px solid #dfe7f2;border-radius:16px;background:#ffffff;">
+            <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:7px;">Customer</div>
+            <div style="font-size:11px;font-weight:900;">${custName}</div>
+            <div style="font-size:9px;color:#475569;font-weight:700;margin-top:3px;">${custPhone}</div>
+          </div>
+          <div style="padding:12px;border:1px solid #dfe7f2;border-radius:16px;background:#ffffff;">
+            <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:7px;">Pickup</div>
+            <div style="font-size:10px;font-weight:900;">${pickupDate}</div>
+            <div style="font-size:9px;color:#2563eb;font-weight:800;margin-top:3px;">${pickupSlot}</div>
+          </div>
+        </div>
+
+        <div style="padding:13px;border:1px solid #e5eaf2;border-radius:15px;background:#fff;margin-bottom:16px;">
+          <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:6px;">Pickup address</div>
+          <div style="font-size:9.5px;line-height:1.45;color:#334155;font-weight:700;">${custAddress}</div>
+        </div>
+
+        <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:7px;">Laundry bag</div>
+        <table style="width:100%;border-collapse:collapse;font-size:9.5px;"><thead><tr style="background:#edf3fb;"><th style="padding:8px;text-align:left;font-size:7.5px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;">Item</th><th style="padding:8px;text-align:center;font-size:7.5px;color:#64748b;text-transform:uppercase;">Qty</th><th style="padding:8px;text-align:right;font-size:7.5px;color:#64748b;text-transform:uppercase;">Rate</th><th style="padding:8px;text-align:right;font-size:7.5px;color:#64748b;text-transform:uppercase;">Amount</th></tr></thead><tbody>${rows}</tbody></table>
+
+        ${specialInst ? `<div style="margin-top:15px;padding:11px 12px;border-left:3px solid #2563eb;border-radius:0 12px 12px 0;background:#eef5ff;"><div style="font-size:7.5px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special instructions</div><div style="font-size:9px;color:#334155;font-weight:700;line-height:1.45;margin-top:4px;">${specialInst}</div></div>` : ''}
+
+        <div style="margin-top:17px;padding-top:12px;border-top:1px solid #dfe7f2;">
+          <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:9.5px;color:#64748b;font-weight:700;"><span>Subtotal</span><span style="color:#172033;">₹${formatMoney(baseSubtotal)}</span></div>
+          ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:9.5px;color:#ea580c;font-weight:800;"><span>Express surcharge</span><span>+₹${formatMoney(expressFee)}</span></div>` : ''}
+          ${couponRow}
+          <div style="margin-top:8px;padding-top:12px;border-top:1px solid #d4deeb;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:10px;font-weight:900;">TOTAL PAYABLE</span><strong style="font-size:21px;color:#2563eb;">₹${formatMoney(grandTotal)}</strong></div>
+        </div>
+
+        <div style="margin-top:17px;padding:12px;border-radius:14px;background:#f5f8fc;border:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:12px;align-items:center;">
+          <div><div style="font-size:8px;color:#64748b;font-weight:900;text-transform:uppercase;letter-spacing:1px;">Estimated delivery</div><div style="font-size:10px;font-weight:900;margin-top:4px;">${esdtDate}</div></div>
+          <div style="font-size:8.5px;color:#2563eb;font-weight:900;">${sanitizeHTML(esdtWindow)}</div>
+        </div>
+
+        <div style="margin-top:18px;padding-top:14px;border-top:1px solid #dfe7f2;text-align:center;font-size:8px;color:#64748b;font-weight:700;line-height:1.5;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow<br>+91 92356 01645 • parthdrycleaning@gmail.com<br><span style="display:inline-block;margin-top:5px;color:#2563eb;font-weight:900;">Thank you for choosing Parth Dry Clean.</span></div>
+      </div>
+    </div>
+  </div>`;
+
+  setTimeout(() => {
+    html2pdf().set({
+      margin: 6,
+      filename: 'ParthDryClean_Invoice_' + String(orderId).replace(/[^a-z0-9_-]/gi, '_') + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(invoiceHTML).save()
+      .then(() => showToast('Invoice downloaded successfully!', 'success'))
+      .catch(err => {
+        console.warn('Invoice PDF generation failed:', err?.message || err);
+        showToast('Error generating PDF.', 'error');
+      });
+  }, 300);
 }
 
 auth.onAuthStateChanged(user => {
@@ -1868,7 +2708,10 @@ auth.onAuthStateChanged(user => {
         document.getElementById('profName').value = finalName;
         document.getElementById('profEmail').value = d.email || user.email || '';
         document.getElementById('profPhone').value = d.phone || (user.phoneNumber ? last10Digits(user.phoneNumber) : '');
-        document.getElementById('profAddress').value = d.address || '';
+        loadProfileAddresses(user.uid, d);
+        const addrSection = document.getElementById('profileAddressSection');
+        if (addrSection) { addrSection.classList.remove('open'); const b=addrSection.querySelector('.profile-address-toggle'); if(b)b.setAttribute('aria-expanded','false'); }
+        cancelProfileAddressForm();
         setProfileHeader(user);
         loadProfileStats(user.uid);
         openModal('profileModal');
@@ -1880,7 +2723,7 @@ auth.onAuthStateChanged(user => {
     applyLoggedOutUI();
     loginBtn.onclick = () => openModal('authModal');
     myOrdersItem.style.display = 'none';
-    document.getElementById('activeOrderBar').style.display = 'none';
+    document.getElementById('activeCareWrapper').style.display = 'none';
     document.getElementById('activeOrderDropdown').classList.remove('open');
     activeOrderListeners.forEach(ref => ref.off('value'));
     activeOrderListeners = [];
@@ -1929,20 +2772,42 @@ function loadDynamicCategories() {
   }).catch(() => {});
 }
 
-function loadSiteSettings() {
-  db.ref('settings/general').once('value').then(s => {
-    if (!s.exists()) return;
-    const v = s.val() || {};
-    Object.assign(SITE_SETTINGS, { ...v, expressPercent: getNumeric(v.expressPercent, SITE_SETTINGS.expressPercent) });
-    const banner = document.getElementById('topBanner');
-    if (v.announcement) {
-      banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">&times;</button>';
+function applyGeneralSettings(v) {
+  const settings = v || {};
+  Object.assign(SITE_SETTINGS, {
+    ...settings,
+    expressPercent: getNumeric(settings.expressPercent, SITE_SETTINGS.expressPercent)
+  });
+
+  const banner = document.getElementById('topBanner');
+  if (banner) {
+    if (settings.announcement) {
+      banner.innerHTML = '📢 ' + sanitizeHTML(settings.announcement) + ' <button class="close-banner" aria-label="Close Banner">&times;</button>';
       banner.style.display = 'block';
-      document.getElementById('closeBanner').addEventListener('click', () => banner.style.display = 'none');
-    } else if (v.couponEnabled === false) {
+    } else if (settings.couponEnabled === false) {
       banner.style.display = 'none';
     }
-  }).catch(() => {});
+  }
+
+  const closed = settings.bookingOpen === false;
+  let closedBanner = document.getElementById('closedBanner');
+  if (closed) {
+    if (!closedBanner) {
+      closedBanner = document.createElement('div');
+      closedBanner.id = 'closedBanner';
+      closedBanner.style.cssText = 'background:linear-gradient(90deg,#7f1d1d,#991b1b);color:#fff;text-align:center;padding:10px 16px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px;position:relative;z-index:9999';
+      closedBanner.innerHTML = '🛠️ Bookings temporarily closed — <a href="https://wa.me/919235601645" style="color:#fde047;text-decoration:underline">WhatsApp par order karein</a>';
+      document.body.prepend(closedBanner);
+    }
+  } else if (closedBanner) {
+    closedBanner.remove();
+  }
+}
+
+function subscribeGeneralSettings() {
+  db.ref('settings/general').on('value', snap => {
+    applyGeneralSettings(snap.exists() ? snap.val() : {});
+  });
 }
 
 function loadSiteCMSContent() {
@@ -1975,16 +2840,16 @@ function loadSiteCMSContent() {
         const activeClass = idx === 0 ? 'active' : '';
         const safeKey = 'fab-' + idx;
         pillsHtml += `<button type="button" class="fabric-pill ${activeClass}" onclick="switchFabric('${safeKey}', this, '${sanitizeHTML(f.image || 'assets/shirt.png')}')"><i class="fas ${sanitizeHTML(f.icon || 'fa-tshirt')}"></i> ${sanitizeHTML(f.tabTitle || f.title)}</button>`;
-        cardsHtml += `<div class="fabric-content-card ${activeClass}" id="fabric-${safeKey}"><h3><i class="fas ${sanitizeHTML(f.icon || 'fa-tshirt')}" style="color:var(--primary);"></i> ${sanitizeHTML(f.title)}</h3><p>${sanitizeHTML(f.desc)}</p></div>`;
+        cardsHtml += `<div class="fabric-content-card ${activeClass}" id="fabric-${safeKey}"><h3><i class="fas ${sanitizeHTML(f.icon || 'fa-tshirt')}"></i> ${sanitizeHTML(f.title)}</h3><p>${sanitizeHTML(f.desc)}</p></div>`;
       });
       pillsContainer.innerHTML = pillsHtml;
       cardsContainer.innerHTML = cardsHtml;
     }
     if (cms.howItWorks && cms.howItWorks.length) {
-      document.getElementById('howItWorksGrid').innerHTML = cms.howItWorks.map(h => `<div class="step-card"><div class="step-icon"><i class="fas ${sanitizeHTML(h.icon || 'fa-check')}"></i></div><h3>${sanitizeHTML(h.title)}</h3><p>${sanitizeHTML(h.desc)}</p></div>`).join('');
+      document.getElementById('howItWorksGrid').innerHTML = cms.howItWorks.map((h, idx) => `<div class="step-card"><span class="step-number">${String(idx+1).padStart(2,'0')}</span><div class="step-icon"><i class="fas ${sanitizeHTML(h.icon || 'fa-check')}"></i></div><h3>${sanitizeHTML(h.title)}</h3><p>${sanitizeHTML(h.desc)}</p></div>`).join('');
     }
     if (cms.whyUs && cms.whyUs.length) {
-      document.getElementById('whyChooseUsGrid').innerHTML = cms.whyUs.map(w => `<div class="service-card"><div class="icon-box"><i class="fas ${sanitizeHTML(w.icon || 'fa-star')}"></i></div><h3>${sanitizeHTML(w.title)}</h3><p>${sanitizeHTML(w.desc)}</p></div>`).join('');
+      document.getElementById('whyChooseUsGrid').innerHTML = cms.whyUs.map((w, idx) => `<div class="service-card"><div class="service-card-top"><div class="icon-box"><i class="fas ${sanitizeHTML(w.icon || 'fa-star')}"></i></div><span class="service-kicker">${sanitizeHTML(w.kicker || 'PARTH CARE')}</span><span class="service-number">${String(idx+1).padStart(2,'0')}</span></div><h3>${sanitizeHTML(w.title)}</h3><p>${sanitizeHTML(w.desc)}</p><span class="service-link">Learn more <i class="fas fa-arrow-right"></i></span></div>`).join('');
     }
     if (cms.reviews && cms.reviews.length) {
       const reviewsHtml = cms.reviews.map(r => {
@@ -2007,7 +2872,7 @@ function loadSiteCMSContent() {
         else if(txt.includes('discount') || txt.includes('code') || txt.includes('offer')) icon = 'fa-tags';
         else if(txt.includes('minimum') || txt.includes('amount') || txt.includes('price')) icon = 'fa-rupee-sign';
 
-        return `<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><div class="faq-cat-icon"><i class="fas ${icon}"></i></div> ${sanitizeHTML(f.q)}</div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">${sanitizeHTML(f.a)}</div></div>`;
+        return `<div class="faq-item"><button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)"><div class="faq-icon-title"><span class="faq-number">${String(idx+1).padStart(2,'0')}</span><div class="faq-cat-icon"><i class="fas ${icon}"></i></div><span class="faq-question-text">${sanitizeHTML(f.q)}</span></div> <i class="fas fa-chevron-down faq-chevron"></i></button><div class="faq-answer">${sanitizeHTML(f.a)}</div></div>`;
       }).join('');
     }
     if (cms.contact) {
@@ -2044,31 +2909,11 @@ function toggleFaq(btn) {
   btn.setAttribute('aria-expanded', !isExpanded);
 }
 
-function checkBookingOpen() {
-  db.ref('settings/general').on('value', s => {
-    const v = s.val() || {};
-    const closed = (v.bookingOpen === false);
-    let b = document.getElementById('closedBanner');
-    if (closed) {
-      if (!b) {
-        b = document.createElement('div');
-        b.id = 'closedBanner';
-        b.style.cssText = 'background:linear-gradient(90deg,#7f1d1d,#991b1b);color:#fff;text-align:center;padding:10px 16px;font-family:Outfit,sans-serif;font-weight:700;font-size:13px;position:relative;z-index:9999';
-        b.innerHTML = '🛠️ Bookings temporarily closed — <a href="https://wa.me/919235601645" style="color:#fde047;text-decoration:underline">WhatsApp par order karein</a>';
-        document.body.prepend(b);
-      }
-    } else if (b) {
-      b.remove();
-    }
-  });
-}
-
 const cachedUser = getCachedUser();
 if (cachedUser && cachedUser.name) applyLoggedInUI(cachedUser.name); else setTimeGreeting(null);
 loadDynamicCategories();
-loadSiteSettings();
+subscribeGeneralSettings();
 loadSiteCMSContent();
-checkBookingOpen();
 
 const waTooltip = document.getElementById('waTooltip');
 window.addEventListener('scroll', () => { if (!waTooltip) return; if (window.scrollY > 0) waTooltip.classList.add('folded'); else waTooltip.classList.remove('folded'); }, { passive: true });
@@ -2077,9 +2922,9 @@ function showToast(msg, type='info'){
   const container = document.getElementById('toastContainer');
   while(container.children.length > 3) container.removeChild(container.firstChild);
   const t = document.createElement('div');
-  t.style.cssText = 'padding:12px 16px; border-radius:12px; background:#fff; color:#1a202c; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; align-items:center; gap:8px; font-weight:700; transition: opacity 0.3s;';
+  t.style.cssText = 'padding:12px 16px; border-radius:12px; background:var(--surface); color:var(--text); border:1px solid var(--border); box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:8px; font-weight:700; transition: opacity 0.3s;';
   const icon = type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle';
-  const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#0ea5e9';
+  const color = type==='success'?'#10b981':type==='error'?'#ef4444':'#2563EB';
   t.innerHTML = `<i class="fas fa-${icon}" style="color:${color};"></i> ${sanitizeHTML(msg)}`;
   container.appendChild(t);
   setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
@@ -2090,7 +2935,13 @@ window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferr
 document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
 if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topBanner').style.display = 'block';
-document.getElementById('closeBanner').addEventListener('click', () => document.getElementById('topBanner').style.display = 'none');
+const topBanner = document.getElementById('topBanner');
+if (topBanner) {
+  topBanner.addEventListener('click', (e) => {
+    const closeButton = e.target.closest('.close-banner');
+    if (closeButton) topBanner.style.display = 'none';
+  });
+}
 
 renderPricing();
 enableListSwipe();
