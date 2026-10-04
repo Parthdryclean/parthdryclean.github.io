@@ -1682,7 +1682,9 @@ function setNotificationButtonState(state) {
   const notifBtn = document.getElementById('notifEnableBtn');
   if (!notifBtn) return;
   if (state === 'enabled') {
-    notifBtn.innerHTML = 'Enabled';
+    notifBtn.innerHTML = '<i class="fas fa-bell" aria-hidden="true"></i>';
+    notifBtn.title = 'Notifications enabled';
+    notifBtn.setAttribute('aria-label', 'Notifications enabled');
     notifBtn.style.background = 'rgba(var(--success-rgb),0.1)';
     notifBtn.style.color = 'var(--success)';
     notifBtn.style.borderColor = 'transparent';
