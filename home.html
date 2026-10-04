@@ -1759,13 +1759,22 @@ async function requestFCMPermission() {
       return;
     }
 
-    await db.ref('customers/' + user.uid).update({
-      fcmToken: token,
-      fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
-    });
-
+    // Token is ready: update the drawer immediately. Do not make the UI wait
+    // for the customer-profile write to finish. The token write is persisted
+    // right after the visual state changes; on failure we safely roll back.
     setNotificationButtonState('enabled');
     showToast('Live order updates enabled', 'success');
+
+    try {
+      await db.ref('customers/' + user.uid).update({
+        fcmToken: token,
+        fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    } catch (persistErr) {
+      console.warn('FCM token persistence failed:', persistErr);
+      setNotificationButtonState('default');
+      showToast('Could not save notification settings. Please try again', 'warning');
+    }
   } catch(e) {
     console.warn('FCM permission failed', e);
     if (Notification.permission === 'denied') setNotificationButtonState('blocked');
