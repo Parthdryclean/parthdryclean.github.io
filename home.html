@@ -14,7 +14,7 @@
 <title>Parth Dry Clean | Flawless Laundry in Lucknow</title>
 
 <!-- PWA Manifest Link -->
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -261,13 +261,6 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .care-btn.soft-blue { background: var(--accent-light); color: var(--primary-dark); }
 .care-btn.soft-green { background: var(--success-soft); color: var(--success); }
 .care-btn.soft-red { background: var(--danger-soft); color: var(--danger); }
-.cancel-inline-confirm { margin-top:10px; padding:11px 12px; border:1px solid var(--danger); background:var(--danger-soft); border-radius:14px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-.cancel-inline-confirm .cancel-confirm-text { font-size:11px; font-weight:800; color:var(--text); flex:1 1 150px; }
-.cancel-inline-confirm .cancel-confirm-actions { display:flex; gap:7px; flex:0 0 auto; }
-.cancel-inline-confirm .cancel-confirm-actions button { border:0; border-radius:10px; padding:8px 12px; font:800 11px 'Outfit',sans-serif; cursor:pointer; }
-.cancel-inline-confirm .cancel-yes { background:var(--danger); color:#fff; }
-.cancel-inline-confirm .cancel-no { background:var(--surface); color:var(--text-muted); border:1px solid var(--border)!important; }
-
 
 .express-badge { background: #fbbf24; color: #1e293b; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
 .express-badge i { font-size: 10px; }
@@ -1985,35 +1978,18 @@ function formatDisplayDate(value) {
 function formatEta(order) { const etaDate = getOrderEtaDate(order); const now = new Date(); if (etaDate <= now) return 'Very soon'; const diffMs = etaDate - now; const hours = Math.floor(diffMs / 3600000); if (hours < 1) return 'Under 1 hour'; if (hours < 24) return `${hours}h left`; const day = etaDate.toLocaleDateString('en-IN', { weekday: 'short' }); const time = etaDate.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }); return `${day}, ${time}`; }
 function getOrderItemSummary(order) { if (!order.items) return '0 items'; const entries = Object.entries(order.items); const count = entries.reduce((sum, [, value]) => { const qty = (value && typeof value === 'object') ? value.qty : value; return sum + getNumeric(qty); }, 0); return `${count} item${count === 1 ? '' : 's'}`; }
 
-// CANCEL ORDER LOGIC (2 HOURS) — INLINE CONFIRMATION
-window.cancelOrder = function(orderId, trigger) {
-    const safeOrderId = safeId(orderId);
-    const targetButton = trigger || null;
-    if (!targetButton) return;
-    const card = targetButton.closest('.care-card');
-    if (!card) return;
-    const existing = card.querySelector('.cancel-inline-confirm');
-    if (existing) { existing.remove(); return; }
-    const box = document.createElement('div');
-    box.className = 'cancel-inline-confirm';
-    box.innerHTML = `
-      <div class="cancel-confirm-text">Cancel this order? This action cannot be undone.</div>
-      <div class="cancel-confirm-actions">
-        <button type="button" class="cancel-no" onclick="event.stopPropagation(); this.closest('.cancel-inline-confirm').remove();">No</button>
-        <button type="button" class="cancel-yes" onclick="event.stopPropagation(); confirmCancelOrder('${safeOrderId}', this)">Yes, Cancel</button>
-      </div>`;
-    card.querySelector('.care-card-actions')?.insertAdjacentElement('afterend', box);
-};
-
-window.confirmCancelOrder = function(orderId, button) {
-    if (button) button.disabled = true;
-    showToast("Cancelling order...", "info");
-    db.ref('orders/' + safeId(orderId)).update({ status: 'cancelled' })
-      .then(() => showToast("Order cancelled successfully.", "success"))
-      .catch((err) => {
-        if (button) button.disabled = false;
-        showToast("Failed to cancel order: " + err.message, "error");
-      });
+// CANCEL ORDER LOGIC (2 HOURS)
+window.cancelOrder = function(orderId) {
+    if(confirm("Are you sure you want to cancel this order? This action cannot be undone.")) {
+        showToast("Cancelling order...", "info");
+        db.ref('orders/' + orderId).update({ status: 'cancelled' })
+        .then(() => {
+            showToast("Order cancelled successfully.", "success");
+        })
+        .catch((err) => {
+            showToast("Failed to cancel order: " + err.message, "error");
+        });
+    }
 };
 
 function renderMiniTimeline(order) {
@@ -2045,7 +2021,7 @@ function renderActiveOrderCard(order) {
   `;
 
   if (order.status === 'pending' && isWithin2Hours) {
-     actionBtnHtml += `<button class="care-btn soft-red" onclick="event.stopPropagation(); cancelOrder('${orderRef}', this);"><i class="fas fa-times-circle"></i> Cancel</button>`;
+     actionBtnHtml += `<button class="care-btn soft-red" onclick="event.stopPropagation(); cancelOrder('${orderRef}');"><i class="fas fa-times-circle"></i> Cancel</button>`;
   }
 
   return `<div class="care-card"><div class="care-card-top"><div><div class="care-card-title">#${orderIdDisplay} ${expressHtml}</div><div class="care-card-meta"><span class="meta-pill">${dateText}</span><span class="meta-pill">${itemCount}</span><span class="meta-pill">₹${formatMoney(order.total || 0)}</span><span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span></div></div><div class="live-indicator"><span class="live-care-dot"></span> LIVE</div></div>${renderCareProgress(order)}<div class="care-card-actions">${actionBtnHtml}</div></div>`; 
@@ -3063,9 +3039,33 @@ function showToast(msg,type='info'){
   setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),300);},3000);
 }
 
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
-document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
+let deferredPrompt = null;
+const installButtons = () => document.querySelectorAll('.installAppBtn');
+const setInstallButtonsVisible = (visible) => installButtons().forEach(b => { b.style.display = visible ? 'inline-flex' : 'none'; });
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setInstallButtonsVisible(true);
+});
+
+installButtons().forEach((button) => button.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  const promptEvent = deferredPrompt;
+  deferredPrompt = null;
+  try {
+    await promptEvent.prompt();
+    await promptEvent.userChoice;
+  } catch (err) {
+    console.warn('Install prompt failed:', err);
+  }
+  setInstallButtonsVisible(false);
+}));
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  setInstallButtonsVisible(false);
+});
 
 if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topBanner').style.display = 'block';
 const topBanner = document.getElementById('topBanner');
