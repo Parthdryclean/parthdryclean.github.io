@@ -271,7 +271,7 @@ function doInstall(){if(!deferredPrompt)return toast('Install available nahi hai
 function closeInstallModal(){$('installModal').classList.remove('show');localStorage.setItem('pdc_install_dismissed','1');}
 $('installBtn').onclick=doInstall;
 
-$('logoutBtn').onclick=()=>{if(chatRefActive)chatRefActive.off();const uid=auth.currentUser?.uid;localStorage.removeItem('pdc_boy');BOY=null;const done=()=>{auth.signOut().finally(()=>location.reload());};if(uid)db.ref('boy_sessions/'+uid).remove().finally(done);else done();};
+$('logoutBtn').onclick=()=>{if(chatRefActive)chatRefActive.off();chatRefActive=null;chatFirstLoad=true;const uid=auth.currentUser?.uid;localStorage.removeItem('pdc_boy');BOY=null;const done=()=>{auth.signOut().finally(()=>location.reload());};if(uid)db.ref('boy_sessions/'+uid).remove().finally(done);else done();};
 
 $('loginBtn').onclick=()=>{
  const code=($('codeInput').value||'').trim().toUpperCase();
@@ -431,7 +431,7 @@ function renderCard(o){
   else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
 
   const waMsg=encodeURIComponent(`Hi ${o.customerName||''}! Parth Rider (${BOY.name||''}) aapke order #${o.orderId||o._id} ke liye raah me hu. 🛵`);
-  const mapUrl=safeUrl(gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
+  const latRaw=o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null; const lngRaw=o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null; const lat=Number(latRaw); const lng=Number(lngRaw); const exactMapUrl=(Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180)?`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`:null; const mapUrl=safeUrl(exactMapUrl || gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
   const phone=last10Digits(o.phone);
   const collectBtn=(!isPaid&&st==='out_for_delivery')?`<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total)||0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total)||0}</button>`:(isPaid?`<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>`:'');
   const checkBtn=(st==='pending')?`<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>`:'';
@@ -542,11 +542,12 @@ let chatFirstLoad=true;
 function startChatListener(){
  if(!BOY)return;
  if(chatRefActive)chatRefActive.off();
+ chatFirstLoad=true;
  const chatRef=db.ref('chat/'+BOY.id); chatRefActive=chatRef.limitToLast(50);
  chatRefActive.on('value',s=>{
   const msgs=[];
   s.forEach(c=>msgs.push({id:c.key,...c.val()}));
-  msgs.sort((a,b)=>a.at-b.at);
+  msgs.sort((a,b)=>(Number(a.at)||0)-(Number(b.at)||0));
   
   if(msgs.length===0){
    $('chatMessages').innerHTML='<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
@@ -555,7 +556,7 @@ function startChatListener(){
   
   $('chatMessages').innerHTML=msgs.map(m=>{
    const isSent=m.from==='boy';
-   const time=new Date(m.at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+   const time=m.at?new Date(Number(m.at)).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—';
    return `<div class="chat-msg ${isSent?'sent':'received'}">
     <div class="avatar">${isSent?'🛵':'👤'}</div>
     <div>
@@ -596,7 +597,7 @@ if(BOY){
 
 if('serviceWorker' in navigator){
  const swCode=`
-  const CACHE='parth-rider-v7';
+  const CACHE='parth-rider-v8';
   const ASSETS=['./'];
   self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));self.skipWaiting();});
   self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
@@ -610,7 +611,7 @@ if('serviceWorker' in navigator){
  navigator.serviceWorker.register(swUrl).catch(()=>{});
 }
 
-console.log('🛵 Parth Delivery Gen6 Live');
+console.log('🛵 Parth Delivery Gen6 Live — map/chat safe build');
 </script>
 </body>
 </html>
