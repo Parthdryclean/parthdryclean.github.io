@@ -204,7 +204,8 @@ const $=id=>document.getElementById(id);
 
 let BOY=JSON.parse(localStorage.getItem('pdc_boy')||'null');
 let ordersRef=null, prevOrderIds=new Set(), prevStatuses={}, issueCtx={orderId:null,type:null}, deferredPrompt=null, selectedOrders=new Set();
-const LABEL={pending:'Pickup Scheduled',picked_up:'Collected',processing:'In Cleaning',quality_check:'Quality Checked',out_for_delivery:'Out for Delivery',delivered:'Delivered'};
+const LABEL={pending:'Pickup Scheduled',picked_up:'Garments Collected',processing:'Expert Cleaning',quality_check:'Quality Check',out_for_delivery:'Fresh Clothes on the Way',delivered:'Delivered Successfully',cancelled:'Cancelled'};
+const DELIVERY_STATUS_FLOW=['pending','picked_up','processing','quality_check','out_for_delivery','delivered'];
 
 function last10Digits(s){ return String(s || '').replace(/\D/g, '').slice(-10); }
 function esc(v){
@@ -379,9 +380,9 @@ function render(myOrders){
   } else if(o.status==='out_for_delivery'){
    delivery.push(o);
    if(!isPaid) cashDue+=(+o.total||0);
-  } else if(o.status==='pending'||o.status==='picked_up'){
+  } else if(['pending','picked_up','processing','quality_check'].includes(o.status)){
    pickup.push(o);
-   if(!isPaid) cashDue+=(+o.total||0);
+   if(!isPaid && ['pending','picked_up','out_for_delivery'].includes(o.status)) cashDue+=(+o.total||0);
   }
  });
 
@@ -402,7 +403,7 @@ function render(myOrders){
 }
 
 function timelineHTML(st){
- const steps=[{k:'pending',l:'Pickup',i:'fa-calendar'},{k:'picked_up',l:'Collected',i:'fa-box'},{k:'out_for_delivery',l:'On Way',i:'fa-truck'},{k:'delivered',l:'Done',i:'fa-check'}];
+ const steps=[{k:'pending',l:'Pickup',i:'fa-calendar'},{k:'picked_up',l:'Collected',i:'fa-box'},{k:'processing',l:'Cleaning',i:'fa-tshirt'},{k:'quality_check',l:'Quality',i:'fa-circle-check'},{k:'out_for_delivery',l:'On Way',i:'fa-truck'},{k:'delivered',l:'Done',i:'fa-check'}];
  const idx=steps.findIndex(x=>x.k===st);
  let html='';
  steps.forEach((s,i)=>{
@@ -427,8 +428,11 @@ function renderCard(o){
 
   let btn='';
   if(st==='pending')btn=`<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box"></i> Mark Picked Up</button>`;
-  else if(st==='picked_up')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-check"></i> Collected (At Store)</button>`;
+  else if(st==='picked_up')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-check"></i> Collected · Waiting for Cleaning</button>`;
+  else if(st==='processing')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-tshirt"></i> Expert Cleaning</button>`;
+  else if(st==='quality_check')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-circle-check"></i> Quality Check</button>`;
   else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
+  else if(st==='cancelled')btn=`<button class="btn-main done" style="opacity:0.65;" disabled><i class="fas fa-ban"></i> Cancelled</button>`;
 
   const waMsg=encodeURIComponent(`Hi ${o.customerName||''}! Parth Rider (${BOY.name||''}) aapke order #${o.orderId||o._id} ke liye raah me hu. 🛵`);
   const latRaw=o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null; const lngRaw=o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null; const lat=Number(latRaw); const lng=Number(lngRaw); const exactMapUrl=(Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180)?`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`:null; const mapUrl=safeUrl(exactMapUrl || gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
@@ -597,7 +601,7 @@ if(BOY){
 
 if('serviceWorker' in navigator){
  const swCode=`
-  const CACHE='parth-rider-v8';
+  const CACHE='parth-rider-v9';
   const ASSETS=['./'];
   self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));self.skipWaiting();});
   self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
