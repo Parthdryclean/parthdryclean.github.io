@@ -3,12 +3,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PARTH OS v22 · Synthwave CMS</title>
+<title>PARTH OS v23 · Customers + Content</title>
 <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -102,6 +103,39 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .btn.solid{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;font-weight:800}
 .btn.solid:hover{box-shadow:var(--glow)}
 .action-cell{display:flex;flex-direction:column;gap:6px}
+
+/* ===== Orders V1 Detail Drawer ===== */
+.order-drawer-backdrop{position:fixed;inset:0;background:rgba(8,0,18,.62);backdrop-filter:blur(5px);z-index:900;display:none}
+.order-drawer-backdrop.open{display:block}
+.order-drawer{position:fixed;top:0;right:0;width:min(620px,96vw);height:100vh;background:var(--bg);border-left:1px solid var(--line2);box-shadow:-18px 0 50px rgba(0,0,0,.35);z-index:901;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}
+.order-drawer.open{transform:translateX(0)}
+.order-drawer-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:var(--panel);backdrop-filter:blur(14px);position:sticky;top:0;z-index:2}
+.order-drawer-head h3{font-size:17px;color:var(--pink);margin-bottom:4px}
+.order-drawer-head .meta{font-size:11px;color:var(--muted)}
+.order-drawer-close{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);cursor:pointer;flex-shrink:0}
+.order-drawer-close:hover{color:var(--pink);border-color:var(--line2)}
+.order-drawer-body{overflow:auto;padding:16px 20px 28px}
+.od-section{background:var(--panel);border:1px solid var(--line);border-radius:15px;margin-bottom:12px;overflow:hidden}
+.od-section-head{padding:11px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.od-section-head strong{font-size:12px;color:var(--pink);text-transform:uppercase;letter-spacing:.8px}
+.od-section-body{padding:14px}
+.od-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.od-field{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:10px 11px;min-width:0}
+.od-field.full{grid-column:1/-1}
+.od-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:800;margin-bottom:4px}
+.od-value{font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.od-value.subtle{color:var(--muted);font-weight:600}
+.od-items{width:100%;border-collapse:collapse;min-width:0}
+.od-items th{padding:8px 6px;font-size:9px}.od-items td{padding:9px 6px;font-size:12px}
+.od-total{display:flex;justify-content:space-between;gap:12px;padding-top:10px;margin-top:8px;border-top:1px solid var(--line);font-weight:800}
+.od-total strong{color:var(--pink);font-family:'Orbitron'}
+.od-actions{display:flex;gap:8px;flex-wrap:wrap}
+.od-actions .btn{flex:1;justify-content:center;min-width:130px}
+.od-status-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.od-status-row select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:11px;font-weight:700}
+.od-status-note{font-size:10px;color:var(--muted);margin-top:7px;line-height:1.4}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);font-size:10px;font-weight:800}
+@media(max-width:600px){.order-drawer{width:100vw}.order-drawer-body{padding:12px 14px 24px}.od-grid,.od-status-row{grid-template-columns:1fr}.od-field.full{grid-column:auto}}
 .item-badge{display:inline-block;background:rgba(255,46,196,.12);border:1px solid var(--line);color:var(--pink);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;margin:2px}
 .form-grid{display:flex;gap:12px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;align-items:flex-end}
 .form-grid .fg{flex:1;min-width:140px}
@@ -142,14 +176,28 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .dashboard{display:none}.dashboard.active{display:block}
 .empty-state{text-align:center;padding:40px;color:var(--muted)}.empty-state i{font-size:40px;opacity:.4;margin-bottom:10px;display:block}
 @media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;position:relative;display:none}.sidebar.open{display:block}.menu-toggle{display:block}.main{padding:16px}.bento{grid-template-columns:repeat(2,1fr)}}
+/* ===== V3 CUSTOMER + MEDIA WORKSPACE ===== */
+.customer-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.customer-toolbar input,.customer-toolbar select{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;font-size:13px;min-width:180px}.customer-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.customer-stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px}.customer-stat .n{font-family:'Orbitron';font-size:18px;color:var(--pink)}.customer-stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800;margin-top:4px}.customer-table-action{white-space:nowrap}.customer-modal-box{max-width:820px;width:min(94vw,820px);max-height:88vh;overflow:auto;text-align:left}.customer-modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:16px}.customer-modal-head h3{color:var(--pink);font-size:18px}.customer-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.customer-profile-grid .full{grid-column:1/-1}.customer-field{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px}.customer-field label{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}.customer-field input,.customer-field textarea{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);padding:9px 10px;border-radius:9px;font-size:13px}.customer-order-row{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:7px;font-size:12px}.media-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.media-toolbar .fg{min-width:180px;flex:1}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:14px}.media-card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;overflow:hidden}.media-thumb{height:140px;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden}.media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover}.media-thumb i{font-size:42px;color:var(--muted)}.media-info{padding:10px}.media-name{font-weight:800;font-size:12px;word-break:break-word}.media-meta{font-size:10px;color:var(--muted);margin-top:4px}.media-actions{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}.cms-quickbar{display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;margin-bottom:10px}.cms-quickbar .btn{font-size:11px}@media(max-width:700px){.customer-stats{grid-template-columns:repeat(2,1fr)}.customer-profile-grid{grid-template-columns:1fr}.customer-profile-grid .full{grid-column:auto}}
+
+/* ===== V4 INTELLIGENCE + SERVICE AREAS ===== */
+.v4-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.v4-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}.v4-card .v4n{font-family:'Orbitron';font-size:18px;color:var(--pink);margin-top:6px}.v4-card .v4l{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800}.v4-subgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.area-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}.area-list{display:grid;gap:9px;margin-top:14px}.area-row{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;justify-content:space-between;gap:12px;align-items:center}.area-row .area-name{font-weight:900}.area-row .area-meta{font-size:10px;color:var(--muted);margin-top:4px}.area-edit{display:grid;grid-template-columns:1.2fr 1fr 1.5fr auto;gap:8px;align-items:end;margin-top:10px}.area-edit input,.area-edit select{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:9px;width:100%}.audit-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:11px}.audit-row:last-child{border-bottom:0}.audit-meta{color:var(--muted);font-size:10px}.notice-box{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.25);border-radius:12px;padding:11px;font-size:11px;color:var(--muted);line-height:1.5}@media(max-width:900px){.v4-grid{grid-template-columns:repeat(2,1fr)}.v4-subgrid{grid-template-columns:1fr}.area-edit{grid-template-columns:1fr 1fr}.area-edit .wide{grid-column:1/-1}}@media(max-width:600px){.v4-grid{grid-template-columns:1fr 1fr}.area-edit{grid-template-columns:1fr}.area-edit .wide{grid-column:auto}}
 </style>
 </head>
 <body>
 <div class="sun"></div><div class="horizon"></div>
 <div id="toast"></div>
+<div class="order-drawer-backdrop" id="orderDrawerBackdrop" onclick="App.closeOrder()"></div>
+<aside class="order-drawer" id="orderDrawer" aria-hidden="true">
+ <div class="order-drawer-head">
+  <div><h3 id="odTitle">Order</h3><div class="meta" id="odMeta">Order details</div></div>
+  <button class="order-drawer-close" onclick="App.closeOrder()" aria-label="Close"><i class="fas fa-xmark"></i></button>
+ </div>
+ <div class="order-drawer-body" id="odBody"></div>
+</aside>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
+<div class="modal" id="customerModal"><div class="modal-box customer-modal-box"><div class="customer-modal-head"><div><h3 id="cmTitle">Customer</h3><div id="cmMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="App.closeCustomer()" aria-label="Close"><i class="fas fa-xmark"></i></button></div><div id="cmBody"></div></div></div>
 <aside class="sidebar" id="sidebar">
- <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v22</small></div></div>
+ <div class="brand"><div><span class="os-logo">PARTH</span><small>Synthwave OS v24</small></div></div>
  <nav>
   <div class="nav-item active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</div>
   <div class="nav-item" data-tab="orders"><i class="fas fa-box"></i> Orders <span class="badge" id="orderBadge">0</span></div>
@@ -161,6 +209,9 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   <div class="nav-item" data-tab="customers"><i class="fas fa-users"></i> Customers</div>
   <div class="nav-item" data-tab="control"><i class="fas fa-sliders"></i> Store Control</div>
   <div class="nav-item" data-tab="reports"><i class="fas fa-chart-line"></i> Reports</div>
+  <div class="nav-item" data-tab="intelligence"><i class="fas fa-brain"></i> Intelligence</div>
+<div class="nav-item" data-tab="notifications"><i class="fas fa-paper-plane"></i> Notifications</div>
+  <div class="nav-item" data-tab="areas"><i class="fas fa-location-dot"></i> Service Areas</div>
  </nav>
  <div class="side-foot">
   <div class="u"><i class="fas fa-circle" style="color:var(--good);font-size:8px"></i> <span id="adminEmail">admin</span></div>
@@ -235,6 +286,8 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     <div class="fg"><label>CMS Live Sync</label><p style="color:var(--muted);font-size:12px">Website ke loaded cards edit karo ya naya add karo.</p></div>
     <button class="btn good" onclick="App.saveAllCMS()"><i class="fas fa-save"></i> Save All CMS Content</button>
    </div>
+
+   <div class="cms-quickbar"><button class="btn" onclick="document.getElementById('cmsHeroBadge').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-crown"></i> Hero</button><button class="btn" onclick="document.getElementById('cmsTrustList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-shield"></i> Trust</button><button class="btn" onclick="document.getElementById('cmsFabricsList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-shirt"></i> Content</button><button class="btn" onclick="document.getElementById('cmsMediaList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-photo-film"></i> Media</button><button class="btn solid" onclick="App.previewHome()"><i class="fas fa-external-link-alt"></i> Preview Home</button></div>
 
    <!-- 1. Hero Section -->
    <div class="cat-block">
@@ -349,48 +402,61 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     </div>
    </div>
 
+   <div class="cat-block" id="cmsMediaBlock"><div class="cat-head"><i class="fas fa-photo-film" style="color:var(--pink);font-size:18px"></i><input value="Media Library" readonly style="flex:1;min-width:140px;cursor:default;opacity:.9"/><button class="btn" onclick="App.refreshMedia()"><i class="fas fa-rotate"></i> Refresh</button></div><div class="media-toolbar"><div class="fg"><label>Upload Image / Video / File</label><input id="mediaFile" type="file" accept="image/*,video/*,.pdf,.webp,.svg"/></div><div class="fg"><label>Optional Label</label><input id="mediaLabel" maxlength="80" placeholder="Hero banner / Saree image"/></div><button class="btn good" id="mediaUploadBtn" onclick="App.uploadMedia()"><i class="fas fa-cloud-arrow-up"></i> Upload</button></div><p style="font-size:10px;color:var(--muted);margin-top:8px">Files up to 25 MB. Files go to Firebase Storage; metadata is stored separately under <b>site_media</b>.</p><div class="media-grid" id="cmsMediaList"></div></div>
   </div>
 
   <div class="tab-content" id="tab-coupons">
-   <div class="form-grid">
-    <div class="fg"><label>Code</label><input id="cpCode" style="text-transform:uppercase" maxlength="20" placeholder="PARTH50"/></div>
-    <div class="fg"><label>Discount %</label><input id="cpPercent" type="number" min="1" max="100" placeholder="50"/></div>
-    <div class="fg"><label>Max ₹</label><input id="cpMax" type="number" placeholder="500"/></div>
-    <div class="fg"><label>Type</label><select id="cpType"><option value="general">General</option><option value="first_order">First Order Only</option></select></div>
-    <button class="btn solid" id="addCp"><i class="fas fa-plus"></i> Add</button>
+   <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-ticket"></i> Create Coupon</h3><span style="font-size:11px;color:var(--muted)">Business rules stay under settings/coupons</span></div>
+    <div class="form-grid" style="border:0;border-radius:0;margin:0">
+     <div class="fg"><label>Code</label><input id="cpCode" style="text-transform:uppercase" maxlength="20" placeholder="PARTH50"/></div>
+     <div class="fg"><label>Discount %</label><input id="cpPercent" type="number" min="1" max="100" placeholder="50"/></div>
+     <div class="fg"><label>Max Discount ₹</label><input id="cpMax" type="number" min="0" placeholder="500"/></div>
+     <div class="fg"><label>Minimum Order ₹</label><input id="cpMinOrder" type="number" min="0" placeholder="300"/></div>
+     <div class="fg"><label>Type</label><select id="cpType"><option value="general">General</option><option value="first_order">First Order Only</option></select></div>
+     <div class="fg"><label>Usage Limit</label><input id="cpUsageLimit" type="number" min="0" placeholder="0 = Unlimited"/></div>
+     <button class="btn solid" id="addCp"><i class="fas fa-plus"></i> Add Coupon</button>
+    </div>
    </div>
    <div id="couponList"></div>
   </div>
   <div class="tab-content" id="tab-boys">
-   <div class="form-grid">
-    <div class="fg"><label>Name</label><input id="dbName" placeholder="Rahul Singh"/></div>
-    <div class="fg"><label>Phone</label><input id="dbPhone" placeholder="9876543210"/></div>
-    <button class="btn solid" id="addDb"><i class="fas fa-plus"></i> Add + Code</button>
+   <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-truck"></i> Add Delivery Partner</h3><span style="font-size:11px;color:var(--muted)">Inactive partners cannot be assigned to new orders</span></div>
+    <div class="form-grid" style="border:0;border-radius:0;margin:0">
+     <div class="fg"><label>Name</label><input id="dbName" placeholder="Rahul Singh"/></div>
+     <div class="fg"><label>Phone</label><input id="dbPhone" inputmode="numeric" maxlength="10" placeholder="9876543210"/></div>
+     <button class="btn solid" id="addDb"><i class="fas fa-plus"></i> Add + Code</button>
+    </div>
    </div>
    <div id="boyList"></div>
   </div>
   <div class="tab-content" id="tab-services">
-   <div class="form-grid">
-    <div class="fg"><label>New Category</label><input id="newCatName" placeholder="e.g. Wedding Special"/></div>
-    <div class="fg"><label>Icon</label><input id="newCatIcon" placeholder="fa-gift"/></div>
-    <button class="btn solid" onclick="App.addCat()"><i class="fas fa-plus"></i> Add Category</button>
-    <button class="btn good" onclick="App.saveServices()"><i class="fas fa-save"></i> Save All</button>
+   <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-tags"></i> Services Manager</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn solid" onclick="App.addCat()"><i class="fas fa-plus"></i> Add Category</button><button class="btn good" onclick="App.saveServices()"><i class="fas fa-save"></i> Save All</button></div></div>
+    <div class="form-grid" style="border:0;border-radius:0;margin:0">
+     <div class="fg"><label>New Category</label><input id="newCatName" placeholder="e.g. Wedding Special"/></div>
+     <div class="fg"><label>Icon</label><input id="newCatIcon" placeholder="fa-gift"/></div>
+    </div>
    </div>
    <div id="priceUI"></div>
   </div>
   <div class="tab-content" id="tab-customers">
-   <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Phone</th><th>Address</th><th>Orders</th><th>Total Spent</th></tr></thead><tbody id="custBody"></tbody></table></div></div>
+   <div class="customer-stats"><div class="customer-stat"><div class="n" id="csTotal">0</div><div class="l">Total Customers</div></div><div class="customer-stat"><div class="n" id="csActive">0</div><div class="l">With Orders</div></div><div class="customer-stat"><div class="n" id="csRepeat">0</div><div class="l">Repeat Customers</div></div><div class="customer-stat"><div class="n" id="csRevenue">₹0</div><div class="l">Delivered Revenue</div></div></div>
+   <div class="panel"><div class="customer-toolbar"><input id="customerSearch" placeholder="🔍 Search name / phone / email..."/><select id="customerFilter"><option value="all">All Customers</option><option value="orders">Has Orders</option><option value="repeat">Repeat (2+)</option><option value="noorders">No Orders</option></select></div><div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Spent</th><th>Last Order</th><th>Action</th></tr></thead><tbody id="custBody"></tbody></table></div></div>
   </div>
   <div class="tab-content" id="tab-control">
    <div class="bento">
-    <div class="card"><div class="ic g"><i class="fas fa-store"></i></div><div class="lbl" style="margin-bottom:8px">Booking Open</div><label class="switch"><input type="checkbox" id="ctlBookingOpen" onchange="App.saveControl()"><span class="sl"></span></label></div>
-    <div class="card"><div class="ic w"><i class="fas fa-ticket"></i></div><div class="lbl" style="margin-bottom:8px">Coupons Enabled</div><label class="switch"><input type="checkbox" id="ctlCoupon" onchange="App.saveControl()"><span class="sl"></span></label></div>
+    <div class="card"><div class="ic g"><i class="fas fa-store"></i></div><div class="lbl" style="margin-bottom:8px">Booking Open</div><label class="switch"><input type="checkbox" id="ctlBookingOpen"><span class="sl"></span></label><div style="margin-top:8px;color:var(--muted);font-size:11px">Controls whether customers can place bookings.</div></div>
+    <div class="card"><div class="ic w"><i class="fas fa-ticket"></i></div><div class="lbl" style="margin-bottom:8px">Coupons Enabled</div><label class="switch"><input type="checkbox" id="ctlCoupon"><span class="sl"></span></label><div style="margin-top:8px;color:var(--muted);font-size:11px">Master switch for coupon usage.</div></div>
    </div>
-   <div class="form-grid">
-    <div class="fg"><label>Min Order ₹</label><input id="ctlMin" type="number"/></div>
-    <div class="fg"><label>Express %</label><input id="ctlExpress" type="number"/></div>
-    <button class="btn solid" onclick="App.saveControl()"><i class="fas fa-save"></i> Save</button>
+   <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-store"></i> Store Rules</h3><span id="controlStateText" style="font-size:11px;color:var(--muted)">Loading…</span></div>
+    <div class="form-grid" style="border:0;border-radius:0;margin:0">
+     <div class="fg"><label>Minimum Order ₹</label><input id="ctlMin" type="number" min="0"/></div>
+     <div class="fg"><label>Express Charge %</label><input id="ctlExpress" type="number" min="0" max="100"/></div>
+     <div class="fg"><label>Store Message</label><input id="ctlMessage" maxlength="140" placeholder="e.g. Same-day pickup available"/></div>
+     <div class="fg"><label>Working Hours</label><input id="ctlHours" maxlength="100" placeholder="10 AM – 8 PM"/></div>
+     <button class="btn solid" onclick="App.saveControl()"><i class="fas fa-save"></i> Save Store Control</button>
+    </div>
    </div>
+   <div class="card"><div class="ic v"><i class="fas fa-circle-info"></i></div><div class="lbl">V2 Data Contract</div><div style="margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5">Existing <b>settings/general</b> keys remain intact. New message/hours fields are additive only.</div></div>
   </div>
   <div class="tab-content" id="tab-reports">
    <div class="bento">
@@ -401,6 +467,50 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div class="panel"><div class="panel-head"><h3>📈 Last 7 Days Revenue</h3></div><div style="padding:16px" id="revBars"></div></div>
   </div>
+  <div class="tab-content" id="tab-intelligence">
+   <div class="v4-grid">
+    <div class="v4-card"><div class="v4l">7D Orders</div><div class="v4n" id="i7Orders">—</div></div>
+    <div class="v4-card"><div class="v4l">7D Revenue</div><div class="v4n" id="i7Revenue">—</div></div>
+    <div class="v4-card"><div class="v4l">7D Avg Delivered</div><div class="v4n" id="iAvg7">—</div></div>
+    <div class="v4-card"><div class="v4l">Repeat Rate</div><div class="v4n" id="iRepeatRate">—</div></div>
+    <div class="v4-card"><div class="v4l">Active Orders</div><div class="v4n" id="iActive">—</div></div>
+    <div class="v4-card"><div class="v4l">Active Areas</div><div class="v4n" id="iAreas">0</div></div>
+   </div>
+   <div class="v4-subgrid">
+    <div class="panel"><div class="panel-head"><h3><i class="fas fa-bolt"></i> Business Signals</h3><button class="btn" onclick="App.refreshIntelligence()"><i class="fas fa-rotate"></i></button></div><div id="signalList" style="padding:14px"></div></div>
+    <div class="panel"><div class="panel-head"><h3><i class="fas fa-clock-rotate-left"></i> Activity / Audit Log</h3><button class="btn" onclick="App.refreshAudit()"><i class="fas fa-rotate"></i></button></div><div id="auditList" style="padding:0 14px"></div></div>
+   </div>
+   <div class="panel" style="margin-top:14px"><div class="panel-head"><h3><i class="fas fa-bell"></i> Notification Events</h3><span style="font-size:10px;color:var(--muted)">Status changes create events; delivery sender remains server-side.</span></div><div id="notificationList" style="padding:0 14px"></div></div>
+  </div>
+  <div class="tab-content" id="tab-notifications">
+   <div class="panel">
+    <div class="panel-head"><h3><i class="fas fa-paper-plane"></i> Send Notification</h3><span style="font-size:10px;color:var(--muted)">Manual notification • server-side delivery</span></div>
+    <div style="padding:16px">
+     <div class="form-grid" style="margin-bottom:0">
+      <div class="fg"><label>Customer</label><select id="manualNotifCustomer"><option value="">Select customer</option></select></div>
+      <div class="fg"><label>Title</label><input id="manualNotifTitle" maxlength="80" placeholder="Parth Dry Clean"/></div>
+      <div class="fg" style="flex:2"><label>Message</label><textarea id="manualNotifBody" maxlength="240" rows="3" placeholder="Your message..."></textarea></div>
+      <button class="btn solid" onclick="App.sendManualNotification()"><i class="fas fa-paper-plane"></i> Send Notification</button>
+     </div>
+     <div style="margin-top:10px;color:var(--muted);font-size:11px;line-height:1.5">This is separate from automatic order-status notifications. The Admin only creates the event; the server sends the FCM notification.</div>
+    </div>
+   </div>
+   <div class="panel" style="margin-top:14px"><div class="panel-head"><h3><i class="fas fa-list"></i> Recent Notification Events</h3></div><div id="manualNotificationList" style="padding:0 14px"></div></div>
+  </div>
+  <div class="tab-content" id="tab-areas">
+   <div class="panel"><div class="panel-head"><h3><i class="fas fa-location-dot"></i> Lucknow Service Area Manager</h3><label class="switch"><input type="checkbox" id="areasGlobal"><span class="sl"></span></label></div>
+    <div class="notice-box">When the service-area switch is ON, new orders are limited to <b>Active</b> areas. If no areas are configured yet, Booking keeps the safe Lucknow fallback. Existing orders are never blocked.</div>
+    <div class="form-grid" style="margin-top:12px">
+     <div class="fg"><label>Area Name</label><input id="areaName" placeholder="Indira Nagar"/></div>
+     <div class="fg"><label>PIN Codes</label><input id="areaPins" placeholder="226016, 226010"/></div>
+     <div class="fg" style="flex:2"><label>Locality / Keywords</label><input id="areaKeywords" placeholder="Indira Nagar, Munshipulia, Bhootnath"/></div>
+     <div class="fg"><label>Status</label><select id="areaStatus"><option value="active">Serving</option><option value="coming_soon">Coming Soon</option><option value="paused">Paused</option></select></div>
+     <button class="btn solid" onclick="App.addArea()"><i class="fas fa-plus"></i> Add Area</button>
+    </div>
+    <div class="area-list" id="areaList"></div>
+   </div>
+   <div class="card" style="margin-top:14px"><div class="ic v"><i class="fas fa-shield-halved"></i></div><div class="lbl">V4 Area Contract</div><div style="margin-top:8px;color:var(--muted);font-size:11px;line-height:1.5">Stored under <b>settings/serviceAreas</b>. Admin controls coverage; Booking will use the same source for final address validation.</div></div>
+  </div>
  </div>
 </main>
 <script>
@@ -408,7 +518,9 @@ const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomai
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.database();
 auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
 const $=id=>document.getElementById(id);
-let ordersSnap=null,boys=[],coupons=[],customers={},CATS={},confirmCb=null;
+let ordersSnap=null,boys=[],coupons=[],customers={},CATS={},confirmCb=null,MEDIA={};
+let serviceAreas={enabled:true,areas:{}}; let auditSnap=null; let notifSnap=null; let manualNotifSnap=null;
+const storage=firebase.storage();
 
 const DEFAULT_CATS={mens:{name:"Men's",icon:'fa-tshirt',items:[{name:'Shirt',price:60,originalPrice:80},{name:'Pant',price:60,originalPrice:80},{name:'Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},ladies:{name:"Ladies",icon:'fa-female',items:[{name:'Ladies Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},winterWomen:{name:"Winter (F)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},winterMen:{name:"Winter (M)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},festival:{name:"Festival",icon:'fa-female',items:[{name:'Saree',price:200,originalPrice:300},{name:'Lehenga (3 Pc)',price:400,originalPrice:600},{name:'Coat Pant',price:350,originalPrice:500}]},iron:{name:"Iron",icon:'fa-fire',items:[{name:'Iron Shirt',price:20}]},home:{name:"Home",icon:'fa-bed',items:[{name:'Blanket (Double)',price:350,originalPrice:450}]},combos:{name:"Combos",icon:'fa-gift',items:[{name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150},{name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550}]}};
 
@@ -461,7 +573,7 @@ const DEFAULT_CMS = {
 
 let CMS = JSON.parse(JSON.stringify(DEFAULT_CMS));
 
-const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Manage & track'],neworder:['New Order','Manual entry'],cms:['Site Content & CMS','Edit dynamic website cards'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics']};
+const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Manage & track'],neworder:['New Order','Manual entry'],cms:['Site Content & CMS','Edit dynamic website cards'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + codes'],services:['Services','Categories & prices'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics'],intelligence:['Intelligence','Business signals + audit'],notifications:['Notifications','Manual customer messages'],areas:['Service Areas','Lucknow delivery coverage']};
 
 $('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
 function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type==='err'?'err':''}"><i class="fas fa-${type==='err'?'circle-exclamation':'circle-check'}"></i>${msg}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2600);}
@@ -473,15 +585,20 @@ if(localStorage.getItem('pos_theme')==='light'){document.documentElement.setAttr
 auth.onAuthStateChanged(u=>{ if(u){$('loginScreen').style.display='none';$('dashboard').classList.add('active');$('sidebar').style.display='';$('adminEmail').textContent=u.email||'admin';start();} else {$('loginScreen').style.display='flex';$('dashboard').classList.remove('active');$('sidebar').style.display='none';} });
 $('loginBtn').onclick=()=>{$('loginError').style.display='none';auth.signInWithEmailAndPassword($('adminEmailInput').value.trim(),$('adminPassInput').value.trim()).catch(()=>$('loginError').style.display='block');};
 $('adminPassInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
-$('logoutBtn').onclick=()=>{db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();auth.signOut();};
+$('logoutBtn').onclick=()=>{db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();db.ref('site_media').off();db.ref('settings/serviceAreas').off();db.ref('audit_log').off();db.ref('notification_events').off();db.ref('manual_notification_events').off();auth.signOut();};
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
-function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='cms')renderCMS();}
+function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='cms')renderCMS();if(t==='intelligence')renderIntelligence();if(t==='areas')renderServiceAreas();}
 
 function start(){
  db.ref('orders').on('value',s=>{ordersSnap=s;renderDashboard();if($('tab-orders').classList.contains('active'))renderOrders();if($('tab-reports').classList.contains('active'))renderReports();if($('tab-customers').classList.contains('active'))renderCustomers();if($('tab-boys').classList.contains('active'))renderBoys();});
- db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();});
- db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;});
+ db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();renderManualNotificationCustomers();});
+ db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;$('ctlMessage').value=v.storeMessage||'';$('ctlHours').value=v.workingHours||'';App.updateControlState();});
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
+ db.ref('site_media').on('value',s=>{MEDIA=s.val()||{};renderMedia();});
+ db.ref('settings/serviceAreas').on('value',s=>{serviceAreas=s.val()||{enabled:true,areas:{}};serviceAreas.areas=serviceAreas.areas||{};renderServiceAreas();renderIntelligence();});
+ db.ref('audit_log').limitToLast(80).on('value',s=>{auditSnap=s;renderAudit();});
+ db.ref('notification_events').limitToLast(40).on('value',s=>{notifSnap=s;renderNotifications();});
+ db.ref('manual_notification_events').limitToLast(40).on('value',s=>{manualNotifSnap=s;renderManualNotificationList();});
  db.ref('site_content').on('value',s=>{
    if (s.exists()) {
      const data = s.val() || {};
@@ -504,6 +621,61 @@ function start(){
 }
 
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function renderServiceAreas(){
+ const enabled=serviceAreas.enabled!==false; const toggle=$('areasGlobal'); if(toggle)toggle.checked=enabled;
+ const list=Object.entries(serviceAreas.areas||{});
+ $('iAreas').textContent=list.filter(([,a])=>a&&a.status==='active').length;
+ $('areaList').innerHTML=list.length?list.map(([id,a])=>{const status=a.status||'active';const pins=(a.pincodes||[]).join(', ');const keys=(a.keywords||[]).join(', ');return `<div class="area-row"><div style="flex:1"><div class="area-name">${esc(a.name||id)} <span class="type-badge ${status==='active'?'general':status==='coming_soon'?'code':'first_order'}">${status==='active'?'Serving':status==='coming_soon'?'Coming Soon':'Paused'}</span></div><div class="area-meta">PIN: ${esc(pins||'—')} · Keywords: ${esc(keys||'—')}</div><div class="area-edit"><div><label style="font-size:9px;color:var(--muted)">Name</label><input id="an_${id}" value="${esc(a.name||'')}"/></div><div><label style="font-size:9px;color:var(--muted)">PINs</label><input id="ap_${id}" value="${esc(pins)}"/></div><div class="wide"><label style="font-size:9px;color:var(--muted)">Keywords</label><input id="ak_${id}" value="${esc(keys)}"/></div><div><label style="font-size:9px;color:var(--muted)">Status</label><select id="as_${id}"><option value="active" ${status==='active'?'selected':''}>Serving</option><option value="coming_soon" ${status==='coming_soon'?'selected':''}>Coming Soon</option><option value="paused" ${status==='paused'?'selected':''}>Paused</option></select></div><div style="display:flex;gap:6px;grid-column:1/-1"><button class="btn good" onclick="App.saveArea('${id}')"><i class="fas fa-save"></i> Save</button><button class="btn bad" onclick="App.deleteArea('${id}')"><i class="fas fa-trash"></i></button></div></div></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-map-location-dot"></i>No service areas yet — create your first Lucknow area above.</div>';
+}
+function renderIntelligence(){
+ const hasOrders=!!ordersSnap;
+ const orders=hasOrders?Object.values(ordersSnap.val()||{}).filter(Boolean):[];
+ const now=Date.now(),from=now-7*864e5;
+ const recent=orders.filter(o=>(+o.createdAt||0)>=from);
+ const delivered7=recent.filter(o=>o.status==='delivered');
+ const active=orders.filter(o=>['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status));
+ const pending=orders.filter(o=>o.status==='pending');
+ const revenue7=delivered7.reduce((n,o)=>n+(+o.total||0),0);
+ const avg7=delivered7.length?Math.round(revenue7/delivered7.length):0;
+ const all=Object.keys(customers||{}).length;
+ let repeat=0;
+ Object.keys(customers||{}).forEach(uid=>{const n=orders.filter(o=>o.uid===uid).length;if(n>=2)repeat++;});
+ $('i7Orders').textContent=hasOrders?recent.length:'—';
+ $('i7Revenue').textContent=hasOrders?'₹'+revenue7.toLocaleString('en-IN'):'—';
+ $('iRepeatRate').textContent=hasOrders?(all?Math.round(repeat/all*100):0)+'%':'—';
+ $('iAreas').textContent=Object.values(serviceAreas.areas||{}).filter(a=>a&&a.status==='active').length;
+ const avgEl=$('iAvg7'); if(avgEl)avgEl.textContent=hasOrders?'₹'+avg7.toLocaleString('en-IN'):'—';
+ const activeEl=$('iActive'); if(activeEl)activeEl.textContent=hasOrders?active.length:'—';
+ const signals=[];
+ if(!hasOrders){signals.push('⏳ Waiting for order data from Firebase…');}
+ else {
+   if(active.length)signals.push(`🧺 ${active.length} active orders need attention`);
+   if(pending.length>=5)signals.push(`⏳ ${pending.length} orders are still pending`);
+   if(delivered7.length&&avg7<300)signals.push(`💡 7D delivered average is ₹${avg7} — review low-value orders when useful.`);
+   if(Object.values(serviceAreas.areas||{}).length===0)signals.push('📍 No service areas configured yet — Booking remains on the safe Lucknow fallback.');
+   if(!signals.length)signals.push('✅ No urgent operational signal right now.');
+ }
+ $('signalList').innerHTML=signals.map(x=>`<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:12px">${x}</div>`).join('');
+ renderAudit();renderNotifications();
+}
+function renderAudit(){const list=[];if(auditSnap)auditSnap.forEach(c=>{list.unshift({id:c.key,...c.val()});});$('auditList').innerHTML=list.length?list.slice(0,30).map(x=>`<div class="audit-row"><div><b>${esc(x.action||'Activity')}</b><div class="audit-meta">${esc(x.actor||'admin')} · ${esc(x.target||'system')}</div></div><div class="audit-meta">${x.createdAt?new Date(x.createdAt).toLocaleString('en-IN'):'-'}</div></div>`).join(''):'<div class="empty-state" style="padding:24px">No activity recorded yet.</div>';}
+function renderNotifications(){const list=[];if(notifSnap)notifSnap.forEach(c=>{list.unshift({id:c.key,...c.val()});});$('notificationList').innerHTML=list.length?list.slice(0,30).map(x=>`<div class="audit-row"><div><b>${esc(x.title||'Order update')}</b><div class="audit-meta">${esc(x.body||'')} · ${esc(x.status||'queued')}</div></div><div class="audit-meta">${x.createdAt?new Date(x.createdAt).toLocaleString('en-IN'):'-'}</div></div>`).join(''):'<div class="empty-state" style="padding:24px">No notification events yet.</div>';}
+renderManualNotificationList();
+function renderManualNotificationCustomers(){
+ const el=$('manualNotifCustomer'); if(!el)return;
+ const current=el.value;
+ const rows=Object.entries(customers||{}).map(([uid,c])=>({uid,...(c||{})})).filter(c=>c.uid);
+ el.innerHTML='<option value="">Select customer</option>'+rows.map(c=>`<option value="${esc(c.uid)}">${esc(c.name||c.phone||c.email||c.uid)}${c.phone?' · '+esc(c.phone):''}</option>`).join('');
+ if(rows.some(c=>c.uid===current))el.value=current;
+}
+function renderManualNotificationList(){
+ const el=$('manualNotificationList'); if(!el)return;
+ const list=[]; if(manualNotifSnap)manualNotifSnap.forEach(c=>{list.unshift({id:c.key,...(c.val()||{})});});
+ el.innerHTML=list.length?list.slice(0,30).map(x=>`<div class="audit-row"><div><b>${esc(x.title||'Manual notification')}</b><div class="audit-meta">${esc(x.body||'')} · ${esc(x.status||'queued')}</div></div><div class="audit-meta">${x.createdAt?new Date(x.createdAt).toLocaleString('en-IN'):'-'}</div></div>`).join(''):'<div class="empty-state" style="padding:24px">No manual notifications yet.</div>';
+}
+
+function writeAudit(action,target,meta={}){return db.ref('audit_log').push({action,target,actor:auth.currentUser?.email||'admin',createdAt:firebase.database.ServerValue.TIMESTAMP,...meta});}
+
 function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date());const yest=dayStr(new Date(Date.now()-864e5));let tT=0,yT=0,rT=0,rY=0,pend=0,act=0,del=0;const itemCount={};
  ordersSnap.forEach(c=>{const o=c.val();if(!o)return;const d=o.createdAt?dayStr(new Date(o.createdAt)):'';const rev=(o.status==='delivered')?(+o.total||0):0;
   if(d===today){tT++;rT+=rev;} if(d===yest){yT++;rY+=rev;} const st=o.status||'pending'; if(st==='pending')pend++; if(['picked_up','processing','quality_check','out_for_delivery'].includes(st))act++; if(st==='delivered')del++;
@@ -518,8 +690,9 @@ function renderOrders(){ if(!ordersSnap)return; const q=($('orderSearch').value|
  list=list.filter(o=>{const m=!q||(o.orderId||'').toLowerCase().includes(q)||(o.customerName||o.name||'').toLowerCase().includes(q)||(o.phone||'').includes(q);const s=f==='all'||(o.status||'pending')===f;return m&&s;});
  list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));const today=dayStr(new Date());
  $('ordersBody').innerHTML=list.length?list.map(o=>{const st=o.status||'pending';const rc=(st!=='delivered'&&st!=='cancelled')?(o.pickupDate<today?'row-overdue':o.pickupDate===today?'row-urgent':''):'';const items=Object.entries(o.items||{}).map(([k,v])=>`<span class="item-badge">${k} x${v}</span>`).join('');
-  return `<tr class="${rc}"><td style="color:var(--pink);font-weight:700">${o.orderId||o.id}${o.source?`<br><span class="item-badge">${o.source}</span>`:''}</td><td><b>${o.customerName||o.name||'-'}</b><br><span style="color:var(--muted);font-size:12px">${o.phone||''}</span></td><td style="font-size:12px">${o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td><td>${o.pickupDate||'-'}</td><td>${items||'-'}</td><td><b>₹${o.total||0}</b></td><td><select onchange="App.setPay('${o.id}',this.value)"><option ${o.paymentStatus==='Paid'?'selected':''}>Paid</option><option ${(!o.paymentStatus||o.paymentStatus!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${o.id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${o.id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${b.phone}" ${o.assigned_to===b.phone?'selected':''}>${b.name}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${o.id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i></button></td></tr>`;}).join(''):'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';}
+  return `<tr class="${rc}"><td style="color:var(--pink);font-weight:700">${o.orderId||o.id}${o.source?`<br><span class="item-badge">${o.source}</span>`:''}</td><td><b>${o.customerName||o.name||'-'}</b><br><span style="color:var(--muted);font-size:12px">${o.phone||''}</span></td><td style="font-size:12px">${o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</td><td>${o.pickupDate||'-'}</td><td>${items||'-'}</td><td><b>₹${o.total||0}</b></td><td><select onchange="App.setPay('${o.id}',this.value)"><option ${o.paymentStatus==='Paid'?'selected':''}>Paid</option><option ${(!o.paymentStatus||o.paymentStatus!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${o.id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${o.id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${b.phone}" ${o.assigned_to===b.phone?'selected':''}>${b.name}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${o.id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn solid" onclick="App.openOrder('${o.id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i></button></td></tr>`;}).join(''):'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';}
 $('orderSearch').oninput=renderOrders;$('orderFilter').onchange=renderOrders;
+$('customerSearch').oninput=renderCustomers;$('customerFilter').onchange=renderCustomers;
 
 // ===== RENDER CMS (Exact Services Tab Visual Flow) =====
 function renderCMS(){
@@ -615,10 +788,12 @@ function renderCMS(){
  `).join('');
 }
 
-function renderCoupons(){$('couponList').innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--pink)">${c.code}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${c.percent}% off (max ₹${c.max})</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${c.code}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${c.code}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>';}
-function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const a=orders.filter(o=>o.assigned_to===b.phone&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>o.assigned_to===b.phone&&o.status==='delivered').length;return `<div class="list-item"><div><span class="name">${b.name}</span> <span class="type-badge code">${b.code||'no-code'}</span><div class="sub">${b.phone} · ${a} active · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center"><button class="btn" onclick="App.copyCode('${b.code}')"><i class="fas fa-copy"></i></button><button class="btn" onclick="App.regenCode('${b.id}')"><i class="fas fa-rotate"></i></button><button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>';}
-function renderCustomers(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const rows=Object.entries(customers).map(([uid,c])=>{const co=orders.filter(o=>o.uid===uid);const spent=co.filter(o=>o.status==='delivered').reduce((s,o)=>s+(+o.total||0),0);return{...c,orders:co.length,spent};});
- $('custBody').innerHTML=rows.length?rows.map(c=>`<tr><td><b>${c.name||'-'}</b></td><td>${c.phone||'-'}</td><td style="max-width:220px;font-size:12px">${c.address||'-'}</td><td>${c.orders}</td><td><b>₹${c.spent}</b></td></tr>`).join(''):'<tr><td colspan="5"><div class="empty-state"><i class="fas fa-users"></i>Koi customer nahi</div></td></tr>';}
+function renderCoupons(){const box=$('couponList');box.innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--pink)">${esc(c.code)}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${Number(c.percent)||0}% off · max ₹${Number(c.max)||0} · min ₹${Number(c.minOrder)||0} · ${Number(c.usageLimit)||0?('limit '+Number(c.usageLimit)):'unlimited'}</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${esc(c.code)}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${esc(c.code)}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>'; }
+function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const a=orders.filter(o=>o.assigned_to===b.phone&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>o.assigned_to===b.phone&&o.status==='delivered').length;const active=b.active!==false;return `<div class="list-item"><div><span class="name">${esc(b.name)}</span> <span class="type-badge code">${esc(b.code||'no-code')}</span> <span class="type-badge ${active?'general':'first_order'}">${active?'Active':'Inactive'}</span><div class="sub">${esc(b.phone)} · ${a} active orders · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="switch"><input type="checkbox" ${active?'checked':''} onchange="App.toggleBoy('${b.id}',this.checked)"><span class="sl"></span></label><button class="btn" onclick="App.copyCode('${esc(b.code||'')}')"><i class="fas fa-copy"></i></button><button class="btn" onclick="App.regenCode('${b.id}')"><i class="fas fa-rotate"></i></button><button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>'; }
+function customerRows(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const q=($('customerSearch')?.value||'').trim().toLowerCase();const filter=$('customerFilter')?.value||'all';return Object.entries(customers).map(([uid,c])=>{const co=orders.filter(o=>o.uid===uid);const spent=co.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);const last=co.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0];return{uid,...c,orders:co.length,spent,lastOrder:last||null};}).filter(c=>{const hay=[c.name,c.phone,c.email,c.address,c.uid].join(' ').toLowerCase();if(q&&!hay.includes(q))return false;if(filter==='orders'&&c.orders<1)return false;if(filter==='repeat'&&c.orders<2)return false;if(filter==='noorders'&&c.orders!==0)return false;return true;});}
+function renderCustomers(){const rows=customerRows();const all=Object.entries(customers).map(([uid,c])=>({uid,...c}));const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const stats=all.map(c=>orders.filter(o=>o.uid===c.uid));$('csTotal').textContent=all.length;$('csActive').textContent=stats.filter(x=>x.length>0).length;$('csRepeat').textContent=stats.filter(x=>x.length>=2).length;$('csRevenue').textContent='₹'+orders.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);$('custBody').innerHTML=rows.length?rows.map(c=>`<tr><td><b>${esc(c.name||'Unnamed')}</b><br><span style="font-size:10px;color:var(--muted)">${esc(c.uid)}</span></td><td>${esc(c.phone||'-')}</td><td>${esc(c.email||'-')}</td><td><b>${c.orders}</b></td><td><b>₹${c.spent}</b></td><td style="font-size:11px">${c.lastOrder?.createdAt?new Date(c.lastOrder.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'-'}</td><td class="customer-table-action"><button class="btn solid" onclick="App.openCustomer('${esc(c.uid)}')"><i class="fas fa-eye"></i> View</button></td></tr>`).join(''):'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i>Koi matching customer nahi</div></td></tr>';}
+function renderCustomerModal(uid){const c=customers[uid]||{};const orders=ordersSnap?Object.values(ordersSnap.val()||{}).filter(o=>o.uid===uid).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)):[];const delivered=orders.filter(o=>o.status==='delivered');$('cmTitle').textContent=c.name||'Customer';$('cmMeta').textContent=(c.phone||'No phone')+' · '+(c.email||'No email')+' · UID '+uid;const addrList=Array.isArray(c.addresses)?c.addresses:(c.address?[{label:'Primary',address:c.address}]:[]);$('cmBody').innerHTML=`<div class="customer-profile-grid"><div class="customer-field"><label>Name</label><input id="cmName" value="${esc(c.name||'')}"/></div><div class="customer-field"><label>Phone (identity)</label><input value="${esc(c.phone||'-')}" disabled/></div><div class="customer-field"><label>Email (identity)</label><input value="${esc(c.email||'-')}" disabled/></div><div class="customer-field"><label>Created</label><div style="font-size:13px;font-weight:700;padding:9px 0">${c.createdAt?new Date(c.createdAt).toLocaleString('en-IN'):'-'}</div></div><div class="customer-field full"><label>Primary Address</label><textarea id="cmAddress" rows="2">${esc(c.address||'')}</textarea></div><div class="customer-field full"><label>Saved Addresses</label><div style="font-size:12px;line-height:1.6">${addrList.length?addrList.map((a,i)=>`<div><b>${esc(a.label||('Address '+(i+1)))}</b> — ${esc(a.address||a.fullAddress||'-')}</div>`).join(''):'No saved addresses'}</div></div></div><div class="od-actions" style="margin-top:12px"><button class="btn good" onclick="App.saveCustomerProfile('${esc(uid)}')"><i class="fas fa-save"></i> Save Profile</button>${c.phone?`<button class="btn" onclick="App.customerWhatsApp('${esc(c.phone)}','${esc(c.name||'')}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>`:''}</div><div class="od-section" style="margin-top:14px"><div class="od-section-head"><strong>Order History</strong><span class="status-pill">${orders.length} orders · ₹${delivered.reduce((x,o)=>x+(+o.total||0),0)} delivered</span></div><div class="od-section-body">${orders.length?orders.map(o=>`<div class="customer-order-row"><div><b>${esc(o.orderId||o.id||'-')}</b><br><span style="color:var(--muted)">${esc(o.pickupDate||'-')} · ${esc(o.status||'pending')}</span></div><b>₹${+o.total||0}</b></div>`).join(''):'<div class="empty-state" style="padding:20px">No orders found</div>'}</div></div>`;}
+function renderMedia(){const list=Object.entries(MEDIA).sort((a,b)=>(b[1]?.createdAt||0)-(a[1]?.createdAt||0));$('cmsMediaList').innerHTML=list.length?list.map(([id,m])=>{const type=m.type||'';const isImg=type.startsWith('image/');const isVid=type.startsWith('video/');return `<div class="media-card"><div class="media-thumb">${isImg?`<img src="${esc(m.url)}" alt="${esc(m.name||'media')}" loading="lazy">`:isVid?`<video src="${esc(m.url)}" muted controls preload="metadata"></video>`:`<i class="fas fa-file-lines"></i>`}</div><div class="media-info"><div class="media-name">${esc(m.label||m.name||id)}</div><div class="media-meta">${esc(type||'file')} · ${Math.round((+m.size||0)/1024)} KB</div><div class="media-actions"><button class="btn" onclick="App.copyMediaUrl('${esc(m.url)}')"><i class="fas fa-link"></i> Copy URL</button><button class="btn bad" onclick="App.deleteMedia('${esc(id)}')"><i class="fas fa-trash"></i> Delete</button></div></div></div>`}).join(''):'<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-photo-film"></i>No media uploaded yet</div>';}
 function renderReports(){if(!ordersSnap)return;let t=0,rev=0,disc=0;const byDay={};ordersSnap.forEach(c=>{const o=c.val();if(!o)return;t++;if(o.status==='delivered'){rev+=(+o.total||0);disc+=(+o.discount||0);const d=o.createdAt?dayStr(new Date(o.createdAt)):'';byDay[d]=(byDay[d]||0)+(+o.total||0);}});
  $('rTotal').textContent=t;$('rRev').textContent='₹'+rev;$('rDisc').textContent='₹'+disc;$('rAvg').textContent='₹'+(t?Math.round(rev/t):0);
  const days=[...Array(7)].map((_,i)=>dayStr(new Date(Date.now()-(6-i)*864e5)));const max=Math.max(...days.map(d=>byDay[d]||0),1);
@@ -626,24 +801,112 @@ function renderReports(){if(!ordersSnap)return;let t=0,rev=0,disc=0;const byDay=
 function renderServices(){const wrap=$('priceUI');let html='';
  for(const key in CATS){const c=CATS[key]||{items:[]};
   html+=`<div class="cat-block"><div class="cat-head"><i class="fas ${c.icon||'fa-tag'}" style="color:var(--pink)"></i><input value="${c.name||key}" onchange="App.renameCat('${key}',this.value)" style="flex:1;min-width:120px"/><input value="${c.icon||''}" onchange="App.setCatIcon('${key}',this.value)" style="width:110px" placeholder="icon"/><button class="btn bad" onclick="App.delCat('${key}')"><i class="fas fa-trash"></i></button></div><div class="item-grid">`;
-  (c.items||[]).forEach((it,idx)=>{html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center"><input value="${it.name}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><button class="item-del-btn" style="margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${it.price||0}" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price"/><input type="number" value="${it.originalPrice||''}" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/></div>`;});
+  (c.items||[]).forEach((it,idx)=>{const active=it.active!==false;html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><input value="${esc(it.name)}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><label class="switch" title="${active?'Active':'Inactive'}"><input type="checkbox" ${active?'checked':''} onchange="App.toggleItem('${key}',${idx},this.checked)"><span class="sl"></span></label><button class="item-del-btn" style="margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${Number(it.price)||0}" min="0" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price (0 = On Request)"/><input type="number" value="${it.originalPrice??''}" min="0" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/><div style="font-size:10px;color:var(--muted)">${active?(Number(it.price)>0?'Available for booking':'On Request'):'Hidden from booking'}</div></div>`;});
   html+=`<button class="btn" onclick="App.addItem('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
  wrap.innerHTML=html||'<div class="empty-state"><i class="fas fa-tags"></i>Koi category nahi</div>';}
 
+const ORDER_FLOW=['pending','picked_up','processing','quality_check','out_for_delivery','delivered'];
+const ORDER_LABELS={pending:'Pending',picked_up:'Picked Up',processing:'Processing',quality_check:'Quality Check',out_for_delivery:'Out for Delivery',delivered:'Delivered',cancelled:'Cancelled'};
+const ORDER_NEXT={pending:'picked_up',picked_up:'processing',processing:'quality_check',quality_check:'out_for_delivery',out_for_delivery:'delivered'};
+function esc(v){return String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[m]));}
+function orderMapLink(o){const lat=Number(o.latitude),lng=Number(o.longitude);if(Number.isFinite(lat)&&Number.isFinite(lng)&&lat&&lng)return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address||'Lucknow')}`;}
+function orderItemRows(o){
+ const items=o.items||o.itemRates||{};let rows='',subtotal=0;
+ Object.entries(items).forEach(([key,raw])=>{
+   const obj=raw&&typeof raw==='object'?raw:{};const qty=Number(obj.qty??obj.quantity??raw)||0;if(qty<=0)return;
+   const name=obj.name||key;const rate=Number.isFinite(Number(obj.rate))?Number(obj.rate):null;const amount=Number.isFinite(Number(obj.amount))?Number(obj.amount):(rate!==null?rate*qty:null);
+   if(amount!==null)subtotal+=amount;
+   rows+=`<tr><td><b>${esc(name)}</b></td><td style="text-align:center">${qty}</td><td style="text-align:right">${rate!==null?'₹'+rate:'—'}</td><td style="text-align:right;font-weight:800">${amount!==null?'₹'+amount:'—'}</td></tr>`;
+ });
+ return {rows:rows||'<tr><td colspan="4" style="text-align:center;color:var(--muted)">No item details</td></tr>',computedSubtotal:subtotal};
+}
+function renderOrderDrawer(o){
+ const st=o.status||'pending';const items=orderItemRows(o);const assigned=o.assigned_to||'';
+ const boy=boys.find(b=>b.phone===assigned);
+ const coupon=o.couponCode||o.appliedCoupon||'';
+ const created=o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+ $('odTitle').textContent=o.orderId||o.id; $('odMeta').innerHTML=`${esc(created)} · <span class="status-pill">${esc(ORDER_LABELS[st]||st)}</span>`;
+ $('odBody').innerHTML=`
+  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-user"></i> Customer</strong></div><div class="od-section-body"><div class="od-grid">
+   <div class="od-field"><div class="od-label">Name</div><div class="od-value">${esc(o.customerName||o.name||'—')}</div></div>
+   <div class="od-field"><div class="od-label">Phone</div><div class="od-value">${esc(o.phone||'—')}</div></div>
+   <div class="od-field full"><div class="od-label">UID</div><div class="od-value subtle">${esc(o.uid||'Manual / not linked')}</div></div>
+  </div></div></section>
+  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-location-dot"></i> Pickup</strong><a class="btn" href="${orderMapLink(o)}" target="_blank" rel="noopener"><i class="fas fa-map"></i> Map</a></div><div class="od-section-body"><div class="od-grid">
+   <div class="od-field"><div class="od-label">Pickup Date</div><div class="od-value">${esc(o.pickupDate||'—')}</div></div>
+   <div class="od-field"><div class="od-label">Time Slot</div><div class="od-value">${esc(o.timeSlot||'—')}</div></div>
+   <div class="od-field"><div class="od-label">Est. Delivery</div><div class="od-value">${esc(o.estd||o.estdTime||o.estimatedDelivery||o.deliveryDate||o.ESTD||'—')}</div></div>
+   <div class="od-field full"><div class="od-label">Address</div><div class="od-value">${esc(o.address||'—')}</div></div>
+  </div></div></section>
+  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-shirt"></i> Items · Frozen Order Rates</strong></div><div class="od-section-body"><table class="od-items"><thead><tr><th>Item</th><th>Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead><tbody>${items.rows}</tbody></table></div></section>
+  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-receipt"></i> Billing</strong></div><div class="od-section-body">
+   <div class="od-grid">
+    <div class="od-field"><div class="od-label">Subtotal</div><div class="od-value">₹${Number(o.subtotal||items.computedSubtotal||0)}</div></div>
+    <div class="od-field"><div class="od-label">Express</div><div class="od-value">${esc(o.express||'No')}${Number(o.expressFee||0)?' · ₹'+Number(o.expressFee):''}</div></div>
+    <div class="od-field"><div class="od-label">Discount</div><div class="od-value">−₹${Number(o.discount||0)}${coupon?' · '+esc(coupon):''}</div></div>
+    <div class="od-field"><div class="od-label">Payment</div><div class="od-value">${esc(o.paymentStatus||'Pay on Delivery')}</div></div>
+   </div><div class="od-total"><span>Total</span><strong>₹${Number(o.total||0)}</strong></div>
+  </div></section>
+  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-sliders"></i> Operations</strong></div><div class="od-section-body">
+   <div class="od-status-row"><div><div class="od-label">Order Status</div><select id="odStatusSelect"><option value="pending">Pending</option><option value="picked_up">Picked Up</option><option value="processing">Processing</option><option value="quality_check">Quality Check</option><option value="out_for_delivery">Out for Delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select><div class="od-status-note">Normal flow: Pending → Picked Up → Processing → Quality Check → Out for Delivery → Delivered.</div></div><div><div class="od-label">Payment Status</div><select id="odPaySelect"><option>Pay on Delivery</option><option>Paid</option></select></div></div>
+   <div style="margin-top:12px"><div class="od-label">Delivery Boy</div><select id="odBoySelect" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:11px;font-weight:700"><option value="">— Unassigned —</option>${boys.filter(b=>b.active!==false).map(b=>`<option value="${esc(b.phone)}">${esc(b.name)} · ${esc(b.phone)}</option>`).join('')}</select></div>
+   <div class="od-actions" style="margin-top:12px"><button class="btn solid" onclick="App.saveOrderOps('${o.id}')"><i class="fas fa-save"></i> Save Changes</button><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i> Print</button></div>
+  </div></section>
+  ${o.specialInst?`<section class="od-section"><div class="od-section-head"><strong><i class="fas fa-note-sticky"></i> Special Instructions</strong></div><div class="od-section-body"><div class="od-value subtle">${esc(o.specialInst)}</div></div></section>`:''}
+ `;
+ $('odStatusSelect').value=st; $('odPaySelect').value=(o.paymentStatus==='Paid'?'Paid':'Pay on Delivery'); $('odBoySelect').value=assigned;
+}
 const App={
- setStatus:(id,st)=>db.ref('orders/'+id).update({status:st}).then(()=>toast('Status updated')).catch(e=>toast(e.message,'err')),
- setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>toast('Payment: '+v)).catch(e=>toast(e.message,'err')),
+ openOrder:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');App._openOrderId=id;renderOrderDrawer({id,...o});$('orderDrawerBackdrop').classList.add('open');$('orderDrawer').classList.add('open');$('orderDrawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';},
+ closeOrder:()=>{$('orderDrawerBackdrop').classList.remove('open');$('orderDrawer').classList.remove('open');$('orderDrawer').setAttribute('aria-hidden','true');document.body.style.overflow='';App._openOrderId=null;},
+ saveOrderOps:async id=>{
+   const o=ordersSnap?.val()?.[id];if(!o)return;
+   const next=$('odStatusSelect')?.value||o.status||'pending';const pay=$('odPaySelect')?.value||o.paymentStatus||'Pay on Delivery';const boy=$('odBoySelect')?.value||'';
+   const current=o.status||'pending';
+   if(next!==current){const validCancel=next==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===next;if(!validCancel&&!nextFlow)return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[next]||next}`,'err');}
+   const data={status:next,paymentStatus:pay,assigned_to:boy,assigned_to_e164:boy?'+91'+boy:''};
+   try{await db.ref('orders/'+id).update(data);if(next!==current){try{await App.queueOrderNotification(id,o,current,next);}catch(ne){writeAudit('Order notification queue failed',id,{from:current,to:next,error:ne?.message||String(ne)});toast('Order updated, but notification could not be queued','err');}}writeAudit('Order updated',id,{from:current,to:next,paymentStatus:pay,assigned_to:boy});if(next===current)toast('✅ Order updated');renderOrderDrawer({id,...o,...data});}catch(e){toast(e.message,'err');}
+ },
+ queueOrderNotification:(id,o,from,to)=>{
+   if(!o?.uid||from===to)return Promise.resolve(null);
+   const labels={pending:'Pickup Scheduled',picked_up:'Garments Collected',processing:'Expert Cleaning',quality_check:'Quality Check',out_for_delivery:'Fresh Clothes on the Way',delivered:'Delivered Successfully',cancelled:'Order Cancelled'};
+   const label=labels[to]||'Order Update';
+   const body={pending:'Your pickup is scheduled.',picked_up:'Your garments have been collected.',processing:'Your garments are now being cleaned.',quality_check:'Your order is in quality check.',out_for_delivery:'Your fresh clothes are on the way.',delivered:'Your order has been delivered successfully.',cancelled:'Your order has been cancelled.'}[to]||('Your order status changed to '+label+'.');
+   return db.ref('notification_events').push({orderId:id,uid:o.uid,title:'Parth Dry Clean · '+label,body,status:'queued',fromStatus:from,toStatus:to,createdAt:firebase.database.ServerValue.TIMESTAMP});
+ },
+ setStatus:async(id,st)=>{const o=ordersSnap?.val()?.[id];if(!o)return;const current=o.status||'pending';if(st!==current){const validCancel=st==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===st;if(!validCancel&&!nextFlow){renderOrders();return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[st]||st}`,'err');}}try{await db.ref('orders/'+id).update({status:st});writeAudit('Order status changed',id,{from:current,to:st});let notificationQueued=true;try{await App.queueOrderNotification(id,o,current,st);}catch(ne){notificationQueued=false;writeAudit('Order notification queue failed',id,{from:current,to:st,error:ne?.message||String(ne)});}toast(notificationQueued?'Status updated':'Status updated · notification queue failed');if(App._openOrderId===id)renderOrderDrawer({id,...o,status:st});}catch(e){toast(e.message,'err');}},
+ setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>{toast('Payment: '+v);if(App._openOrderId===id){const o=ordersSnap.val()[id];renderOrderDrawer({id,...o,paymentStatus:v});}}).catch(e=>toast(e.message,'err')),
  assign:id=>{const s=$('as_'+id);if(!s)return;const p=s.value;db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+p:''}).then(()=>toast('Boy assigned')).catch(e=>toast(e.message,'err'));},
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=bp||o.phone;if(!num)return toast('Number nahi','err');const msg=`*Parth Dry Clean* 🧺\n*Order:* ${o.orderId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  print:id=>{const o=ordersSnap.val()[id];const items=Object.entries(o.items||{}).map(([k,v])=>`${k} x${v}`).join('<br>');const w=open('','_blank','width=320,height=500');w.document.write(`<html><head><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${o.orderId}<br><b>Name:</b> ${o.customerName||o.name}<br><b>Phone:</b> ${o.phone}<div class="dashed"></div><b>Items:</b><br>${items}<div class="dashed"></div><b>Total:</b> Rs ${o.total}<script>window.print();window.close()<\/script></body></html>`);},
- backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value'),db.ref('site_content').once('value')]).then(([o,c,b,s,srv,cms])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Complete Backup downloaded');}).catch(e=>toast(e.message,'err'));},
- toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF'));},
+ backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value'),db.ref('site_content').once('value'),db.ref('site_media').once('value'),db.ref('audit_log').once('value'),db.ref('notification_events').once('value'),db.ref('manual_notification_events').once('value')]).then(([o,c,b,s,srv,cms,media,audit,notifs,manualNotifs])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val(),site_media:media.val(),audit_log:audit.val(),notification_events:notifs.val(),manual_notification_events:manualNotifs.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Complete Backup downloaded');}).catch(e=>toast(e.message,'err'));},
+ toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF')).catch(e=>toast(e.message,'err'));},
+ toggleBoy:(id,v)=>{const b=boys.find(x=>x.id===id);if(b)b.active=v;renderBoys();db.ref('delivery_boys/'+id).update({active:v}).then(()=>toast(v?'Partner active':'Partner inactive')).catch(e=>toast(e.message,'err'));},
  delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>{coupons=coupons.filter(x=>x.code!==c);renderCoupons();db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted'));}),
- addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));const data={name:n,phone:p,code,total_deliveries:0};db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
+ addDbCode:(n,p)=>{const code='PDC-'+(1000+Math.floor(Math.random()*9000));if(boys.some(b=>b.phone===p))return toast('Phone already exists','err');const data={name:n,phone:p,code,total_deliveries:0,active:true};db.ref('delivery_boys').push(data).then(ref=>{boys.push({id:ref.key,...data});renderBoys();toast('✅ Boy added! Code: '+code);}).catch(e=>toast(e.message,'err'));},
  delBoy:id=>askConfirm('Delete boy?',()=>{boys=boys.filter(b=>b.id!==id);renderBoys();db.ref('delivery_boys/'+id).remove().then(()=>toast('Boy deleted'));}),
  copyCode:c=>{if(navigator.clipboard)navigator.clipboard.writeText(c).then(()=>toast('Copied: '+c));else toast('Code: '+c);},
  regenCode:id=>{const c='PDC-'+(1000+Math.floor(Math.random()*9000));const b=boys.find(x=>x.id===id);if(b){b.code=c;renderBoys();}db.ref('delivery_boys/'+id).update({code:c}).then(()=>toast('New code: '+c));},
- saveControl:()=>{db.ref('settings/general').update({bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:+$('ctlMin').value||300,expressPercent:+$('ctlExpress').value||90}).then(()=>toast('✅ Settings saved')).catch(e=>toast(e.message,'err'));},
+ addArea:()=>{const name=$('areaName').value.trim();if(!name)return toast('Area name required','err');const id=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');const areas=serviceAreas.areas||{};if(areas[id])return toast('Area already exists','err');const data={name,status:$('areaStatus').value,pincodes:($('areaPins').value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('areaKeywords').value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),createdAt:firebase.database.ServerValue.TIMESTAMP};db.ref('settings/serviceAreas/areas/'+id).set(data).then(()=>writeAudit('Service area created',id)).then(()=>{$('areaName').value='';$('areaPins').value='';$('areaKeywords').value='';toast('✅ Service area added');}).catch(e=>toast(e.message,'err'));},
+saveArea:id=>{const data={name:$('an_'+id).value.trim(),status:$('as_'+id).value,pincodes:($('ap_'+id).value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('ak_'+id).value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),updatedAt:firebase.database.ServerValue.TIMESTAMP};if(!data.name)return toast('Area name required','err');db.ref('settings/serviceAreas/areas/'+id).update(data).then(()=>writeAudit('Service area updated',id)).then(()=>toast('✅ Area saved')).catch(e=>toast(e.message,'err'));},
+deleteArea:id=>askConfirm('Delete this service area?',()=>db.ref('settings/serviceAreas/areas/'+id).remove().then(()=>writeAudit('Service area deleted',id)).then(()=>toast('Area deleted')).catch(e=>toast(e.message,'err'))),
+sendManualNotification:()=>{
+ const uid=$('manualNotifCustomer')?.value||'';
+ const title=($('manualNotifTitle')?.value||'').trim();
+ const body=($('manualNotifBody')?.value||'').trim();
+ if(!uid)return toast('Customer select karo','err');
+ if(!title||!body)return toast('Title + message required','err');
+ const c=customers?.[uid]||{};
+ if(!c.fcmToken)return toast('Customer notifications enabled nahi hain','err');
+ db.ref('manual_notification_events').push({type:'manual',uid,title,body,status:'queued',createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{
+   $('manualNotifTitle').value=''; $('manualNotifBody').value='';
+   toast('✅ Notification queued for delivery');
+   writeAudit('Manual notification queued',uid,{title});
+ }).catch(e=>toast(e.message,'err'));
+},
+refreshIntelligence:()=>{renderIntelligence();toast('Intelligence refreshed');},refreshAudit:()=>db.ref('audit_log').limitToLast(80).once('value').then(s=>{auditSnap=s;renderAudit();toast('Audit refreshed');}),
+saveControl:()=>{const data={bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:Math.max(0,+$('ctlMin').value||0),expressPercent:Math.max(0,Math.min(100,+$('ctlExpress').value||0)),storeMessage:($('ctlMessage').value||'').trim(),workingHours:($('ctlHours').value||'').trim()};db.ref('settings/general').update(data).then(()=>{App.updateControlState();toast('✅ Store control saved');}).catch(e=>toast(e.message,'err'));},
+ updateControlState:()=>{const el=$('controlStateText');if(el)el.textContent=$('ctlBookingOpen').checked?'● Booking is OPEN':'● Booking is CLOSED';},
  moAddRow:()=>{const d=document.createElement('div');d.className='form-grid';d.style.marginBottom='8px';d.innerHTML=`<div class="fg"><label>Item</label><input class="mo-i" placeholder="Shirt"/></div><div class="fg"><label>Qty</label><input class="mo-q" type="number" value="1"/></div><div class="fg"><label>Price</label><input class="mo-p" type="number" placeholder="60"/></div>`;$('moItems').appendChild(d);},
  saveManualOrder:()=>{const name=$('moName').value.trim(),phone=$('moPhone').value.trim(),addr=$('moAddress').value.trim();
   if(!name||!/^[0-9]{10}$/.test(phone)||!addr)return toast('Name + valid phone + address required','err');
@@ -652,12 +915,13 @@ const App={
   const orderId='PDC-M'+Math.random().toString(36).substring(2,7).toUpperCase();
   const o={orderId,uid:'manual_'+phone,manual:true,source:$('moSource').value,customerName:name,name,phone,address:addr,pickupDate:$('moDate').value||dayStr(new Date()),timeSlot:$('moSlot').value,items,subtotal:auto,express:'No',discount:0,total,paymentStatus:$('moPay').value,status:'pending',createdAt:firebase.database.ServerValue.TIMESTAMP};
   db.ref('orders/'+orderId).set(o).then(()=>db.ref('customers/m_'+phone).update({name,phone,address:addr})).then(()=>{toast('✅ Manual order saved!');$('moName').value='';$('moPhone').value='';$('moAddress').value='';$('moItems').innerHTML='';$('moTotal').value='';}).catch(e=>toast(e.message,'err'));},
- addCat:()=>{const n=$('newCatName').value.trim();if(!n)return toast('Name likho','err');const key=n.toLowerCase().replace(/[^a-z0-9]+/g,'-');if(CATS[key])return toast('Exists','err');CATS[key]={name:n,icon:$('newCatIcon').value.trim()||'fa-tag',items:[]};$('newCatName').value='';renderServices();toast('Category added — Save All karo');},
+ addCat:()=>{const n=$('newCatName').value.trim();if(!n)return toast('Name likho','err');const key=n.toLowerCase().replace(/[^a-z0-9]+/g,'-');if(CATS[key])return toast('Exists','err');CATS[key]={name:n,icon:$('newCatIcon').value.trim()||'fa-tag',active:true,items:[]};$('newCatName').value='';renderServices();toast('Category added — Save All karo');},
  delCat:k=>askConfirm('Delete category?',()=>{delete CATS[k];renderServices();toast('Category removed — Save All karo');}),
  renameCat:(k,v)=>{CATS[k].name=v;}, setCatIcon:(k,v)=>{CATS[k].icon=v;},
  addItem:k=>{const name=prompt('Item name?');if(!name)return;const price=+prompt('Price?')||0;const orig=+prompt('Original (0 skip)?')||0;CATS[k].items=CATS[k].items||[];CATS[k].items.push({name,price,originalPrice:orig||undefined});renderServices();},
  delItem:(k,i)=>askConfirm('Delete item?',()=>{CATS[k].items.splice(i,1);renderServices();}),
  renameItem:(k,i,v)=>{CATS[k].items[i].name=v;}, setItemPrice:(k,i,v)=>{CATS[k].items[i].price=+v||0;}, setItemOrig:(k,i,v)=>{CATS[k].items[i].originalPrice=+v||undefined;},
+ toggleItem:(k,i,v)=>{CATS[k].items[i].active=v;renderServices();},
  saveServices:()=>{db.ref('services/categories').set(CATS).then(()=>toast('✅ Services saved! Booking me live')).catch(e=>toast(e.message,'err'));},
  
  // Exact CMS Dynamic Actions
@@ -704,13 +968,23 @@ const App={
    CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email: $('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours: $('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed: $('cmsContactMapEmbed').value.trim() };
    CMS.reviewsRatingHeader = $('cmsReviewsRatingHeader').value.trim();
    db.ref('site_content').set(CMS).then(()=>toast('🎉 Complete CMS Sync Saved!')).catch(e=>toast(e.message,'err'));
- }
+ },
+ openCustomer:uid=>{renderCustomerModal(uid);$('customerModal').classList.add('open');},
+ closeCustomer:()=>{$('customerModal').classList.remove('open');},
+ saveCustomerProfile:uid=>{const name=$('cmName').value.trim();const address=$('cmAddress').value.trim();if(!name)return toast('Name required','err');db.ref('customers/'+uid).update({name,address}).then(()=>toast('✅ Customer profile saved')).catch(e=>toast(e.message,'err'));},
+ customerWhatsApp:(phone,name)=>{const p=String(phone||'').replace(/\D/g,'').slice(-10);if(p.length!==10)return toast('Valid phone unavailable','err');window.open('https://wa.me/91'+p+'?text='+encodeURIComponent('Hello '+(name||'')+', Parth Dry Clean se message hai.'),'_blank');},
+ previewHome:()=>window.open('index.html','_blank','noopener'),
+ copyMediaUrl:url=>{if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>toast('Media URL copied'));else toast(url);},
+ refreshMedia:()=>db.ref('site_media').once('value').then(s=>{MEDIA=s.val()||{};renderMedia();toast('Media refreshed');}),
+ uploadMedia:async()=>{const f=$('mediaFile').files[0];if(!f)return toast('File select karo','err');if(f.size>25*1024*1024)return toast('Max file size 25 MB','err');const btn=$('mediaUploadBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading…';try{const safe=f.name.replace(/[^a-zA-Z0-9._-]+/g,'-').slice(-100);const id=Date.now()+'_'+Math.random().toString(36).slice(2,8);const path='site_media/'+id+'_'+safe;const ref=storage.ref(path);const snap=await ref.put(f,{contentType:f.type||'application/octet-stream'});const url=await snap.ref.getDownloadURL();await db.ref('site_media/'+id).set({name:f.name,label:($('mediaLabel').value||'').trim(),type:f.type||'application/octet-stream',size:f.size,url,path,createdAt:firebase.database.ServerValue.TIMESTAMP});$('mediaFile').value='';$('mediaLabel').value='';toast('✅ Media uploaded');}catch(e){console.error(e);toast('Upload failed: '+(e.message||e),'err');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-arrow-up"></i> Upload';}},
+ deleteMedia:id=>{const m=MEDIA[id];if(!m)return;askConfirm('Delete this media?',async()=>{try{if(m.path)await storage.ref(m.path).delete().catch(()=>{});await db.ref('site_media/'+id).remove();toast('Media deleted');}catch(e){toast(e.message||'Delete failed','err');}})}
 };
 
-$('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=+$('cpMax').value||0;const t=$('cpType').value;if(!code||!p)return toast('Code + % required','err');const data={code,percent:p,max:m,type:t,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';toast('✅ Coupon added');}).catch(e=>toast(e.message,'err'));};
+$('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=Math.max(0,+$('cpMax').value||0);const minOrder=Math.max(0,+$('cpMinOrder').value||0);const usageLimit=Math.max(0,+$('cpUsageLimit').value||0);const t=$('cpType').value;if(!/^[A-Z0-9_-]{3,20}$/.test(code))return toast('Code: 3–20 letters/numbers/_/-','err');if(p<1||p>100)return toast('Discount 1–100%','err');if(coupons.some(c=>String(c.code).toUpperCase()===code))return toast('Coupon already exists','err');const data={code,percent:p,max:m,minOrder,type:t,usageLimit,usedCount:0,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';$('cpPercent').value='';$('cpMax').value='';$('cpMinOrder').value='';$('cpUsageLimit').value='';toast('✅ Coupon added');}).catch(e=>{coupons=coupons.filter(c=>c.code!==code);renderCoupons();toast(e.message,'err');});};
+$('areasGlobal').onchange=()=>db.ref('settings/serviceAreas/enabled').set($('areasGlobal').checked).then(()=>writeAudit('Service area global switch', $('areasGlobal').checked?'enabled':'disabled')).then(()=>toast($('areasGlobal').checked?'Service areas ON':'Service areas OFF')).catch(e=>toast(e.message,'err'));
 $('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbCode(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
 $('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(csv)],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
-console.log('🌆 PARTH OS v22 (Synthwave + Error-Free Services Matching CMS Engine) online');
+console.log('🌆 PARTH OS v24 (Intelligence + Service Areas) online');
 </script>
 </body>
 </html>
