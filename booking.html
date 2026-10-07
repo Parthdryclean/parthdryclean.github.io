@@ -1236,7 +1236,7 @@ UI: {
       if(STATE.addressMode==='form') return App.showToast('Please save your address before proceeding','warning');
       if(!STATE.selectedAddressId || !STATE.addresses.length) return App.showToast('Please add or select a pickup address','warning');
       const selectedAddress=STATE.addresses.find(a=>a.id===STATE.selectedAddressId);
-      const hasLocation=selectedAddress && PDCServiceArea.isValid(selectedAddress.latitude,selectedAddress.longitude);
+      const hasLocation=selectedAddress && PDCServiceArea.isValid(selectedAddress.latitude,selectedAddress.longitude,formatAddress(selectedAddress));
       if(!hasLocation){
         const hasCoords=selectedAddress && Number.isFinite(Number(selectedAddress.latitude)) && Number.isFinite(Number(selectedAddress.longitude));
         return App.showToast(hasCoords?PDCServiceArea.message():'Please edit this address and pin your pickup location before continuing','warning');
@@ -1246,7 +1246,7 @@ UI: {
       const date=document.getElementById('pickupDate')?.value||'';
       if(!STATE.selectedAddressId) return App.showToast('Please select a pickup address','warning');
       const selectedAddress=STATE.addresses.find(a=>a.id===STATE.selectedAddressId);
-      const hasLocation=selectedAddress && PDCServiceArea.isValid(selectedAddress.latitude,selectedAddress.longitude);
+      const hasLocation=selectedAddress && PDCServiceArea.isValid(selectedAddress.latitude,selectedAddress.longitude,formatAddress(selectedAddress));
       if(!hasLocation){
         const hasCoords=selectedAddress && Number.isFinite(Number(selectedAddress.latitude)) && Number.isFinite(Number(selectedAddress.longitude));
         return App.showToast(hasCoords?PDCServiceArea.message():'Pickup location is required for this address','warning');
@@ -2658,7 +2658,7 @@ submit: async function(e){
     
     const addr = STATE.addresses.find(a => a.id === STATE.selectedAddressId);
     if (!addr) return App.showToast('Selected address not found. Please reselect address.', 'error');
-    if(!PDCServiceArea.isValid(addr.latitude,addr.longitude)){
+    if(!PDCServiceArea.isValid(addr.latitude,addr.longitude,formatAddress(addr))){
       const hasCoords=Number.isFinite(Number(addr.latitude))&&Number.isFinite(Number(addr.longitude));
       return App.showToast(hasCoords?PDCServiceArea.message():'Pickup location is required for this address','error');
     }
@@ -2927,18 +2927,64 @@ setTimeout(() => {
    ========================================================================= */
 const PDCServiceArea = {
   centerLat:26.8467, centerLng:80.9462, maxDistanceKm:30,
+  config:{enabled:true,areas:{}},
+  ready:false,
   distanceKm:function(lat,lng){
     const toRad=v=>v*Math.PI/180, R=6371;
     const dLat=toRad(Number(lat)-this.centerLat), dLng=toRad(Number(lng)-this.centerLng);
     const a=Math.sin(dLat/2)**2 + Math.cos(toRad(this.centerLat))*Math.cos(toRad(Number(lat)))*Math.sin(dLng/2)**2;
     return 2*R*Math.asin(Math.sqrt(Math.max(0,Math.min(1,a))));
   },
-  isValid:function(lat,lng){
-    lat=Number(lat); lng=Number(lng);
-    return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180&&this.distanceKm(lat,lng)<=this.maxDistanceKm;
+  load:function(){
+    return db.ref('settings/serviceAreas').once('value').then(s=>{
+      const v=s.val()||{};
+      this.config={enabled:v.enabled!==false,areas:v.areas||{}};
+      this.ready=true;
+      return this.config;
+    }).catch(()=>{
+      this.config={enabled:true,areas:{}};
+      this.ready=false;
+      return this.config;
+    });
   },
-  message:function(){ return 'Pickup is currently available only in Lucknow.'; }
+  norm:function(v){ return String(v||'').trim().toLowerCase(); },
+  addressText:function(){
+    const ids=['addrLine1','addrLine2','addrLandmark','addrCity','addrPincode'];
+    return ids.map(id=>document.getElementById(id)?.value||'').join(' ');
+  },
+  matchesConfiguredArea:function(lat,lng,text){
+    const areas=this.config.areas||{};
+    const active=Object.values(areas).filter(a=>a && (a.status||'active')==='active');
+    if(!active.length) return null;
+    const hay=this.norm(text);
+    const pinMatch=(a)=>{
+      const pins=Array.isArray(a.pincodes)?a.pincodes:[];
+      return pins.some(p=>hay.includes(this.norm(p)) || this.norm(p)===hay.replace(/\D/g,''));
+    };
+    const keyMatch=(a)=>{
+      const keys=Array.isArray(a.keywords)?a.keywords:[];
+      return keys.some(k=>k && hay.includes(this.norm(k)));
+    };
+    for(const a of active){ if(pinMatch(a)||keyMatch(a)) return a; }
+    return null;
+  },
+  isValid:function(lat,lng,text){
+    lat=Number(lat); lng=Number(lng);
+    if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat<-90||lat>90||lng<-180||lng>180) return false;
+    // Backward-safe fallback: if Admin has not configured any areas yet, preserve the existing 30-km rule.
+    if(!this.config.enabled) return this.distanceKm(lat,lng)<=this.maxDistanceKm;
+    const configured=Object.values(this.config.areas||{}).some(a=>a);
+    if(!configured) return this.distanceKm(lat,lng)<=this.maxDistanceKm;
+    return !!this.matchesConfiguredArea(lat,lng,text||this.addressText());
+  },
+  message:function(){
+    if(!this.config.enabled) return 'Pickup is currently available only in Lucknow.';
+    const active=Object.values(this.config.areas||{}).filter(a=>a && (a.status||'active')==='active');
+    if(!active.length) return 'Pickup service is currently unavailable in your area.';
+    return 'Pickup is not currently available in this service area.';
+  }
 };
+PDCServiceArea.load();
 const PDCMap = {
   map:null, marker:null, lat:null, lng:null, addressText:'',
   init: function(){
@@ -3021,7 +3067,7 @@ App.Address.save = async function(){
     App.showToast('Please pin your pickup location on the map before saving this address.','warning');
     return;
   }
-  if(!PDCServiceArea.isValid(lat,lng)){
+  if(!PDCServiceArea.isValid(lat,lng,PDCMap.addressText || PDCServiceArea.addressText())){
     App.showToast(PDCServiceArea.message(),'warning');
     return;
   }
