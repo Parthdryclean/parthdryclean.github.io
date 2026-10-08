@@ -62,9 +62,10 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
  <div class="login-box">
   <div class="lg">Parth Rider</div>
   <div class="sub">Delivery Partner HUD</div>
-  <input id="codeInput" placeholder="Enter Code (e.g. PDC-1042)" maxlength="12"/>
-  <button class="btn-main" id="loginBtn"><i class="fas fa-fingerprint"></i> Login</button>
-  <p id="loginErr">❌ Galat partner code. Admin se verify karein.</p>
+  <input id="phoneInput" inputmode="numeric" autocomplete="tel" placeholder="Registered mobile number" maxlength="10"/>
+  <input id="pinInput" inputmode="numeric" autocomplete="current-password" type="password" placeholder="6-digit PIN" maxlength="6"/>
+  <button class="btn-main" id="loginBtn"><i class="fas fa-fingerprint"></i> Secure Login</button>
+  <p id="loginErr">❌ Mobile number ya PIN galat hai. Admin se verify karein.</p>
  </div>
 </div>
 
@@ -274,23 +275,29 @@ $('installBtn').onclick=doInstall;
 
 $('logoutBtn').onclick=()=>{if(chatRefActive)chatRefActive.off();chatRefActive=null;chatFirstLoad=true;const uid=auth.currentUser?.uid;localStorage.removeItem('pdc_boy');BOY=null;const done=()=>{auth.signOut().finally(()=>location.reload());};if(uid)db.ref('boy_sessions/'+uid).remove().finally(done);else done();};
 
-$('loginBtn').onclick=()=>{
- const code=($('codeInput').value||'').trim().toUpperCase();
- if(!code)return;
+$('loginBtn').onclick=async()=>{
+ const phone=last10Digits($('phoneInput').value||'');
+ const pin=String($('pinInput').value||'').trim();
+ if(!/^[0-9]{10}$/.test(phone)||!/^[0-9]{6}$/.test(pin)){ $('loginErr').textContent='❌ 10-digit mobile number aur 6-digit PIN required.'; $('loginErr').style.display='block'; return; }
  $('loginErr').style.display='none';
- $('loginBtn').innerHTML='<i class="fas fa-spinner fa-spin"></i> Checking...';
- db.ref('delivery_boys').orderByChild('code').equalTo(code).once('value').then(s=>{
-   if(!s.exists()){$('loginErr').style.display='block';$('loginBtn').innerHTML='<i class="fas fa-fingerprint"></i> Login';return;}
-   let boy=null;s.forEach(c=>boy={id:c.key,...c.val()});
-   auth.signInAnonymously().then(()=>{
-     const uid=auth.currentUser.uid;const phoneE164='+91'+last10Digits(boy.phone);
-     db.ref('boy_sessions/'+uid).set({phone:last10Digits(boy.phone),phoneE164,name:boy.name,boyId:boy.id}).then(()=>{
-       BOY={...boy,phone:last10Digits(boy.phone),phoneE164};localStorage.setItem('pdc_boy',JSON.stringify(BOY));enterApp();
-     });
-   }).catch(e=>{toast(e.message,'err');$('loginBtn').innerHTML='<i class="fas fa-fingerprint"></i> Login';});
- }).catch(()=>{$('loginErr').style.display='block';$('loginBtn').innerHTML='<i class="fas fa-fingerprint"></i> Login';});
+ $('loginBtn').disabled=true;
+ $('loginBtn').innerHTML='<i class="fas fa-spinner fa-spin"></i> Secure login…';
+ try{
+   const result=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderLogin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,pin})});
+   const data=await result.json().catch(()=>({}));
+   if(!result.ok||!data.token) throw new Error(data.error||'Login failed');
+   await auth.signInWithCustomToken(data.token);
+   const uid=auth.currentUser.uid;
+   const boy={id:data.boyId,...(data.boy||{}),phone:phone,phoneE164:'+91'+phone,authUid:uid};
+   await db.ref('boy_sessions/'+uid).set({phone,phoneE164:'+91'+phone,name:boy.name||'',boyId:boy.id,createdAt:firebase.database.ServerValue.TIMESTAMP});
+   BOY=boy; localStorage.setItem('pdc_boy',JSON.stringify(BOY)); enterApp();
+ }catch(e){
+   $('loginErr').textContent='❌ '+(e?.message||'Mobile number ya PIN galat hai.'); $('loginErr').style.display='block';
+   $('loginBtn').disabled=false; $('loginBtn').innerHTML='<i class="fas fa-fingerprint"></i> Secure Login';
+   $('pinInput').value='';
+ }
 };
-$('codeInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
+['phoneInput','pinInput'].forEach(id=>$(id).onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();});
 
 function enterApp(){
  $('loginScreen').style.display='none';$('app').style.display='block';
@@ -588,16 +595,22 @@ window.sendChat=()=>{
  }).then(()=>{input.value='';}).catch(e=>toast(e.message,'err'));
 };
 
-if(BOY){
- auth.onAuthStateChanged(u=>{
-  if(u){enterApp();}
-  else{
-   auth.signInAnonymously().then(()=>{
-    if(BOY)db.ref('boy_sessions/'+auth.currentUser.uid).set({phone:BOY.phone,phoneE164:BOY.phoneE164,name:BOY.name,boyId:BOY.id});
-   });
-  }
- });
-}
+auth.onAuthStateChanged(async u=>{
+ if(!u){ return; }
+ if(!BOY){ return; }
+ try{
+   const snap=await db.ref('delivery_boys/'+BOY.id).once('value');
+   const boy=snap.val()||{};
+   if(boy.active===false || boy.authUid!==u.uid){
+     localStorage.removeItem('pdc_boy'); BOY=null; await auth.signOut(); return;
+   }
+   BOY={id:BOY.id,...boy,phone:last10Digits(boy.phone),phoneE164:'+91'+last10Digits(boy.phone),authUid:u.uid};
+   localStorage.setItem('pdc_boy',JSON.stringify(BOY));
+   enterApp();
+ }catch(e){
+   localStorage.removeItem('pdc_boy'); BOY=null; await auth.signOut().catch(()=>{});
+ }
+});
 
 if('serviceWorker' in navigator){
  const swCode=`
