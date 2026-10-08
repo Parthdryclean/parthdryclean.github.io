@@ -14,7 +14,7 @@
 <title>Parth Dry Clean | Flawless Laundry in Lucknow</title>
 
 <!-- PWA Manifest Link -->
-<link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -1641,6 +1641,17 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
 
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
+const PROFILE_UPDATE_FUNCTION_URL = 'https://asia-southeast1-parth-dry-clean.cloudfunctions.net/updateCustomerProfile';
+async function pdcUpdateCustomerProfile(payload){
+  const user=auth.currentUser;
+  if(!user) throw new Error('Not signed in');
+  const token=await user.getIdToken(true);
+  const response=await fetch(PROFILE_UPDATE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(payload||{})});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data.error||'Profile update failed');
+  return data.profile||{};
+}
+
 let messaging = null;
 let fcmSWRegistration = null;
 let fcmInitPromise = null;
@@ -1707,6 +1718,27 @@ function setNotificationButtonState(state) {
     notifBtn.style.color = 'var(--text)';
     notifBtn.style.borderColor = 'var(--border)';
     notifBtn.disabled = false;
+  }
+}
+
+async function syncFCMTokenForUser(user) {
+  if (!user || !('Notification' in window) || Notification.permission !== 'granted') return false;
+  try {
+    const ready = await initFCM();
+    if (!ready || !messaging) return false;
+    let reg = fcmSWRegistration;
+    if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+    if (!reg) return false;
+    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    if (!token) return false;
+    await db.ref('customers/' + user.uid).update({
+      fcmToken: token,
+      fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    return true;
+  } catch (e) {
+    console.warn('FCM token sync failed:', e);
+    return false;
   }
 }
 
@@ -2358,37 +2390,34 @@ function pdcIdentityErrorMessage(reason){
 
 function syncCanonicalAccount(user) {
   if(!user) return;
-  const phone=user.phoneNumber?last10Digits(user.phoneNumber):'';
-  const email=pdcNormalizeEmail(user.email||'');
   db.ref('customers/'+user.uid).once('value').then(async snap=>{
     const current=snap.exists()?(snap.val()||{}):{};
     try{
-      // Page/session hydration must never run the profile identity gate.
-      // The gate is reserved for creating/changing identity data.
       if(current.name){
         applyLoggedInUI(current.name);
         loadProfileAddresses(user.uid,current);
         return;
       }
-      // A brand-new Firebase UID must pass the identity gate before a customer is created.
-      const gate=await pdcIdentityGate(user,email,phone);
-      if(!gate.ok){
-        await auth.signOut();
-        return showToast(pdcIdentityErrorMessage(gate.reason),'warning');
-      }
-      await db.ref('customers/'+user.uid).update({name:user.displayName||'',email,phone});
+      const email=pdcNormalizeEmail(user.email||'');
+      const phone=user.phoneNumber?last10Digits(user.phoneNumber):'';
+      const profile=await pdcUpdateCustomerProfile({name:user.displayName||'',email,phone});
+      if(profile.name) applyLoggedInUI(profile.name);
       if(user.displayName) applyLoggedInUI(user.displayName); else openModal('onboardingModal');
     }catch(err){
       console.warn('Account profile sync failed',err);
-      showToast('Unable to load account profile','error');
+      await auth.signOut().catch(()=>{});
+      showToast(pdcIdentityErrorMessage(err?.message),'warning');
     }
   }).catch(()=>showToast('Unable to load account profile','error'));
 }
 
 function completeOnboarding(){
-  const name=document.getElementById('onboardName').value.trim(); const email=pdcNormalizeEmail(document.getElementById('onboardEmail').value);
-  if(!name) return showToast('Please enter your full name','warning'); const user=auth.currentUser; if(!user) return; const phone=user.phoneNumber?last10Digits(user.phoneNumber):'';
-  pdcIdentityGate(user,email,phone).then(gate=>{ if(!gate.ok) throw new Error(gate.reason); return db.ref('customers/'+user.uid).update({name,email,phone}); }).then(()=>{ showToast('Profile created successfully!','success'); closeModal('onboardingModal'); applyLoggedInUI(name); }).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
+  const name=document.getElementById('onboardName').value.trim();
+  if(!name) return showToast('Please enter your full name','warning');
+  const user=auth.currentUser; if(!user) return;
+  const email=pdcNormalizeEmail(user.email||'');
+  const phone=user.phoneNumber?last10Digits(user.phoneNumber):'';
+  pdcUpdateCustomerProfile({name,email,phone}).then(()=>{ showToast('Profile created successfully!','success'); closeModal('onboardingModal'); applyLoggedInUI(name); }).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
 }
 
 let profileAddresses = [];
@@ -2460,7 +2489,7 @@ function persistProfileAddresses(showToastMsg=true){
   const updates={addresses:addrMap,selectedAddressId:def?def.id:null};
   if(def){updates.address=profileFormatAddress(def);updates.addressType=def.type||'home';updates.houseNumber=def.house||'';updates.floor=def.floor||'';updates.landmark=def.landmark||'';updates.area=def.area||'';updates.pincode=def.pincode||'';}
   else {updates.address='';updates.addressType='';updates.houseNumber='';updates.floor='';updates.landmark='';updates.area='';updates.pincode='';}
-  return db.ref('customers/'+user.uid).update(updates).then(()=>{renderProfileAddresses();if(showToastMsg)showToast('Address saved successfully!','success');});
+  return pdcUpdateCustomerProfile(updates).then(()=>{renderProfileAddresses();if(showToastMsg)showToast('Address saved successfully!','success');});
 }
 function selectProfileAddress(id){ if(!profileAddresses.some(a=>a.id===id))return; profileSelectedAddressId=id; profileAddresses.forEach(a=>a.isDefault=a.id===id); persistProfileAddresses().catch(()=>showToast('Could not update selected address','error')); }
 function showProfileAddressForm(addr){
@@ -2496,7 +2525,7 @@ function saveProfile(){
   if(!phoneInput.disabled&&!/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number','warning');
   const newName=document.getElementById('profName').value.trim()||'Guest'; const newEmail=pdcNormalizeEmail(document.getElementById('profEmail').value);
   if(!newEmail&&!phone) return showToast('Email ya verified phone required hai','warning');
-  pdcIdentityGate(user,newEmail,phone).then(gate=>{ if(!gate.ok) throw new Error(gate.reason); return db.ref('customers/'+user.uid).update({name:newName,email:newEmail,phone}); }).then(()=>{ applyLoggedInUI(newName); document.getElementById('profNameDisplay').textContent=newName; document.getElementById('profEmailDisplay').textContent=newEmail||'Phone verified member'; setProfileHeader(user); return persistProfileAddresses(false); }).then(()=>showToast('Profile saved!','success')).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
+  pdcUpdateCustomerProfile({name:newName,email:newEmail,phone}).then(profile=>{ applyLoggedInUI(profile.name||newName); document.getElementById('profNameDisplay').textContent=profile.name||newName; document.getElementById('profEmailDisplay').textContent=profile.email||'Phone verified member'; setProfileHeader(user); return persistProfileAddresses(false); }).then(()=>showToast('Profile saved!','success')).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
 }
 
 function logoutUser() {
@@ -2827,6 +2856,10 @@ auth.onAuthStateChanged(user => {
       };
     });
     attachActiveOrderListener(user.uid);
+    // If browser notification permission is already granted, bind the current
+    // browser token to the currently signed-in customer as well. This prevents
+    // account-switch/login sessions from retaining another customer's token.
+    syncFCMTokenForUser(user);
   } else {
     clearCachedUser();
     applyLoggedOutUI();
@@ -3039,33 +3072,9 @@ function showToast(msg,type='info'){
   setTimeout(()=>{t.style.opacity='0'; setTimeout(()=>t.remove(),300);},3000);
 }
 
-let deferredPrompt = null;
-const installButtons = () => document.querySelectorAll('.installAppBtn');
-const setInstallButtonsVisible = (visible) => installButtons().forEach(b => { b.style.display = visible ? 'inline-flex' : 'none'; });
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  setInstallButtonsVisible(true);
-});
-
-installButtons().forEach((button) => button.addEventListener('click', async () => {
-  if (!deferredPrompt) return;
-  const promptEvent = deferredPrompt;
-  deferredPrompt = null;
-  try {
-    await promptEvent.prompt();
-    await promptEvent.userChoice;
-  } catch (err) {
-    console.warn('Install prompt failed:', err);
-  }
-  setInstallButtonsVisible(false);
-}));
-
-window.addEventListener('appinstalled', () => {
-  deferredPrompt = null;
-  setInstallButtonsVisible(false);
-});
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt=e; document.querySelectorAll('.installAppBtn').forEach(b=>b.style.display='inline-flex'); });
+document.querySelectorAll('.installAppBtn').forEach(b=>b.addEventListener('click',()=>{ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{deferredPrompt=null; b.style.display='none';}); } }));
 
 if (!localStorage.getItem('pdc_first_order_used')) document.getElementById('topBanner').style.display = 'block';
 const topBanner = document.getElementById('topBanner');
