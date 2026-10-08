@@ -752,6 +752,18 @@ const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authD
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
+const CREATE_ORDER_FUNCTION_URL = "https://asia-southeast1-parth-dry-clean.cloudfunctions.net/createCustomerOrder";
+const PROFILE_UPDATE_FUNCTION_URL = "https://asia-southeast1-parth-dry-clean.cloudfunctions.net/updateCustomerProfile";
+async function pdcUpdateCustomerProfile(payload){
+  const user=auth.currentUser;
+  if(!user) throw new Error('Not signed in');
+  const token=await user.getIdToken(true);
+  const response=await fetch(PROFILE_UPDATE_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(payload||{})});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok) throw new Error(data.error||'Profile update failed');
+  return data.profile||{};
+}
+
 
 function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
@@ -1845,7 +1857,7 @@ persistAddresses: function() {
     } else {
       updates.address = ''; updates.addressType = ''; updates.houseNumber = ''; updates.floor = ''; updates.landmark = ''; updates.area = ''; updates.pincode = '';
     }
-    return db.ref('customers/' + user.uid).update(updates);
+    return pdcUpdateCustomerProfile(updates);
   };
   const run=this._persistChain.catch(()=>{}).then(write);
   this._persistChain=run.catch(()=>{});
@@ -2023,6 +2035,16 @@ Cart: {
       if(c.type==='general'){
         const used=await db.ref(`customers/${user.uid}/usedCoupons/${code}`).once('value');
         if(used.exists()) throw new Error('already-used');
+      }
+      const currentSnap = getPricingSnapshot();
+      const couponDiscount = Math.min(Math.round(currentSnap.subtotal * (Number(c.percent) || 0) / 100), Number(c.max) || 0);
+      const couponTotal = Math.max(0, currentSnap.subtotal + currentSnap.expressFee - couponDiscount);
+      if (couponTotal < SETTINGS.minOrder) {
+        STATE.appliedPromo=''; STATE.couponEligible=false; STATE.isApplyingCoupon=false;
+        btn.disabled=false; input.disabled=false; btn.textContent='Apply';
+        msg.textContent=`This coupon cannot be applied because minimum payable order is ₹${SETTINGS.minOrder}.`;
+        msg.className='coupon-msg error';
+        return;
       }
       STATE.appliedPromo=code; STATE.couponEligible=true; STATE.isApplyingCoupon=false;
       msg.innerHTML=`<strong>${sanitizeHTML(code)}</strong> applied · ${Number(c.percent)||0}% off`; msg.className='coupon-msg success'; btn.textContent='✓ Applied'; btn.classList.add('applied');
@@ -2377,7 +2399,7 @@ db.ref('customers/' + user.uid).once('value').then(snap => {
   }
   
   if (user.displayName) {
-    db.ref('customers/' + user.uid).update({ name: user.displayName, email: email, phone: phone }).then(releaseAndHandle).catch(releaseAndHandle);
+    pdcUpdateCustomerProfile({ name: user.displayName, email, phone }).then(releaseAndHandle).catch(releaseAndHandle);
   } else { 
     STATE.authProcessing = false; 
     STATE.authSyncUid = null; 
@@ -2397,14 +2419,14 @@ const user = auth.currentUser;
 if (!user) return;
 const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : (STATE.userProfile.phone || '');
 
-db.ref('customers/' + user.uid).update({ name, email, phone }).then(() => {
-  STATE.userProfile.name = name;
-  if(email) STATE.userProfile.email = email;
-  if(phone) STATE.userProfile.phone = phone;
+pdcUpdateCustomerProfile({ name, email, phone }).then(profile => {
+  STATE.userProfile.name = profile.name || name;
+  STATE.userProfile.email = profile.email || '';
+  STATE.userProfile.phone = profile.phone || '';
   App.showToast('Profile created successfully!', 'success');
   App.UI.closeModal('onboardingModal');
   this.handleStateChange(user);
-}).catch(() => App.showToast('Error saving profile', 'error'));
+}).catch(err => App.showToast(err?.message || 'Error saving profile', 'error'));
 },
 
 resumePendingCheckout: function(){
@@ -2638,9 +2660,7 @@ submit: async function(e){
     return App.showToast('Please add valid items', 'error');
   }
 
-  let reservedOrderId = null;
   let finalCouponCode = null;
-  let couponClaimed = false;
 
   try {
     STATE.isSubmittingOrder = true;
@@ -2685,85 +2705,49 @@ submit: async function(e){
     }
     if(snap.subtotal < SETTINGS.minOrder) return App.showToast(`Minimum order value is ₹${SETTINGS.minOrder}`,'error');
 
-    let finalDiscount = snap.discount;
-
-    if (STATE.appliedPromo && STATE.couponEligible) {
-      const coupon = COUPONS[STATE.appliedPromo];
-
-      if (!coupon || coupon.enabled === false) {
-        return App.showToast('Applied coupon is no longer available.', 'error');
-      }
-
-      if (coupon.type === 'first_order' && !STATE.firstOrderEligible) {
-        return App.showToast('First order coupon is no longer valid.', 'error');
-      }
-
-      if (coupon.type === 'general') {
-        const usedSnap = await db.ref('customers/' + user.uid + '/usedCoupons/' + STATE.appliedPromo).once('value');
-        if (usedSnap.exists()) {
-          return App.showToast('Coupon already used on this account.', 'error');
-        }
-        
-        const claim = await claimCouponAtomically(user.uid, STATE.appliedPromo);
-        if (!claim.ok) {
-          return App.showToast('Coupon already used on this account.', 'error');
-        }
-        couponClaimed = true;
-      }
-
-      finalCouponCode = STATE.appliedPromo;
-    } else {
-      finalDiscount = 0;
+    const finalTotal = Math.max(0, snap.subtotal + snap.expressFee - snap.discount);
+    if (finalTotal < SETTINGS.minOrder) {
+      return App.showToast(`Minimum payable order value is ₹${SETTINGS.minOrder}. Please add more items or remove the coupon.`, 'error');
     }
 
-    const orderRef = db.ref('orders').push();
-    const firebaseKey = orderRef.key;
-    const orderId = await generateUniqueOrderId();
-    reservedOrderId = orderId;
-
-    const estDate = new Date(pickupDate + 'T00:00:00');
-    estDate.setDate(estDate.getDate() + (snap.isExpress ? 1 : 3));
-    const estd = estDate.toISOString().split('T')[0];
-
-    const orderItems = buildFrozenItemRates(); 
-    const itemsList = Object.values(orderItems).map(v => `${String(v.name).trim()} x${parseInt(v.qty, 10)}`).join(', ');
-
-    const orderData = {
-      firebaseKey, orderId, uid: user.uid, customerName:name, name:name,
-      phone, address:finalAddress, pickupDate, timeSlot, estd, estdTime:estd,
-      estimatedDelivery:estd, deliveryDate:estd, ESTD:estd, itemsList, specialInst:spInst,
-      items:orderItems, itemRates:orderItems, subtotal:snap.subtotal, express:snap.isExpress?'Yes':'No', expressFee:snap.expressFee, 
-      discount: finalDiscount,
-      couponCode: finalCouponCode || null,
-      appliedCoupon: finalCouponCode || null,
-      total: Math.max(0, snap.subtotal + snap.expressFee - finalDiscount),
-      paymentStatus:'Pay on Delivery', status:'pending', createdAt: Date.now(),
-      latitude: Number.isFinite(Number(addr.latitude)) ? Number(addr.latitude) : null, longitude: Number.isFinite(Number(addr.longitude)) ? Number(addr.longitude) : null, formattedAddress: finalAddress || null,
-      houseNumber: addr.house || null, floor: addr.floor || null, landmark: addr.landmark || null,
-      addressType: addr.type || 'home', locationSource: addr.locationSource || 'manual'
-    };
-
-    await orderRef.set(orderData);
-
-    if (couponClaimed && finalCouponCode) {
-      try {
-        await finalizeCouponClaim(user.uid, finalCouponCode);
-      } catch (couponFinalizeError) {
-        // Do not leave a successfully written order with a coupon stuck in a pending state.
-        await orderRef.remove().catch(()=>{});
-        throw couponFinalizeError;
-      }
-    }
-    
-    // The order is already persisted; customer-profile sync is secondary and must not
-    // turn a successful booking into a false failure if this separate write is unavailable.
-    await db.ref('customers/'+user.uid).update({
-        name, phone, address: finalAddress,
-        addressType: addr.type || 'home', houseNumber: addr.house || '', floor: addr.floor || '',
-        landmark: addr.landmark || '', area: addr.area || '', pincode: addr.pincode || '',
+    const token = await user.getIdToken();
+    const response = await fetch(CREATE_ORDER_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        items: Object.entries(cleanBag).map(([id, qty]) => ({ id, qty })),
+        pickupDate,
+        timeSlot,
+        name,
+        phone,
+        address: finalAddress,
+        specialInst: spInst,
+        couponCode: (STATE.appliedPromo && STATE.couponEligible) ? STATE.appliedPromo : '',
+        isExpress: !!snap.isExpress,
+        latitude: Number.isFinite(Number(addr.latitude)) ? Number(addr.latitude) : null,
+        longitude: Number.isFinite(Number(addr.longitude)) ? Number(addr.longitude) : null,
+        formattedAddress: finalAddress,
+        houseNumber: addr.house || null,
+        floor: addr.floor || null,
+        landmark: addr.landmark || null,
+        addressType: addr.type || 'home',
+        locationSource: addr.locationSource || 'manual',
         selectedAddressId: addr.id || null
-    }).catch(err=>console.warn('Customer profile sync after booking failed:', err?.message || err));
-    
+      })
+    });
+
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok || !result.order) {
+      throw new Error(result.error || 'Unable to place order');
+    }
+
+    const orderData = result.order;
+    finalCouponCode = orderData.appliedCoupon || orderData.couponCode || null;
+    STATE.lastCreatedOrder = normalizeOrder(orderData);
+
     saveFCMTokenAfterOrder();
     STATE.lastCreatedOrder = normalizeOrder(orderData);
     STATE.lastOrderId = STATE.lastCreatedOrder.orderId || null;
@@ -2788,12 +2772,6 @@ submit: async function(e){
     }, 200);
 
   } catch(err) { 
-    if (finalCouponCode && couponClaimed && auth.currentUser?.uid) {
-      await releaseCouponClaim(auth.currentUser.uid, finalCouponCode).catch(()=>{});
-    }
-    if (reservedOrderId) {
-      await db.ref('orderIds/' + reservedOrderId).remove().catch(()=>{});
-    }
     App.showToast(err?.message || 'Unable to place order', 'error');
   } finally { 
     STATE.isSubmittingOrder = false;
