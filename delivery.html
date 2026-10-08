@@ -16,11 +16,11 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent} :root{--bg:#f4f7fb;--bg2:#fff;--card:#fff;--card2:#f7f9fc;--line:#e2e8f0;--line2:#bfdbfe;--text:#0f172a;--muted:#64748b;--primary:#2563eb;--primary2:#1d4ed8;--good:#059669;--warn:#d97706;--bad:#dc2626;--soft:#eff6ff;--shadow:0 8px 28px rgba(15,23,42,.08);--grad:linear-gradient(135deg,#2563eb,#1d4ed8)}
 [data-theme="dark"]{--bg:#0b1220;--bg2:#111827;--card:#111827;--card2:#172033;--line:#263449;--line2:#3b82f6;--text:#f8fafc;--muted:#94a3b8;--primary:#60a5fa;--primary2:#3b82f6;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--soft:rgba(59,130,246,.13);--shadow:0 10px 34px rgba(0,0,0,.28);--grad:linear-gradient(135deg,#3b82f6,#2563eb)}
-html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:28px;overflow-x:hidden}button,input,select,textarea{font-family:inherit;outline:none}.num{font-family:'JetBrains Mono',monospace}
+html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:28px;overflow-x:hidden}button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,select:focus-visible,textarea:focus,textarea:focus-visible{outline:none!important;box-shadow:none!important}.num{font-family:'JetBrains Mono',monospace}
 .top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);border-bottom:1px solid var(--line);padding:11px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;backdrop-filter:blur(18px)}[data-theme="dark"] .top{background:rgba(17,24,39,.9)}
 .brand{display:flex;align-items:center;gap:10px}.brand-ic{width:38px;height:38px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font:700 22px Pacifico;box-shadow:0 6px 18px rgba(37,99,235,.25)}.brand-text{font:700 19px Pacifico;color:var(--primary)}.brand-sub{font-size:9px;color:var(--muted);letter-spacing:1.7px;text-transform:uppercase;margin-top:2px;font-weight:700}.top-actions{display:flex;gap:7px;align-items:center}.conn-dot{width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:4px}.conn-dot.off{background:var(--bad)}
 .icon-btn{width:38px;height:38px;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;cursor:pointer}.icon-btn:hover{color:var(--primary);border-color:var(--line2)}.wrap{max-width:680px;margin:auto;padding:14px;position:relative;z-index:1}
-.hello{background:var(--grad);border-radius:22px;color:#fff;padding:21px;margin-bottom:15px;position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(37,99,235,.2)}.hello:after{content:'';position:absolute;width:170px;height:170px;border-radius:50%;right:-70px;top:-80px;background:rgba(255,255,255,.1)}.hello h2{font-size:21px}.hello p{font-size:12px;opacity:.86;margin-top:3px}.hello .code-chip{position:absolute;right:14px;top:14px;background:rgba(15,23,42,.2);border:1px solid rgba(255,255,255,.25);padding:5px 10px;border-radius:20px;font:700 10px JetBrains Mono;z-index:2}
+.hello{background:var(--grad);border-radius:22px;color:#fff;padding:21px;margin-bottom:15px;position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(37,99,235,.2)}.hello:after{content:'';position:absolute;width:170px;height:170px;border-radius:50%;right:-70px;top:-80px;background:rgba(255,255,255,.1)}.hello h2{font-size:21px}.hello p{font-size:12px;opacity:.86;margin-top:3px}.hello .code-chip{display:none}
 .tab-nav{display:flex;gap:5px;margin-bottom:15px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:4px;box-shadow:var(--shadow)}.tab-btn{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 7px;border-radius:11px;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}.tab-btn.active{background:var(--soft);color:var(--primary);box-shadow:inset 0 0 0 1px var(--line2)}
 .tab-content{display:none;animation:up .22s ease}.tab-content.active{display:block}@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 7px;text-align:center;box-shadow:var(--shadow)}.stat .n{font:700 19px JetBrains Mono;color:var(--primary)}.stat.cash .n{color:var(--good)}.stat.earn .n{color:var(--warn)}.stat.streak .n{color:#db2777}.stat .l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:5px;font-weight:800}
@@ -57,6 +57,9 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
  </div>
 </div>
 
+<!-- APP CONFIRM MODAL -->
+<div class="modal" id="appConfirmModal"><div class="modal-box" style="max-width:390px"><div class="modal-head"><h3 id="appConfirmTitle">Confirm</h3><button class="modal-close" onclick="closeAppConfirm()"><i class="fas fa-xmark"></i></button></div><p id="appConfirmText" style="font-size:13px;line-height:1.5;color:var(--muted)"></p><div style="display:flex;gap:8px;margin-top:15px"><button class="btn-secondary" style="flex:1" onclick="closeAppConfirm()">Cancel</button><button class="btn-main" style="flex:1" id="appConfirmYes">Confirm</button></div></div></div>
+
 <!-- LOGIN SCREEN -->
 <div class="login" id="loginScreen">
  <div class="login-box">
@@ -89,7 +92,6 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
  
  <div class="wrap">
   <div class="hello">
-   <span class="code-chip" id="myCode">—</span>
    <h2 id="helloName">Hello 👋</h2>
    <p>Aaj ki rides neeche listed hain</p>
   </div>
@@ -235,6 +237,7 @@ function notifyAdmin(type,data){
 
 function openModal(id){$(id).classList.add('open');}
 function closeModal(id){$(id).classList.remove('open');}
+let appConfirmCb=null;function openAppConfirm(text,cb,title='Confirm'){ $('appConfirmTitle').textContent=title;$('appConfirmText').textContent=text;appConfirmCb=cb;$('appConfirmModal').classList.add('show');}function closeAppConfirm(){appConfirmCb=null;$('appConfirmModal').classList.remove('show');}$('appConfirmYes').onclick=()=>{const cb=appConfirmCb;closeAppConfirm();if(cb)cb();};
 function extractGPS(addr){const m=(addr||'').match(/\(GPS:\s*(https?:\/\/[^\)]+)\)/i);return m?m[1]:null;}
 function cleanAddress(addr){return (addr||'').replace(/\s*\(GPS:[^\)]*\)/i,'').trim();}
 
@@ -302,7 +305,6 @@ $('loginBtn').onclick=async()=>{
 function enterApp(){
  $('loginScreen').style.display='none';$('app').style.display='block';
  $('helloName').textContent='Hello, '+(BOY.name||'Partner')+' 👋';
- $('myCode').textContent=BOY.code||'—';
  listen();
  startChatListener();
  requestNotificationPermission();
@@ -479,13 +481,7 @@ window.adv=(id,next)=>{
  }).catch(e=>toast(e.message,'err'));
 };
 
-window.collectPayment=(id,total)=>{
- if(!confirm(`Customer se ₹${total} collect kiya?`))return;
- db.ref('orders/'+id).update({paymentStatus:'Paid',collectedAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{
-  toast('💰 ₹'+total+' cash collected!');
-  vibrate([60]);
- }).catch(e=>toast(e.message,'err'));
-};
+window.collectPayment=(id,total)=>{openAppConfirm(`Customer se ₹${total} collect kiya?`,()=>{db.ref('orders/'+id).update({paymentStatus:'Paid',collectedAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{toast('💰 ₹'+total+' cash collected!');vibrate([60]);}).catch(e=>toast(e.message,'err'));},'Payment Confirmation');};
 
 window.openAddItem=(id)=>{issueCtx.orderId=id;$('addItemOrderId').textContent='#'+id;$('extraItems').innerHTML='';addExtraItemRow();openModal('addItemModal');};
 function addExtraItemRow(){const row=document.createElement('div');row.className='item-row';row.innerHTML=`<input class="ei-name" placeholder="Garment name (e.g. Saree)"/><input class="ei-qty" type="number" value="1" style="width:60px"/><input class="ei-price" type="number" placeholder="₹" style="width:80px"/><button class="rm" onclick="this.parentElement.remove()">×</button>`;$('extraItems').appendChild(row);}
