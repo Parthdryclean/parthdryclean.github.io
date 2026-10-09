@@ -14,7 +14,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent} :root{--bg:#f4f7fb;--bg2:#fff;--card:#fff;--card2:#f7f9fc;--line:#e2e8f0;--line2:#bfdbfe;--text:#0f172a;--muted:#64748b;--primary:#2563eb;--primary2:#1d4ed8;--good:#059669;--warn:#d97706;--bad:#dc2626;--soft:#eff6ff;--shadow:0 8px 28px rgba(15,23,42,.08);--grad:linear-gradient(135deg,#2563eb,#1d4ed8)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#f4f7fb;--bg2:#fff;--card:#fff;--card2:#f7f9fc;--line:#e2e8f0;--line2:#bfdbfe;--text:#0f172a;--muted:#64748b;--primary:#2563eb;--primary2:#1d4ed8;--good:#059669;--warn:#d97706;--bad:#dc2626;--soft:#eff6ff;--shadow:0 8px 28px rgba(15,23,42,.08);--grad:linear-gradient(135deg,#2563eb,#1d4ed8)}
 [data-theme="dark"]{--bg:#0b1220;--bg2:#111827;--card:#111827;--card2:#172033;--line:#263449;--line2:#3b82f6;--text:#f8fafc;--muted:#94a3b8;--primary:#60a5fa;--primary2:#3b82f6;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--soft:rgba(59,130,246,.13);--shadow:0 10px 34px rgba(0,0,0,.28);--grad:linear-gradient(135deg,#3b82f6,#2563eb)}
 html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:28px;overflow-x:hidden}button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,select:focus-visible,textarea:focus,textarea:focus-visible{outline:none!important;box-shadow:none!important}.num{font-family:'JetBrains Mono',monospace}
 .top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);border-bottom:1px solid var(--line);padding:11px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;backdrop-filter:blur(18px)}[data-theme="dark"] .top{background:rgba(17,24,39,.9)}
@@ -30,10 +31,14 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
 .oc-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:7px}.oc-actions a,.oc-actions button{min-height:40px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:10px;font-size:10px;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer}.oc-actions a.call{color:var(--good)}.oc-actions a.wa{color:#16a34a}.oc-actions a.gps{color:var(--primary)}.oc-actions button.report{color:var(--bad)}.oc-actions button.additem{color:var(--warn)}.oc-actions button.collect{color:var(--good)}.oc-actions button.collect.done{background:var(--good);color:#fff;border-color:var(--good)}
 .btn-main{width:100%;padding:13px;border:0;border-radius:12px;background:var(--grad);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}.btn-main.done{background:var(--good)}.empty{text-align:center;padding:38px 18px;color:var(--muted)}.empty i{display:block;font-size:34px;margin-bottom:9px;opacity:.45;color:var(--primary)}
 .dash-grid{display:grid;gap:11px}.dash-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}.dash-card h4{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}.dash-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px}.dash-row:last-child{border:0}.dash-row .label{color:var(--muted)}.dash-row .value{font-weight:800;color:var(--primary)}.streak-badge{display:inline-flex;gap:6px;background:var(--soft);color:var(--primary);padding:8px 15px;border-radius:20px;font-weight:800}
-.chat-container{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:12px;box-shadow:var(--shadow);height:calc(100vh - 190px);min-height:430px;display:flex;flex-direction:column}.chat-messages{flex:1;overflow:auto;padding:5px}.chat-msg{display:flex;gap:8px;margin-bottom:10px}.chat-msg.sent{flex-direction:row-reverse}.chat-msg .avatar{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--soft);color:var(--primary);display:flex;align-items:center;justify-content:center}.chat-msg.sent .avatar{background:var(--primary);color:#fff}.chat-msg .bubble{max-width:78%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.4}.chat-msg.received .bubble{background:var(--card2);border:1px solid var(--line)}.chat-msg.sent .bubble{background:var(--primary);color:#fff}.chat-msg .time{font-size:8px;color:var(--muted);margin-top:3px;text-align:right}.chat-input-row{display:flex;gap:7px;margin-top:7px}.chat-input-row input{flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px}.chat-input-row button{width:46px;border:0;border-radius:12px;background:var(--grad);color:#fff}
-.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}.login-box{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:34px 24px;max-width:390px;width:100%;text-align:center;box-shadow:var(--shadow)}.login-box .lg{font:700 31px Pacifico;color:var(--primary)}.login-box .sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:5px 0 23px}.login-box input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:15px;border-radius:13px;margin-bottom:12px;text-align:center;letter-spacing:2px;font:700 15px JetBrains Mono}.login-box input:focus{border-color:var(--primary)}#loginErr{color:var(--bad);font-size:11px;margin-top:10px;display:none}.batch-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:var(--shadow);z-index:45}.batch-bar.show{display:flex}.batch-bar .batch-count{font-weight:800;color:var(--primary)}.batch-bar button{border:0;background:var(--grad);color:#fff;padding:9px 14px;border-radius:10px;font-weight:800;font-size:10px}
-.install-modal{position:fixed;inset:0;background:rgba(15,23,42,.72);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.install-modal.show{display:flex}.install-box{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:30px 23px;max-width:390px;width:100%;text-align:center;box-shadow:var(--shadow)}.install-icon{width:82px;height:82px;margin:0 auto 16px;border-radius:22px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font:700 46px Pacifico}.install-box h2{font-size:21px;color:var(--primary);margin-bottom:6px}.install-box p{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:16px}.install-features{display:grid;gap:7px;text-align:left;margin-bottom:18px}.install-feature{font-size:11px;color:var(--text);display:flex;gap:8px}.install-feature i{color:var(--good)}.install-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.install-actions button{padding:12px;border-radius:11px;font-weight:800;border:1px solid var(--line);background:var(--card2);color:var(--text)}.install-actions .install{background:var(--grad);border:0;color:#fff}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(7px);z-index:100;display:none;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modal-box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;width:min(560px,100%);max-height:88vh;overflow:auto;box-shadow:var(--shadow)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-head h3{font-size:16px}.modal-close{border:1px solid var(--line);background:var(--card2);color:var(--muted);width:34px;height:34px;border-radius:10px}.item-row{display:flex;gap:6px;margin-bottom:7px}.item-row input{min-width:0;flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:8px}.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0}.issue-type button{padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:9px}.issue-type button.sel{border-color:var(--primary);background:var(--soft);color:var(--primary)}#issueNote{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;min-height:80px}.save-btn{width:100%;border:0;background:var(--grad);color:#fff;padding:12px;border-radius:11px;font-weight:800;margin-top:10px}
+.chat-container{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:12px;box-shadow:var(--shadow);height:calc(100vh - 190px);min-height:430px;display:flex;flex-direction:column}.chat-messages{flex:1;overflow:auto;padding:5px}.chat-msg{display:flex;gap:8px;margin-bottom:10px}.chat-msg.sent{flex-direction:row-reverse}.chat-msg .avatar{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--soft);color:var(--primary);display:flex;align-items:center;justify-content:center}.chat-msg.sent .avatar{background:var(--primary);color:#fff}.chat-msg .bubble{max-width:78%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.4;word-break:break-word}.chat-msg.received .bubble{background:var(--card2);border:1px solid var(--line);color:var(--text)}.chat-msg.sent .bubble{background:var(--primary);color:#fff}.chat-msg .time{font-size:9px;color:var(--muted);margin-top:3px;text-align:right}.chat-input-row{display:flex;gap:7px;margin-top:7px}.chat-input-row input{flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px}.chat-input-row button{width:46px;border:0;border-radius:12px;background:var(--grad);color:#fff;cursor:pointer}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}.login-box{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:34px 24px;max-width:390px;width:100%;text-align:center;box-shadow:var(--shadow)}.login-box .lg{font:700 31px Pacifico;color:var(--primary)}.login-box .sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:5px 0 23px}.login-box input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:15px;border-radius:13px;margin-bottom:12px;text-align:center;letter-spacing:2px;font:700 15px JetBrains Mono}.login-box input:focus{border-color:var(--primary)}#loginErr{color:var(--bad);font-size:11px;margin-top:10px;display:none}.batch-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:var(--shadow);z-index:45}.batch-bar.show{display:flex}.batch-bar .batch-count{font-weight:800;color:var(--primary)}.batch-bar button{border:0;background:var(--grad);color:#fff;padding:9px 14px;border-radius:10px;font-weight:800;font-size:10px;cursor:pointer}
+.install-modal{position:fixed;inset:0;background:rgba(15,23,42,.72);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.install-modal.show{display:flex}.install-box{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:30px 23px;max-width:390px;width:100%;text-align:center;box-shadow:var(--shadow)}.install-icon{width:82px;height:82px;margin:0 auto 16px;border-radius:22px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font:700 46px Pacifico}.install-box h2{font-size:21px;color:var(--primary);margin-bottom:6px}.install-box p{color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:16px}.install-features{display:grid;gap:7px;text-align:left;margin-bottom:18px}.install-feature{font-size:11px;color:var(--text);display:flex;gap:8px}.install-feature i{color:var(--good)}.install-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.install-actions button{padding:12px;border-radius:11px;font-weight:800;border:1px solid var(--line);background:var(--card2);color:var(--text);cursor:pointer}.install-actions .install{background:var(--grad);border:0;color:#fff}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(7px);z-index:100;display:none;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modal-box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;width:min(560px,100%);max-height:88vh;overflow:auto;box-shadow:var(--shadow)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-head h3{font-size:16px}.modal-close{border:1px solid var(--line);background:var(--card2);color:var(--muted);width:34px;height:34px;border-radius:10px;cursor:pointer}.item-row{display:flex;gap:6px;margin-bottom:7px}.item-row input,.item-row select{min-width:0;flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:8px}.item-row button.rm{background:rgba(220,38,38,.12);border:1px solid var(--bad);color:var(--bad);width:32px;border-radius:8px;cursor:pointer}.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0}.issue-type button{padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:9px;cursor:pointer}.issue-type button.sel{border-color:var(--primary);background:var(--soft);color:var(--primary)}#issueNote{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;min-height:80px}.save-btn{width:100%;border:0;background:var(--grad);color:#fff;padding:12px;border-radius:11px;font-weight:800;margin-top:10px;cursor:pointer}
+.btn-secondary{padding:12px;border-radius:11px;font-weight:800;border:1px solid var(--line);background:var(--card2);color:var(--text);cursor:pointer}
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:none}
+#toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 20px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
+#toast .t.err{border-left-color:var(--bad)}
 @media(max-width:390px){.stats{grid-template-columns:repeat(2,1fr)}.tab-btn{font-size:9px}.hello{padding:18px}.hello h2{font-size:19px}}
 </style>
 </head>
@@ -47,13 +52,13 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
   <h2>Install Parth Rider</h2>
   <p>Get the full app experience with offline support and instant notifications</p>
   <div class="install-features">
-   <div class="install-feat"><i class="fas fa-bolt"></i><span>Fast Loading</span></div>
-   <div class="install-feat"><i class="fas fa-wifi"></i><span>Works Offline</span></div>
-   <div class="install-feat"><i class="fas fa-bell"></i><span>Push Alert</span></div>
-   <div class="install-feat"><i class="fas fa-home"></i><span>Home Icon</span></div>
+   <div class="install-feature"><i class="fas fa-bolt"></i><span>Fast Loading</span></div>
+   <div class="install-feature"><i class="fas fa-wifi"></i><span>Works Offline</span></div>
+   <div class="install-feature"><i class="fas fa-bell"></i><span>Push Alert</span></div>
+   <div class="install-feature"><i class="fas fa-home"></i><span>Home Icon</span></div>
   </div>
   <button class="btn-main" onclick="doInstall()"><i class="fas fa-download"></i> Install Now</button>
-  <button class="btn-secondary" onclick="closeInstallModal()">Maybe Later</button>
+  <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="closeInstallModal()">Maybe Later</button>
  </div>
 </div>
 
@@ -169,13 +174,16 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
 <!-- MODAL: ADD EXTRA ITEM -->
 <div class="modal" id="addItemModal">
  <div class="modal-box">
-  <h3><i class="fas fa-plus-circle"></i> Add Doorstep Items <span style="color:var(--muted);font-size:11px;margin-left:auto;font-family:'JetBrains Mono'" id="addItemOrderId"></span></h3>
-  <p style="color:var(--muted);font-size:12px;margin-bottom:10px">Customer ne pickup par extra kapde diye hain? Add karein.</p>
+  <div class="modal-head">
+   <h3><i class="fas fa-plus-circle"></i> Add Doorstep Items</h3>
+   <button class="modal-close" onclick="closeModal('addItemModal')"><i class="fas fa-xmark"></i></button>
+  </div>
+  <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Customer ne extra kapde diye hain? Item list me se add karein.</p>
   <div id="extraItems"></div>
-  <button class="btn-main" onclick="addExtraItemRow()" style="padding:11px;font-size:12px;margin-bottom:10px"><i class="fas fa-plus"></i> Add Item</button>
-  <div class="row">
-   <button style="background:var(--card2);color:var(--text)" onclick="closeModal('addItemModal')">Cancel</button>
-   <button style="background:var(--grad);color:#000" onclick="saveExtraItems()"><i class="fas fa-save"></i> Save</button>
+  <button class="btn-main" onclick="addExtraItemRow()" style="padding:11px;font-size:12px;margin:8px 0 12px"><i class="fas fa-plus"></i> Add Item</button>
+  <div style="display:flex;gap:8px">
+   <button class="btn-secondary" style="flex:1" onclick="closeModal('addItemModal')">Cancel</button>
+   <button class="btn-main" style="flex:1" onclick="saveExtraItems()"><i class="fas fa-save"></i> Save</button>
   </div>
  </div>
 </div>
@@ -183,7 +191,10 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
 <!-- MODAL: REPORT ISSUE -->
 <div class="modal" id="issueModal">
  <div class="modal-box">
-  <h3><i class="fas fa-exclamation-triangle"></i> Report Issue</h3>
+  <div class="modal-head">
+   <h3><i class="fas fa-exclamation-triangle"></i> Report Issue</h3>
+   <button class="modal-close" onclick="closeModal('issueModal')"><i class="fas fa-xmark"></i></button>
+  </div>
   <div class="issue-type">
    <button onclick="selIssue(this,'wrong_address')">Address Galat</button>
    <button onclick="selIssue(this,'not_home')">Ghar Pe Nahi</button>
@@ -191,9 +202,9 @@ html{background:var(--bg)}body{font-family:'Space Grotesk',sans-serif;background
    <button onclick="selIssue(this,'other')">Other Issue</button>
   </div>
   <textarea id="issueNote" rows="3" placeholder="Details likhein (optional)"></textarea>
-  <div class="row">
-   <button style="background:var(--card2);color:var(--text)" onclick="closeModal('issueModal')">Cancel</button>
-   <button style="background:var(--bad);color:#fff" onclick="submitIssue()"><i class="fas fa-paper-plane"></i> Send to Admin</button>
+  <div style="display:flex;gap:8px;margin-top:12px">
+   <button class="btn-secondary" style="flex:1" onclick="closeModal('issueModal')">Cancel</button>
+   <button class="btn-main" style="flex:1;background:var(--bad)" onclick="submitIssue()"><i class="fas fa-paper-plane"></i> Send to Admin</button>
   </div>
  </div>
 </div>
@@ -235,8 +246,8 @@ function notifyAdmin(type,data){
  return db.ref('notifications').push(n);
 }
 
-function openModal(id){$(id).classList.add('open');}
-function closeModal(id){$(id).classList.remove('open');}
+function openModal(id){$(id).classList.add('show');}
+function closeModal(id){$(id).classList.remove('show');}
 let appConfirmCb=null;function openAppConfirm(text,cb,title='Confirm'){ $('appConfirmTitle').textContent=title;$('appConfirmText').textContent=text;appConfirmCb=cb;$('appConfirmModal').classList.add('show');}function closeAppConfirm(){appConfirmCb=null;$('appConfirmModal').classList.remove('show');}$('appConfirmYes').onclick=()=>{const cb=appConfirmCb;closeAppConfirm();if(cb)cb();};
 function extractGPS(addr){const m=(addr||'').match(/\(GPS:\s*(https?:\/\/[^\)]+)\)/i);return m?m[1]:null;}
 function cleanAddress(addr){return (addr||'').replace(/\s*\(GPS:[^\)]*\)/i,'').trim();}
@@ -273,17 +284,25 @@ window.addEventListener('beforeinstallprompt',e=>{
 });
 window.addEventListener('appinstalled',()=>{deferredPrompt=null;$('installBtn').style.display='none';$('installModal').classList.remove('show');toast('✅ App install ho gaya!');});
 function doInstall(){if(!deferredPrompt)return toast('Install available nahi hai','err');deferredPrompt.prompt();deferredPrompt.userChoice.then(r=>{if(r.outcome==='accepted')toast('Installing...');deferredPrompt=null;$('installBtn').style.display='none';$('installModal').classList.remove('show');});}
-function closeInstallModal(){$('installModal').classList.remove('show');localStorage.setItem('pdc_install_dismissed','1');}
-$('installBtn').onclick=doInstall;
+function closeInstallModal(){$('installModal').classList.remove('show');localStorage.setItem('pdc_install_dismissed','1');}$('installBtn').onclick=doInstall;
 
-$('logoutBtn').onclick=()=>{if(chatRefActive)chatRefActive.off();chatRefActive=null;chatFirstLoad=true;const uid=auth.currentUser?.uid;localStorage.removeItem('pdc_boy');BOY=null;const done=()=>{auth.signOut().finally(()=>location.reload());};if(uid)db.ref('boy_sessions/'+uid).remove().finally(done);else done();};
+$('logoutBtn').onclick=()=>{
+ if(chatRefActive)chatRefActive.off();
+ chatRefActive=null;
+ chatFirstLoad=true;
+ const uid=auth.currentUser?.uid;
+ localStorage.removeItem('pdc_boy');
+ BOY=null;
+ const done=()=>{auth.signOut().finally(()=>location.reload());};
+ if(uid)db.ref('boy_sessions/'+uid).remove().finally(done);
+ else done();
+};
 
 $('loginBtn').onclick=async()=>{
  const phone=last10Digits($('phoneInput').value||'');
  const pin=String($('pinInput').value||'').trim();
- if(!/^[0-9]{10}$/.test(phone)||!/^[0-9]{6}$/.test(pin)){ $('loginErr').textContent='❌ 10-digit mobile number aur 6-digit PIN required.'; $('loginErr').style.display='block'; return; }
- $('loginErr').style.display='none';
- $('loginBtn').disabled=true;
+ if(!/^[0-9]{10}$/.test(phone)\vert{}\vert{}!/^[0-9]{6}$/.test(pin)){ $('loginErr').textContent='❌ 10-digit mobile number aur 6-digit PIN required.';$('loginErr').style.display='block'; return; }
+ $('loginErr').style.display='none';$('loginBtn').disabled=true;
  $('loginBtn').innerHTML='<i class="fas fa-spinner fa-spin"></i> Secure login…';
  try{
    const result=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderLogin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,pin})});
@@ -295,7 +314,7 @@ $('loginBtn').onclick=async()=>{
    await db.ref('boy_sessions/'+uid).set({phone,phoneE164:'+91'+phone,name:boy.name||'',boyId:boy.id,createdAt:firebase.database.ServerValue.TIMESTAMP});
    BOY=boy; localStorage.setItem('pdc_boy',JSON.stringify(BOY)); enterApp();
  }catch(e){
-   $('loginErr').textContent='❌ '+(e?.message||'Mobile number ya PIN galat hai.'); $('loginErr').style.display='block';
+   $('loginErr').textContent='❌ '+(e?.message\vert{}\vert{}'Mobile number ya PIN galat hai.');$('loginErr').style.display='block';
    $('loginBtn').disabled=false; $('loginBtn').innerHTML='<i class="fas fa-fingerprint"></i> Secure Login';
    $('pinInput').value='';
  }
@@ -303,8 +322,7 @@ $('loginBtn').onclick=async()=>{
 ['phoneInput','pinInput'].forEach(id=>$(id).onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();});
 
 function enterApp(){
- $('loginScreen').style.display='none';$('app').style.display='block';
- $('helloName').textContent='Hello, '+(BOY.name||'Partner')+' 👋';
+ $('loginScreen').style.display='none';$('app').style.display='block';$('helloName').textContent='Hello, '+(BOY.name||'Partner')+' 👋';
  listen();
  startChatListener();
  requestNotificationPermission();
@@ -456,7 +474,7 @@ function renderCard(o){
     ${checkBtn}
     <div class="oc-top"><span class="oc-id">#${esc(o.orderId||o._id)}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''}<span class="badge ${esc(st)}">${esc(LABEL[st]||st)}</span>${payBadge}</span></div>
     <div class="oc-name">${esc(o.customerName||o.name||'-')}</div>
-    <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--neon-p)"></i> ${esc(addr)}</div>
+    <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
     ${timelineHTML(st)}
     <div class="oc-meta">${items}<span class="chip">Total: ₹${Number(o.total)||0}</span><span class="chip">${esc(o.timeSlot||'')}</span></div>
     <div class="oc-actions">
@@ -561,26 +579,33 @@ function loadDashboard(){
  }).catch(e=>toast('Dashboard load error: '+(e?.message||'Permission denied'),'err'));
 }
 
+// ===== CHAT FUNCTIONS (CLEAN LIVE SYNC) =====
 let chatRefActive=null;
 let chatFirstLoad=true;
 function startChatListener(){
- if(!BOY)return;
+ if(!BOY||!BOY.id)return;
  if(chatRefActive)chatRefActive.off();
  chatFirstLoad=true;
- const chatRef=db.ref('chat/'+BOY.id); chatRefActive=chatRef.limitToLast(50);
+
+ const chatRef=db.ref('chat/'+BOY.id);
+ chatRefActive=chatRef.limitToLast(60);
+
  chatRefActive.on('value',s=>{
   const msgs=[];
-  s.forEach(c=>msgs.push({id:c.key,...c.val()}));
+  s.forEach(c=>{ const v=c.val(); if(v) msgs.push({id:c.key,...v}); });
   msgs.sort((a,b)=>(Number(a.at)||0)-(Number(b.at)||0));
   
+  const box=$('chatMessages');
+  if(!box)return;
+
   if(msgs.length===0){
-   $('chatMessages').innerHTML='<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
+   box.innerHTML='<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
    return;
   }
   
-  $('chatMessages').innerHTML=msgs.map(m=>{
+  box.innerHTML=msgs.map(m=>{
    const isSent=m.from==='boy';
-   const time=m.at?new Date(Number(m.at)).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—';
+   const time=m.at?new Date(Number(m.at)).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'Just now';
    return `<div class="chat-msg ${isSent?'sent':'received'}">
     <div class="avatar">${isSent?'🛵':'👤'}</div>
     <div>
@@ -590,58 +615,77 @@ function startChatListener(){
    </div>`;
   }).join('');
   
-  $('chatMessages').scrollTop=$('chatMessages').scrollHeight;
-  if(!chatFirstLoad){ const last=msgs[msgs.length-1]; if(last && last.from!=='boy') toast('💬 Admin ka naya message aaya'); }
+  box.scrollTop=box.scrollHeight;
+  if(!chatFirstLoad){
+    const last=msgs[msgs.length-1];
+    if(last && last.from!=='boy'){
+      toast('💬 Admin ka naya message aaya');
+      beep();
+      vibrate([100,50,100]);
+    }
+  }
   chatFirstLoad=false;
- },err=>{ $('chatMessages').innerHTML='<div class="empty"><i class="fas fa-triangle-exclamation"></i>Chat load failed: '+esc(err?.message||'Permission denied')+'</div>'; });
+ },err=>{
+  $('chatMessages').innerHTML='<div class="empty"><i class="fas fa-triangle-exclamation"></i>Chat load failed: '+esc(err?.message||'Permission denied')+'</div>';
+ });
 }
 function loadChat(){ startChatListener(); }
 
 window.sendChat=()=>{
  const input=$('chatInput');
- const text=input.value.trim();
- if(!text||!BOY)return;
+ const text=(input?.value||'').trim();
+ if(!text||!BOY||!BOY.id)return;
  
  db.ref('chat/'+BOY.id).push({
-  text, from:'boy', boyName:BOY.name, boyPhone:BOY.phone,
+  text,
+  from:'boy',
+  boyName:BOY.name||'Partner',
+  boyPhone:BOY.phone||'',
   at:firebase.database.ServerValue.TIMESTAMP
- }).then(()=>{input.value='';}).catch(e=>toast(e.message,'err'));
+ }).then(()=>{
+  input.value='';
+  const box=$('chatMessages');
+  if(box) box.scrollTop=box.scrollHeight;
+ }).catch(e=>toast(e.message,'err'));
 };
 
+// Auth State Listener - FIXED: Silent logout removed
 auth.onAuthStateChanged(async u=>{
  if(!u){ return; }
  if(!BOY){ return; }
  try{
    const snap=await db.ref('delivery_boys/'+BOY.id).once('value');
    const boy=snap.val()||{};
-   if(boy.active===false || boy.authUid!==u.uid){
+   if(boy.active===false){
      localStorage.removeItem('pdc_boy'); BOY=null; await auth.signOut(); return;
    }
-   BOY={id:BOY.id,...boy,phone:last10Digits(boy.phone),phoneE164:'+91'+last10Digits(boy.phone),authUid:u.uid};
+   BOY={id:BOY.id,...boy,phone:last10Digits(boy.phone||BOY.phone),phoneE164:'+91'+last10Digits(boy.phone||BOY.phone),authUid:u.uid};
    localStorage.setItem('pdc_boy',JSON.stringify(BOY));
    enterApp();
  }catch(e){
-   localStorage.removeItem('pdc_boy'); BOY=null; await auth.signOut().catch(()=>{});
+   console.warn('Auth state check warning:', e);
  }
 });
 
 if('serviceWorker' in navigator){
- const swCode=`
-  const CACHE='parth-rider-v9';
-  const ASSETS=['./'];
-  self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));self.skipWaiting();});
-  self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
-  self.addEventListener('fetch',e=>{
-   if(e.request.method!=='GET')return;
-   e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{const c=resp.clone();caches.open(CACHE).then(ca=>ca.put(e.request,c)).catch(()=>{});return resp;}).catch(()=>caches.match('./'))));
-  });
- `;
- const blob=new Blob([swCode],{type:'application/javascript'});
- const swUrl=URL.createObjectURL(blob);
- navigator.serviceWorker.register(swUrl).catch(()=>{});
+ try {
+  const swCode=`
+   const CACHE='parth-rider-v10';
+   const ASSETS=['./'];
+   self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));self.skipWaiting();});
+   self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
+   self.addEventListener('fetch',e=>{
+    if(e.request.method!=='GET')return;
+    e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./'))));
+   });
+  `;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  const swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+ } catch(e){}
 }
 
-console.log('🛵 Parth Delivery Gen6 Live — map/chat safe build');
+console.log('🛵 Parth Delivery Gen7 Live — Live chat & orders fully operational');
 </script>
 </body>
 </html>
