@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PARTH OS v23 · Customers + Content</title>
+<title>PARTH OS v24 · Customers + Content</title>
 <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -185,7 +185,15 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 /* ===== V4 INTELLIGENCE + SERVICE AREAS ===== */
 .v4-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.v4-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}.v4-card .v4n{font-family:'Orbitron';font-size:18px;color:var(--pink);margin-top:6px}.v4-card .v4l{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:800}.v4-subgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.area-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}.area-list{display:grid;gap:9px;margin-top:14px}.area-row{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;justify-content:space-between;gap:12px;align-items:center}.area-row .area-name{font-weight:900}.area-row .area-meta{font-size:10px;color:var(--muted);margin-top:4px}.area-edit{display:grid;grid-template-columns:1.2fr 1fr 1.5fr auto;gap:8px;align-items:end;margin-top:10px}.area-edit input,.area-edit select{background:var(--bg);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:9px;width:100%}.audit-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:11px}.audit-row:last-child{border-bottom:0}.audit-meta{color:var(--muted);font-size:10px}.notice-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px;font-size:11px;color:var(--muted);line-height:1.5}@media(max-width:900px){.v4-grid{grid-template-columns:repeat(2,1fr)}.v4-subgrid{grid-template-columns:1fr}.area-edit{grid-template-columns:1fr 1fr}.area-edit .wide{grid-column:1/-1}}@media(max-width:600px){.v4-grid{grid-template-columns:1fr 1fr}.area-edit{grid-template-columns:1fr}.area-edit .wide{grid-column:auto}}
 
-.boy-chat-list{display:flex;flex-direction:column;gap:8px}.boy-chat-msg{display:flex;gap:8px;margin:5px 0}.boy-chat-msg.admin{justify-content:flex-end}.boy-chat-bubble{max-width:78%;padding:9px 12px;border-radius:13px;font-size:12px;line-height:1.4;background:var(--card2);border:1px solid var(--line)}.boy-chat-msg.admin .boy-chat-bubble{background:var(--primary);color:#fff;border-color:var(--primary)}.boy-chat-time{font-size:9px;color:var(--muted);margin-top:3px}.boy-chat-unread{display:inline-flex;min-width:20px;height:20px;padding:0 6px;border-radius:10px;align-items:center;justify-content:center;background:var(--primary);color:#fff;font-size:9px;font-weight:800}
+/* ===== CHAT STYLING (SYNTHWAVE EXACT FIX) ===== */
+.boy-chat-list{display:flex;flex-direction:column;gap:8px}
+.boy-chat-msg{display:flex;gap:8px;margin:6px 0}
+.boy-chat-msg.admin{justify-content:flex-end}
+.boy-chat-bubble{max-width:80%;padding:9px 13px;border-radius:13px;font-size:13px;line-height:1.45;background:var(--panel2);border:1px solid var(--line);color:var(--text);word-break:break-word}
+.boy-chat-msg.admin .boy-chat-bubble{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border-color:transparent;box-shadow:var(--glow)}
+.boy-chat-time{font-size:10px;color:var(--muted);margin-top:3px}
+.boy-chat-msg.admin .boy-chat-time{text-align:right}
+.boy-chat-unread{display:inline-flex;min-width:20px;height:20px;padding:0 6px;border-radius:10px;align-items:center;justify-content:center;background:var(--pink);color:#fff;font-size:9px;font-weight:800}
 </style>
 </head>
 <body>
@@ -218,7 +226,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   <div class="nav-item" data-tab="control"><i class="fas fa-sliders"></i> Store Control</div>
   <div class="nav-item" data-tab="reports"><i class="fas fa-chart-line"></i> Reports</div>
   <div class="nav-item" data-tab="intelligence"><i class="fas fa-brain"></i> Intelligence</div>
-<div class="nav-item" data-tab="notifications"><i class="fas fa-paper-plane"></i> Notifications</div>
+  <div class="nav-item" data-tab="notifications"><i class="fas fa-paper-plane"></i> Notifications</div>
   <div class="nav-item" data-tab="areas"><i class="fas fa-location-dot"></i> Service Areas</div>
  </nav>
  <div class="side-foot">
@@ -238,7 +246,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   <div class="login-box">
    <div class="os-logo">PARTH</div>
    <p style="color:var(--muted);font-size:12px;margin:6px 0 18px;letter-spacing:1px">ADMIN ACCESS ONLY</p>
-   <input type="email" id="adminEmailInput" value="admin@parthdryclean.com"/>
+   <input type="email" id="adminEmailInput" value="admin@parth.com"/>
    <input type="password" id="adminPassInput" placeholder="Password"/>
    <div id="loginError" style="color:var(--bad);font-size:12px;display:none;margin-bottom:8px">❌ Invalid credentials</div>
    <button class="btn solid" id="loginBtn"><i class="fas fa-fingerprint"></i> Initialize</button>
@@ -287,9 +295,8 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    <button class="btn solid" onclick="App.saveManualOrder()"><i class="fas fa-save"></i> Save Order</button>
   </div>
 
-  <!-- ===== CMS / SITE CONTENT TAB (Exact Services Layout) ===== -->
+  <!-- ===== CMS / SITE CONTENT TAB ===== -->
   <div class="tab-content" id="tab-cms">
-   
    <div class="form-grid">
     <div class="fg"><label>CMS Live Sync</label><p style="color:var(--muted);font-size:12px">Website ke loaded cards edit karo ya naya add karo.</p></div>
     <button class="btn good" onclick="App.saveAllCMS()"><i class="fas fa-save"></i> Save All CMS Content</button>
@@ -427,6 +434,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div id="couponList"></div>
   </div>
+
   <div class="tab-content" id="tab-boys">
    <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-truck"></i> Add Delivery Partner</h3><span style="font-size:11px;color:var(--muted)">Inactive partners cannot be assigned to new orders</span></div>
     <div class="form-grid" style="border:0;border-radius:0;margin:0">
@@ -437,6 +445,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div id="boyList"></div>
   </div>
+
   <div class="tab-content" id="tab-services">
    <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-tags"></i> Services Manager</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn solid" onclick="App.addCat()"><i class="fas fa-plus"></i> Add Category</button><button class="btn good" onclick="App.saveServices()"><i class="fas fa-save"></i> Save All</button></div></div>
     <div class="form-grid" style="border:0;border-radius:0;margin:0">
@@ -446,10 +455,12 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div id="priceUI"></div>
   </div>
+
   <div class="tab-content" id="tab-customers">
    <div class="customer-stats"><div class="customer-stat"><div class="n" id="csTotal">0</div><div class="l">Total Customers</div></div><div class="customer-stat"><div class="n" id="csActive">0</div><div class="l">With Orders</div></div><div class="customer-stat"><div class="n" id="csRepeat">0</div><div class="l">Repeat Customers</div></div><div class="customer-stat"><div class="n" id="csRevenue">₹0</div><div class="l">Delivered Revenue</div></div></div>
    <div class="panel"><div class="customer-toolbar"><input id="customerSearch" placeholder="🔍 Search name / phone / email..."/><select id="customerFilter"><option value="all">All Customers</option><option value="orders">Has Orders</option><option value="repeat">Repeat (2+)</option><option value="noorders">No Orders</option></select></div><div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Spent</th><th>Last Order</th><th>Action</th></tr></thead><tbody id="custBody"></tbody></table></div></div>
   </div>
+
   <div class="tab-content" id="tab-control">
    <div class="bento">
     <div class="card"><div class="ic g"><i class="fas fa-store"></i></div><div class="lbl" style="margin-bottom:8px">Booking Open</div><label class="switch"><input type="checkbox" id="ctlBookingOpen"><span class="sl"></span></label><div style="margin-top:8px;color:var(--muted);font-size:11px">Controls whether customers can place bookings.</div></div>
@@ -466,6 +477,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div class="card"><div class="ic v"><i class="fas fa-circle-info"></i></div><div class="lbl">V2 Data Contract</div><div style="margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5">Existing <b>settings/general</b> keys remain intact. New message/hours fields are additive only.</div></div>
   </div>
+
   <div class="tab-content" id="tab-reports">
    <div class="bento">
     <div class="card"><div class="ic c"><i class="fas fa-box"></i></div><div class="num" id="rTotal">0</div><div class="lbl">Total Orders</div></div>
@@ -475,6 +487,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div class="panel"><div class="panel-head"><h3>📈 Last 7 Days Revenue</h3></div><div style="padding:16px" id="revBars"></div></div>
   </div>
+
   <div class="tab-content" id="tab-intelligence">
    <div class="v4-grid">
     <div class="v4-card"><div class="v4l">7D Orders</div><div class="v4n" id="i7Orders">—</div></div>
@@ -490,6 +503,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div class="panel" style="margin-top:14px"><div class="panel-head"><h3><i class="fas fa-bell"></i> Notification Events</h3><span style="font-size:10px;color:var(--muted)">Status changes create events; delivery sender remains server-side.</span></div><div id="notificationList" style="padding:0 14px"></div></div>
   </div>
+
   <div class="tab-content" id="tab-notifications">
    <div class="panel">
     <div class="panel-head"><h3><i class="fas fa-paper-plane"></i> Send Notification</h3><span style="font-size:10px;color:var(--muted)">Manual notification • server-side delivery</span></div>
@@ -505,6 +519,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
    <div class="panel" style="margin-top:14px"><div class="panel-head"><h3><i class="fas fa-list"></i> Recent Notification Events</h3></div><div id="manualNotificationList" style="padding:0 14px"></div></div>
   </div>
+
   <div class="tab-content" id="tab-areas">
    <div class="panel"><div class="panel-head"><h3><i class="fas fa-location-dot"></i> Lucknow Service Area Manager</h3><label class="switch"><input type="checkbox" id="areasGlobal"><span class="sl"></span></label></div>
     <div class="notice-box">When the service-area switch is ON, new orders are limited to <b>Active</b> areas. If no areas are configured yet, Booking keeps the safe Lucknow fallback. Existing orders are never blocked.</div>
@@ -590,14 +605,25 @@ function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type=
 function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');}
 $('confirmNo').onclick=()=>$('confirmModal').classList.remove('open');
 $('confirmYes').onclick=()=>{$('confirmModal').classList.remove('open');if(confirmCb)confirmCb();};
-let pinSaveBusy=false;function openPinModal(id,name){$('pinBoyId').value=id;$('pinModalTitle').textContent='Set Rider PIN';$('pinModalMeta').textContent=(name||'Delivery Partner')+' · Secure login';$('pinValue').value='';$('pinConfirm').value='';$('pinModalError').style.display='none';$('pinModal').classList.add('open');setTimeout(()=>$('pinValue').focus(),80);}function closePinModal(){$('pinModal').classList.remove('open');}$('savePinBtn').onclick=async()=>{if(pinSaveBusy)return;const id=$('pinBoyId').value,pin=$('pinValue').value.trim(),cp=$('pinConfirm').value.trim(),err=$('pinModalError');err.style.display='none';if(!/^\d{6}$/.test(pin)){err.textContent='PIN exactly 6 digits hona chahiye';err.style.display='block';return;}if(pin!==cp){err.textContent='PIN match nahi hua';err.style.display='block';return;}if(!auth.currentUser){err.textContent='Admin session expire ho gayi. Dobara login karein.';err.style.display='block';return;}pinSaveBusy=true;const btn=$('savePinBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';try{const token=await auth.currentUser.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/setRiderPin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({boyId:id,pin})});let data={};try{data=await r.json();}catch(_){ }if(!r.ok)throw new Error(data.error||('PIN update failed ('+r.status+')'));toast('✅ Rider PIN securely updated');closePinModal();}catch(e){err.textContent=e?.message||'PIN update failed';err.style.display='block';}finally{pinSaveBusy=false;btn.disabled=false;btn.innerHTML='<i class="fas fa-key"></i> Save PIN Securely';}};['pinValue','pinConfirm'].forEach(id=>$(id).onkeydown=e=>{if(e.key==='Enter')$('savePinBtn').click();});function openItemModal(k){$('itemCatKey').value=k;$('itemModalMeta').textContent=CATS[k]?.name||'Service category';$('itemNameValue').value='';$('itemPriceValue').value='';$('itemOrigValue').value='';$('itemModalError').style.display='none';$('itemModal').classList.add('open');setTimeout(()=>$('itemNameValue').focus(),80);}function closeItemModal(){$('itemModal').classList.remove('open');}$('saveItemBtn').onclick=()=>{const k=$('itemCatKey').value,name=$('itemNameValue').value.trim(),price=+$('itemPriceValue').value||0,orig=+$('itemOrigValue').value||0,err=$('itemModalError');err.style.display='none';if(!name){err.textContent='Item name required';err.style.display='block';return;}CATS[k].items=CATS[k].items||[];CATS[k].items.push({name,price,originalPrice:orig||undefined});renderServices();closeItemModal();toast('✅ Item added — Save All karo');};
+
+let pinSaveBusy=false;
+function openPinModal(id,name){$('pinBoyId').value=id;$('pinModalTitle').textContent='Set Rider PIN';$('pinModalMeta').textContent=(name||'Delivery Partner')+' · Secure login';$('pinValue').value='';$('pinConfirm').value='';$('pinModalError').style.display='none';$('pinModal').classList.add('open');setTimeout(()=>$('pinValue').focus(),80);}
+function closePinModal(){$('pinModal').classList.remove('open');}
+$('savePinBtn').onclick=async()=>{if(pinSaveBusy)return;const id=$('pinBoyId').value,pin=$('pinValue').value.trim(),cp=$('pinConfirm').value.trim(),err=$('pinModalError');err.style.display='none';if(!/^\d{6}$/.test(pin)){err.textContent='PIN exactly 6 digits hona chahiye';err.style.display='block';return;}if(pin!==cp){err.textContent='PIN match nahi hua';err.style.display='block';return;}if(!auth.currentUser){err.textContent='Admin session expire ho gayi. Dobara login karein.';err.style.display='block';return;}pinSaveBusy=true;const btn=$('savePinBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';try{const token=await auth.currentUser.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/setRiderPin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({boyId:id,pin})});let data={};try{data=await r.json();}catch(_){ }if(!r.ok)throw new Error(data.error||('PIN update failed ('+r.status+')'));toast('✅ Rider PIN securely updated');closePinModal();}catch(e){err.textContent=e?.message||'PIN update failed';err.style.display='block';}finally{pinSaveBusy=false;btn.disabled=false;btn.innerHTML='<i class="fas fa-key"></i> Save PIN Securely';}};
+['pinValue','pinConfirm'].forEach(id=>$(id).onkeydown=e=>{if(e.key==='Enter')$('savePinBtn').click();});
+
+function openItemModal(k){$('itemCatKey').value=k;$('itemModalMeta').textContent=CATS[k]?.name||'Service category';$('itemNameValue').value='';$('itemPriceValue').value='';$('itemOrigValue').value='';$('itemModalError').style.display='none';$('itemModal').classList.add('open');setTimeout(()=>$('itemNameValue').focus(),80);}
+function closeItemModal(){$('itemModal').classList.remove('open');}
+$('saveItemBtn').onclick=()=>{const k=$('itemCatKey').value,name=$('itemNameValue').value.trim(),price=+$('itemPriceValue').value||0,orig=+$('itemOrigValue').value||0,err=$('itemModalError');err.style.display='none';if(!name){err.textContent='Item name required';err.style.display='block';return;}CATS[k].items=CATS[k].items||[];CATS[k].items.push({name,price,originalPrice:orig||undefined});renderServices();closeItemModal();toast('✅ Item added — Save All karo');};
 
 $('themeBtn').onclick=()=>{const l=document.documentElement.getAttribute('data-theme')==='light';if(l){document.documentElement.removeAttribute('data-theme');localStorage.setItem('pos_theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';toast('Dark mode');}else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('pos_theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';toast('Light mode');}};
 if(localStorage.getItem('pos_theme')==='light'){document.documentElement.setAttribute('data-theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}
+
 auth.onAuthStateChanged(u=>{ if(u){$('loginScreen').style.display='none';$('dashboard').classList.add('active');$('sidebar').style.display='';$('adminEmail').textContent=u.email||'admin';start();} else {$('loginScreen').style.display='flex';$('dashboard').classList.remove('active');$('sidebar').style.display='none';} });
 $('loginBtn').onclick=()=>{$('loginError').style.display='none';auth.signInWithEmailAndPassword($('adminEmailInput').value.trim(),$('adminPassInput').value.trim()).catch(()=>$('loginError').style.display='block');};
 $('adminPassInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
 $('logoutBtn').onclick=()=>{closeBoyChatListener();db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();db.ref('site_media').off();db.ref('settings/serviceAreas').off();db.ref('audit_log').off();db.ref('notification_events').off();db.ref('manual_notification_events').off();auth.signOut();};
+
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
 function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='cms')renderCMS();if(t==='intelligence')renderIntelligence();if(t==='areas')renderServiceAreas();}
 
@@ -633,12 +659,14 @@ function start(){
 }
 
 function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
 function renderServiceAreas(){
  const enabled=serviceAreas.enabled!==false; const toggle=$('areasGlobal'); if(toggle)toggle.checked=enabled;
  const list=Object.entries(serviceAreas.areas||{});
  $('iAreas').textContent=list.filter(([,a])=>a&&a.status==='active').length;
  $('areaList').innerHTML=list.length?list.map(([id,a])=>{const status=a.status||'active';const pins=(a.pincodes||[]).join(', ');const keys=(a.keywords||[]).join(', ');return `<div class="area-row"><div style="flex:1"><div class="area-name">${esc(a.name||id)} <span class="type-badge ${status==='active'?'general':status==='coming_soon'?'code':'first_order'}">${status==='active'?'Serving':status==='coming_soon'?'Coming Soon':'Paused'}</span></div><div class="area-meta">PIN: ${esc(pins||'—')} · Keywords: ${esc(keys||'—')}</div><div class="area-edit"><div><label style="font-size:9px;color:var(--muted)">Name</label><input id="an_${id}" value="${esc(a.name||'')}"/></div><div><label style="font-size:9px;color:var(--muted)">PINs</label><input id="ap_${id}" value="${esc(pins)}"/></div><div class="wide"><label style="font-size:9px;color:var(--muted)">Keywords</label><input id="ak_${id}" value="${esc(keys)}"/></div><div><label style="font-size:9px;color:var(--muted)">Status</label><select id="as_${id}"><option value="active" ${status==='active'?'selected':''}>Serving</option><option value="coming_soon" ${status==='coming_soon'?'selected':''}>Coming Soon</option><option value="paused" ${status==='paused'?'selected':''}>Paused</option></select></div><div style="display:flex;gap:6px;grid-column:1/-1"><button class="btn good" onclick="App.saveArea('${id}')"><i class="fas fa-save"></i> Save</button><button class="btn bad" onclick="App.deleteArea('${id}')"><i class="fas fa-trash"></i></button></div></div></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-map-location-dot"></i>No service areas yet — create your first Lucknow area above.</div>';
 }
+
 function renderIntelligence(){
  const hasOrders=!!ordersSnap;
  const orders=hasOrders?Object.values(ordersSnap.val()||{}).filter(Boolean):[];
@@ -670,9 +698,11 @@ function renderIntelligence(){
  $('signalList').innerHTML=signals.map(x=>`<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:12px">${x}</div>`).join('');
  renderAudit();renderNotifications();
 }
+
 function renderAudit(){const list=[];if(auditSnap)auditSnap.forEach(c=>{list.unshift({id:c.key,...c.val()});});$('auditList').innerHTML=list.length?list.slice(0,30).map(x=>`<div class="audit-row"><div><b>${esc(x.action||'Activity')}</b><div class="audit-meta">${esc(x.actor||'admin')} · ${esc(x.target||'system')}</div></div><div class="audit-meta">${x.createdAt?new Date(x.createdAt).toLocaleString('en-IN'):'-'}</div></div>`).join(''):'<div class="empty-state" style="padding:24px">No activity recorded yet.</div>';}
 function renderNotifications(){const list=[];if(notifSnap)notifSnap.forEach(c=>{list.unshift({id:c.key,...c.val()});});$('notificationList').innerHTML=list.length?list.slice(0,30).map(x=>`<div class="audit-row"><div><b>${esc(x.title||'Order update')}</b><div class="audit-meta">${esc(x.body||'')} · ${esc(x.status||'queued')}</div></div><div class="audit-meta">${x.createdAt?new Date(x.createdAt).toLocaleString('en-IN'):'-'}</div></div>`).join(''):'<div class="empty-state" style="padding:24px">No notification events yet.</div>';}
 renderManualNotificationList();
+
 function renderManualNotificationCustomers(){
  const el=$('manualNotifCustomer'); if(!el)return;
  const current=el.value;
@@ -680,6 +710,7 @@ function renderManualNotificationCustomers(){
  el.innerHTML='<option value="">Select customer</option>'+rows.map(c=>`<option value="${esc(c.uid)}">${esc(c.name||c.phone||c.email||c.uid)}${c.phone?' · '+esc(c.phone):''}</option>`).join('');
  if(rows.some(c=>c.uid===current))el.value=current;
 }
+
 function renderManualNotificationList(){
  const el=$('manualNotificationList'); if(!el)return;
  const list=[]; if(manualNotifSnap)manualNotifSnap.forEach(c=>{list.unshift({id:c.key,...(c.val()||{})});});
@@ -706,7 +737,7 @@ function renderOrders(){ if(!ordersSnap)return; const q=($('orderSearch').value|
 $('orderSearch').oninput=renderOrders;$('orderFilter').onchange=renderOrders;
 $('customerSearch').oninput=renderCustomers;$('customerFilter').onchange=renderCustomers;
 
-// ===== RENDER CMS (Exact Services Tab Visual Flow) =====
+// ===== RENDER CMS =====
 function renderCMS(){
  const h = CMS.hero || DEFAULT_CMS.hero;
  $('cmsHeroBadge').value = h.badge || '';
@@ -724,7 +755,6 @@ function renderCMS(){
 
  $('cmsReviewsRatingHeader').value = CMS.reviewsRatingHeader || DEFAULT_CMS.reviewsRatingHeader;
 
- // 1. Trust Items Cards
  $('cmsTrustList').innerHTML = (CMS.trustItems||[]).map((t,i)=>`
   <div class="item-box">
    <div style="display:flex;justify-content:space-between;align-items:center">
@@ -735,7 +765,6 @@ function renderCMS(){
   </div>
  `).join('');
 
- // 2. Fabric Cards
  $('cmsFabricsList').innerHTML = (CMS.fabrics||[]).map((f,i)=>`
   <div class="item-box">
    <div style="display:flex;justify-content:space-between;align-items:center">
@@ -749,7 +778,6 @@ function renderCMS(){
   </div>
  `).join('');
 
- // 3. How It Works Cards
  $('cmsHowList').innerHTML = (CMS.howItWorks||[]).map((h,i)=>`
   <div class="item-box">
    <div style="display:flex;justify-content:space-between;align-items:center">
@@ -761,7 +789,6 @@ function renderCMS(){
   </div>
  `).join('');
 
- // 4. Why Choose Us Cards
  $('cmsWhyUsList').innerHTML = (CMS.whyUs||[]).map((w,i)=>`
   <div class="item-box">
    <div style="display:flex;justify-content:space-between;align-items:center">
@@ -773,7 +800,6 @@ function renderCMS(){
   </div>
  `).join('');
 
- // 5. Reviews Cards
  $('cmsReviewsList').innerHTML = (CMS.reviews||[]).map((r,i)=>`
   <div class="item-box">
    <div style="display:flex;justify-content:space-between;align-items:center">
@@ -788,7 +814,6 @@ function renderCMS(){
   </div>
  `).join('');
 
- // 6. FAQ Cards
  $('cmsFaqsList').innerHTML = (CMS.faqs||[]).map((f,i)=>`
   <div class="item-box">
    <div style="display:flex;justify-content:space-between;align-items:center">
@@ -801,8 +826,22 @@ function renderCMS(){
 }
 
 function renderCoupons(){const box=$('couponList');box.innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--pink)">${esc(c.code)}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${Number(c.percent)||0}% off · max ₹${Number(c.max)||0} · min ₹${Number(c.minOrder)||0} · ${Number(c.usageLimit)||0?('limit '+Number(c.usageLimit)):'unlimited'}</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${esc(c.code)}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${esc(c.code)}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>'; }
+
+// ===== CHAT FUNCTIONS (CLEAN LIVE SYNC) =====
 function closeBoyChatListener(){ if(boyChatQuery){boyChatQuery.off();boyChatQuery=null;} boyChatBoyId=null; boyChatFirstLoad=true; }
-function renderBoyChatMessages(snap){ const box=$('boyChatMessages'); if(!box)return; const msgs=[]; snap.forEach(c=>msgs.push({id:c.key,...(c.val()||{})})); msgs.sort((a,b)=>(+a.at||0)-(+b.at||0)); box.innerHTML=msgs.length?msgs.map(m=>{const admin=m.from==='admin';const t=m.at?new Date(m.at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'Sending...';return `<div class="boy-chat-msg ${admin?'admin':''}"><div><div class="boy-chat-bubble">${esc(m.text||'')}</div><div class="boy-chat-time">${admin?'You':'Delivery Partner'} · ${esc(t)}</div></div></div>`;}).join(''):'<div class="empty-state" style="padding:35px">No messages yet. Start the conversation.</div>'; box.scrollTop=box.scrollHeight; }
+function renderBoyChatMessages(snap){
+ const box=$('boyChatMessages');
+ if(!box)return;
+ const msgs=[];
+ snap.forEach(c=>{ const v=c.val(); if(v) msgs.push({id:c.key,...v}); });
+ msgs.sort((a,b)=>(Number(a.at)||0)-(Number(b.at)||0));
+ box.innerHTML=msgs.length?msgs.map(m=>{
+   const admin=m.from==='admin';
+   const t=m.at?new Date(Number(m.at)).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'Just now';
+   return `<div class="boy-chat-msg ${admin?'admin':''}"><div><div class="boy-chat-bubble">${esc(m.text||'')}</div><div class="boy-chat-time">${admin?'You':'Delivery Partner'} · ${esc(t)}</div></div></div>`;
+ }).join(''):'<div class="empty-state" style="padding:35px"><i class="fas fa-comments"></i>No messages yet. Start the conversation.</div>';
+ box.scrollTop=box.scrollHeight;
+}
 function pdcPhone10(v){return String(v||'').replace(/\D/g,'').slice(-10);}
 
 function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const bp=pdcPhone10(b.phone);const a=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&o.status==='delivered').length;const active=b.active!==false;return `<div class="list-item"><div><span class="name">${esc(b.name)}</span> <span class="type-badge ${active?'general':'first_order'}">${active?'Active':'Inactive'}</span><div class="sub">${esc(b.phone)} · ${a} active orders · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="switch"><input type="checkbox" ${active?'checked':''} onchange="App.toggleBoy('${b.id}',this.checked)"><span class="sl"></span></label><button class="btn" onclick="App.openBoyChat('${b.id}')"><i class="fas fa-comments"></i> Chat</button><button class="btn" onclick="App.setBoyPin('${b.id}','${esc(b.name||'Partner')}')"><i class="fas fa-key"></i> PIN</button><button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>'; }
@@ -873,10 +912,44 @@ function renderOrderDrawer(o){
  `;
  $('odStatusSelect').value=st; $('odPaySelect').value=(o.paymentStatus==='Paid'?'Paid':'Pay on Delivery'); $('odBoySelect').value=assigned;
 }
+
 const App={
- openBoyChat:id=>{ const b=boys.find(x=>x.id===id); if(!b)return; closeBoyChatListener(); boyChatBoyId=id; boyChatFirstLoad=false; $('boyChatTitle').textContent=b.name||'Delivery Partner'; $('boyChatMeta').textContent=(b.phone||'')+' · Secure PIN login'; $('boyChatMessages').innerHTML='<div class="empty-state" style="padding:35px">Loading chat…</div>'; $('boyChatModal').classList.add('open'); boyChatQuery=db.ref('chat/'+id).orderByChild('at').limitToLast(100); boyChatQuery.on('value',renderBoyChatMessages); setTimeout(()=>$('boyChatInput')?.focus(),120); },
+ openBoyChat:id=>{ 
+   const b=boys.find(x=>x.id===id); 
+   if(!b)return toast('Partner nahi mila','err'); 
+   closeBoyChatListener(); 
+   boyChatBoyId=id; 
+   boyChatFirstLoad=false; 
+   $('boyChatTitle').textContent=b.name||'Delivery Partner'; 
+   $('boyChatMeta').textContent=(b.phone||'')+' · Live Partner Chat'; 
+   $('boyChatMessages').innerHTML='<div class="empty-state" style="padding:35px"><i class="fas fa-spinner fa-spin"></i> Chat load ho rahi hai…</div>'; 
+   $('boyChatModal').classList.add('open'); 
+   boyChatQuery=db.ref('chat/'+id).limitToLast(60); 
+   boyChatQuery.on('value',renderBoyChatMessages,err=>{
+     console.error('Chat error:',err);
+     $('boyChatMessages').innerHTML=`<div class="empty-state" style="color:var(--bad)">⚠️ Chat load failed: ${esc(err?.message||'Permission denied')}</div>`;
+   }); 
+   setTimeout(()=>$('boyChatInput')?.focus(),120); 
+ },
  closeBoyChat:()=>{ closeBoyChatListener(); $('boyChatModal').classList.remove('open'); },
- sendBoyChat:()=>{ const input=$('boyChatInput'); const text=(input?.value||'').trim(); if(!text||!boyChatBoyId)return; const b=boys.find(x=>x.id===boyChatBoyId); db.ref('chat/'+boyChatBoyId).push({text,from:'admin',adminName:'Admin',boyName:b?.name||'',boyPhone:b?.phone||'',at:firebase.database.ServerValue.TIMESTAMP}).then(()=>{input.value='';}).catch(e=>toast(e.message,'err')); },
+ sendBoyChat:()=>{ 
+   const input=$('boyChatInput'); 
+   const text=(input?.value||'').trim(); 
+   if(!text||!boyChatBoyId)return; 
+   const b=boys.find(x=>x.id===boyChatBoyId); 
+   db.ref('chat/'+boyChatBoyId).push({
+     text,
+     from:'admin',
+     adminName:'Admin',
+     boyName:b?.name||'',
+     boyPhone:b?.phone||'',
+     at:firebase.database.ServerValue.TIMESTAMP
+   }).then(()=>{
+     input.value='';
+     const box=$('boyChatMessages');
+     if(box) box.scrollTop=box.scrollHeight;
+   }).catch(e=>toast(e.message,'err')); 
+ },
  openOrder:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');App._openOrderId=id;renderOrderDrawer({id,...o});$('orderDrawerBackdrop').classList.add('open');$('orderDrawer').classList.add('open');$('orderDrawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';},
  closeOrder:()=>{$('orderDrawerBackdrop').classList.remove('open');$('orderDrawer').classList.remove('open');$('orderDrawer').setAttribute('aria-hidden','true');document.body.style.overflow='';App._openOrderId=null;},
  saveOrderOps:async id=>{
@@ -907,24 +980,25 @@ const App={
  delBoy:id=>askConfirm('Delete this delivery partner?',()=>{boys=boys.filter(b=>b.id!==id);renderBoys();db.ref('delivery_boys/'+id).remove().then(()=>toast('Partner deleted')).catch(e=>toast(e.message,'err'));}),
  setBoyPin:(id,name)=>openPinModal(id,name),
  addArea:()=>{const name=$('areaName').value.trim();if(!name)return toast('Area name required','err');const id=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');const areas=serviceAreas.areas||{};if(areas[id])return toast('Area already exists','err');const data={name,status:$('areaStatus').value,pincodes:($('areaPins').value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('areaKeywords').value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),createdAt:firebase.database.ServerValue.TIMESTAMP};db.ref('settings/serviceAreas/areas/'+id).set(data).then(()=>writeAudit('Service area created',id)).then(()=>{$('areaName').value='';$('areaPins').value='';$('areaKeywords').value='';toast('✅ Service area added');}).catch(e=>toast(e.message,'err'));},
-saveArea:id=>{const data={name:$('an_'+id).value.trim(),status:$('as_'+id).value,pincodes:($('ap_'+id).value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('ak_'+id).value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),updatedAt:firebase.database.ServerValue.TIMESTAMP};if(!data.name)return toast('Area name required','err');db.ref('settings/serviceAreas/areas/'+id).update(data).then(()=>writeAudit('Service area updated',id)).then(()=>toast('✅ Area saved')).catch(e=>toast(e.message,'err'));},
-deleteArea:id=>askConfirm('Delete this service area?',()=>db.ref('settings/serviceAreas/areas/'+id).remove().then(()=>writeAudit('Service area deleted',id)).then(()=>toast('Area deleted')).catch(e=>toast(e.message,'err'))),
-sendManualNotification:()=>{
- const uid=$('manualNotifCustomer')?.value||'';
- const title=($('manualNotifTitle')?.value||'').trim();
- const body=($('manualNotifBody')?.value||'').trim();
- if(!uid)return toast('Customer select karo','err');
- if(!title||!body)return toast('Title + message required','err');
- const c=customers?.[uid]||{};
- if(!c.fcmToken)return toast('Customer notifications enabled nahi hain','err');
- db.ref('manual_notification_events').push({type:'manual',uid,title,body,status:'queued',createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{
-   $('manualNotifTitle').value=''; $('manualNotifBody').value='';
-   toast('✅ Notification queued for delivery');
-   writeAudit('Manual notification queued',uid,{title});
- }).catch(e=>toast(e.message,'err'));
-},
-refreshIntelligence:()=>{renderIntelligence();toast('Intelligence refreshed');},refreshAudit:()=>db.ref('audit_log').limitToLast(80).once('value').then(s=>{auditSnap=s;renderAudit();toast('Audit refreshed');}),
-saveControl:()=>{const data={bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:Math.max(0,+$('ctlMin').value||0),expressPercent:Math.max(0,Math.min(100,+$('ctlExpress').value||0)),storeMessage:($('ctlMessage').value||'').trim(),workingHours:($('ctlHours').value||'').trim()};db.ref('settings/general').update(data).then(()=>{App.updateControlState();toast('✅ Store control saved');}).catch(e=>toast(e.message,'err'));},
+ saveArea:id=>{const data={name:$('an_'+id).value.trim(),status:$('as_'+id).value,pincodes:($('ap_'+id).value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('ak_'+id).value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),updatedAt:firebase.database.ServerValue.TIMESTAMP};if(!data.name)return toast('Area name required','err');db.ref('settings/serviceAreas/areas/'+id).update(data).then(()=>writeAudit('Service area updated',id)).then(()=>toast('✅ Area saved')).catch(e=>toast(e.message,'err'));},
+ deleteArea:id=>askConfirm('Delete this service area?',()=>db.ref('settings/serviceAreas/areas/'+id).remove().then(()=>writeAudit('Service area deleted',id)).then(()=>toast('Area deleted')).catch(e=>toast(e.message,'err'))),
+ sendManualNotification:()=>{
+  const uid=$('manualNotifCustomer')?.value||'';
+  const title=($('manualNotifTitle')?.value||'').trim();
+  const body=($('manualNotifBody')?.value||'').trim();
+  if(!uid)return toast('Customer select karo','err');
+  if(!title||!body)return toast('Title + message required','err');
+  const c=customers?.[uid]||{};
+  if(!c.fcmToken)return toast('Customer notifications enabled nahi hain','err');
+  db.ref('manual_notification_events').push({type:'manual',uid,title,body,status:'queued',createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{
+    $('manualNotifTitle').value=''; $('manualNotifBody').value='';
+    toast('✅ Notification queued for delivery');
+    writeAudit('Manual notification queued',uid,{title});
+  }).catch(e=>toast(e.message,'err'));
+ },
+ refreshIntelligence:()=>{renderIntelligence();toast('Intelligence refreshed');},
+ refreshAudit:()=>db.ref('audit_log').limitToLast(80).once('value').then(s=>{auditSnap=s;renderAudit();toast('Audit refreshed');}),
+ saveControl:()=>{const data={bookingOpen:$('ctlBookingOpen').checked,couponEnabled:$('ctlCoupon').checked,minOrder:Math.max(0,+$('ctlMin').value||0),expressPercent:Math.max(0,Math.min(100,+$('ctlExpress').value||0)),storeMessage:($('ctlMessage').value||'').trim(),workingHours:($('ctlHours').value||'').trim()};db.ref('settings/general').update(data).then(()=>{App.updateControlState();toast('✅ Store control saved');}).catch(e=>toast(e.message,'err'));},
  updateControlState:()=>{const el=$('controlStateText');if(el)el.textContent=$('ctlBookingOpen').checked?'● Booking is OPEN':'● Booking is CLOSED';},
  moAddRow:()=>{const d=document.createElement('div');d.className='form-grid';d.style.marginBottom='8px';d.innerHTML=`<div class="fg"><label>Item</label><input class="mo-i" placeholder="Shirt"/></div><div class="fg"><label>Qty</label><input class="mo-q" type="number" value="1"/></div><div class="fg"><label>Price</label><input class="mo-p" type="number" placeholder="60"/></div>`;$('moItems').appendChild(d);},
  saveManualOrder:()=>{const name=$('moName').value.trim(),phone=$('moPhone').value.trim(),addr=$('moAddress').value.trim();
@@ -943,9 +1017,8 @@ saveControl:()=>{const data={bookingOpen:$('ctlBookingOpen').checked,couponEnabl
  toggleItem:(k,i,v)=>{CATS[k].items[i].active=v;renderServices();},
  saveServices:()=>{db.ref('services/categories').set(CATS).then(()=>toast('✅ Services saved! Booking me live')).catch(e=>toast(e.message,'err'));},
  
- // Exact CMS Dynamic Actions
  saveCMSHero:()=>{
-   CMS.hero = { badge: $('cmsHeroBadge').value.trim(), subtitle: $('cmsHeroSubtitle').value.trim(), rating: $('cmsHeroRating').value.trim() };
+   CMS.hero = { badge: $('cmsHeroBadge').value.trim(), subtitle: $('cmsHeroSubtitle').value.trim(), rating:$('cmsHeroRating').value.trim() };
    db.ref('site_content/hero').set(CMS.hero).then(()=>toast('✅ Hero saved')).catch(e=>toast(e.message,'err'));
  },
  addCMSTrust:()=>{ CMS.trustItems = CMS.trustItems || []; CMS.trustItems.push({ icon: "fa-check", text: "New Trust Badge" }); renderCMS(); },
@@ -978,13 +1051,13 @@ saveControl:()=>{const data={bookingOpen:$('ctlBookingOpen').checked,couponEnabl
  saveCMSFaqs:()=>{ db.ref('site_content/faqs').set(CMS.faqs).then(()=>toast('✅ FAQs saved')).catch(e=>toast(e.message,'err')); },
 
  saveCMSContact:()=>{
-   CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email: $('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours: $('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed: $('cmsContactMapEmbed').value.trim() };
+   CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email:$('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours:$('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed:$('cmsContactMapEmbed').value.trim() };
    db.ref('site_content/contact').set(CMS.contact).then(()=>toast('✅ Contact saved')).catch(e=>toast(e.message,'err'));
  },
 
  saveAllCMS:()=>{
-   CMS.hero = { badge: $('cmsHeroBadge').value.trim(), subtitle: $('cmsHeroSubtitle').value.trim(), rating: $('cmsHeroRating').value.trim() };
-   CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email: $('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours: $('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed: $('cmsContactMapEmbed').value.trim() };
+   CMS.hero = { badge: $('cmsHeroBadge').value.trim(), subtitle: $('cmsHeroSubtitle').value.trim(), rating:$('cmsHeroRating').value.trim() };
+   CMS.contact = { phone: $('cmsContactPhone').value.trim(), whatsapp: $('cmsContactWa').value.trim(), email:$('cmsContactEmail').value.trim(), address: $('cmsContactAddress').value.trim(), hours:$('cmsContactHours').value.trim(), mapLink: $('cmsContactMapLink').value.trim(), mapEmbed:$('cmsContactMapEmbed').value.trim() };
    CMS.reviewsRatingHeader = $('cmsReviewsRatingHeader').value.trim();
    db.ref('site_content').set(CMS).then(()=>toast('🎉 Complete CMS Sync Saved!')).catch(e=>toast(e.message,'err'));
  },
@@ -1001,8 +1074,7 @@ saveControl:()=>{const data={bookingOpen:$('ctlBookingOpen').checked,couponEnabl
 
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=Math.max(0,+$('cpMax').value||0);const minOrder=Math.max(0,+$('cpMinOrder').value||0);const usageLimit=Math.max(0,+$('cpUsageLimit').value||0);const t=$('cpType').value;if(!/^[A-Z0-9_-]{3,20}$/.test(code))return toast('Code: 3–20 letters/numbers/_/-','err');if(p<1||p>100)return toast('Discount 1–100%','err');if(coupons.some(c=>String(c.code).toUpperCase()===code))return toast('Coupon already exists','err');const data={code,percent:p,max:m,minOrder,type:t,usageLimit,usedCount:0,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';$('cpPercent').value='';$('cpMax').value='';$('cpMinOrder').value='';$('cpUsageLimit').value='';toast('✅ Coupon added');}).catch(e=>{coupons=coupons.filter(c=>c.code!==code);renderCoupons();toast(e.message,'err');});};
 $('areasGlobal').onchange=()=>db.ref('settings/serviceAreas/enabled').set($('areasGlobal').checked).then(()=>writeAudit('Service area global switch', $('areasGlobal').checked?'enabled':'disabled')).then(()=>toast($('areasGlobal').checked?'Service areas ON':'Service areas OFF')).catch(e=>toast(e.message,'err'));
-$('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbPartner(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};
-$('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(csv)],{type:'text/csv'}));a.download='orders.csv';a.click();toast('CSV exported');};
+$('addDb').onclick=()=>{const n=$('dbName').value.trim(),p=$('dbPhone').value.trim();if(n&&/^[0-9]{10}$/.test(p)){App.addDbPartner(n,p);$('dbName').value='';$('dbPhone').value='';}else toast('Name + valid phone','err');};$('exportOrders').onclick=()=>{if(!ordersSnap)return;let csv='OrderID,Customer,Phone,Date,Status,Total\n';ordersSnap.forEach(c=>{const o=c.val();if(o)csv+=`${o.orderId},"${o.customerName||o.name}",${o.phone},${o.pickupDate},${o.status},${o.total}\n`;});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='orders.csv';a.click();toast('CSV exported');};
 console.log('🌆 PARTH OS v24 (Intelligence + Service Areas) online');
 </script>
 </body>
