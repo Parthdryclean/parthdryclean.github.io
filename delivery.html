@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Stable Mobile Build + Cache Buster + Bottom Order HUD Alert -->
+<!-- ParthdeliveryGen8 : Stable Direct Auth + Bottom Order HUD Alert + Realtime Chat Sync -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -27,7 +27,7 @@
   --soft:rgba(59,130,246,.13);--shadow:0 10px 34px rgba(0,0,0,.28);--grad:linear-gradient(135deg,#3b82f6,#2563eb)
 }
 html{background:var(--bg)}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:36px;overflow-x:hidden}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:32px;overflow-x:hidden}
 button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}
 button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,select:focus-visible,textarea:focus,textarea:focus-visible{outline:none!important;box-shadow:none!important}
 .num{font-family:'JetBrains Mono',monospace}
@@ -77,10 +77,10 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .sec.pink .count{color:#db2777}
 
 /* ORDER CARDS */
-.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .2s}
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
 .order-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad)}
 .order-card.selected{border-color:var(--primary);background:var(--soft)}
-.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.4)!important;animation:pulseCard 1.8s ease}
+.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.35)!important;animation:pulseCard 1.8s ease}
 @keyframes pulseCard{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
 .oc-check{position:absolute;right:14px;top:14px;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;background:var(--card2);z-index:5;cursor:pointer}
 .order-card.selected .oc-check{background:var(--primary);border-color:var(--primary);color:#fff}
@@ -186,7 +186,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 #toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 20px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
 #toast .t.err{border-left-color:var(--bad)}
 
-/* ===== SWIGGY/ZOMATO STYLE NEW ORDER BOTTOM HUD ALERT ===== */
+/* ===== ZOMATO/SWIGGY STYLE BOTTOM FLOATING ALERT HUD ===== */
 .new-order-alert{
   position:fixed;bottom:20px;left:16px;right:16px;max-width:520px;margin:0 auto;z-index:950;
   background:var(--card);border:1.5px solid var(--primary);border-radius:20px;
@@ -245,7 +245,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
   <div class="sub">Delivery Partner HUD</div>
   <input id="phoneInput" inputmode="numeric" autocomplete="tel" placeholder="Registered mobile number" maxlength="10"/>
   <input id="pinInput" inputmode="numeric" autocomplete="current-password" type="password" placeholder="6-digit PIN" maxlength="6"/>
-  <button class="btn-main" id="loginBtn" type="button" onclick="handleLogin()"><i class="fas fa-fingerprint"></i> Secure Login</button>
+  <button class="btn-main" id="loginBtn" type="button"><i class="fas fa-fingerprint"></i> Secure Login</button>
   <p id="loginErr">❌ Mobile number ya PIN galat hai. Admin se verify karein.</p>
  </div>
 </div>
@@ -382,7 +382,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
-// UNREGISTER OLD BROKEN SERVICE WORKER CACHE IMMEDIATELY
+// UNREGISTER OLD BROKEN SERVICE WORKER CACHE
 if('serviceWorker' in navigator){
   navigator.serviceWorker.getRegistrations().then(regs => {
     for(let r of regs) r.unregister();
@@ -522,77 +522,66 @@ $('logoutBtn').onclick=()=>{
  else done();
 };
 
-/* ===== RESILIENT LOGIN HANDLER ===== */
-window.handleLogin=async()=>{
+/* ===== ORIGINAL ROCK-SOLID LOGIN LOGIC ===== */
+$('loginBtn').onclick=async()=>{
  const phone=last10Digits($('phoneInput')?.value||'');
  const pin=String($('pinInput')?.value||'').trim();
- const errEl=$('loginErr');
- const btn=$('loginBtn');
-
  if(!/^[0-9]{10}$/.test(phone)\vert{}\vert{}!/^[0-9]{6}$/.test(pin)){ 
-   if(errEl){
-     errEl.textContent='❌ 10-digit mobile number aur 6-digit PIN enter karein.';
-     errEl.style.display='block';
-   }
+   $('loginErr').textContent='❌ 10-digit mobile number aur 6-digit PIN required.';$('loginErr').style.display='block'; 
    return; 
  }
-
- if(errEl) errEl.style.display='none';
+ $('loginErr').style.display='none';
+ const btn=$('loginBtn');
  btn.disabled=true;
- btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying partner…';
-
+ btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Secure login…';
  try{
    const result=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderLogin',{
      method:'POST',
      headers:{'Content-Type':'application/json'},
      body:JSON.stringify({phone,pin})
    });
-
    const data=await result.json().catch(()=>({}));
-   if(!result.ok||!data.token){
-     throw new Error(data.error||('Login failed (Code '+result.status+')'));
-   }
-
-   btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Logging in…';
+   if(!result.ok||!data.token) throw new Error(data.error||'Login failed');
+   
    await auth.signInWithCustomToken(data.token);
    const uid=auth.currentUser?.uid;
-   const boyIdSafe = data.boyId || data.boy?.id || data.id || '';
-   const boyNameSafe = data.boy?.name || data.name || 'Partner';
+   const boyIdSafe=data.boyId || data.boy?.id || data.id || '';
+   const boyNameSafe=data.boy?.name || data.name || 'Partner';
    
    const boy={
-     id: boyIdSafe,
-     name: boyNameSafe,
-     phone: phone,
-     phoneE164: '+91'+phone,
-     authUid: uid
+     id:boyIdSafe,
+     ...(data.boy||{}),
+     name:boyNameSafe,
+     phone:phone,
+     phoneE164:'+91'+phone,
+     authUid:uid
    };
-
+   
    if(uid && boyIdSafe){
      await db.ref('boy_sessions/'+uid).set({
-       phone,
-       phoneE164: '+91'+phone,
-       name: boyNameSafe,
-       boyId: boyIdSafe,
-       createdAt: firebase.database.ServerValue.TIMESTAMP
-     }).catch(e=>console.warn('Session save notice:', e));
+       phone:phone,
+       phoneE164:'+91'+phone,
+       name:boyNameSafe,
+       boyId:boyIdSafe,
+       createdAt:firebase.database.ServerValue.TIMESTAMP
+     }).catch(()=>{});
    }
-
+   
    BOY=boy; 
    localStorage.setItem('pdc_boy',JSON.stringify(BOY)); 
    enterApp();
  }catch(e){
-   console.error('Rider login failed:', e);
-   if(errEl){
-     errEl.textContent='❌ '+(e?.message||'Mobile number ya PIN galat hai. Admin se check karwayein.');
-     errEl.style.display='block';
-   }
+   $('loginErr').textContent='❌ '+(e?.message\vert{}\vert{}'Mobile number ya PIN galat hai.');$('loginErr').style.display='block';
    btn.disabled=false; 
    btn.innerHTML='<i class="fas fa-fingerprint"></i> Secure Login';
-   if($('pinInput'))$('pinInput').value='';
+   $('pinInput').value='';
  }
 };
 
-$('phoneInput').onkeydown=e=>{if(e.key==='Enter')$('pinInput').focus();};$('pinInput').onkeydown=e=>{if(e.key==='Enter')window.handleLogin();};
+['phoneInput','pinInput'].forEach(id=>{
+  const el=$(id);
+  if(el) el.onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
+});
 
 function enterApp(){
  $('loginScreen').style.display='none';
@@ -837,7 +826,7 @@ function loadDashboard(){
  Promise.all([
   db.ref('orders').orderByChild('assigned_to_e164').equalTo(BOY.phoneE164||('+91'+phone10)).once('value'),
   db.ref('orders').orderByChild('assigned_to').equalTo(phone10).once('value'),
-  db.ref('orders').orderByChild('assigned_to').equalTo('+91'+phone10).once('value')
+  db.ref('orders').orderByChild('assigned_to').equalTo('+91'+phone10)
  ]).then(snaps=>{
   const merged=new Map();snaps.forEach(s=>s.forEach(c=>merged.set(c.key,c.val())));
   const now=new Date();
@@ -857,7 +846,7 @@ function loadDashboard(){
  }).catch(e=>toast('Dashboard load error: '+(e?.message||'Permission denied'),'err'));
 }
 
-/* ===== CHAT (REALTIME BIDIRECTIONAL WITH ADMIN) ===== */
+/* ===== REALTIME CHAT SYNC WITH ADMIN ===== */
 let chatRefActive=null;
 let chatFirstLoad=true;
 function startChatListener(){
@@ -927,42 +916,26 @@ window.sendChat=()=>{
  }).catch(e=>toast(e.message,'err'));
 };
 
-/* ===== AUTH STATE LISTENER (PERSISTENT & AUTO-RECOVERY) ===== */
+/* ===== AUTH STATE LISTENER (PERSISTENT & NON-INTRUSIVE) ===== */
 auth.onAuthStateChanged(async u=>{
- if(!u){ 
-   $('loginScreen').style.display='flex';$('app').style.display='none';
-   return; 
- }
- 
+ if(!u){ return; }
+ if(!BOY){ return; }
  try{
-   if(!BOY||!BOY.id){
-     const sSnap=await db.ref('boy_sessions/'+u.uid).once('value');
-     const sVal=sSnap.val();
-     if(sVal&&sVal.boyId){
-       BOY={id:sVal.boyId,phone:sVal.phone,phoneE164:sVal.phoneE164,name:sVal.name,authUid:u.uid};
-       localStorage.setItem('pdc_boy',JSON.stringify(BOY));
-     }
+   const snap=await db.ref('delivery_boys/'+BOY.id).once('value');
+   const boy=snap.val()||{};
+   if(boy.active===false){
+     localStorage.removeItem('pdc_boy'); BOY=null; await auth.signOut(); return;
    }
-   
-   if(BOY&&BOY.id){
-     const snap=await db.ref('delivery_boys/'+BOY.id).once('value');
-     const boy=snap.val()||{};
-     if(boy.active===false){
-       localStorage.removeItem('pdc_boy'); BOY=null; await auth.signOut(); return;
-     }
-     BOY={id:BOY.id,...boy,phone:last10Digits(boy.phone||BOY.phone),phoneE164:'+91'+last10Digits(boy.phone||BOY.phone),authUid:u.uid};
-     localStorage.setItem('pdc_boy',JSON.stringify(BOY));
-     enterApp();
-   } else {
-     $('loginScreen').style.display='flex';$('app').style.display='none';
-   }
+   BOY={id:BOY.id,...boy,phone:last10Digits(boy.phone||BOY.phone),phoneE164:'+91'+last10Digits(boy.phone||BOY.phone),authUid:u.uid};
+   localStorage.setItem('pdc_boy',JSON.stringify(BOY));
+   enterApp();
  }catch(e){
    console.warn('Session verification notice:', e);
    if(BOY&&BOY.id) enterApp();
  }
 });
 
-console.log('🛵 Parth Delivery Gen8 HUD Live — Stable Auth & Modern Bottom Alert');
+console.log('🛵 Parth Delivery Gen8 HUD Live — Direct Auth & Modern Bottom Alert');
 </script>
 </body>
 </html>
