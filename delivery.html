@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Clean Build + Bottom Order HUD Alert + Resilient Login & Realtime Sync -->
+<!-- ParthdeliveryGen8 : Stable Mobile Build + Cache Buster + Bottom Order HUD Alert -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -27,7 +27,7 @@
   --soft:rgba(59,130,246,.13);--shadow:0 10px 34px rgba(0,0,0,.28);--grad:linear-gradient(135deg,#3b82f6,#2563eb)
 }
 html{background:var(--bg)}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:32px;overflow-x:hidden}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:36px;overflow-x:hidden}
 button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}
 button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,select:focus-visible,textarea:focus,textarea:focus-visible{outline:none!important;box-shadow:none!important}
 .num{font-family:'JetBrains Mono',monospace}
@@ -68,7 +68,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .stat.streak .n{color:#db2777}
 .stat .l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:5px;font-weight:800}
 
-/* SECTION TITLES */
+/* SECTION LABELS */
 .sec{font-size:12px;color:var(--muted);font-weight:800;display:flex;align-items:center;gap:8px;margin:19px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:1px}
 .sec .count{margin-left:auto;background:var(--soft);color:var(--primary);padding:3px 9px;border-radius:20px;font:800 10px JetBrains Mono}
 .sec.green{color:var(--good)}
@@ -77,10 +77,10 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .sec.pink .count{color:#db2777}
 
 /* ORDER CARDS */
-.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .2s}
 .order-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad)}
 .order-card.selected{border-color:var(--primary);background:var(--soft)}
-.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.35)!important;animation:pulseCard 1.8s ease}
+.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.4)!important;animation:pulseCard 1.8s ease}
 @keyframes pulseCard{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
 .oc-check{position:absolute;right:14px;top:14px;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;background:var(--card2);z-index:5;cursor:pointer}
 .order-card.selected .oc-check{background:var(--primary);border-color:var(--primary);color:#fff}
@@ -186,23 +186,23 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 #toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 20px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
 #toast .t.err{border-left-color:var(--bad)}
 
-/* ===== REFINED NEW ORDER BOTTOM FLOATING ALERT HUD ===== */
+/* ===== SWIGGY/ZOMATO STYLE NEW ORDER BOTTOM HUD ALERT ===== */
 .new-order-alert{
   position:fixed;bottom:20px;left:16px;right:16px;max-width:520px;margin:0 auto;z-index:950;
   background:var(--card);border:1.5px solid var(--primary);border-radius:20px;
   padding:14px 16px;box-shadow:0 16px 40px rgba(37,99,235,.3);
   display:flex;flex-direction:column;gap:10px;
   transform:translateY(160%);opacity:0;pointer-events:none;
-  transition:transform .32s cubic-bezier(.175,.885,.32,1.275),opacity .3s ease;
+  transition:transform .34s cubic-bezier(.175,.885,.32,1.275),opacity .3s ease;
 }
 .new-order-alert.show{
   transform:translateY(0);opacity:1;pointer-events:auto;
 }
 .noa-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .noa-badge{display:inline-flex;align-items:center;gap:6px;background:var(--soft);color:var(--primary);font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:20px}
-.noa-pulse{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary);animation:noaBlink .9s infinite alternate}
+.noa-pulse{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary);animation:noaBlink .8s infinite alternate}
 @keyframes noaBlink{from{opacity:.3}to{opacity:1}}
-.noa-close{background:transparent;border:0;color:var(--muted);font-size:15px;cursor:pointer;padding:4px}
+.noa-close{background:transparent;border:0;color:var(--muted);font-size:16px;cursor:pointer;padding:4px}
 .noa-body{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .noa-title{font-size:15px;font-weight:800}
 .noa-sub{font-size:11px;color:var(--muted);margin-top:2px}
@@ -223,7 +223,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 <!-- BOTTOM NEW ORDER HUD ALERT -->
 <div class="new-order-alert" id="newOrderAlert" role="alert">
   <div class="noa-head">
-    <div class="noa-badge"><span class="noa-pulse"></span> Naya Order Assign Hua</div>
+    <div class="noa-badge"><span class="noa-pulse"></span> Naya Order Assign Hua!</div>
     <button class="noa-close" onclick="dismissOrderAlert()" aria-label="Dismiss"><i class="fas fa-times"></i></button>
   </div>
   <div class="noa-body">
@@ -231,7 +231,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
       <div class="noa-title" id="noaOrderTitle">#Order</div>
       <div class="noa-sub" id="noaOrderSub">Tap to view pickup details</div>
     </div>
-    <button class="noa-btn" id="noaViewBtn" onclick="viewAssignedOrder()"><i class="fas fa-eye"></i> View Order</button>
+    <button class="noa-btn" onclick="viewAssignedOrder()"><i class="fas fa-eye"></i> View Order</button>
   </div>
 </div>
 
@@ -245,7 +245,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
   <div class="sub">Delivery Partner HUD</div>
   <input id="phoneInput" inputmode="numeric" autocomplete="tel" placeholder="Registered mobile number" maxlength="10"/>
   <input id="pinInput" inputmode="numeric" autocomplete="current-password" type="password" placeholder="6-digit PIN" maxlength="6"/>
-  <button class="btn-main" id="loginBtn" type="button"><i class="fas fa-fingerprint"></i> Secure Login</button>
+  <button class="btn-main" id="loginBtn" type="button" onclick="handleLogin()"><i class="fas fa-fingerprint"></i> Secure Login</button>
   <p id="loginErr">❌ Mobile number ya PIN galat hai. Admin se verify karein.</p>
  </div>
 </div>
@@ -382,6 +382,13 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
+// UNREGISTER OLD BROKEN SERVICE WORKER CACHE IMMEDIATELY
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    for(let r of regs) r.unregister();
+  }).catch(()=>{});
+}
+
 const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomain:"parth-dry-clean.firebaseapp.com",databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"parth-dry-clean",storageBucket:"parth-dry-clean.firebasestorage.app",messagingSenderId:"673481985335",appId:"1:673481985335:web:eb4194b4860cf979b21eb2"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
@@ -434,7 +441,7 @@ function triggerNewOrderAlert(orderId, customerName, address){
   alertEl.classList.add('show');
   
   clearTimeout(alertTimer);
-  alertTimer = setTimeout(() => { dismissOrderAlert(); }, 10000);
+  alertTimer = setTimeout(() => { dismissOrderAlert(); }, 12000);
 }
 
 function dismissOrderAlert(){
@@ -445,7 +452,6 @@ function dismissOrderAlert(){
 function viewAssignedOrder(){
   dismissOrderAlert();
   if(!latestAssignedOrderId) return;
-  // Switch to orders tab
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   const btn = document.querySelector('.tab-btn[data-tab="orders"]');
@@ -459,7 +465,7 @@ function viewAssignedOrder(){
       card.classList.add('highlight-card');
       setTimeout(()=>card.classList.remove('highlight-card'), 2500);
     }
-  }, 180);
+  }, 200);
 }
 
 function notifyAdmin(type,data){
@@ -516,53 +522,77 @@ $('logoutBtn').onclick=()=>{
  else done();
 };
 
-/* ===== LOGIN CONTROLLER ===== */
-$('loginBtn').onclick=async()=>{
- const phone=last10Digits($('phoneInput').value||'');
- const pin=String($('pinInput').value||'').trim();
+/* ===== RESILIENT LOGIN HANDLER ===== */
+window.handleLogin=async()=>{
+ const phone=last10Digits($('phoneInput')?.value||'');
+ const pin=String($('pinInput')?.value||'').trim();
+ const errEl=$('loginErr');
+ const btn=$('loginBtn');
+
  if(!/^[0-9]{10}$/.test(phone)\vert{}\vert{}!/^[0-9]{6}$/.test(pin)){ 
-   $('loginErr').textContent='❌ 10-digit mobile number aur 6-digit PIN required.';$('loginErr').style.display='block'; 
+   if(errEl){
+     errEl.textContent='❌ 10-digit mobile number aur 6-digit PIN enter karein.';
+     errEl.style.display='block';
+   }
    return; 
  }
- $('loginErr').style.display='none';
- const btn=$('loginBtn');
+
+ if(errEl) errEl.style.display='none';
  btn.disabled=true;
- btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Secure login…';
+ btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying partner…';
+
  try{
    const result=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderLogin',{
      method:'POST',
      headers:{'Content-Type':'application/json'},
      body:JSON.stringify({phone,pin})
    });
+
    const data=await result.json().catch(()=>({}));
-   if(!result.ok||!data.token) throw new Error(data.error||('Login failed ('+result.status+')'));
-   
+   if(!result.ok||!data.token){
+     throw new Error(data.error||('Login failed (Code '+result.status+')'));
+   }
+
+   btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Logging in…';
    await auth.signInWithCustomToken(data.token);
-   const uid=auth.currentUser.uid;
-   const boy={id:data.boyId,...(data.boy||{}),phone:phone,phoneE164:'+91'+phone,authUid:uid};
+   const uid=auth.currentUser?.uid;
+   const boyIdSafe = data.boyId || data.boy?.id || data.id || '';
+   const boyNameSafe = data.boy?.name || data.name || 'Partner';
    
-   await db.ref('boy_sessions/'+uid).set({
-     phone,
-     phoneE164:'+91'+phone,
-     name:boy.name||'',
-     boyId:boy.id,
-     createdAt:firebase.database.ServerValue.TIMESTAMP
-   });
-   
+   const boy={
+     id: boyIdSafe,
+     name: boyNameSafe,
+     phone: phone,
+     phoneE164: '+91'+phone,
+     authUid: uid
+   };
+
+   if(uid && boyIdSafe){
+     await db.ref('boy_sessions/'+uid).set({
+       phone,
+       phoneE164: '+91'+phone,
+       name: boyNameSafe,
+       boyId: boyIdSafe,
+       createdAt: firebase.database.ServerValue.TIMESTAMP
+     }).catch(e=>console.warn('Session save notice:', e));
+   }
+
    BOY=boy; 
    localStorage.setItem('pdc_boy',JSON.stringify(BOY)); 
    enterApp();
  }catch(e){
-   console.error('Login error:', e);
-   $('loginErr').textContent='❌ '+(e?.message\vert{}\vert{}'Mobile number ya PIN galat hai.');$('loginErr').style.display='block';
+   console.error('Rider login failed:', e);
+   if(errEl){
+     errEl.textContent='❌ '+(e?.message||'Mobile number ya PIN galat hai. Admin se check karwayein.');
+     errEl.style.display='block';
+   }
    btn.disabled=false; 
    btn.innerHTML='<i class="fas fa-fingerprint"></i> Secure Login';
-   $('pinInput').value='';
+   if($('pinInput'))$('pinInput').value='';
  }
 };
 
-$('phoneInput').onkeydown=e=>{if(e.key==='Enter')$('pinInput').focus();};
-$('pinInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
+$('phoneInput').onkeydown=e=>{if(e.key==='Enter')$('pinInput').focus();};$('pinInput').onkeydown=e=>{if(e.key==='Enter')window.handleLogin();};
 
 function enterApp(){
  $('loginScreen').style.display='none';
@@ -602,7 +632,7 @@ window.batchStartPickup=async()=>{
  }catch(e){toast(e?.message||'Pickup update failed','err');}
 };
 
-/* ===== LIVE ORDER SUBSCRIPTION ===== */
+/* ===== REALTIME ORDERS LISTENER ===== */
 function listen(){
  if(ordersRef&&ordersRef.refs){ordersRef.refs.forEach((r,i)=>r.off('value',ordersRef.cbs[i]));}
  const phone10=last10Digits(BOY?.phone);
@@ -640,7 +670,7 @@ function listen(){
   }
   prevOrderIds=curIds;prevStatuses=curStatuses;render(myOrders);
  };
- const cbs=queries.map((ref,i)=>ref.on('value',s=>{buckets[i].clear();s.forEach(c=>{const o=c.val();if(o)buckets[i].set(c.key,o);});readyCount++;rebuild();},err=>{console.warn('Orders read warning:', err);readyCount++;if(readyCount>=queries.length)rebuild();}));
+ const cbs=queries.map((ref,i)=>ref.on('value',s=>{buckets[i].clear();s.forEach(c=>{const o=c.val();if(o)buckets[i].set(c.key,o);});readyCount++;rebuild();},err=>{console.warn('Orders read notice:', err);readyCount++;if(readyCount>=queries.length)rebuild();}));
  ordersRef={refs:queries,cbs};
 }
 
@@ -827,7 +857,7 @@ function loadDashboard(){
  }).catch(e=>toast('Dashboard load error: '+(e?.message||'Permission denied'),'err'));
 }
 
-/* ===== CHAT (EXACT RTDB MATCHING WITH ADMIN) ===== */
+/* ===== CHAT (REALTIME BIDIRECTIONAL WITH ADMIN) ===== */
 let chatRefActive=null;
 let chatFirstLoad=true;
 function startChatListener(){
@@ -905,7 +935,6 @@ auth.onAuthStateChanged(async u=>{
  }
  
  try{
-   // If local storage was lost or empty, recover BOY from boy_sessions node
    if(!BOY||!BOY.id){
      const sSnap=await db.ref('boy_sessions/'+u.uid).once('value');
      const sVal=sSnap.val();
@@ -928,12 +957,12 @@ auth.onAuthStateChanged(async u=>{
      $('loginScreen').style.display='flex';$('app').style.display='none';
    }
  }catch(e){
-   console.warn('Session verification note:', e);
+   console.warn('Session verification notice:', e);
    if(BOY&&BOY.id) enterApp();
  }
 });
 
-console.log('🛵 Parth Delivery Gen8 HUD Live — Resilient Auth & Modern Bottom Alert');
+console.log('🛵 Parth Delivery Gen8 HUD Live — Stable Auth & Modern Bottom Alert');
 </script>
 </body>
 </html>
