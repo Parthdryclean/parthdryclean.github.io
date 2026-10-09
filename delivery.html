@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Rock-Solid Persistent Session + Instant Auto-Restore + Bottom Order HUD Alert -->
+<!-- ParthdeliveryGen8 : Safe Dashboard Calc + Standardized PDC-XXXXXX Order IDs + Bottom HUD Alert -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -228,7 +228,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
   </div>
   <div class="noa-body">
     <div>
-      <div class="noa-title" id="noaOrderTitle">#Order</div>
+      <div class="noa-title" id="noaOrderTitle">PDC-000000</div>
       <div class="noa-sub" id="noaOrderSub">Tap to view pickup details</div>
     </div>
     <button class="noa-btn" onclick="viewAssignedOrder()"><i class="fas fa-eye"></i> View Order</button>
@@ -382,9 +382,9 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
-// 1. GLOBAL ERROR LOGGER
+// 1. GLOBAL ERROR LOGGER (SAFE)
 window.onerror = function(msg, url, line) {
-  console.error("Rider App Notice:", msg, line);
+  console.warn("Rider App Notice:", msg, line);
 };
 
 // 2. PURGE OLD SERVICE WORKERS
@@ -423,7 +423,21 @@ try {
 
 const $ = id => document.getElementById(id);
 
-// 4. PARSE SAVED BOY DATA
+// 4. STANDARDIZED ORDER ID FORMATTER (PDC-XXXXXX)
+function formatOrderId(o) {
+  if (!o) return 'PDC-000000';
+  const raw = o.orderId || o.id || o._id || (typeof o === 'string' ? o : '');
+  const clean = String(raw).trim();
+  if (!clean) return 'PDC-000000';
+  if (clean.toUpperCase().startsWith('PDC-')) {
+    return clean.toUpperCase();
+  }
+  const alphanumeric = clean.replace(/[^A-Za-z0-9]/g, '');
+  const idPart = (alphanumeric.length >= 6 ? alphanumeric.slice(-6) : alphanumeric.padStart(6, '0')).toUpperCase();
+  return 'PDC-' + idPart;
+}
+
+// 5. PARSE SAVED BOY DATA
 let BOY = null;
 try {
   const raw = localStorage.getItem('pdc_boy');
@@ -435,13 +449,14 @@ try {
   BOY = null;
 }
 
-// 5. INSTANT RESUME (ZERO FLICKER)
+// 6. INSTANT RESUME (ZERO FLICKER)
 if (BOY && BOY.id) {
   const ls = $('loginScreen'); if(ls) ls.style.display = 'none';
   const ap = $('app'); if(ap) ap.style.display = 'block';
   const hn = $('helloName'); if(hn) hn.textContent = 'Hello, ' + (BOY.name || 'Partner') + ' 👋';
 }
 
+let CURRENT_ORDERS = [];
 let ordersRef = null, prevOrderIds = new Set(), prevStatuses = {}, issueCtx = { orderId: null, type: null }, selectedOrders = new Set();
 let latestAssignedOrderId = null, alertTimer = null;
 const LABEL = {
@@ -486,7 +501,7 @@ function beep() {
 }
 function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch(e) {} }
 
-// 6. FAST NON-BLOCKING LOGIN
+// 7. FAST NON-BLOCKING LOGIN
 window.handleLogin = async function() {
   const phoneInput = $('phoneInput');
   const pinInput = $('pinInput');
@@ -538,11 +553,9 @@ window.handleLogin = async function() {
       authUid: uid
     };
 
-    // Store in localStorage immediately
     BOY = boyObj;
     localStorage.setItem('pdc_boy', JSON.stringify(BOY));
 
-    // Save session in background without blocking enterApp
     if (uid && boyIdSafe) {
       db.ref('boy_sessions/' + uid).set({
         phone: phone,
@@ -592,15 +605,15 @@ function requestNotificationPermission() {
   }
 }
 
-// 7. BOTTOM ORDER HUD ALERT
-function triggerNewOrderAlert(orderId, customerName, address) {
-  latestAssignedOrderId = orderId;
+// 8. BOTTOM ORDER HUD ALERT
+function triggerNewOrderAlert(displayId, customerName, address) {
+  latestAssignedOrderId = displayId;
   beep();
   vibrate([150, 80, 150, 80, 250]);
 
   const tEl = $('noaOrderTitle');
   const sEl = $('noaOrderSub');
-  if (tEl) tEl.textContent = `Order #${orderId}`;
+  if (tEl) tEl.textContent = `Order ${displayId}`;
   if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${address ? address.slice(0, 32) + '…' : 'Doorstep Pickup'}`;
 
   const alertEl = $('newOrderAlert');
@@ -627,7 +640,8 @@ function viewAssignedOrder() {
   if (tOrders) tOrders.classList.add('active');
 
   setTimeout(() => {
-    const card = document.querySelector(`.order-card[data-id="${latestAssignedOrderId}"]`);
+    const card = document.querySelector(`.order-card[data-formatted-id="${latestAssignedOrderId}"]`) ||
+                 document.querySelector(`.order-card[data-id="${latestAssignedOrderId}"]`);
     if (card) {
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       card.classList.add('highlight-card');
@@ -703,7 +717,7 @@ window.addEventListener('online', updateConn);
 window.addEventListener('offline', updateConn);
 updateConn();
 
-// 8. LOGOUT ACTION
+// 9. LOGOUT ACTION
 const logoutBtn = $('logoutBtn');
 if (logoutBtn) {
   logoutBtn.onclick = () => {
@@ -753,7 +767,7 @@ window.batchStartPickup = async () => {
   } catch(e) { toast(e?.message || 'Pickup update failed', 'err'); }
 };
 
-// 9. REALTIME ORDERS LISTENER
+// 10. REALTIME ORDERS LISTENER
 function listen() {
   if (ordersRef && ordersRef.refs) { ordersRef.refs.forEach((r, i) => r.off('value', ordersRef.cbs[i])); }
   const phone10 = last10Digits(BOY?.phone);
@@ -775,17 +789,21 @@ function listen() {
       if (last10Digits(assigned) === phone10) { curIds.add(id); curStatuses[id] = o.status; myOrders.push({ _id: id, ...o }); }
     });
 
+    CURRENT_ORDERS = myOrders;
+    computeDashboard(CURRENT_ORDERS);
+
     if (Object.keys(prevStatuses).length > 0) {
       for (const id in curStatuses) {
         if (prevStatuses[id] && prevStatuses[id] !== curStatuses[id]) {
           const o = myOrders.find(x => x._id === id);
-          if (o) notifyAdmin('status_change', { orderId: o.orderId || id, status: curStatuses[id], customer: o.customerName || o.name || '' }).catch(() => {});
+          if (o) notifyAdmin('status_change', { orderId: formatOrderId(o), status: curStatuses[id], customer: o.customerName || o.name || '' }).catch(() => {});
         }
       }
       curIds.forEach(id => {
         if (!prevOrderIds.has(id)) {
           const o = myOrders.find(x => x._id === id);
-          triggerNewOrderAlert(o?.orderId || id, o?.customerName || o?.name || '', o?.address || '');
+          const dispId = formatOrderId(o || { _id: id });
+          triggerNewOrderAlert(dispId, o?.customerName || o?.name || '', o?.address || '');
         }
       });
     }
@@ -831,7 +849,10 @@ function render(myOrders) {
 
   $('pickupList').innerHTML = pickup.length ? pickup.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-inbox"></i>Koi pickup pending nahi</div>';
   $('deliveryList').innerHTML = delivery.length ? delivery.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-truck"></i>Koi delivery out nahi</div>';
-  $('doneList').innerHTML = done.length ? done.map(o => `<div class="order-card" style="padding:12px 16px;opacity:.85"><div class="oc-top"><span class="oc-id">#${esc(o.orderId || o._id)}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName || o.name || '-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total) || 0} · ${esc(o.timeSlot || '')}</div></div>`).join('') : '<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
+  $('doneList').innerHTML = done.length ? done.map(o => {
+    const dispId = formatOrderId(o);
+    return `<div class="order-card" style="padding:12px 16px;opacity:.85" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}"><div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName || o.name || '-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total) || 0} · ${esc(o.timeSlot || '')}</div></div>`;
+  }).join('') : '<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
 }
 
 function timelineHTML(st) {
@@ -855,6 +876,7 @@ function timelineHTML(st) {
 
 function renderCard(o) {
   const st = o.status || 'pending';
+  const dispId = formatOrderId(o);
   const items = Object.entries(o.items || {}).map(([k, v]) => {
     const qty = (v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 1) : v;
     const name = (v && typeof v === 'object') ? (v.name ?? k) : k;
@@ -873,7 +895,8 @@ function renderCard(o) {
   else if (st === 'out_for_delivery') btn = `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
   else if (st === 'cancelled') btn = `<button class="btn-main done" style="opacity:0.65;" disabled><i class="fas fa-ban"></i> Cancelled</button>`;
 
-  const waMsg = encodeURIComponent(`Hi ${o.customerName || ''}! Parth Rider (${BOY?.name || ''}) aapke order #${o.orderId || o._id} ke liye raah me hu. 🛵`);
+  // WhatsApp Message with PDC-XXXXXX format
+  const waMsg = encodeURIComponent(`Hi ${o.customerName || ''}! Parth Rider (${BOY?.name || ''}) aapke order ${dispId} ke liye raah me hu. 🛵`);
   const latRaw = o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null;
   const lngRaw = o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null;
   const lat = Number(latRaw); const lng = Number(lngRaw);
@@ -883,9 +906,9 @@ function renderCard(o) {
   const collectBtn = (!isPaid && st === 'out_for_delivery') ? `<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total) || 0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total) || 0}</button>` : (isPaid ? `<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>` : '');
   const checkBtn = (st === 'pending') ? `<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>` : '';
 
-  return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}">
+  return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}">
     ${checkBtn}
-    <div class="oc-top"><span class="oc-id">#${esc(o.orderId||o._id)}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
+    <div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
     <div class="oc-name">${esc(o.customerName || o.name || '-')}</div>
     <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
     ${timelineHTML(st)}
@@ -949,7 +972,9 @@ async function loadExtraCatalog() {
   return EXTRA_CATALOG;
 }
 window.openAddItem = async id => {
-  issueCtx.orderId = id; $('addItemOrderId').textContent = '#' + id; $('extraItems').innerHTML = '';
+  issueCtx.orderId = id; 
+  const ord = CURRENT_ORDERS.find(x => x._id === id);
+  $('addItemOrderId').textContent = formatOrderId(ord \vert{}\vert{} { _id: id });$('extraItems').innerHTML = '';
   try { await loadExtraCatalog(); addExtraItemRow(); openModal('addItemModal'); } catch(e) { toast('Service list load nahi hui', 'err'); }
 };
 function addExtraItemRow() {
@@ -1014,33 +1039,124 @@ window.submitIssue = async () => {
   } catch(e) { toast(e?.message || 'Issue report failed', 'err'); }
 };
 
-function loadDashboard() {
-  if (!BOY) return;
-  const phone10 = last10Digits(BOY.phone);
-  Promise.all([
-    db.ref('orders').orderByChild('assigned_to_e164').equalTo(BOY.phoneE164 || ('+91' + phone10)).once('value'),
-    db.ref('orders').orderByChild('assigned_to').equalTo(phone10).once('value'),
-    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10)
-  ]).then(snaps => {
-    const merged = new Map(); snaps.forEach(s => s.forEach(c => merged.set(c.key, c.val())));
-    const now = new Date();
-    const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0; const dayCounts = {};
-    merged.forEach(o => {
-      if (!o || o.status !== 'delivered') return;
-      if (last10Digits(o.assigned_to_e164 || o.assigned_to) !== phone10) return;
-      const delDate = o.deliveredAt ? new Date(o.deliveredAt) : null; if (!delDate) return;
-      const amt = +o.total || 0; totalDel++; totalEarn += amt; const dayKey = dayStr(delDate); dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
-      if (delDate >= weekStart) { weekDel++; weekEarn += amt; } if (delDate >= monthStart) { monthDel++; monthEarn += amt; }
-    });
-    let streak = 0, checkDate = new Date(now); while (true) { const key = dayStr(checkDate); if (dayCounts[key] && dayCounts[key] > 0) { streak++; checkDate.setDate(checkDate.getDate() - 1); } else break; }
-    let bestDay = '—', maxCount = 0; for (const day in dayCounts) { if (dayCounts[day] > maxCount) { maxCount = dayCounts[day]; bestDay = day; } }
-    $('weekDeliveries').textContent = weekDel; $('weekEarnings').textContent = '₹' + weekEarn; $('monthDeliveries').textContent = monthDel; $('monthEarnings').textContent = '₹' + monthEarn; $('bestDay').textContent = bestDay; $('streakCount').textContent = streak; $('totalDeliveries').textContent = totalDel; $('totalEarnings').textContent = '₹' + totalEarn;
-  }).catch(e => toast('Dashboard load error: ' + (e?.message || 'Permission denied'), 'err'));
+// 11. BULLETPROOF DASHBOARD CALCULATION
+function computeDashboard(ordersList) {
+  if (!ordersList) return;
+  const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay());
+  weekStart.setHours(0, 0, 0, 0);
+
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  monthStart.setHours(0, 0, 0, 0);
+
+  let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0;
+  const dayCounts = {};
+
+  ordersList.forEach(o => {
+    if (!o || o.status !== 'delivered') return;
+    const delDate = o.deliveredAt ? new Date(o.deliveredAt) : (o.createdAt ? new Date(o.createdAt) : null);
+    if (!delDate || isNaN(delDate.getTime())) return;
+
+    const amt = +o.total || 0;
+    totalDel++;
+    totalEarn += amt;
+
+    const dayKey = dayStr(delDate);
+    dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
+
+    if (delDate >= weekStart) {
+      weekDel++;
+      weekEarn += amt;
+    }
+    if (delDate >= monthStart) {
+      monthDel++;
+      monthEarn += amt;
+    }
+  });
+
+  let streak = 0, checkDate = new Date(now);
+  while (true) {
+    const key = dayStr(checkDate);
+    if (dayCounts[key] && dayCounts[key] > 0) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  let bestDay = '—', maxCount = 0;
+  for (const day in dayCounts) {
+    if (dayCounts[day] > maxCount) {
+      maxCount = dayCounts[day];
+      bestDay = day;
+    }
+  }
+
+  const elWd = $('weekDeliveries'); if (elWd) elWd.textContent = weekDel;
+  const elWe = $('weekEarnings'); if (elWe) elWe.textContent = '₹' + weekEarn;
+  const elMd = $('monthDeliveries'); if (elMd) elMd.textContent = monthDel;
+  const elMe = $('monthEarnings'); if (elMe) elMe.textContent = '₹' + monthEarn;
+  const elBd = $('bestDay'); if (elBd) elBd.textContent = bestDay;
+  const elSc = $('streakCount'); if (elSc) elSc.textContent = streak;
+  const elTd = $('totalDeliveries'); if (elTd) elTd.textContent = totalDel;
+  const elTe = $('totalEarnings'); if (elTe) elTe.textContent = '₹' + totalEarn;
 }
 
-// 10. REALTIME CHAT
+function safeExtractOrders(snaps) {
+  const map = new Map();
+  if (!snaps) return map;
+  const list = Array.isArray(snaps) ? snaps : [snaps];
+  list.forEach(s => {
+    if (!s) return;
+    if (typeof s.forEach === 'function') {
+      s.forEach(c => {
+        const val = typeof c.val === 'function' ? c.val() : c;
+        if (val) map.set(c.key, val);
+      });
+    } else if (typeof s === 'object') {
+      Object.entries(s).forEach(([k, v]) => {
+        if (v && typeof v === 'object') map.set(k, v);
+      });
+    }
+  });
+  return map;
+}
+
+function loadDashboard() {
+  if (!BOY) return;
+  // Compute instantly from memory (0ms delay)
+  if (CURRENT_ORDERS && CURRENT_ORDERS.length >= 0) {
+    computeDashboard(CURRENT_ORDERS);
+  }
+  const phone10 = last10Digits(BOY.phone);
+  const phoneE164 = BOY.phoneE164 || ('+91' + phone10);
+
+  Promise.all([
+    db.ref('orders').orderByChild('assigned_to_e164').equalTo(phoneE164).once('value').catch(() => null),
+    db.ref('orders').orderByChild('assigned_to').equalTo(phone10).once('value').catch(() => null),
+    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10).once('value').catch(() => null)
+  ]).then(snaps => {
+    const map = safeExtractOrders(snaps);
+    const myOrders = [];
+    map.forEach((o, id) => {
+      const assigned = (o.assigned_to_e164 || o.assigned_to || '');
+      if (last10Digits(assigned) === phone10) {
+        myOrders.push({ _id: id, ...o });
+      }
+    });
+    if (myOrders.length) {
+      CURRENT_ORDERS = myOrders;
+      computeDashboard(CURRENT_ORDERS);
+    }
+  }).catch(() => {
+    // Silent fallback to in-memory orders, never throw toast error
+    if (CURRENT_ORDERS) computeDashboard(CURRENT_ORDERS);
+  });
+}
+
+// 12. REALTIME CHAT SYSTEM
 let chatRefActive = null;
 let chatFirstLoad = true;
 function startChatListener() {
@@ -1111,34 +1227,21 @@ window.sendChat = () => {
   }).catch(e => toast(e.message, 'err'));
 };
 
-// 11. PASSIVE AUTH LISTENER (NEVER KICKS OUT A VALID RIDER)
+// 13. SESSION LISTENER (NON-INTRUSIVE)
 auth.onAuthStateChanged(async u => {
-  if (u) {
-    if (BOY && BOY.id) {
-      enterApp();
-    } else {
-      try {
-        const sSnap = await db.ref('boy_sessions/' + u.uid).once('value');
-        const sVal = sSnap.val();
-        if (sVal && sVal.boyId) {
-          BOY = { id: sVal.boyId, phone: sVal.phone, phoneE164: sVal.phoneE164, name: sVal.name, authUid: u.uid };
-          localStorage.setItem('pdc_boy', JSON.stringify(BOY));
-          enterApp();
-        }
-      } catch(e) {
-        console.warn("Session restore note:", e);
-      }
-    }
-  } else {
-    // Only show login screen if no stored rider exists
+  if (!u) {
     if (!BOY || !BOY.id) {
       const lScreen = $('loginScreen'); if (lScreen) lScreen.style.display = 'flex';
       const appEl = $('app'); if (appEl) appEl.style.display = 'none';
     }
+    return;
+  }
+  if (BOY && BOY.id) {
+    enterApp();
   }
 });
 
-console.log('🛵 Parth Delivery Gen8 HUD Live — Persistent & Instant Resume Online');
+console.log('🛵 Parth Delivery Gen8 HUD Live — Standardized PDC IDs & Zero Dashboard Error');
 </script>
 </body>
 </html>
