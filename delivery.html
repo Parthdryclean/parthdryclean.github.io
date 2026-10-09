@@ -330,15 +330,18 @@ function toggleSelect(id){
  $('batchCount').textContent=selectedOrders.size;
  $('batchBar').classList.toggle('show',selectedOrders.size>0);
 }
-window.batchStartPickup=()=>{
+window.batchStartPickup=async()=>{
  if(selectedOrders.size===0)return;
- const promises=Array.from(selectedOrders).map(id=>db.ref('orders/'+id).update({status:'picked_up'}));
- Promise.all(promises).then(()=>{
-  toast(`✅ ${selectedOrders.size} orders marked as Picked Up!`);
-  selectedOrders.clear();
-  $('batchBar').classList.remove('show');
-  document.querySelectorAll('.order-card.selected').forEach(c=>c.classList.remove('selected'));
- }).catch(e=>toast(e.message,'err'));
+ try{
+  const user=auth.currentUser;if(!user)throw new Error('Rider login required');
+  const token=await user.getIdToken(true);
+  const ids=Array.from(selectedOrders);
+  for(const id of ids){
+   const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:id,status:'picked_up'})});
+   const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Pickup update failed');
+  }
+  toast(`✅ ${ids.length} orders marked as Picked Up!`);selectedOrders.clear();$('batchBar').classList.remove('show');document.querySelectorAll('.order-card.selected').forEach(c=>c.classList.remove('selected'));
+ }catch(e){toast(e?.message||'Pickup update failed','err');}
 };
 
 function listen(){
@@ -469,53 +472,67 @@ function renderCard(o){
     ${btn}
    </div>`;
 }
-window.adv=(id,next)=>{
- const up={status:next};
- if(next==='delivered'){
-  up.deliveredAt=firebase.database.ServerValue.TIMESTAMP;
-  if(BOY&&BOY.id)db.ref('delivery_boys/'+BOY.id+'/total_deliveries').transaction(v=>(v||0)+1);
- }
- db.ref('orders/'+id).update(up).then(()=>{
-  toast(next==='delivered'?'🎉 Order Delivered!':'✓ '+LABEL[next]);
-  if(next==='delivered')vibrate([80,40,80]);
- }).catch(e=>toast(e.message,'err'));
+window.adv=async(id,next)=>{
+ try{const user=auth.currentUser;if(!user)throw new Error('Rider login required');const token=await user.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:id,status:next})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Status update failed');toast(next==='delivered'?'🎉 Order Delivered!':'✓ '+LABEL[next]);if(next==='delivered')vibrate([80,40,80]);}catch(e){toast(e?.message||'Status update failed','err');}
 };
 
-window.collectPayment=(id,total)=>{openAppConfirm(`Customer se ₹${total} collect kiya?`,()=>{db.ref('orders/'+id).update({paymentStatus:'Paid',collectedAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{toast('💰 ₹'+total+' cash collected!');vibrate([60]);}).catch(e=>toast(e.message,'err'));},'Payment Confirmation');};
+window.collectPayment=(id,total)=>{openAppConfirm(`Customer se ₹${total} collect kiya?`,async()=>{try{const user=auth.currentUser;if(!user)throw new Error('Rider login required');const token=await user.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:id})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Payment update failed');toast('💰 ₹'+Number(d.total||total)+' cash collected!');vibrate([60]);}catch(e){toast(e?.message||'Payment update failed','err');}},'Payment Confirmation');};
 
-window.openAddItem=(id)=>{issueCtx.orderId=id;$('addItemOrderId').textContent='#'+id;$('extraItems').innerHTML='';addExtraItemRow();openModal('addItemModal');};
-function addExtraItemRow(){const row=document.createElement('div');row.className='item-row';row.innerHTML=`<input class="ei-name" placeholder="Garment name (e.g. Saree)"/><input class="ei-qty" type="number" value="1" style="width:60px"/><input class="ei-price" type="number" placeholder="₹" style="width:80px"/><button class="rm" onclick="this.parentElement.remove()">×</button>`;$('extraItems').appendChild(row);}
+let EXTRA_CATALOG=null;
+function catalogItemKey(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+async function loadExtraCatalog(){
+ if(EXTRA_CATALOG)return EXTRA_CATALOG;
+ const snap=await db.ref('services/categories').once('value');
+ const data=snap.val()||{};
+ EXTRA_CATALOG=Object.entries(data).map(([key,cat])=>({key,name:cat?.name||key,items:Array.isArray(cat?.items)?cat.items.map(it=>({key:catalogItemKey(it?.name),name:String(it?.name||''),price:Number(it?.price)||0})).filter(it=>it.key&&it.name):[]})).filter(c=>c.items.length);
+ return EXTRA_CATALOG;
+}
+window.openAddItem=async(id)=>{
+ issueCtx.orderId=id;$('addItemOrderId').textContent='#'+id;$('extraItems').innerHTML='';
+ try{await loadExtraCatalog();addExtraItemRow();openModal('addItemModal');}catch(e){toast('Service list load nahi hui','err');}
+};
+function addExtraItemRow(){
+ const row=document.createElement('div');row.className='item-row';
+ row.innerHTML=`<select class="ei-item"></select><input class="ei-qty" type="number" min="1" max="50" value="1" style="width:60px"/><button class="rm" onclick="this.parentElement.remove()">×</button>`;
+ const sel=row.querySelector('.ei-item');
+ EXTRA_CATALOG.forEach(cat=>{const group=document.createElement('optgroup');group.label=cat.name;cat.items.forEach(it=>{const o=document.createElement('option');o.value=JSON.stringify({categoryKey:cat.key,itemKey:it.key,name:it.name});o.textContent=`${it.name} · ₹${it.price}`;group.appendChild(o);});sel.appendChild(group);});
+ $('extraItems').appendChild(row);
+}
 window.addExtraItemRow=addExtraItemRow;
 
-window.saveExtraItems=()=>{
- const rows=$('extraItems').querySelectorAll('.item-row');const items=[];let extra=0;
- rows.forEach(r=>{const n=r.querySelector('.ei-name').value.trim();const q=+r.querySelector('.ei-qty').value||1;const p=+r.querySelector('.ei-price').value||0;if(n){items.push({n,q,p});extra+=p*q;}});
+window.saveExtraItems=async()=>{
+ const rows=$('extraItems').querySelectorAll('.item-row');
+ const items=[];
+ rows.forEach(r=>{
+  const q=parseInt(r.querySelector('.ei-qty').value,10)||0;
+  let picked=null;try{picked=JSON.parse(r.querySelector('.ei-item').value||'null');}catch(_){ }
+  if(picked&&q>0)items.push({...picked,qty:q});
+ });
  if(!items.length)return toast('Item name add karein','err');
  const id=issueCtx.orderId;
- db.ref('orders/'+id).once('value').then(s=>{
-  const o=s.val();if(!o)return;
-  const curItems=Object.assign({},o.items||{});
-  items.forEach(it=>{curItems[it.n]=(curItems[it.n]||0)+it.q;});
-  const newTotal=(+o.total||0)+extra;
-  db.ref('orders/'+id).update({items:curItems,total:newTotal,subtotal:(+o.subtotal||0)+extra}).then(()=>{
-   toast(`✅ ${items.length} item(s) added, +₹${extra}`);
-   notifyAdmin('extra_items',{orderId:o.orderId||id,note:items.map(i=>`${i.n}x${i.q}=₹${i.p*i.q}`).join(', ')}).catch(()=>{});
-   closeModal('addItemModal');
-  }).catch(e=>toast(e.message,'err'));
- });
+ try{
+  const user=auth.currentUser;
+  if(!user)throw new Error('Rider login required');
+  const token=await user.getIdToken(true);
+  const response=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/addRiderExtraItems',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+   body:JSON.stringify({orderId:id,items})
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'Extra item update failed');
+  toast(`✅ ${items.length} item(s) added, +₹${Number(data.extraTotal||0)}`);
+  closeModal('addItemModal');
+ }catch(e){toast(e?.message||'Extra item update failed','err');}
 };
 
 function selIssue(btn,type){document.querySelectorAll('#issueModal .issue-type button').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');issueCtx.type=type;}
 window.selIssue=selIssue;
 window.openIssue=(id)=>{issueCtx.orderId=id;issueCtx.type=null;document.querySelectorAll('#issueModal .issue-type button').forEach(b=>b.classList.remove('sel'));$('issueNote').value='';openModal('issueModal');};
-window.submitIssue=()=>{
+window.submitIssue=async()=>{
  if(!issueCtx.type)return toast('Issue type select karein','err');
  const note=$('issueNote').value.trim();
- db.ref('orders/'+issueCtx.orderId+'/issue').set({type:issueCtx.type,note,by:BOY.phone,boyName:BOY.name,at:firebase.database.ServerValue.TIMESTAMP}).then(()=>{
-  toast('⚠️ Issue admin ko bhej diya gaya hai');
-  notifyAdmin('issue',{orderId:issueCtx.orderId,note:issueCtx.type+(note?': '+note:'')}).catch(()=>{});
-  closeModal('issueModal');
- }).catch(e=>toast(e.message,'err'));
+ try{const user=auth.currentUser;if(!user)throw new Error('Rider login required');const token=await user.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderReportIssue',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:issueCtx.orderId,type:issueCtx.type,note})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Issue report failed');toast('⚠️ Issue admin ko bhej diya gaya hai');closeModal('issueModal');}catch(e){toast(e?.message||'Issue report failed','err');}
 };
 
 function loadDashboard(){
