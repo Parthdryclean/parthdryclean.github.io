@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Rock-Solid Auth + Crash-Proof Login + Bottom Order HUD Alert -->
+<!-- ParthdeliveryGen8 : Rock-Solid Persistent Session + Instant Auto-Restore + Bottom Order HUD Alert -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -382,17 +382,12 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
-// 1. GLOBAL ERROR CATCHER (Direct on-screen feedback if any error occurs)
+// 1. GLOBAL ERROR LOGGER
 window.onerror = function(msg, url, line) {
-  console.error("Critical JS Error:", msg, line);
-  const errEl = document.getElementById('loginErr');
-  if (errEl) {
-    errEl.style.display = 'block';
-    errEl.textContent = '⚠️ System Error: ' + msg + ' (Line ' + line + ')';
-  }
+  console.error("Rider App Notice:", msg, line);
 };
 
-// 2. SAFE WORKER CACHE PURGE
+// 2. PURGE OLD SERVICE WORKERS
 try {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
@@ -401,7 +396,7 @@ try {
   }
 } catch(_) {}
 
-// 3. SAFE FIREBASE INITIALIZATION
+// 3. FIREBASE INITIALIZATION
 const firebaseConfig = {
   apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
   authDomain: "parth-dry-clean.firebaseapp.com",
@@ -421,15 +416,14 @@ try {
   }
   auth = firebase.auth();
   db = firebase.database();
-  // Safe local persistence string syntax
   auth.setPersistence('local').catch(() => {});
 } catch(e) {
-  console.error("Firebase init caught:", e);
+  console.error("Firebase init:", e);
 }
 
 const $ = id => document.getElementById(id);
 
-// 4. CRASH-PROOF LOCAL STORAGE PARSING
+// 4. PARSE SAVED BOY DATA
 let BOY = null;
 try {
   const raw = localStorage.getItem('pdc_boy');
@@ -439,6 +433,13 @@ try {
 } catch(_) {
   localStorage.removeItem('pdc_boy');
   BOY = null;
+}
+
+// 5. INSTANT RESUME (ZERO FLICKER)
+if (BOY && BOY.id) {
+  const ls = $('loginScreen'); if(ls) ls.style.display = 'none';
+  const ap = $('app'); if(ap) ap.style.display = 'block';
+  const hn = $('helloName'); if(hn) hn.textContent = 'Hello, ' + (BOY.name || 'Partner') + ' 👋';
 }
 
 let ordersRef = null, prevOrderIds = new Set(), prevStatuses = {}, issueCtx = { orderId: null, type: null }, selectedOrders = new Set();
@@ -459,7 +460,7 @@ function safeUrl(v, fallback = '') {
   try {
     const u = new URL(String(v || ''), location.href);
     if (['http:', 'https:', 'tel:'].includes(u.protocol)) return u.href;
-  } catch(e) {}
+  } catch(e){}
   return fallback;
 }
 
@@ -485,7 +486,7 @@ function beep() {
 }
 function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch(e) {} }
 
-// 5. BULLETPROOF GLOBAL LOGIN CONTROLLER
+// 6. FAST NON-BLOCKING LOGIN
 window.handleLogin = async function() {
   const phoneInput = $('phoneInput');
   const pinInput = $('pinInput');
@@ -537,6 +538,11 @@ window.handleLogin = async function() {
       authUid: uid
     };
 
+    // Store in localStorage immediately
+    BOY = boyObj;
+    localStorage.setItem('pdc_boy', JSON.stringify(BOY));
+
+    // Save session in background without blocking enterApp
     if (uid && boyIdSafe) {
       db.ref('boy_sessions/' + uid).set({
         phone: phone,
@@ -547,8 +553,6 @@ window.handleLogin = async function() {
       }).catch(() => {});
     }
 
-    BOY = boyObj;
-    localStorage.setItem('pdc_boy', JSON.stringify(BOY));
     enterApp();
   } catch(err) {
     console.error("Login call error:", err);
@@ -588,7 +592,7 @@ function requestNotificationPermission() {
   }
 }
 
-// 6. BOTTOM ORDER HUD ALERT
+// 7. BOTTOM ORDER HUD ALERT
 function triggerNewOrderAlert(orderId, customerName, address) {
   latestAssignedOrderId = orderId;
   beep();
@@ -699,6 +703,7 @@ window.addEventListener('online', updateConn);
 window.addEventListener('offline', updateConn);
 updateConn();
 
+// 8. LOGOUT ACTION
 const logoutBtn = $('logoutBtn');
 if (logoutBtn) {
   logoutBtn.onclick = () => {
@@ -708,9 +713,9 @@ if (logoutBtn) {
     const uid = auth.currentUser ? auth.currentUser.uid : null;
     localStorage.removeItem('pdc_boy');
     BOY = null;
-    const done = () => { auth.signOut().finally(() => location.reload()); };
-    if (uid) db.ref('boy_sessions/' + uid).remove().finally(done);
-    else done();
+    const done = () => { location.reload(); };
+    if (uid) db.ref('boy_sessions/' + uid).remove().finally(() => auth.signOut().finally(done));
+    else auth.signOut().finally(done);
   };
 }
 
@@ -748,7 +753,7 @@ window.batchStartPickup = async () => {
   } catch(e) { toast(e?.message || 'Pickup update failed', 'err'); }
 };
 
-// 7. REALTIME ORDER LISTENER
+// 9. REALTIME ORDERS LISTENER
 function listen() {
   if (ordersRef && ordersRef.refs) { ordersRef.refs.forEach((r, i) => r.off('value', ordersRef.cbs[i])); }
   const phone10 = last10Digits(BOY?.phone);
@@ -880,7 +885,7 @@ function renderCard(o) {
 
   return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}">
     ${checkBtn}
-    <div class="oc-top"><span class="oc-id">#${esc(o.orderId || o._id)}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
+    <div class="oc-top"><span class="oc-id">#${esc(o.orderId||o._id)}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
     <div class="oc-name">${esc(o.customerName || o.name || '-')}</div>
     <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
     ${timelineHTML(st)}
@@ -1015,7 +1020,7 @@ function loadDashboard() {
   Promise.all([
     db.ref('orders').orderByChild('assigned_to_e164').equalTo(BOY.phoneE164 || ('+91' + phone10)).once('value'),
     db.ref('orders').orderByChild('assigned_to').equalTo(phone10).once('value'),
-    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10).once('value')
+    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10)
   ]).then(snaps => {
     const merged = new Map(); snaps.forEach(s => s.forEach(c => merged.set(c.key, c.val())));
     const now = new Date();
@@ -1035,7 +1040,7 @@ function loadDashboard() {
   }).catch(e => toast('Dashboard load error: ' + (e?.message || 'Permission denied'), 'err'));
 }
 
-// 8. CHAT SYSTEM
+// 10. REALTIME CHAT
 let chatRefActive = null;
 let chatFirstLoad = true;
 function startChatListener() {
@@ -1106,32 +1111,34 @@ window.sendChat = () => {
   }).catch(e => toast(e.message, 'err'));
 };
 
-// 9. NON-BLOCKING AUTH RECONNECT
+// 11. PASSIVE AUTH LISTENER (NEVER KICKS OUT A VALID RIDER)
 auth.onAuthStateChanged(async u => {
-  if (!u) {
-    const lScreen = $('loginScreen'); if (lScreen) lScreen.style.display = 'flex';
-    const appEl = $('app'); if (appEl) appEl.style.display = 'none';
-    return;
-  }
-
-  if (BOY && BOY.id) {
-    enterApp();
-  } else {
-    try {
-      const sSnap = await db.ref('boy_sessions/' + u.uid).once('value');
-      const sVal = sSnap.val();
-      if (sVal && sVal.boyId) {
-        BOY = { id: sVal.boyId, phone: sVal.phone, phoneE164: sVal.phoneE164, name: sVal.name, authUid: u.uid };
-        localStorage.setItem('pdc_boy', JSON.stringify(BOY));
-        enterApp();
+  if (u) {
+    if (BOY && BOY.id) {
+      enterApp();
+    } else {
+      try {
+        const sSnap = await db.ref('boy_sessions/' + u.uid).once('value');
+        const sVal = sSnap.val();
+        if (sVal && sVal.boyId) {
+          BOY = { id: sVal.boyId, phone: sVal.phone, phoneE164: sVal.phoneE164, name: sVal.name, authUid: u.uid };
+          localStorage.setItem('pdc_boy', JSON.stringify(BOY));
+          enterApp();
+        }
+      } catch(e) {
+        console.warn("Session restore note:", e);
       }
-    } catch(e) {
-      console.warn("Session auto-restore note:", e);
+    }
+  } else {
+    // Only show login screen if no stored rider exists
+    if (!BOY || !BOY.id) {
+      const lScreen = $('loginScreen'); if (lScreen) lScreen.style.display = 'flex';
+      const appEl = $('app'); if (appEl) appEl.style.display = 'none';
     }
   }
 });
 
-console.log('🛵 Parth Delivery Gen8 HUD Live — Zero Fatal Crash Build');
+console.log('🛵 Parth Delivery Gen8 HUD Live — Persistent & Instant Resume Online');
 </script>
 </body>
 </html>
