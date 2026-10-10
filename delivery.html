@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Audited Clean Build + Standardized PDC IDs + Bottom HUD Alert -->
+<!-- ParthdeliveryGen8 : Stable Direct Auth + PDC-XXXXXX Format + Dashboard Error Fix + Bottom HUD Alert -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -175,7 +175,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .item-row{display:flex;gap:6px;margin-bottom:7px}
 .item-row input,.item-row select{min-width:0;flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:8px}
 .item-row button.rm{background:rgba(220,38,38,.12);border:1px solid var(--bad);color:var(--bad);width:32px;border-radius:8px;cursor:pointer}
-.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-join:10px 0}
+.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0}
 .issue-type button{padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:9px;cursor:pointer}
 .issue-type button.sel{border-color:var(--primary);background:var(--soft);color:var(--primary)}
 #issueNote{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;min-height:80px}
@@ -186,7 +186,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 #toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 20px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
 #toast .t.err{border-left-color:var(--bad)}
 
-/* BOTTOM ORDER HUD ALERT */
+/* ===== ZOMATO/SWIGGY STYLE BOTTOM FLOATING ALERT HUD ===== */
 .new-order-alert{
   position:fixed;bottom:20px;left:16px;right:16px;max-width:520px;margin:0 auto;z-index:950;
   background:var(--card);border:1.5px solid var(--primary);border-radius:20px;
@@ -382,7 +382,12 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
-// 1. UNREGISTER OLD SERVICE WORKERS
+// 1. GLOBAL ERROR LOGGER
+window.onerror = function(msg, url, line) {
+  console.error("Rider App Notice:", msg, line);
+};
+
+// 2. PURGE OLD SERVICE WORKERS
 try {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
@@ -391,7 +396,7 @@ try {
   }
 } catch(_) {}
 
-// 2. FIREBASE INITIALIZATION
+// 3. FIREBASE INITIALIZATION
 const firebaseConfig = {
   apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
   authDomain: "parth-dry-clean.firebaseapp.com",
@@ -402,26 +407,23 @@ const firebaseConfig = {
   appId: "1:673481985335:web:eb4194b4860cf979b21eb2"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
-const $ = id => document.getElementById(id);
-
-// 3. STANDARDIZED ORDER ID FORMATTER (PDC-XXXXXX)
-function formatOrderId(o) {
-  if (!o) return 'PDC-000000';
-  const raw = o.orderId || o.id || o._id || (typeof o === 'string' ? o : '');
-  const clean = String(raw).trim();
-  if (!clean) return 'PDC-000000';
-  if (clean.toUpperCase().startsWith('PDC-')) {
-    return clean.toUpperCase();
+let app, auth, db;
+try {
+  if (!firebase.apps.length) {
+    app = firebase.initializeApp(firebaseConfig);
+  } else {
+    app = firebase.app();
   }
-  const alphanumeric = clean.replace(/[^A-Za-z0-9]/g, '');
-  const idPart = (alphanumeric.length >= 6 ? alphanumeric.slice(-6) : alphanumeric.padStart(6, '0')).toUpperCase();
-  return 'PDC-' + idPart;
+  auth = firebase.auth();
+  db = firebase.database();
+  auth.setPersistence('local').catch(() => {});
+} catch(e) {
+  console.error("Firebase init:", e);
 }
 
-// 4. PARSE SAVED BOY DATA & INSTANT RESUME
+const $ = id => document.getElementById(id);
+
+// 4. PARSE SAVED BOY DATA
 let BOY = null;
 try {
   const raw = localStorage.getItem('pdc_boy');
@@ -433,13 +435,13 @@ try {
   BOY = null;
 }
 
+// 5. INSTANT RESUME (ZERO FLICKER)
 if (BOY && BOY.id) {
   const ls = $('loginScreen'); if(ls) ls.style.display = 'none';
   const ap = $('app'); if(ap) ap.style.display = 'block';
   const hn = $('helloName'); if(hn) hn.textContent = 'Hello, ' + (BOY.name || 'Partner') + ' 👋';
 }
 
-let currentRiderOrders = [];
 let ordersRef = null, prevOrderIds = new Set(), prevStatuses = {}, issueCtx = { orderId: null, type: null }, selectedOrders = new Set();
 let latestAssignedOrderId = null, alertTimer = null;
 const LABEL = {
@@ -460,6 +462,16 @@ function safeUrl(v, fallback = '') {
     if (['http:', 'https:', 'tel:'].includes(u.protocol)) return u.href;
   } catch(e){}
   return fallback;
+}
+
+// Standard PDC-XXXXXX format helper
+function formatOrderId(val) {
+  let s = String(val || '').trim().replace(/^#/, '');
+  if (!s) return 'PDC-000000';
+  let clean = s.replace(/^PDC[-_]?/i, '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  if (clean.length > 6) clean = clean.slice(-6);
+  while (clean.length < 6) clean = clean + '0';
+  return 'PDC-' + clean;
 }
 
 function toast(m, t) {
@@ -484,7 +496,7 @@ function beep() {
 }
 function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch(e) {} }
 
-// 5. RELIABLE DIRECT LOGIN HANDLER
+// 6. FAST NON-BLOCKING LOGIN
 window.handleLogin = async function() {
   const phoneInput = $('phoneInput');
   const pinInput = $('pinInput');
@@ -588,15 +600,15 @@ function requestNotificationPermission() {
   }
 }
 
-// 6. BOTTOM ORDER HUD ALERT
-function triggerNewOrderAlert(displayId, customerName, address) {
-  latestAssignedOrderId = displayId;
+// 7. BOTTOM ORDER HUD ALERT (Shows PDC-XXXXXX)
+function triggerNewOrderAlert(orderKey, displayId, customerName, address) {
+  latestAssignedOrderId = orderKey;
   beep();
   vibrate([150, 80, 150, 80, 250]);
 
   const tEl = $('noaOrderTitle');
   const sEl = $('noaOrderSub');
-  if (tEl) tEl.textContent = `Order ${displayId}`;
+  if (tEl) tEl.textContent = displayId;
   if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${address ? address.slice(0, 32) + '…' : 'Doorstep Pickup'}`;
 
   const alertEl = $('newOrderAlert');
@@ -623,12 +635,11 @@ function viewAssignedOrder() {
   if (tOrders) tOrders.classList.add('active');
 
   setTimeout(() => {
-    const card = document.querySelector(`.order-card[data-formatted-id="${latestAssignedOrderId}"]`) ||
-                 document.querySelector(`.order-card[data-id="${latestAssignedOrderId}"]`);
+    const card = document.querySelector(`.order-card[data-id="${latestAssignedOrderId}"]`);
     if (card) {
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       card.classList.add('highlight-card');
-      setTimeout(() => card.classList.remove('highlight-card'), 2500);
+      setTimeout(()=>card.classList.remove('highlight-card'), 2500);
     }
   }, 200);
 }
@@ -700,7 +711,7 @@ window.addEventListener('online', updateConn);
 window.addEventListener('offline', updateConn);
 updateConn();
 
-// 7. LOGOUT
+// 8. LOGOUT ACTION
 const logoutBtn = $('logoutBtn');
 if (logoutBtn) {
   logoutBtn.onclick = () => {
@@ -750,7 +761,7 @@ window.batchStartPickup = async () => {
   } catch(e) { toast(e?.message || 'Pickup update failed', 'err'); }
 };
 
-// 8. REALTIME ORDERS LISTENER
+// 9. REALTIME ORDERS LISTENER
 function listen() {
   if (ordersRef && ordersRef.refs) { ordersRef.refs.forEach((r, i) => r.off('value', ordersRef.cbs[i])); }
   const phone10 = last10Digits(BOY?.phone);
@@ -772,21 +783,18 @@ function listen() {
       if (last10Digits(assigned) === phone10) { curIds.add(id); curStatuses[id] = o.status; myOrders.push({ _id: id, ...o }); }
     });
 
-    currentRiderOrders = myOrders;
-    computeDashboardMetrics(currentRiderOrders);
-
     if (Object.keys(prevStatuses).length > 0) {
       for (const id in curStatuses) {
         if (prevStatuses[id] && prevStatuses[id] !== curStatuses[id]) {
           const o = myOrders.find(x => x._id === id);
-          if (o) notifyAdmin('status_change', { orderId: formatOrderId(o), status: curStatuses[id], customer: o.customerName || o.name || '' }).catch(() => {});
+          if (o) notifyAdmin('status_change', { orderId: formatOrderId(o.orderId || id), status: curStatuses[id], customer: o.customerName || o.name || '' }).catch(() => {});
         }
       }
       curIds.forEach(id => {
         if (!prevOrderIds.has(id)) {
           const o = myOrders.find(x => x._id === id);
-          const dispId = formatOrderId(o || { _id: id });
-          triggerNewOrderAlert(dispId, o?.customerName || o?.name || '', o?.address || '');
+          const displayId = formatOrderId(o?.orderId || id);
+          triggerNewOrderAlert(id, displayId, o?.customerName || o?.name || '', o?.address || '');
         }
       });
     }
@@ -833,8 +841,8 @@ function render(myOrders) {
   $('pickupList').innerHTML = pickup.length ? pickup.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-inbox"></i>Koi pickup pending nahi</div>';
   $('deliveryList').innerHTML = delivery.length ? delivery.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-truck"></i>Koi delivery out nahi</div>';
   $('doneList').innerHTML = done.length ? done.map(o => {
-    const dispId = formatOrderId(o);
-    return `<div class="order-card" style="padding:12px 16px;opacity:.85" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}"><div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName || o.name || '-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total) || 0} · ${esc(o.timeSlot || '')}</div></div>`;
+    const displayId = formatOrderId(o.orderId || o._id);
+    return `<div class="order-card" style="padding:12px 16px;opacity:.85"><div class="oc-top"><span class="oc-id">${displayId}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName || o.name || '-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total) || 0} · ${esc(o.timeSlot || '')}</div></div>`;
   }).join('') : '<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
 }
 
@@ -851,7 +859,7 @@ function timelineHTML(st) {
   let html = '';
   steps.forEach((s, i) => {
     const cls = i < idx ? 'done' : (i === idx ? 'current' : '');
-    html += `<div class="tl-step ${cls}"><div class="tl-dot"><i class="fas ${cls === 'done' ? 'fa-check': s.i}"></i></div><div class="tl-label">${s.l}</div></div>`;
+    html += `<div class="tl-step ${cls}"><div class="tl-dot"><i class="fas ${cls === 'done' ? 'fa-check' : s.i}"></i></div><div class="tl-label">${s.l}</div></div>`;
     if (i < steps.length - 1) html += `<div class="tl-line ${i < idx ? 'done' : ''}"></div>`;
   });
   return `<div class="timeline">${html}</div>`;
@@ -859,7 +867,7 @@ function timelineHTML(st) {
 
 function renderCard(o) {
   const st = o.status || 'pending';
-  const dispId = formatOrderId(o);
+  const displayId = formatOrderId(o.orderId || o._id);
   const items = Object.entries(o.items || {}).map(([k, v]) => {
     const qty = (v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 1) : v;
     const name = (v && typeof v === 'object') ? (v.name ?? k) : k;
@@ -878,7 +886,7 @@ function renderCard(o) {
   else if (st === 'out_for_delivery') btn = `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
   else if (st === 'cancelled') btn = `<button class="btn-main done" style="opacity:0.65;" disabled><i class="fas fa-ban"></i> Cancelled</button>`;
 
-  const waMsg = encodeURIComponent(`Hi ${o.customerName || ''}! Parth Rider (${BOY?.name || ''}) aapke order ${dispId} ke liye raah me hu. 🛵`);
+  const waMsg = encodeURIComponent(`Hi ${o.customerName || ''}! Parth Rider (${BOY?.name || ''}) aapke order ${displayId} ke liye raah me hu. 🛵`);
   const latRaw = o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null;
   const lngRaw = o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null;
   const lat = Number(latRaw); const lng = Number(lngRaw);
@@ -888,9 +896,9 @@ function renderCard(o) {
   const collectBtn = (!isPaid && st === 'out_for_delivery') ? `<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total) || 0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total) || 0}</button>` : (isPaid ? `<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>` : '');
   const checkBtn = (st === 'pending') ? `<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>` : '';
 
-  return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}">
+  return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}">
     ${checkBtn}
-    <div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
+    <div class="oc-top"><span class="oc-id">${displayId}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
     <div class="oc-name">${esc(o.customerName || o.name || '-')}</div>
     <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
     ${timelineHTML(st)}
@@ -954,9 +962,7 @@ async function loadExtraCatalog() {
   return EXTRA_CATALOG;
 }
 window.openAddItem = async id => {
-  issueCtx.orderId = id;
-  const ord = currentRiderOrders.find(x => x._id === id);
-  $('addItemOrderId').textContent = formatOrderId(ord \vert{}\vert{} { _id: id });$('extraItems').innerHTML = '';
+  issueCtx.orderId = id; $('addItemOrderId').textContent = formatOrderId(id);$('extraItems').innerHTML = '';
   try { await loadExtraCatalog(); addExtraItemRow(); openModal('addItemModal'); } catch(e) { toast('Service list load nahi hui', 'err'); }
 };
 function addExtraItemRow() {
@@ -1021,55 +1027,44 @@ window.submitIssue = async () => {
   } catch(e) { toast(e?.message || 'Issue report failed', 'err'); }
 };
 
-// 9. CRASH-PROOF DASHBOARD CALCULATION
-function computeDashboardMetrics(ordersList) {
-  if (!ordersList) return;
-  const now = new Date();
-  const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay()); weekStart.setHours(0,0,0,0);
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1); monthStart.setHours(0,0,0,0);
-  let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0; const dayCounts = {};
-
-  ordersList.forEach(o => {
-    if (!o || o.status !== 'delivered') return;
-    const delDate = o.deliveredAt ? new Date(o.deliveredAt) : (o.createdAt ? new Date(o.createdAt) : null);
-    if (!delDate || isNaN(delDate.getTime())) return;
-    const amt = +o.total || 0; totalDel++; totalEarn += amt;
-    const dayKey = dayStr(delDate); dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
-    if (delDate >= weekStart) { weekDel++; weekEarn += amt; }
-    if (delDate >= monthStart) { monthDel++; monthEarn += amt; }
-  });
-
-  let streak = 0, checkDate = new Date(now);
-  while (true) {
-    const key = dayStr(checkDate);
-    if (dayCounts[key] && dayCounts[key] > 0) { streak++; checkDate.setDate(checkDate.getDate() - 1); }
-    else break;
-  }
-
-  let bestDay = '—', maxCount = 0;
-  for (const day in dayCounts) {
-    if (dayCounts[day] > maxCount) { maxCount = dayCounts[day]; bestDay = day; }
-  }
-
-  const wd = $('weekDeliveries'); if (wd) wd.textContent = weekDel;
-  const we = $('weekEarnings'); if (we) we.textContent = '₹' + weekEarn;
-  const md = $('monthDeliveries'); if (md) md.textContent = monthDel;
-  const me = $('monthEarnings'); if (me) me.textContent = '₹' + monthEarn;
-  const bd = $('bestDay'); if (bd) bd.textContent = bestDay;
-  const sc = $('streakCount'); if (sc) sc.textContent = streak;
-  const td = $('totalDeliveries'); if (td) td.textContent = totalDel;
-  const te = $('totalEarnings'); if (te) te.textContent = '₹' + totalEarn;
-}
-
+// 10. CRASH-FREE DASHBOARD (FIXED .once('value') ON ALL 3 QUERIES)
 function loadDashboard() {
   if (!BOY) return;
-  // Compute instantly from in-memory orders (0ms, no network error)
-  if (currentRiderOrders && currentRiderOrders.length) {
-    computeDashboardMetrics(currentRiderOrders);
-  }
+  const phone10 = last10Digits(BOY.phone);
+  const phoneE164 = BOY.phoneE164 || ('+91' + phone10);
+
+  Promise.all([
+    db.ref('orders').orderByChild('assigned_to_e164').equalTo(phoneE164).once('value'),
+    db.ref('orders').orderByChild('assigned_to').equalTo(phone10).once('value'),
+    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10).once('value')
+  ]).then(snaps => {
+    const merged = new Map();
+    snaps.forEach(s => {
+      if (s && typeof s.forEach === 'function') {
+        s.forEach(c => merged.set(c.key, c.val()));
+      }
+    });
+
+    const now = new Date();
+    const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0; const dayCounts = {};
+    merged.forEach(o => {
+      if (!o || o.status !== 'delivered') return;
+      if (last10Digits(o.assigned_to_e164 || o.assigned_to) !== phone10) return;
+      const delDate = o.deliveredAt ? new Date(o.deliveredAt) : null; if (!delDate) return;
+      const amt = +o.total || 0; totalDel++; totalEarn += amt; const dayKey = dayStr(delDate); dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
+      if (delDate >= weekStart) { weekDel++; weekEarn += amt; } if (delDate >= monthStart) { monthDel++; monthEarn += amt; }
+    });
+    let streak = 0, checkDate = new Date(now); while (true) { const key = dayStr(checkDate); if (dayCounts[key] && dayCounts[key] > 0) { streak++; checkDate.setDate(checkDate.getDate() - 1); } else break; }
+    let bestDay = '—', maxCount = 0; for (const day in dayCounts) { if (dayCounts[day] > maxCount) { maxCount = dayCounts[day]; bestDay = day; } }
+    $('weekDeliveries').textContent = weekDel; $('weekEarnings').textContent = '₹' + weekEarn; $('monthDeliveries').textContent = monthDel; $('monthEarnings').textContent = '₹' + monthEarn; $('bestDay').textContent = bestDay; $('streakCount').textContent = streak; $('totalDeliveries').textContent = totalDel; $('totalEarnings').textContent = '₹' + totalEarn;
+  }).catch(e => {
+    console.warn('Dashboard load note:', e);
+  });
 }
 
-// 10. REALTIME CHAT SYSTEM (SYNCED WITH ADMIN)
+// 11. REALTIME CHAT
 let chatRefActive = null;
 let chatFirstLoad = true;
 function startChatListener() {
@@ -1083,7 +1078,7 @@ function startChatListener() {
   chatRefActive.on('value', s => {
     const msgs = [];
     s.forEach(c => { const v = c.val(); if (v) msgs.push({ id: c.key, ...v }); });
-    msgs.sort((a, b) => (Number(a.at) || 0) - (Number(b.at) || 0));
+    msgs.sort((a,b) => (Number(a.at) || 0) - (Number(b.at) || 0));
 
     const box = $('chatMessages');
     if (!box) return;
@@ -1140,25 +1135,33 @@ window.sendChat = () => {
   }).catch(e => toast(e.message, 'err'));
 };
 
-// 11. PERSISTENT AUTH STATE LISTENER (NO UNINTENDED LOGOUT)
+// 12. PASSIVE AUTH LISTENER
 auth.onAuthStateChanged(async u => {
-  if (!u) { return; }
-  if (!BOY) { return; }
-  try {
-    const snap = await db.ref('delivery_boys/' + BOY.id).once('value');
-    const boy = snap.val() || {};
-    if (boy.active === false) {
-      localStorage.removeItem('pdc_boy'); BOY = null; await auth.signOut(); return;
+  if (u) {
+    if (BOY && BOY.id) {
+      enterApp();
+    } else {
+      try {
+        const sSnap = await db.ref('boy_sessions/' + u.uid).once('value');
+        const sVal = sSnap.val();
+        if (sVal && sVal.boyId) {
+          BOY = { id: sVal.boyId, phone: sVal.phone, phoneE164: sVal.phoneE164, name: sVal.name, authUid: u.uid };
+          localStorage.setItem('pdc_boy', JSON.stringify(BOY));
+          enterApp();
+        }
+      } catch(e) {
+        console.warn("Session restore note:", e);
+      }
     }
-    BOY = { id: BOY.id, ...boy, phone: last10Digits(boy.phone || BOY.phone), phoneE164: '+91' + last10Digits(boy.phone || BOY.phone), authUid: u.uid };
-    localStorage.setItem('pdc_boy', JSON.stringify(BOY));
-    enterApp();
-  } catch(e) {
-    console.warn("Session check note:", e);
+  } else {
+    if (!BOY || !BOY.id) {
+      const lScreen = $('loginScreen'); if (lScreen) lScreen.style.display = 'flex';
+      const appEl = $('app'); if (appEl) appEl.style.display = 'none';
+    }
   }
 });
 
-console.log('🛵 Parth Delivery Gen8 HUD Live — Standardized PDC-XXXXXX & Stable Auth');
+console.log('🛵 Parth Delivery Gen8 HUD Live — Standard PDC IDs & Error-Free Dashboard');
 </script>
 </body>
 </html>
