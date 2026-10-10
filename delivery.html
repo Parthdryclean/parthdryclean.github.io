@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Original Rock-Solid Auth + PDC-XXXXXX Formatting + Crash-Free Dashboard -->
+<!-- ParthdeliveryGen8 : Audited Clean Build + Standardized PDC IDs + Bottom HUD Alert -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -27,7 +27,7 @@
   --soft:rgba(59,130,246,.13);--shadow:0 10px 34px rgba(0,0,0,.28);--grad:linear-gradient(135deg,#3b82f6,#2563eb)
 }
 html{background:var(--bg)}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:32px;overflow-x:hidden}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:36px;overflow-x:hidden}
 button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}
 button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,select:focus-visible,textarea:focus,textarea:focus-visible{outline:none!important;box-shadow:none!important}
 .num{font-family:'JetBrains Mono',monospace}
@@ -77,10 +77,10 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .sec.pink .count{color:#db2777}
 
 /* ORDER CARDS */
-.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .2s}
 .order-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad)}
 .order-card.selected{border-color:var(--primary);background:var(--soft)}
-.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.35)!important;animation:pulseCard 1.8s ease}
+.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.4)!important;animation:pulseCard 1.8s ease}
 @keyframes pulseCard{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
 .oc-check{position:absolute;right:14px;top:14px;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;background:var(--card2);z-index:5;cursor:pointer}
 .order-card.selected .oc-check{background:var(--primary);border-color:var(--primary);color:#fff}
@@ -157,7 +157,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .login-box .sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:5px 0 23px}
 .login-box input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:15px;border-radius:13px;margin-bottom:12px;text-align:center;letter-spacing:2px;font:700 15px JetBrains Mono}
 .login-box input:focus{border-color:var(--primary)}
-#loginErr{color:var(--bad);font-size:11px;margin-top:10px;display:none}
+#loginErr{color:var(--bad);font-size:12px;margin-top:12px;display:none;line-height:1.4;font-weight:700;word-break:break-word}
 
 /* BATCH BAR */
 .batch-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:var(--shadow);z-index:45}
@@ -175,7 +175,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 .item-row{display:flex;gap:6px;margin-bottom:7px}
 .item-row input,.item-row select{min-width:0;flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:8px}
 .item-row button.rm{background:rgba(220,38,38,.12);border:1px solid var(--bad);color:var(--bad);width:32px;border-radius:8px;cursor:pointer}
-.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0}
+.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-join:10px 0}
 .issue-type button{padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:9px;cursor:pointer}
 .issue-type button.sel{border-color:var(--primary);background:var(--soft);color:var(--primary)}
 #issueNote{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;min-height:80px}
@@ -186,7 +186,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 #toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 20px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
 #toast .t.err{border-left-color:var(--bad)}
 
-/* ===== ZOMATO/SWIGGY STYLE BOTTOM FLOATING ALERT HUD ===== */
+/* BOTTOM ORDER HUD ALERT */
 .new-order-alert{
   position:fixed;bottom:20px;left:16px;right:16px;max-width:520px;margin:0 auto;z-index:950;
   background:var(--card);border:1.5px solid var(--primary);border-radius:20px;
@@ -245,8 +245,8 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
   <div class="sub">Delivery Partner HUD</div>
   <input id="phoneInput" inputmode="numeric" autocomplete="tel" placeholder="Registered mobile number" maxlength="10"/>
   <input id="pinInput" inputmode="numeric" autocomplete="current-password" type="password" placeholder="6-digit PIN" maxlength="6"/>
-  <button class="btn-main" id="loginBtn"><i class="fas fa-fingerprint"></i> Secure Login</button>
-  <p id="loginErr">❌ Mobile number ya PIN galat hai. Admin se verify karein.</p>
+  <button class="btn-main" id="loginBtn" type="button" onclick="handleLogin()"><i class="fas fa-fingerprint"></i> Secure Login</button>
+  <p id="loginErr"></p>
  </div>
 </div>
 
@@ -382,26 +382,32 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
-// UNREGISTER OLD BROKEN SERVICE WORKER CACHE
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    for(let r of regs) r.unregister();
-  }).catch(()=>{});
-}
+// 1. UNREGISTER OLD SERVICE WORKERS
+try {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      for (let r of regs) r.unregister();
+    }).catch(() => {});
+  }
+} catch(_) {}
 
-const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomain:"parth-dry-clean.firebaseapp.com",databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"parth-dry-clean",storageBucket:"parth-dry-clean.firebasestorage.app",messagingSenderId:"673481985335",appId:"1:673481985335:web:eb4194b4860cf979b21eb2"};
+// 2. FIREBASE INITIALIZATION
+const firebaseConfig = {
+  apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
+  authDomain: "parth-dry-clean.firebaseapp.com",
+  databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "parth-dry-clean",
+  storageBucket: "parth-dry-clean.firebasestorage.app",
+  messagingSenderId: "673481985335",
+  appId: "1:673481985335:web:eb4194b4860cf979b21eb2"
+};
+
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(); const db=firebase.database();
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
-const $=id=>document.getElementById(id);
+const auth = firebase.auth();
+const db = firebase.database();
+const $ = id => document.getElementById(id);
 
-let BOY=JSON.parse(localStorage.getItem('pdc_boy')||'null');
-let currentRiderOrders=[];
-let ordersRef=null, prevOrderIds=new Set(), prevStatuses={}, issueCtx={orderId:null,type:null}, selectedOrders=new Set();
-let latestAssignedOrderId=null, alertTimer=null;
-const LABEL={pending:'Pickup Scheduled',picked_up:'Garments Collected',processing:'Expert Cleaning',quality_check:'Quality Check',out_for_delivery:'Fresh Clothes on the Way',delivered:'Delivered Successfully',cancelled:'Cancelled'};
-
-// STANDARDIZED PDC-XXXXXX ORDER ID FORMATTER
+// 3. STANDARDIZED ORDER ID FORMATTER (PDC-XXXXXX)
 function formatOrderId(o) {
   if (!o) return 'PDC-000000';
   const raw = o.orderId || o.id || o._id || (typeof o === 'string' ? o : '');
@@ -415,362 +421,480 @@ function formatOrderId(o) {
   return 'PDC-' + idPart;
 }
 
-function last10Digits(s){ return String(s || '').replace(/\D/g, '').slice(-10); }
-function esc(v){ return String(v ?? '').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
-function safeUrl(v,fallback=''){
-  try{
-    const u=new URL(String(v||''),location.href);
-    if(['http:','https:','tel:'].includes(u.protocol)) return u.href;
-  }catch(e){}
+// 4. PARSE SAVED BOY DATA & INSTANT RESUME
+let BOY = null;
+try {
+  const raw = localStorage.getItem('pdc_boy');
+  if (raw && raw !== 'undefined' && raw !== 'null') {
+    BOY = JSON.parse(raw);
+  }
+} catch(_) {
+  localStorage.removeItem('pdc_boy');
+  BOY = null;
+}
+
+if (BOY && BOY.id) {
+  const ls = $('loginScreen'); if(ls) ls.style.display = 'none';
+  const ap = $('app'); if(ap) ap.style.display = 'block';
+  const hn = $('helloName'); if(hn) hn.textContent = 'Hello, ' + (BOY.name || 'Partner') + ' 👋';
+}
+
+let currentRiderOrders = [];
+let ordersRef = null, prevOrderIds = new Set(), prevStatuses = {}, issueCtx = { orderId: null, type: null }, selectedOrders = new Set();
+let latestAssignedOrderId = null, alertTimer = null;
+const LABEL = {
+  pending: 'Pickup Scheduled',
+  picked_up: 'Garments Collected',
+  processing: 'Expert Cleaning',
+  quality_check: 'Quality Check',
+  out_for_delivery: 'Fresh Clothes on the Way',
+  delivered: 'Delivered Successfully',
+  cancelled: 'Cancelled'
+};
+
+function last10Digits(s) { return String(s || '').replace(/\D/g, '').slice(-10); }
+function esc(v) { return String(v ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+function safeUrl(v, fallback = '') {
+  try {
+    const u = new URL(String(v || ''), location.href);
+    if (['http:', 'https:', 'tel:'].includes(u.protocol)) return u.href;
+  } catch(e){}
   return fallback;
 }
 
-function toast(m,t){
-  const el=$('toast');
-  if(!el)return;
-  el.innerHTML=`<div class="t ${t==='err'?'err':''}"><i class="fas fa-${t==='err'?'circle-exclamation':'circle-check'}" style="color:${t==='err'?'var(--bad)':'var(--good)'}"></i>${esc(m)}</div>`;
-  el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3000);
+function toast(m, t) {
+  const el = $('toast');
+  if (!el) return;
+  el.innerHTML = `<div class="t ${t === 'err' ? 'err' : ''}"><i class="fas fa-${t === 'err' ? 'circle-exclamation' : 'circle-check'}" style="color:${t === 'err' ? 'var(--bad)' : 'var(--good)'}"></i>${esc(m)}</div>`;
+  el.style.display = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.display = 'none', 3000);
 }
 
-function beep(){
-  try{
-    const ctx=new (window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator();const g=ctx.createGain();
-    o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=880;g.gain.value=0.18;
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.type = 'sine'; o.frequency.value = 880; g.gain.value = 0.18;
     o.start();
-    setTimeout(()=>o.frequency.value=1320,120);
-    setTimeout(()=>o.frequency.value=1760,240);
-    setTimeout(()=>{o.stop();ctx.close();},450);
-  }catch(e){}
+    setTimeout(() => o.frequency.value = 1320, 120);
+    setTimeout(() => o.frequency.value = 1760, 240);
+    setTimeout(() => { o.stop(); ctx.close(); }, 450);
+  } catch(e) {}
 }
-function vibrate(p){try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}}
+function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch(e) {} }
 
-function triggerNewOrderAlert(displayId, customerName, address){
-  latestAssignedOrderId=displayId;
+// 5. RELIABLE DIRECT LOGIN HANDLER
+window.handleLogin = async function() {
+  const phoneInput = $('phoneInput');
+  const pinInput = $('pinInput');
+  const errEl = $('loginErr');
+  const btn = $('loginBtn');
+
+  const rawPhone = phoneInput ? phoneInput.value : '';
+  const rawPin = pinInput ? pinInput.value : '';
+  const phone = last10Digits(rawPhone);
+  const pin = String(rawPin || '').trim();
+
+  if (!/^[0-9]{10}$/.test(phone) || !/^[0-9]{6}$/.test(pin)) {
+    if (errEl) {
+      errEl.textContent = '❌ 10-digit mobile number aur 6-digit PIN enter karein.';
+      errEl.style.display = 'block';
+    }
+    return;
+  }
+
+  if (errEl) errEl.style.display = 'none';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Secure login…';
+  }
+
+  try {
+    const response = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderLogin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, pin })
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.token) {
+      throw new Error(data.error || ('Login failed (Code ' + response.status + ')'));
+    }
+
+    await auth.signInWithCustomToken(data.token);
+    const uid = auth.currentUser ? auth.currentUser.uid : null;
+    const boyIdSafe = data.boyId || (data.boy && data.boy.id) || data.id || '';
+    const boyNameSafe = (data.boy && data.boy.name) || data.name || 'Partner';
+
+    const boyObj = {
+      id: boyIdSafe,
+      ...(data.boy || {}),
+      name: boyNameSafe,
+      phone: phone,
+      phoneE164: '+91' + phone,
+      authUid: uid
+    };
+
+    BOY = boyObj;
+    localStorage.setItem('pdc_boy', JSON.stringify(BOY));
+
+    if (uid && boyIdSafe) {
+      db.ref('boy_sessions/' + uid).set({
+        phone: phone,
+        phoneE164: '+91' + phone,
+        name: boyNameSafe,
+        boyId: boyIdSafe,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      }).catch(() => {});
+    }
+
+    enterApp();
+  } catch(err) {
+    console.error("Login call error:", err);
+    if (errEl) {
+      errEl.textContent = '❌ ' + (err.message || 'Mobile number ya PIN galat hai.');
+      errEl.style.display = 'block';
+    }
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-fingerprint"></i> Secure Login';
+    }
+    if (pinInput) pinInput.value = '';
+  }
+};
+
+['phoneInput', 'pinInput'].forEach(id => {
+  const el = $(id);
+  if (el) el.onkeydown = e => { if (e.key === 'Enter') window.handleLogin(); };
+});
+
+function enterApp() {
+  const lScreen = $('loginScreen');
+  const appEl = $('app');
+  if (lScreen) lScreen.style.display = 'none';
+  if (appEl) appEl.style.display = 'block';
+  const nameEl = $('helloName');
+  if (nameEl) nameEl.textContent = 'Hello, ' + (BOY?.name || 'Partner') + ' 👋';
+
+  listen();
+  startChatListener();
+  requestNotificationPermission();
+}
+
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().then(p => { if (p === 'granted') toast('🔔 Notifications enabled!'); });
+  }
+}
+
+// 6. BOTTOM ORDER HUD ALERT
+function triggerNewOrderAlert(displayId, customerName, address) {
+  latestAssignedOrderId = displayId;
   beep();
   vibrate([150, 80, 150, 80, 250]);
-  
-  $('noaOrderTitle').textContent = `Order ${displayId}`;
-  $('noaOrderSub').textContent = `${customerName || 'Customer'} · ${address ? address.slice(0, 32) + '…' : 'Doorstep Pickup'}`;
-  
+
+  const tEl = $('noaOrderTitle');
+  const sEl = $('noaOrderSub');
+  if (tEl) tEl.textContent = `Order ${displayId}`;
+  if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${address ? address.slice(0, 32) + '…' : 'Doorstep Pickup'}`;
+
   const alertEl = $('newOrderAlert');
-  if(alertEl) alertEl.classList.add('show');
-  
+  if (alertEl) alertEl.classList.add('show');
+
   clearTimeout(alertTimer);
   alertTimer = setTimeout(() => { dismissOrderAlert(); }, 12000);
 }
 
-function dismissOrderAlert(){
+function dismissOrderAlert() {
   const alertEl = $('newOrderAlert');
-  if(alertEl) alertEl.classList.remove('show');
+  if (alertEl) alertEl.classList.remove('show');
   clearTimeout(alertTimer);
 }
 
-function viewAssignedOrder(){
+function viewAssignedOrder() {
   dismissOrderAlert();
-  if(!latestAssignedOrderId) return;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  if (!latestAssignedOrderId) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   const btn = document.querySelector('.tab-btn[data-tab="orders"]');
-  if(btn) btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   const tOrders = $('tab-orders');
-  if(tOrders) tOrders.classList.add('active');
+  if (tOrders) tOrders.classList.add('active');
 
-  setTimeout(()=>{
+  setTimeout(() => {
     const card = document.querySelector(`.order-card[data-formatted-id="${latestAssignedOrderId}"]`) ||
                  document.querySelector(`.order-card[data-id="${latestAssignedOrderId}"]`);
-    if(card){
-      card.scrollIntoView({ behavior:'smooth', block:'center' });
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       card.classList.add('highlight-card');
-      setTimeout(()=>card.classList.remove('highlight-card'), 2500);
+      setTimeout(() => card.classList.remove('highlight-card'), 2500);
     }
   }, 200);
 }
 
-function notifyAdmin(type,data){
- const n={
-  type, boy:BOY?.name||'?', boyPhone:BOY?.phone||'?',
-  orderId:data.orderId||'', customer:data.customer||'',
-  status:data.status||'', note:data.note||'',
-  at:firebase.database.ServerValue.TIMESTAMP, read:false
- };
- return db.ref('notifications').push(n);
+function notifyAdmin(type, data) {
+  const n = {
+    type, boy: BOY?.name || '?', boyPhone: BOY?.phone || '?',
+    orderId: data.orderId || '', customer: data.customer || '',
+    status: data.status || '', note: data.note || '',
+    at: firebase.database.ServerValue.TIMESTAMP, read: false
+  };
+  return db.ref('notifications').push(n);
 }
 
-function openModal(id){$(id).classList.add('show');}
-function closeModal(id){$(id).classList.remove('show');}
-let appConfirmCb=null;
-function openAppConfirm(text,cb,title='Confirm'){ $('appConfirmTitle').textContent=title;$('appConfirmText').textContent=text;appConfirmCb=cb;$('appConfirmModal').classList.add('show');}
-function closeAppConfirm(){appConfirmCb=null;$('appConfirmModal').classList.remove('show');}$('appConfirmYes').onclick=()=>{const cb=appConfirmCb;closeAppConfirm();if(cb)cb();};
+function openModal(id) { const el = $(id); if (el) el.classList.add('show'); }
+function closeModal(id) { const el = $(id); if (el) el.classList.remove('show'); }
+let appConfirmCb = null;
+function openAppConfirm(text, cb, title = 'Confirm') {
+  $('appConfirmTitle').textContent = title;
+  $('appConfirmText').textContent = text;
+  appConfirmCb = cb;
+  openModal('appConfirmModal');
+}
+function closeAppConfirm() { appConfirmCb = null; closeModal('appConfirmModal'); }
+const btnConfirmYes = $('appConfirmYes');
+if (btnConfirmYes) {
+  btnConfirmYes.onclick = () => { const cb = appConfirmCb; closeAppConfirm(); if (cb) cb(); };
+}
 
-function extractGPS(addr){const m=(addr||'').match(/\(GPS:\s*(https?:\/\/[^\)]+)\)/i);return m?m[1]:null;}
-function cleanAddress(addr){return (addr||'').replace(/\s*\(GPS:[^\)]*\)/i,'').trim();}
+function extractGPS(addr) { const m = (addr || '').match(/\(GPS:\s*(https?:\/\/[^\)]+)\)/i); return m ? m[1] : null; }
+function cleanAddress(addr) { return (addr || '').replace(/\s*\(GPS:[^\)]*\)/i, '').trim(); }
 
-document.querySelectorAll('.tab-btn').forEach(btn=>{
- btn.onclick=()=>{
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  $('tab-'+btn.dataset.tab).classList.add('active');
-  if(btn.dataset.tab==='dashboard')loadDashboard();
-  if(btn.dataset.tab==='chat')loadChat();
- };
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    const tabEl = $('tab-' + btn.dataset.tab);
+    if (tabEl) tabEl.classList.add('active');
+    if (btn.dataset.tab === 'dashboard') loadDashboard();
+    if (btn.dataset.tab === 'chat') loadChat();
+  };
 });
 
-$('themeBtn').onclick=()=>{
- const l=document.documentElement.getAttribute('data-theme')==='dark';
- document.documentElement.setAttribute('data-theme',l?'light':'dark');
- $('themeBtn').innerHTML=l?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';
- localStorage.setItem('pdc_dtheme',l?'light':'dark');
-};
-if(localStorage.getItem('pdc_dtheme')==='light'){document.documentElement.setAttribute('data-theme','light');$('themeBtn').innerHTML='<i class="fas fa-moon"></i>';}
-else {document.documentElement.setAttribute('data-theme','dark');$('themeBtn').innerHTML='<i class="fas fa-sun"></i>';}
-
-function updateConn(){$('connDot').classList.toggle('off',!navigator.onLine);$('connDot').title=navigator.onLine?'Online':'Offline';}
-window.addEventListener('online',updateConn);window.addEventListener('offline',updateConn);updateConn();
-
-$('logoutBtn').onclick=()=>{
- if(chatRefActive)chatRefActive.off();
- chatRefActive=null;
- chatFirstLoad=true;
- const uid=auth.currentUser?.uid;
- localStorage.removeItem('pdc_boy');
- BOY=null;
- const done=()=>{location.reload();};
- if(uid)db.ref('boy_sessions/'+uid).remove().finally(()=>auth.signOut().finally(done));
- else auth.signOut().finally(done);
-};
-
-/* ===== ORIGINAL EXACT LOGIN CONTROLLER (UNMODIFIED) ===== */
-$('loginBtn').onclick=async()=>{
- const phone=last10Digits($('phoneInput')?.value||'');
- const pin=String($('pinInput')?.value||'').trim();
- if(!/^[0-9]{10}$/.test(phone)\vert{}\vert{}!/^[0-9]{6}$/.test(pin)){ 
-   $('loginErr').textContent='❌ 10-digit mobile number aur 6-digit PIN required.';$('loginErr').style.display='block'; 
-   return; 
- }
- $('loginErr').style.display='none';
- const btn=$('loginBtn');
- btn.disabled=true;
- btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Secure login…';
- try{
-   const result=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderLogin',{
-     method:'POST',
-     headers:{'Content-Type':'application/json'},
-     body:JSON.stringify({phone,pin})
-   });
-   const data=await result.json().catch(()=>({}));
-   if(!result.ok||!data.token) throw new Error(data.error||'Login failed');
-   
-   await auth.signInWithCustomToken(data.token);
-   const uid=auth.currentUser?.uid;
-   const boyIdSafe=data.boyId || data.boy?.id || data.id || '';
-   const boyNameSafe=data.boy?.name || data.name || 'Partner';
-   
-   const boy={
-     id:boyIdSafe,
-     ...(data.boy||{}),
-     name:boyNameSafe,
-     phone:phone,
-     phoneE164:'+91'+phone,
-     authUid:uid
-   };
-   
-   if(uid && boyIdSafe){
-     await db.ref('boy_sessions/'+uid).set({
-       phone:phone,
-       phoneE164:'+91'+phone,
-       name:boyNameSafe,
-       boyId:boyIdSafe,
-       createdAt:firebase.database.ServerValue.TIMESTAMP
-     }).catch(()=>{});
-   }
-   
-   BOY=boy; 
-   localStorage.setItem('pdc_boy',JSON.stringify(BOY)); 
-   enterApp();
- }catch(e){
-   $('loginErr').textContent='❌ '+(e?.message\vert{}\vert{}'Mobile number ya PIN galat hai.');$('loginErr').style.display='block';
-   btn.disabled=false; 
-   btn.innerHTML='<i class="fas fa-fingerprint"></i> Secure Login';
-   $('pinInput').value='';
- }
-};
-
-['phoneInput','pinInput'].forEach(id=>{
-  const el=$(id);
-  if(el) el.onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
-});
-
-function enterApp(){
- $('loginScreen').style.display='none';
- $('app').style.display='block';$('helloName').textContent='Hello, '+(BOY?.name||'Partner')+' 👋';
- listen();
- startChatListener();
- requestNotificationPermission();
-}
-
-function requestNotificationPermission(){
- if('Notification' in window && Notification.permission==='default'){
-  Notification.requestPermission().then(p=>{if(p==='granted')toast('🔔 Notifications enabled!');});
- }
-}
-
-function toggleSelect(id){
- if(selectedOrders.has(id)){selectedOrders.delete(id);}
- else{selectedOrders.add(id);}
- document.querySelectorAll('.order-card').forEach(c=>{
-  c.classList.toggle('selected',selectedOrders.has(c.dataset.id));
- });
- $('batchCount').textContent=selectedOrders.size;
- $('batchBar').classList.toggle('show',selectedOrders.size>0);
-}
-
-window.batchStartPickup=async()=>{
- if(selectedOrders.size===0)return;
- try{
-  const user=auth.currentUser;if(!user)throw new Error('Rider login required');
-  const token=await user.getIdToken(true);
-  const ids=Array.from(selectedOrders);
-  for(const id of ids){
-   const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:id,status:'picked_up'})});
-   const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Pickup update failed');
+const themeBtn = $('themeBtn');
+if (themeBtn) {
+  themeBtn.onclick = () => {
+    const l = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', l ? 'light' : 'dark');
+    themeBtn.innerHTML = l ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    localStorage.setItem('pdc_dtheme', l ? 'light' : 'dark');
+  };
+  if (localStorage.getItem('pdc_dtheme') === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
   }
-  toast(`✅ ${ids.length} orders marked as Picked Up!`);selectedOrders.clear();$('batchBar').classList.remove('show');document.querySelectorAll('.order-card.selected').forEach(c=>c.classList.remove('selected'));
- }catch(e){toast(e?.message||'Pickup update failed','err');}
+}
+
+function updateConn() {
+  const dot = $('connDot');
+  if (!dot) return;
+  dot.classList.toggle('off', !navigator.onLine);
+  dot.title = navigator.onLine ? 'Online' : 'Offline';
+}
+window.addEventListener('online', updateConn);
+window.addEventListener('offline', updateConn);
+updateConn();
+
+// 7. LOGOUT
+const logoutBtn = $('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.onclick = () => {
+    if (chatRefActive) chatRefActive.off();
+    chatRefActive = null;
+    chatFirstLoad = true;
+    const uid = auth.currentUser ? auth.currentUser.uid : null;
+    localStorage.removeItem('pdc_boy');
+    BOY = null;
+    const done = () => { location.reload(); };
+    if (uid) db.ref('boy_sessions/' + uid).remove().finally(() => auth.signOut().finally(done));
+    else auth.signOut().finally(done);
+  };
+}
+
+function toggleSelect(id) {
+  if (selectedOrders.has(id)) { selectedOrders.delete(id); }
+  else { selectedOrders.add(id); }
+  document.querySelectorAll('.order-card').forEach(c => {
+    c.classList.toggle('selected', selectedOrders.has(c.dataset.id));
+  });
+  const bCount = $('batchCount');
+  if (bCount) bCount.textContent = selectedOrders.size;
+  const bBar = $('batchBar');
+  if (bBar) bBar.classList.toggle('show', selectedOrders.size > 0);
+}
+
+window.batchStartPickup = async () => {
+  if (selectedOrders.size === 0) return;
+  try {
+    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
+    const token = await user.getIdToken(true);
+    const ids = Array.from(selectedOrders);
+    for (const id of ids) {
+      const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ orderId: id, status: 'picked_up' })
+      });
+      const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Pickup update failed');
+    }
+    toast(`✅ ${ids.length} orders marked as Picked Up!`);
+    selectedOrders.clear();
+    const bBar = $('batchBar');
+    if (bBar) bBar.classList.remove('show');
+    document.querySelectorAll('.order-card.selected').forEach(c => c.classList.remove('selected'));
+  } catch(e) { toast(e?.message || 'Pickup update failed', 'err'); }
 };
 
-/* ===== REALTIME ORDERS LISTENER ===== */
-function listen(){
- if(ordersRef&&ordersRef.refs){ordersRef.refs.forEach((r,i)=>r.off('value',ordersRef.cbs[i]));}
- const phone10=last10Digits(BOY?.phone);
- const phoneE164=BOY?.phoneE164||('+91'+phone10);
- const queries=[
-  db.ref('orders').orderByChild('assigned_to_e164').equalTo(phoneE164),
-  db.ref('orders').orderByChild('assigned_to').equalTo(phone10),
-  db.ref('orders').orderByChild('assigned_to').equalTo('+91'+phone10)
- ];
- const buckets=[new Map(),new Map(),new Map()];
- let readyCount=0;
- const rebuild=()=>{
-  const merged=new Map();
-  buckets.forEach(bucket=>bucket.forEach((o,id)=>merged.set(id,o)));
-  const curIds=new Set();const curStatuses={};const myOrders=[];
-  merged.forEach((o,id)=>{
-   if(!o)return;
-   const assigned=(o.assigned_to_e164||o.assigned_to||'');
-   if(last10Digits(assigned)===phone10){curIds.add(id);curStatuses[id]=o.status;myOrders.push({_id:id,...o});}
+// 8. REALTIME ORDERS LISTENER
+function listen() {
+  if (ordersRef && ordersRef.refs) { ordersRef.refs.forEach((r, i) => r.off('value', ordersRef.cbs[i])); }
+  const phone10 = last10Digits(BOY?.phone);
+  const phoneE164 = BOY?.phoneE164 || ('+91' + phone10);
+  const queries = [
+    db.ref('orders').orderByChild('assigned_to_e164').equalTo(phoneE164),
+    db.ref('orders').orderByChild('assigned_to').equalTo(phone10),
+    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10)
+  ];
+  const buckets = [new Map(), new Map(), new Map()];
+  let readyCount = 0;
+  const rebuild = () => {
+    const merged = new Map();
+    buckets.forEach(bucket => bucket.forEach((o, id) => merged.set(id, o)));
+    const curIds = new Set(); const curStatuses = {}; const myOrders = [];
+    merged.forEach((o, id) => {
+      if (!o) return;
+      const assigned = (o.assigned_to_e164 || o.assigned_to || '');
+      if (last10Digits(assigned) === phone10) { curIds.add(id); curStatuses[id] = o.status; myOrders.push({ _id: id, ...o }); }
+    });
+
+    currentRiderOrders = myOrders;
+    computeDashboardMetrics(currentRiderOrders);
+
+    if (Object.keys(prevStatuses).length > 0) {
+      for (const id in curStatuses) {
+        if (prevStatuses[id] && prevStatuses[id] !== curStatuses[id]) {
+          const o = myOrders.find(x => x._id === id);
+          if (o) notifyAdmin('status_change', { orderId: formatOrderId(o), status: curStatuses[id], customer: o.customerName || o.name || '' }).catch(() => {});
+        }
+      }
+      curIds.forEach(id => {
+        if (!prevOrderIds.has(id)) {
+          const o = myOrders.find(x => x._id === id);
+          const dispId = formatOrderId(o || { _id: id });
+          triggerNewOrderAlert(dispId, o?.customerName || o?.name || '', o?.address || '');
+        }
+      });
+    }
+    prevOrderIds = curIds; prevStatuses = curStatuses; render(myOrders);
+  };
+  const cbs = queries.map((ref, i) => ref.on('value', s => {
+    buckets[i].clear();
+    s.forEach(c => { const o = c.val(); if (o) buckets[i].set(c.key, o); });
+    readyCount++; rebuild();
+  }, err => { console.warn('Orders read warning:', err); readyCount++; if (readyCount >= queries.length) rebuild(); }));
+  ordersRef = { refs: queries, cbs };
+}
+
+function dayStr(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+function render(myOrders) {
+  const today = dayStr(new Date()); let pickup = [], delivery = [], done = [];
+  let cashDue = 0;
+
+  myOrders.forEach(o => {
+    const isPaid = (o.paymentStatus || '') === 'Paid';
+    if (o.status === 'delivered') {
+      if ((o.deliveredAt ? dayStr(new Date(o.deliveredAt)) : '') === today) done.push(o);
+    } else if (o.status === 'out_for_delivery') {
+      delivery.push(o);
+      if (!isPaid) cashDue += (+o.total || 0);
+    } else if (['pending', 'picked_up', 'processing', 'quality_check'].includes(o.status)) {
+      pickup.push(o);
+      if (!isPaid && ['pending', 'picked_up', 'out_for_delivery'].includes(o.status)) cashDue += (+o.total || 0);
+    }
   });
 
-  currentRiderOrders=myOrders;
-  computeDashboardMetrics(currentRiderOrders);
+  pickup.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  delivery.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
-  if(Object.keys(prevStatuses).length>0){
-   for(const id in curStatuses){
-    if(prevStatuses[id]&&prevStatuses[id]!==curStatuses[id]){
-     const o=myOrders.find(x=>x._id===id);
-     if(o) notifyAdmin('status_change',{orderId:formatOrderId(o),status:curStatuses[id],customer:o.customerName||o.name||''}).catch(()=>{});
-    }
-   }
-   curIds.forEach(id=>{
-     if(!prevOrderIds.has(id)){
-       const o=myOrders.find(x=>x._id===id);
-       const dispId=formatOrderId(o||{_id:id});
-       triggerNewOrderAlert(dispId, o?.customerName||o?.name||'', o?.address||'');
-     }
-   });
-  }
-  prevOrderIds=curIds;prevStatuses=curStatuses;render(myOrders);
- };
- const cbs=queries.map((ref,i)=>ref.on('value',s=>{buckets[i].clear();s.forEach(c=>{const o=c.val();if(o)buckets[i].set(c.key,o);});readyCount++;rebuild();},err=>{console.warn('Orders read warning:', err);readyCount++;if(readyCount>=queries.length)rebuild();}));
- ordersRef={refs:queries,cbs};
+  $('sPickup').textContent = pickup.length;
+  $('sDelivery').textContent = delivery.length;
+  $('sToday').textContent = done.length;
+  $('sCash').textContent = '₹' + cashDue;
+  $('cPickup').textContent = pickup.length;
+  $('cDelivery').textContent = delivery.length;
+  $('cDone').textContent = done.length;
+
+  $('pickupList').innerHTML = pickup.length ? pickup.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-inbox"></i>Koi pickup pending nahi</div>';
+  $('deliveryList').innerHTML = delivery.length ? delivery.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-truck"></i>Koi delivery out nahi</div>';
+  $('doneList').innerHTML = done.length ? done.map(o => {
+    const dispId = formatOrderId(o);
+    return `<div class="order-card" style="padding:12px 16px;opacity:.85" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}"><div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName || o.name || '-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total) || 0} · ${esc(o.timeSlot || '')}</div></div>`;
+  }).join('') : '<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
 }
 
-function dayStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-
-function render(myOrders){
- const today=dayStr(new Date()); let pickup=[],delivery=[],done=[];
- let cashDue=0;
- 
- myOrders.forEach(o=>{
-  const isPaid=(o.paymentStatus||'')==='Paid';
-  if(o.status==='delivered'){
-   if((o.deliveredAt?dayStr(new Date(o.deliveredAt)):'')===today) done.push(o);
-  } else if(o.status==='out_for_delivery'){
-   delivery.push(o);
-   if(!isPaid) cashDue+=(+o.total||0);
-  } else if(['pending','picked_up','processing','quality_check'].includes(o.status)){
-   pickup.push(o);
-   if(!isPaid && ['pending','picked_up','out_for_delivery'].includes(o.status)) cashDue+=(+o.total||0);
-  }
- });
-
- pickup.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
- delivery.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
- 
- $('sPickup').textContent=pickup.length;
- $('sDelivery').textContent=delivery.length;
- $('sToday').textContent=done.length;
- $('sCash').textContent='₹'+cashDue;
- $('cPickup').textContent=pickup.length;
- $('cDelivery').textContent=delivery.length;
- $('cDone').textContent=done.length;
- 
- $('pickupList').innerHTML=pickup.length?pickup.map(o=>renderCard(o)).join(''):'<div class="empty"><i class="fas fa-inbox"></i>Koi pickup pending nahi</div>';
- $('deliveryList').innerHTML=delivery.length?delivery.map(o=>renderCard(o)).join(''):'<div class="empty"><i class="fas fa-truck"></i>Koi delivery out nahi</div>';
- $('doneList').innerHTML=done.length?done.map(o=>{
-   const dispId=formatOrderId(o);
-   return `<div class="order-card" style="padding:12px 16px;opacity:.85" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}"><div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName||o.name||'-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total)||0} · ${esc(o.timeSlot||'')}</div></div>`;
- }).join(''):'<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
+function timelineHTML(st) {
+  const steps = [
+    { k: 'pending', l: 'Pickup', i: 'fa-calendar' },
+    { k: 'picked_up', l: 'Collected', i: 'fa-box' },
+    { k: 'processing', l: 'Cleaning', i: 'fa-tshirt' },
+    { k: 'quality_check', l: 'Quality', i: 'fa-circle-check' },
+    { k: 'out_for_delivery', l: 'On Way', i: 'fa-truck' },
+    { k: 'delivered', l: 'Done', i: 'fa-check' }
+  ];
+  const idx = steps.findIndex(x => x.k === st);
+  let html = '';
+  steps.forEach((s, i) => {
+    const cls = i < idx ? 'done' : (i === idx ? 'current' : '');
+    html += `<div class="tl-step ${cls}"><div class="tl-dot"><i class="fas ${cls === 'done' ? 'fa-check': s.i}"></i></div><div class="tl-label">${s.l}</div></div>`;
+    if (i < steps.length - 1) html += `<div class="tl-line ${i < idx ? 'done' : ''}"></div>`;
+  });
+  return `<div class="timeline">${html}</div>`;
 }
 
-function timelineHTML(st){
- const steps=[{k:'pending',l:'Pickup',i:'fa-calendar'},{k:'picked_up',l:'Collected',i:'fa-box'},{k:'processing',l:'Cleaning',i:'fa-tshirt'},{k:'quality_check',l:'Quality',i:'fa-circle-check'},{k:'out_for_delivery',l:'On Way',i:'fa-truck'},{k:'delivered',l:'Done',i:'fa-check'}];
- const idx=steps.findIndex(x=>x.k===st);
- let html='';
- steps.forEach((s,i)=>{
-  const cls=i<idx?'done':(i===idx?'current':'');
-  html+=`<div class="tl-step ${cls}"><div class="tl-dot"><i class="fas ${cls==='done'?'fa-check':s.i}"></i></div><div class="tl-label">${s.l}</div></div>`;
-  if(i<steps.length-1)html+=`<div class="tl-line ${i<idx?'done':''}"></div>`;
- });
- return `<div class="timeline">${html}</div>`;
-}
-
-function renderCard(o){
-  const st=o.status||'pending';
-  const dispId=formatOrderId(o);
-  const items=Object.entries(o.items||{}).map(([k,v])=>{
-    const qty=(v&&typeof v==='object')?(v.qty??v.quantity??1):v;
-    const name=(v&&typeof v==='object')?(v.name??k):k;
+function renderCard(o) {
+  const st = o.status || 'pending';
+  const dispId = formatOrderId(o);
+  const items = Object.entries(o.items || {}).map(([k, v]) => {
+    const qty = (v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 1) : v;
+    const name = (v && typeof v === 'object') ? (v.name ?? k) : k;
     return `<span class="chip">${esc(name)} x${esc(qty)}</span>`;
   }).join('');
-  const gps=extractGPS(o.address); const addr=cleanAddress(o.address);
-  const isPaid=(o.paymentStatus||'')==='Paid';
-  const payBadge=isPaid?'<span class="badge paid">PAID</span>':'<span class="badge cod">COD ₹'+esc(o.total||0)+'</span>';
-  const isSelected=selectedOrders.has(o._id);
+  const gps = extractGPS(o.address); const addr = cleanAddress(o.address);
+  const isPaid = (o.paymentStatus || '') === 'Paid';
+  const payBadge = isPaid ? '<span class="badge paid">PAID</span>' : '<span class="badge cod">COD ₹' + esc(o.total || 0) + '</span>';
+  const isSelected = selectedOrders.has(o._id);
 
-  let btn='';
-  if(st==='pending')btn=`<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box"></i> Mark Picked Up</button>`;
-  else if(st==='picked_up')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-check"></i> Collected · Waiting for Cleaning</button>`;
-  else if(st==='processing')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-tshirt"></i> Expert Cleaning</button>`;
-  else if(st==='quality_check')btn=`<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-circle-check"></i> Quality Check</button>`;
-  else if(st==='out_for_delivery')btn=`<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
-  else if(st==='cancelled')btn=`<button class="btn-main done" style="opacity:0.65;" disabled><i class="fas fa-ban"></i> Cancelled</button>`;
+  let btn = '';
+  if (st === 'pending') btn = `<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box"></i> Mark Picked Up</button>`;
+  else if (st === 'picked_up') btn = `<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-check"></i> Collected · Waiting for Cleaning</button>`;
+  else if (st === 'processing') btn = `<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-tshirt"></i> Expert Cleaning</button>`;
+  else if (st === 'quality_check') btn = `<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-circle-check"></i> Quality Check</button>`;
+  else if (st === 'out_for_delivery') btn = `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
+  else if (st === 'cancelled') btn = `<button class="btn-main done" style="opacity:0.65;" disabled><i class="fas fa-ban"></i> Cancelled</button>`;
 
-  // WhatsApp Message with standardized PDC-XXXXXX format
-  const waMsg=encodeURIComponent(`Hi ${o.customerName||''}! Parth Rider (${BOY?.name||''}) aapke order ${dispId} ke liye raah me hu. 🛵`);
-  const latRaw=o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null; const lngRaw=o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null; const lat=Number(latRaw); const lng=Number(lngRaw); const exactMapUrl=(Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180)?`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`:null; const mapUrl=safeUrl(exactMapUrl || gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
-  const phone=last10Digits(o.phone);
-  const collectBtn=(!isPaid&&st==='out_for_delivery')?`<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total)||0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total)||0}</button>`:(isPaid?`<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>`:'');
-  const checkBtn=(st==='pending')?`<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>`:'';
+  const waMsg = encodeURIComponent(`Hi ${o.customerName || ''}! Parth Rider (${BOY?.name || ''}) aapke order ${dispId} ke liye raah me hu. 🛵`);
+  const latRaw = o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null;
+  const lngRaw = o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null;
+  const lat = Number(latRaw); const lng = Number(lngRaw);
+  const exactMapUrl = (Number.isFinite(lat) && Number.isFinite(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : null;
+  const mapUrl = safeUrl(exactMapUrl || gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
+  const phone = last10Digits(o.phone);
+  const collectBtn = (!isPaid && st === 'out_for_delivery') ? `<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total) || 0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total) || 0}</button>` : (isPaid ? `<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>` : '');
+  const checkBtn = (st === 'pending') ? `<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>` : '';
 
-  return `<div class="order-card ${isSelected?'selected':''}" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}">
+  return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}" data-formatted-id="${esc(dispId)}">
     ${checkBtn}
-    <div class="oc-top"><span class="oc-id">#${esc(dispId)}</span><span>${o.express==='Yes'?'<span class="badge express">⚡ Express</span>':''}<span class="badge ${esc(st)}">${esc(LABEL[st]||st)}</span>${payBadge}</span></div>
-    <div class="oc-name">${esc(o.customerName||o.name||'-')}</div>
+    <div class="oc-top"><span class="oc-id">${esc(dispId)}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
+    <div class="oc-name">${esc(o.customerName || o.name || '-')}</div>
     <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
     ${timelineHTML(st)}
-    <div class="oc-meta">${items}<span class="chip">Total: ₹${Number(o.total)||0}</span><span class="chip">${esc(o.timeSlot||'')}</span></div>
+    <div class="oc-meta">${items}<span class="chip">Total: ₹${Number(o.total) || 0}</span><span class="chip">${esc(o.timeSlot || '')}</span></div>
     <div class="oc-actions">
      <a class="call" href="tel:+91${phone}"><i class="fas fa-phone"></i> Call</a>
      <a class="wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/91${phone}?text=${waMsg}"><i class="fab fa-whatsapp"></i> Chat</a>
@@ -785,16 +909,256 @@ function renderCard(o){
    </div>`;
 }
 
-window.adv=async(id,next)=>{
- try{const user=auth.currentUser;if(!user)throw new Error('Rider login required');const token=await user.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:id,status:next})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Status update failed');toast(next==='delivered'?'🎉 Order Delivered!':'✓ '+LABEL[next]);if(next==='delivered')vibrate([80,40,80]);}catch(e){toast(e?.message||'Status update failed','err');}
+window.adv = async (id, next) => {
+  try {
+    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
+    const token = await user.getIdToken(true);
+    const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ orderId: id, status: next })
+    });
+    const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Status update failed');
+    toast(next === 'delivered' ? '🎉 Order Delivered!' : '✓ ' + LABEL[next]);
+    if (next === 'delivered') vibrate([80, 40, 80]);
+  } catch(e) { toast(e?.message || 'Status update failed', 'err'); }
 };
 
-window.collectPayment=(id,total)=>{openAppConfirm(`Customer se ₹${total} collect kiya?`,async()=>{try{const user=auth.currentUser;if(!user)throw new Error('Rider login required');const token=await user.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({orderId:id})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Payment update failed');toast('💰 ₹'+Number(d.total||total)+' cash collected!');vibrate([60]);}catch(e){toast(e?.message||'Payment update failed','err');}},'Payment Confirmation');};
+window.collectPayment = (id, total) => {
+  openAppConfirm(`Customer se ₹${total} collect kiya?`, async () => {
+    try {
+      const user = auth.currentUser; if (!user) throw new Error('Rider login required');
+      const token = await user.getIdToken(true);
+      const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ orderId: id })
+      });
+      const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Payment update failed');
+      toast('💰 ₹' + Number(d.total || total) + ' cash collected!');
+      vibrate([60]);
+    } catch(e) { toast(e?.message || 'Payment update failed', 'err'); }
+  }, 'Payment Confirmation');
+};
 
-let EXTRA_CATALOG=null;
-function catalogItemKey(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
-async function loadExtraCatalog(){
- if(EXTRA_CATALOG)return EXTRA_CATALOG;
- const snap=await db.ref('services/categories').once('value');
- const data=snap.val()||{};
- EXTRA_CATALOG=Object.entries(data).map(([key,cat])=>({key,name:cat?.name||
+let EXTRA_CATALOG = null;
+function catalogItemKey(v) { return String(v || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+async function loadExtraCatalog() {
+  if (EXTRA_CATALOG) return EXTRA_CATALOG;
+  const snap = await db.ref('services/categories').once('value');
+  const data = snap.val() || {};
+  EXTRA_CATALOG = Object.entries(data).map(([key, cat]) => ({
+    key, name: cat?.name || key,
+    items: Array.isArray(cat?.items) ? cat.items.map(it => ({ key: catalogItemKey(it?.name), name: String(it?.name || ''), price: Number(it?.price) || 0 })).filter(it => it.key && it.name) : []
+  })).filter(c => c.items.length);
+  return EXTRA_CATALOG;
+}
+window.openAddItem = async id => {
+  issueCtx.orderId = id;
+  const ord = currentRiderOrders.find(x => x._id === id);
+  $('addItemOrderId').textContent = formatOrderId(ord \vert{}\vert{} { _id: id });$('extraItems').innerHTML = '';
+  try { await loadExtraCatalog(); addExtraItemRow(); openModal('addItemModal'); } catch(e) { toast('Service list load nahi hui', 'err'); }
+};
+function addExtraItemRow() {
+  const row = document.createElement('div'); row.className = 'item-row';
+  row.innerHTML = `<select class="ei-item"></select><input class="ei-qty" type="number" min="1" max="50" value="1" style="width:60px"/><button class="rm" onclick="this.parentElement.remove()">×</button>`;
+  const sel = row.querySelector('.ei-item');
+  EXTRA_CATALOG.forEach(cat => {
+    const group = document.createElement('optgroup'); group.label = cat.name;
+    cat.items.forEach(it => {
+      const o = document.createElement('option');
+      o.value = JSON.stringify({ categoryKey: cat.key, itemKey: it.key, name: it.name });
+      o.textContent = `${it.name} · ₹${it.price}`;
+      group.appendChild(o);
+    });
+    sel.appendChild(group);
+  });
+  $('extraItems').appendChild(row);
+}
+window.addExtraItemRow = addExtraItemRow;
+
+window.saveExtraItems = async () => {
+  const rows = $('extraItems').querySelectorAll('.item-row');
+  const items = [];
+  rows.forEach(r => {
+    const q = parseInt(r.querySelector('.ei-qty').value, 10) || 0;
+    let picked = null; try { picked = JSON.parse(r.querySelector('.ei-item').value || 'null'); } catch(_) {}
+    if (picked && q > 0) items.push({ ...picked, qty: q });
+  });
+  if (!items.length) return toast('Item select karein', 'err');
+  const id = issueCtx.orderId;
+  try {
+    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
+    const token = await user.getIdToken(true);
+    const response = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/addRiderExtraItems', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ orderId: id, items })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'Extra item update failed');
+    toast(`✅ ${items.length} item(s) added, +₹${Number(data.extraTotal || 0)}`);
+    closeModal('addItemModal');
+  } catch(e) { toast(e?.message || 'Extra item update failed', 'err'); }
+};
+
+function selIssue(btn, type) { document.querySelectorAll('#issueModal .issue-type button').forEach(b => b.classList.remove('sel')); btn.classList.add('sel'); issueCtx.type = type; }
+window.selIssue = selIssue;
+window.openIssue = id => { issueCtx.orderId = id; issueCtx.type = null; document.querySelectorAll('#issueModal .issue-type button').forEach(b => b.classList.remove('sel')); $('issueNote').value = ''; openModal('issueModal'); };
+window.submitIssue = async () => {
+  if (!issueCtx.type) return toast('Issue type select karein', 'err');
+  const note = $('issueNote').value.trim();
+  try {
+    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
+    const token = await user.getIdToken(true);
+    const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderReportIssue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ orderId: issueCtx.orderId, type: issueCtx.type, note })
+    });
+    const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Issue report failed');
+    toast('⚠️ Issue admin ko bhej diya gaya hai'); closeModal('issueModal');
+  } catch(e) { toast(e?.message || 'Issue report failed', 'err'); }
+};
+
+// 9. CRASH-PROOF DASHBOARD CALCULATION
+function computeDashboardMetrics(ordersList) {
+  if (!ordersList) return;
+  const now = new Date();
+  const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay()); weekStart.setHours(0,0,0,0);
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1); monthStart.setHours(0,0,0,0);
+  let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0; const dayCounts = {};
+
+  ordersList.forEach(o => {
+    if (!o || o.status !== 'delivered') return;
+    const delDate = o.deliveredAt ? new Date(o.deliveredAt) : (o.createdAt ? new Date(o.createdAt) : null);
+    if (!delDate || isNaN(delDate.getTime())) return;
+    const amt = +o.total || 0; totalDel++; totalEarn += amt;
+    const dayKey = dayStr(delDate); dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
+    if (delDate >= weekStart) { weekDel++; weekEarn += amt; }
+    if (delDate >= monthStart) { monthDel++; monthEarn += amt; }
+  });
+
+  let streak = 0, checkDate = new Date(now);
+  while (true) {
+    const key = dayStr(checkDate);
+    if (dayCounts[key] && dayCounts[key] > 0) { streak++; checkDate.setDate(checkDate.getDate() - 1); }
+    else break;
+  }
+
+  let bestDay = '—', maxCount = 0;
+  for (const day in dayCounts) {
+    if (dayCounts[day] > maxCount) { maxCount = dayCounts[day]; bestDay = day; }
+  }
+
+  const wd = $('weekDeliveries'); if (wd) wd.textContent = weekDel;
+  const we = $('weekEarnings'); if (we) we.textContent = '₹' + weekEarn;
+  const md = $('monthDeliveries'); if (md) md.textContent = monthDel;
+  const me = $('monthEarnings'); if (me) me.textContent = '₹' + monthEarn;
+  const bd = $('bestDay'); if (bd) bd.textContent = bestDay;
+  const sc = $('streakCount'); if (sc) sc.textContent = streak;
+  const td = $('totalDeliveries'); if (td) td.textContent = totalDel;
+  const te = $('totalEarnings'); if (te) te.textContent = '₹' + totalEarn;
+}
+
+function loadDashboard() {
+  if (!BOY) return;
+  // Compute instantly from in-memory orders (0ms, no network error)
+  if (currentRiderOrders && currentRiderOrders.length) {
+    computeDashboardMetrics(currentRiderOrders);
+  }
+}
+
+// 10. REALTIME CHAT SYSTEM (SYNCED WITH ADMIN)
+let chatRefActive = null;
+let chatFirstLoad = true;
+function startChatListener() {
+  if (!BOY || !BOY.id) return;
+  if (chatRefActive) chatRefActive.off();
+  chatFirstLoad = true;
+
+  const chatRef = db.ref('chat/' + BOY.id);
+  chatRefActive = chatRef.limitToLast(60);
+
+  chatRefActive.on('value', s => {
+    const msgs = [];
+    s.forEach(c => { const v = c.val(); if (v) msgs.push({ id: c.key, ...v }); });
+    msgs.sort((a, b) => (Number(a.at) || 0) - (Number(b.at) || 0));
+
+    const box = $('chatMessages');
+    if (!box) return;
+
+    if (msgs.length === 0) {
+      box.innerHTML = '<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
+      return;
+    }
+
+    box.innerHTML = msgs.map(m => {
+      const isSent = m.from === 'boy';
+      const time = m.at ? new Date(Number(m.at)).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : 'Just now';
+      return `<div class="chat-msg ${isSent ? 'sent' : 'received'}">
+        <div class="avatar">${isSent ? '🛵' : '👤'}</div>
+        <div>
+          <div class="bubble">${esc(m.text || '')}</div>
+          <div class="time">${time}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    box.scrollTop = box.scrollHeight;
+    if (!chatFirstLoad) {
+      const last = msgs[msgs.length - 1];
+      if (last && last.from !== 'boy') {
+        toast('💬 Admin ka naya message aaya');
+        beep();
+        vibrate([100, 50, 100]);
+      }
+    }
+    chatFirstLoad = false;
+  }, err => {
+    const box = $('chatMessages');
+    if (box) box.innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Chat load failed: ' + esc(err?.message || 'Permission denied') + '</div>';
+  });
+}
+function loadChat() { startChatListener(); }
+
+window.sendChat = () => {
+  const input = $('chatInput');
+  const text = (input?.value || '').trim();
+  if (!text || !BOY || !BOY.id) return;
+
+  db.ref('chat/' + BOY.id).push({
+    text,
+    from: 'boy',
+    boyName: BOY.name || 'Partner',
+    boyPhone: BOY.phone || '',
+    at: firebase.database.ServerValue.TIMESTAMP
+  }).then(() => {
+    input.value = '';
+    const box = $('chatMessages');
+    if (box) box.scrollTop = box.scrollHeight;
+  }).catch(e => toast(e.message, 'err'));
+};
+
+// 11. PERSISTENT AUTH STATE LISTENER (NO UNINTENDED LOGOUT)
+auth.onAuthStateChanged(async u => {
+  if (!u) { return; }
+  if (!BOY) { return; }
+  try {
+    const snap = await db.ref('delivery_boys/' + BOY.id).once('value');
+    const boy = snap.val() || {};
+    if (boy.active === false) {
+      localStorage.removeItem('pdc_boy'); BOY = null; await auth.signOut(); return;
+    }
+    BOY = { id: BOY.id, ...boy, phone: last10Digits(boy.phone || BOY.phone), phoneE164: '+91' + last10Digits(boy.phone || BOY.phone), authUid: u.uid };
+    localStorage.setItem('pdc_boy', JSON.stringify(BOY));
+    enterApp();
+  } catch(e) {
+    console.warn("Session check note:", e);
+  }
+});
+
+console.log('🛵 Parth Delivery Gen8 HUD Live — Standardized PDC-XXXXXX & Stable Auth');
+</script>
+</body>
+</html>
