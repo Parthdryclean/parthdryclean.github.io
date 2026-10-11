@@ -10,7 +10,7 @@
 <!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Playfair+Display:ital,wght@1,600&amp;family=Pacifico&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@1,600&amp;family=Pacifico&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <!-- Firebase & PDF Libraries -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -23,8 +23,8 @@
   :root {
     --canvas: #F8FAFC; --surface: #FFFFFF; --surface-soft: #F1F5F9; --surface-card: #FFFFFF;
     --ink: #0F172A; --ink-sub: #334155; --ink-muted: #64748B;
-    --primary: #0ea5e9; --royal-blue: #2563EB; --royal-blue-soft: #EFF6FF;
-    --indigo-accent: #6366f1; --emerald: #059669; --emerald-soft: #ECFDF5;
+    --primary: #2563EB; --royal-blue: #2563EB; --royal-blue-soft: #EFF6FF;
+    --indigo-accent: #2563EB; --emerald: #059669; --emerald-soft: #ECFDF5;
     --danger: #EF4444; --border: #E2E8F0;
     --glass-bg: rgba(255, 255, 255, 0.94); --glass-border: rgba(255, 255, 255, 0.9);
     --shadow-soft: 0 4px 18px -4px rgba(15, 23, 42, 0.05);
@@ -36,8 +36,8 @@
   [data-theme="dark"] {
     --canvas: #090D16; --surface: #111827; --surface-soft: #1E293B; --surface-card: #131D31;
     --ink: #F8FAFC; --ink-sub: #CBD5E1; --ink-muted: #94A3B8;
-    --primary: #38bdf8; --royal-blue: #3B82F6; --royal-blue-soft: rgba(59, 130, 246, 0.14);
-    --indigo-accent: #818cf8; --emerald: #10B981; --emerald-soft: rgba(16, 185, 129, 0.12);
+    --primary: #2563EB; --royal-blue: #2563EB; --royal-blue-soft: rgba(37, 99, 235, 0.16);
+    --indigo-accent: #2563EB; --emerald: #10B981; --emerald-soft: rgba(16, 185, 129, 0.12);
     --danger: #F87171; --border: #1E293B;
     --glass-bg: rgba(17, 24, 39, 0.94); --glass-border: rgba(255, 255, 255, 0.08);
     --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.35);
@@ -45,7 +45,7 @@
     --shadow-floating: 0 18px 42px rgba(0, 0, 0, 0.65);
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
   body { background: var(--canvas); color: var(--ink-sub); padding: 16px 16px 125px; max-width: 440px; margin: auto; min-height: 100vh; position: relative; overflow-x: hidden; }
 
   /* HEADER (Gen50.45 Original Branding) */
@@ -306,7 +306,7 @@
 .address-heading-new{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid var(--border)}.address-heading-new .address-kicker{display:block;font-size:8px;letter-spacing:1px;font-weight:900;color:var(--royal-blue);margin-bottom:3px}.address-heading-new h3{font-size:15px;color:var(--ink);margin:0}.address-heading-new p{font-size:9px;color:var(--ink-muted);margin-top:3px}.address-list-new{display:grid;gap:8px;max-height:360px;overflow:auto}.address-card-new{background:var(--canvas);border:1.5px solid var(--border);border-radius:18px;padding:12px;cursor:pointer}.address-card-new.selected{background:var(--royal-blue-soft);border-color:var(--indigo-accent)}.address-card-top,.addr-actions{display:flex;align-items:center;justify-content:space-between;gap:7px}.addr-type-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:8px;font-weight:900;color:var(--royal-blue)}.address-selected-mark{font-size:8px;color:var(--indigo-accent);font-weight:900}.addr-details{font-size:12px;line-height:1.5;color:var(--ink-sub);font-weight:650;margin:8px 0}.addr-actions{justify-content:flex-start;border-top:1px solid var(--border);padding-top:7px}.addr-action-btn-new{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:5px 9px;font-size:9px;font-weight:800;color:var(--ink-muted)}.address-add-new{width:100%;display:grid;grid-template-columns:30px 1fr 12px;align-items:center;gap:8px;text-align:left;padding:10px;border:1px dashed var(--border);border-radius:14px;background:transparent;color:var(--ink);cursor:pointer}.address-add-icon{width:30px;height:30px;border-radius:9px;background:var(--royal-blue-soft);display:flex;align-items:center;justify-content:center;color:var(--royal-blue)}.address-add-new strong{font-size:10px}.address-add-new small{display:block;font-size:8px;color:var(--ink-muted);margin-top:2px}.address-empty-new{padding:18px;text-align:center;border:1px dashed var(--border);border-radius:14px}.address-empty-icon{font-size:18px;color:var(--royal-blue);margin-bottom:6px}.address-empty-new strong{display:block;font-size:11px;color:var(--ink)}.address-empty-new span{font-size:9px;color:var(--ink-muted)}
 .booking-form .form-group{margin-bottom:11px}.booking-form label{display:block;font-size:9px;font-weight:900;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}.booking-form input,.booking-form select,.booking-form textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:600;outline:none}.input-row{display:flex;gap:8px}.input-row>.form-group{flex:1;min-width:0}.btn-primary-full,.btn-text-back{font-family:inherit}.btn-primary-full{width:100%;min-height:44px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--royal-blue),var(--indigo-accent));color:#fff;font-weight:800}.btn-text-back{background:none;border:0;color:var(--ink-muted);font-size:10px;font-weight:800;padding:6px 0;cursor:pointer}
 .review-shell{color:var(--ink)}.review-intro{display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}.review-kicker,.review-section-number{font-size:7px;letter-spacing:1px;font-weight:900;color:var(--royal-blue)}.review-intro h3{font-size:16px;margin:2px 0;color:var(--ink)}.review-intro p{font-size:9px;color:var(--ink-muted)}.review-total-mini{font-size:16px;font-weight:900;color:var(--ink)}.review-section{padding:12px 0;border-bottom:1px solid var(--border)}.review-section-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}.review-section-head>div{display:flex;gap:8px}.review-section-head b{display:block;font-size:11px;color:var(--ink)}.review-section-head small{display:block;font-size:8px;color:var(--ink-muted)}.review-edit-link{border:0;background:var(--surface-soft);color:var(--royal-blue);border-radius:8px;padding:5px 8px;font-size:8px;font-weight:900}.review-item-list{display:grid;gap:0}.review-item-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--surface-soft)}.review-item-row:first-child{border-top:0}.review-item-name{display:flex;align-items:center;gap:7px;min-width:0}.review-item-icon,.review-line-icon{width:28px;height:28px;border-radius:9px;background:var(--royal-blue-soft);color:var(--royal-blue);display:flex;align-items:center;justify-content:center;flex:0 0 28px;font-size:10px}.review-item-name b{display:block;font-size:10px}.review-item-name small{display:block;font-size:8px;color:var(--ink-muted)}.review-item-actions{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:800}.review-item-actions strong{margin-left:3px;font-size:10px}.review-qty-btn{width:22px;height:22px;border:1px solid var(--border);background:var(--surface);border-radius:50%;font-weight:900;color:var(--ink)}.review-address{display:flex;gap:8px;align-items:flex-start}.review-address strong{font-size:10px}.review-address em{font-size:8px;color:var(--ink-muted);font-style:normal}.review-address p{font-size:9px;color:var(--ink-sub);line-height:1.45;margin-top:2px}.review-schedule{display:grid;grid-template-columns:1fr 1fr;gap:7px}.review-schedule>div{display:flex;align-items:center;gap:6px;padding:8px;border-left:2px solid var(--indigo-accent);background:var(--royal-blue-soft);font-size:9px;font-weight:800}.review-note{margin-top:7px;padding:7px 8px;border-left:2px solid var(--royal-blue);background:var(--surface-soft);font-size:9px}.review-total-block{padding-top:10px}.review-total-block>div{display:flex;justify-content:space-between;padding:4px 0;font-size:9.5px;color:var(--ink-muted);font-weight:700}.review-total-block strong{color:var(--ink)}.review-discount span,.review-discount strong{color:var(--emerald)!important}.review-grand-total{border-top:1px solid var(--border);margin-top:5px;padding-top:9px!important;color:var(--ink)!important}.review-grand-total strong{font-size:17px;color:var(--royal-blue)!important}.review-empty{padding:10px 0;font-size:9px;color:var(--ink-muted)}
-.time-slot-tip{font-size:9.5px}.native-date-fallback{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}.location-picker{margin-bottom:11px;padding:10px;border:1px solid var(--border);border-radius:16px;background:var(--surface-soft)}.location-picker-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.location-picker-head strong{display:block;font-size:10px;color:var(--ink)}.location-picker-head small{display:block;font-size:8px;color:var(--ink-muted);margin-top:2px}.location-btn{border:1px solid var(--royal-blue);background:var(--surface);color:var(--royal-blue);border-radius:999px;padding:7px 9px;font-size:8px;font-weight:900;white-space:nowrap}.pdc-map{height:190px;border-radius:12px;overflow:hidden;background:var(--border)}.map-address-hint{font-size:8.5px;color:var(--ink-muted);line-height:1.35;margin-top:6px}.leaflet-container{font-family:'Plus Jakarta Sans',sans-serif}
+.time-slot-tip{font-size:9.5px}.native-date-fallback{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}.location-picker{margin-bottom:11px;padding:10px;border:1px solid var(--border);border-radius:16px;background:var(--surface-soft)}.location-picker-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.location-picker-head strong{display:block;font-size:10px;color:var(--ink)}.location-picker-head small{display:block;font-size:8px;color:var(--ink-muted);margin-top:2px}.location-btn{border:1px solid var(--royal-blue);background:var(--surface);color:var(--royal-blue);border-radius:999px;padding:7px 9px;font-size:8px;font-weight:900;white-space:nowrap}.pdc-map{height:190px;border-radius:12px;overflow:hidden;background:var(--border)}.map-address-hint{font-size:8.5px;color:var(--ink-muted);line-height:1.35;margin-top:6px}.leaflet-container{font-family:'Outfit',sans-serif}
 .coupon-card:not(.active){display:none}.dynamic-glass-dock{padding-bottom:calc(10px + env(safe-area-inset-bottom))}.modal-box{color:var(--ink)}
 [data-theme="dark"] .wa-help{background:#052e16;color:#86efac}.leaflet-control-attribution{font-size:8px!important}
 @media(max-width:380px){.r-box{font-size:9px}.r-box i{display:none}.review-item-actions strong{font-size:9px}.btn-dock-pill{padding:10px 14px;font-size:11px}}
@@ -376,7 +376,7 @@
 .repeat-choice-primary b,.repeat-choice-secondary b{display:block;font-size:10.5px;font-weight:850;}
 .repeat-choice-primary small,.repeat-choice-secondary small{display:block;font-size:8.5px;color:var(--ink-muted);line-height:1.35;margin-top:2px;font-weight:600;}
 .repeat-choice-cancel{border:0;background:transparent;color:var(--ink-muted);font-size:10px;font-weight:800;text-align:center!important;padding:7px;}
-[data-theme="dark"] .repeat-choice-primary{background:rgba(37,99,235,.12);border-color:rgba(96,165,250,.25);}
+[data-theme="dark"] .repeat-choice-primary{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.25);}
 </style>
 
 
@@ -984,7 +984,7 @@ let COUPONS = {};
 const STATE = {
 categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
 catNames: Object.assign({}, DEFAULT_CATNAMES),
-upsellRules: [ {triggerName:'Coat Pant', offerId:'upsell-tie', text:'Add Premium Tie Wash?', color:'#d946ef'}, {triggerName:'Blanket (Double)', offerId:'upsell-pillow', text:'Wash Pillow Covers too?', color:'#0ea5e9'} ],
+upsellRules: [ {triggerName:'Coat Pant', offerId:'upsell-tie', text:'Add Premium Tie Wash?', color:'#d946ef'}, {triggerName:'Blanket (Double)', offerId:'upsell-pillow', text:'Wash Pillow Covers too?', color:'#2563EB'} ],
 bag: sanitizeStoredCart(JSON.parse(localStorage.getItem('pdc_cart') || '{}')),
 appliedPromo: null, couponEligible: false,
 couponRequestId: 0,
@@ -994,7 +994,7 @@ isLoggedIn: false, lastOrderCache: null, lastOrderId: null, repeatConsumedOrderI
 selectedTimeSlot:'', selectedSlotEndHr:null,
 lastBookedOrderId: null,
 pendingCheckoutStep: null,
-theme: localStorage.getItem('pdc_theme') || 'light',
+theme: localStorage.getItem('theme') || localStorage.getItem('pdc_theme') || 'light',
 checkoutStep: 1, 
 isSubmittingOrder: false,
 isVerifyingOtp: false,
@@ -1184,6 +1184,7 @@ UI: {
   toggleTheme: function(){
     STATE.theme=STATE.theme==='light'?'dark':'light';
     this.applyTheme(STATE.theme);
+    localStorage.setItem('theme',STATE.theme);
     localStorage.setItem('pdc_theme',STATE.theme);
   },
 
@@ -2837,7 +2838,7 @@ const invoiceHTML = `<div style="width:470px;box-sizing:border-box;padding:24px;
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
         <div>
           <div style="font-size:25px;font-weight:900;letter-spacing:-.7px;color:#2563eb;line-height:1;">Parth</div>
-          <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#1e3a8a;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
+          <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#2563EB;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
           <div style="font-size:8.5px;color:#64748b;font-weight:700;margin-top:7px;">Laundry • Dry Cleaning • Doorstep Pickup</div>
         </div>
         <div style="text-align:right;">
