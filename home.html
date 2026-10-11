@@ -62,7 +62,7 @@
 document.addEventListener('error', function(e) {
   if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
     e.target.onerror = null; 
-    e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20640%20512%22%20fill%3D%22%230ea5e9%22%3E%3Cpath%20d%3D%22M211.8%200c7.8%200%2014.3%205.7%2016.7%2013.2C240.8%2051.9%20277.1%2080%20320%2080s79.2-28.1%2091.5-66.8C413.9%205.7%20420.4%200%20428.2%200h12.6c22.5%200%2044.2%207.9%2061.5%2022.3L628.5%20127.4c6.6%205.5%2010.7%2013.5%2011.4%2022.1s-2.1%2017.1-7.8%2023.6l-56%2064c-11.4%2013.1-31.2%2014.6-44.6%203.5L480%20197.7V448c0%2035.3-28.7%2064-64%2064H224c-35.3%200-64-28.7-64-64V197.7l-51.5%2042.9c-13.3%2011.1-33.1%209.6-44.6-3.5l-56-64c-5.7-6.5-8.5-15-7.8-23.6s4.8-16.6%2011.4-22.1L137.7%2022.3C155%207.9%20176.7%200%20199.2%200h12.6z%22%2F%3E%3C%2Fsvg%3E';
+    e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20640%20512%22%20fill%3D%22%232563eb%22%3E%3Cpath%20d%3D%22M211.8%200c7.8%200%2014.3%205.7%2016.7%2013.2C240.8%2051.9%20277.1%2080%20320%2080s79.2-28.1%2091.5-66.8C413.9%205.7%20420.4%200%20428.2%200h12.6c22.5%200%2044.2%207.9%2061.5%2022.3L628.5%20127.4c6.6%205.5%2010.7%2013.5%2011.4%2022.1s-2.1%2017.1-7.8%2023.6l-56%2064c-11.4%2013.1-31.2%2014.6-44.6%203.5L480%20197.7V448c0%2035.3-28.7%2064-64%2064H224c-35.3%200-64-28.7-64-64V197.7l-51.5%2042.9c-13.3%2011.1-33.1%209.6-44.6-3.5l-56-64c-5.7-6.5-8.5-15-7.8-23.6s4.8-16.6%2011.4-22.1L137.7%2022.3C155%207.9%20176.7%200%20199.2%200h12.6z%22%2F%3E%3C%2Fsvg%3E';
     e.target.style.objectFit = 'contain';
     e.target.style.padding = '30px';
     e.target.style.backgroundColor = 'var(--accent-light)';
@@ -84,13 +84,13 @@ section { scroll-margin-top: 80px; }
 
 :root {
 --bg: #F8FAFC; --surface: #FFFFFF; --surface-soft:#F1F5F9; --text: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
---primary: #2563EB; --primary-dark: #1D4ED8; --accent: #6366f1; --accent-light: #EFF6FF;
+--primary: #2563EB; --primary-dark: #2563EB; --accent: #2563EB; --accent-light: #EFF6FF;
 --success: #059669; --gold: #f59e0b; --danger: #EF4444; --border: #E2E8F0;
 --radius: 18px; --radius-sm: 12px; --shadow-sm: 0 4px 18px -4px rgba(var(--ink-rgb),0.05); --shadow: 0 6px 24px -6px rgba(var(--ink-rgb),0.06);
 --transition: 0.25s ease; --header-height: 60px;
---primary-rgb:37,99,235; --accent-rgb:99,102,241; --ink-rgb:15,23,42; --success-rgb:5,150,105; --danger-rgb:239,68,68; --gold-rgb:217,119,6;
+--primary-rgb:37,99,235; --accent-rgb:37,99,235; --ink-rgb:15,23,42; --success-rgb:5,150,105; --danger-rgb:239,68,68; --gold-rgb:217,119,6;
 --success-soft:#ECFDF5; --danger-soft:#FEF2F2; --gold-soft:#FFFBEB;
---gradient:linear-gradient(135deg,#2563EB,#6366F1); --pill-radius:999px; --radius-lg:22px;
+--gradient:linear-gradient(135deg,#2563EB,#2563EB); --pill-radius:999px; --radius-lg:22px;
 --shadow-card:0 8px 28px -8px rgba(var(--ink-rgb),.08); --shadow-float:0 18px 45px -10px rgba(var(--primary-rgb),.18);
 }
 
@@ -355,6 +355,7 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .fabric-content-card p{color:var(--text-muted);font-size:13px;font-weight:550;line-height:1.65;margin:0;}
 .fabric-content-card .trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:15px;font-size:10px;font-weight:850;color:var(--primary);background:var(--accent-light);padding:8px 12px;border-radius:var(--pill-radius);border:1px solid rgba(var(--primary-rgb),.14);width:fit-content;}
 .trust-badge-small{color:var(--primary);background:var(--accent-light);border-color:rgba(var(--primary-rgb),.14);}
+[data-theme="dark"] .trust-badge-small{background:transparent;border-color:transparent;}
 
 
 
@@ -389,8 +390,9 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .chips-scroll-wrapper { position: relative; max-width: 700px; margin: 0 auto; padding-bottom: 5px; }
 .pricing-chips-wrapper { display:flex; gap:10px; overflow-x:auto; padding:15px 15px 30px 15px; margin-bottom: -15px; scrollbar-width: none; scroll-behavior: smooth; }
 .pricing-chips-wrapper::-webkit-scrollbar { display:none; }
-.price-chip { white-space:nowrap; padding:10px 20px; border-radius:30px; background:var(--surface); border:1.5px solid var(--border); font-size:14px; font-weight:700; color:var(--text-muted); cursor:pointer; transition:0.3s; font-family:'Outfit'; flex-shrink: 0; }
-.price-chip.active { background:var(--accent-light); color:var(--primary); border-color:var(--primary); box-shadow:none; }
+.price-chip { white-space:nowrap; padding:8px 16px; border-radius:var(--pill-radius); background:var(--surface); border:1px solid var(--border); font-size:11.5px; font-weight:700; color:var(--text-muted); cursor:pointer; transition:transform .18s cubic-bezier(.22,1,.36,1), background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease; font-family:'Outfit'; flex-shrink:0; box-shadow:var(--shadow-soft, var(--shadow-sm)); }
+.price-chip:active { transform:scale(.95); }
+.price-chip.active { background:var(--primary); color:#fff; border-color:var(--primary); box-shadow:inset 0 1px 0 rgba(255,255,255,.16), 0 2px 0 rgba(15,23,42,.04); }
 
 /* LIST SWIPE HINT ARROWS (PULSING) */
 .list-wrapper-relative { position: relative; max-width: 700px; margin: 0 auto; }
@@ -804,12 +806,16 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 .booking-ui-home input.clean-input:focus,.booking-ui-home input[type='search']:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--accent-light);}
 .booking-ui-home .price-search-container>i{color:var(--primary);}
 .booking-ui-home .search-clear-btn{background:var(--surface);color:var(--text-muted);border-color:var(--border);}
-.booking-ui-home .pricing-chips-wrapper .chip,.booking-ui-home .pricing-chip,.booking-ui-home .category-chip,.booking-ui-home .price-chip{
+.booking-ui-home .pricing-chips-wrapper .chip,.booking-ui-home .pricing-chip,.booking-ui-home .category-chip{
   background:var(--surface);color:var(--text-secondary);border:1px solid var(--border);border-radius:var(--pill-radius);box-shadow:var(--shadow-sm);
 }
-.booking-ui-home .pricing-chips-wrapper .chip.active,.booking-ui-home .pricing-chip.active,.booking-ui-home .category-chip.active,.booking-ui-home .price-chip.active{
-  background:var(--accent-light);color:var(--primary);border-color:var(--primary);box-shadow:none;
+.booking-ui-home .pricing-chips-wrapper .chip.active,.booking-ui-home .pricing-chip.active,.booking-ui-home .category-chip.active{
+  background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 2px 8px rgba(var(--primary-rgb),.18);
 }
+.booking-ui-home .price-chip{color:var(--text-muted);box-shadow:var(--shadow-soft, var(--shadow-sm));transition:transform .18s cubic-bezier(.22,1,.36,1),background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.booking-ui-home .price-chip.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 0 rgba(15,23,42,.04);}
+
+.booking-ui-home .pricing-chips-wrapper .chip:focus-visible,.booking-ui-home .pricing-chip:focus-visible,.booking-ui-home .category-chip:focus-visible,.booking-ui-home .price-chip:focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
 
 /* pricing: rows are intentionally flat; only the section/chips carry surfaces */
 .booking-ui-home .list-wrapper-relative{background:transparent!important;border:0!important;box-shadow:none!important;}
@@ -935,6 +941,11 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
    are overridden here. To rebrand, edit :root ONLY.
 ================================================================ */
 [data-theme="dark"]{
+  /* Shared brand blue: royal blue in light mode, accessible sky blue in dark mode */
+  --primary:#2563EB;
+  --primary-dark:#2563EB;
+  --primary-rgb:37,99,235;
+  --gradient:linear-gradient(135deg,#2563EB,#2563EB);
   /* Neutrals */
   --bg:#090D16;
   --surface:#111827;
@@ -2101,8 +2112,8 @@ function closeActiveOrders() { const dropdown = document.getElementById('activeO
 
 document.addEventListener('click', (e) => { const wrapper = document.getElementById('activeCareWrapper'); const dropdown = document.getElementById('activeOrderDropdown'); if (!wrapper || !dropdown || !dropdown.classList.contains('open')) return; if (wrapper.contains(e.target)) return; dropdown.classList.remove('open'); });
 
-function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); if (html.hasAttribute('data-theme')) { html.removeAttribute('data-theme'); localStorage.setItem('theme', 'light'); icon.className = 'fas fa-moon'; } else { html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', 'dark'); icon.className = 'fas fa-sun'; } }
-(() => { if (localStorage.getItem('theme') === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.querySelector('#themeToggle i').className = 'fas fa-sun'; } })();
+function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); const nextTheme = html.hasAttribute('data-theme') ? 'light' : 'dark'; if (nextTheme === 'light') html.removeAttribute('data-theme'); else html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', nextTheme); localStorage.setItem('pdc_theme', nextTheme); if (icon) icon.className = nextTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; }
+(() => { const savedTheme = localStorage.getItem('theme') || localStorage.getItem('pdc_theme') || 'light'; if (savedTheme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); const icon = document.querySelector('#themeToggle i'); if (icon) icon.className = 'fas fa-sun'; } })();
 
 function openModal(id) {
   const m = document.getElementById(id);
@@ -2761,7 +2772,7 @@ function buildInvoicePDF(o, prof, orderId) {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
           <div>
             <div style="font-size:25px;font-weight:900;letter-spacing:-.7px;color:#2563eb;line-height:1;">Parth</div>
-            <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#1e3a8a;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
+            <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#2563EB;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
             <div style="font-size:8.5px;color:#64748b;font-weight:700;margin-top:7px;">Laundry • Dry Cleaning • Doorstep Pickup</div>
           </div>
           <div style="text-align:right;">
@@ -2881,21 +2892,23 @@ function rebuildPriceLookup() { Object.keys(priceLookup).forEach(k => delete pri
 
 function loadDynamicCategories() {
   db.ref('services/categories').once('value').then(s => {
-    if (!s.exists()) return;
-    const data = s.val();
-    const keys = Object.keys(data);
-    if (!keys.length) return;
-    keys.forEach(k => { delete categories[k]; delete categoryNames[k]; });
-    
+    if (!s.exists()) return; // Keep the existing fallback catalog only when Firebase has no catalog.
+    const data = s.val() || {};
     const definedOrder = ['mens', 'ladies', 'winterMen', 'winterWomen', 'festival', 'iron', 'home', 'combos'];
+    const keys = Object.keys(data).filter(k => data[k] && Array.isArray(data[k].items));
+    if (!keys.length) return; // Avoid replacing a usable catalog with malformed/empty data.
     keys.sort((a,b) => {
-       let ia = definedOrder.indexOf(a);
-       let ib = definedOrder.indexOf(b);
-       if(ia === -1) ia = 99;
-       if(ib === -1) ib = 99;
-       return ia - ib;
+      let ia = definedOrder.indexOf(a);
+      let ib = definedOrder.indexOf(b);
+      if (ia === -1) ia = 99;
+      if (ib === -1) ib = 99;
+      return ia - ib;
     });
 
+    // Match Booking: when a valid Firebase catalog exists, use it as the source of truth
+    // instead of leaving stale fallback categories mixed into the Home price list.
+    Object.keys(categories).forEach(k => delete categories[k]);
+    Object.keys(categoryNames).forEach(k => delete categoryNames[k]);
     keys.forEach(k => {
       const c = data[k] || {};
       categoryNames[k] = c.name || k;
@@ -2907,11 +2920,11 @@ function loadDynamicCategories() {
       }));
     });
     catOrder.length = 0;
-    Object.keys(categories).forEach(k => catOrder.push(k));
+    keys.forEach(k => catOrder.push(k));
     rebuildPriceLookup();
-    activeCategory = 'mens';
+    activeCategory = catOrder.includes('mens') ? 'mens' : (catOrder[0] || 'all');
     renderPricing();
-  }).catch(() => {});
+  }).catch(err => { console.warn('Could not load service categories; keeping fallback catalog.', err); });
 }
 
 function applyGeneralSettings(v) {
