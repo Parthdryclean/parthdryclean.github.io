@@ -522,7 +522,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
      <div style="margin-top:10px;color:var(--muted);font-size:11px;line-height:1.5">This is separate from automatic order-status notifications. The Admin only creates the event; the server sends the FCM notification.</div>
     </div>
    </div>
-   <div class="panel" style="margin-top:14px"><div class="panel-head"><h3><i class="fas fa-list"></i> Recent Notification Events</h3></div><div id="manualNotificationList" style="padding:0 14px"></div></div>
+   <div class="panel" style="margin-top:14px"><div class="panel-head"><h3><i class="fas fa-list"></i> Recent Notification Events</h3><button class="btn" onclick="App.flushQueuedNotifications()"><i class="fas fa-bolt"></i> Send All Queued</button></div><div id="manualNotificationList" style="padding:0 14px"></div></div>
   </div>
 
   <div class="tab-content" id="tab-areas">
@@ -1010,12 +1010,35 @@ const App={
    const data={status:next,paymentStatus:pay,assigned_to:boy,assigned_to_e164:boy?'+91'+boy:''};
    try{await db.ref('orders/'+id).update(data);if(next!==current){try{await App.queueOrderNotification(id,o,current,next);}catch(ne){writeAudit('Order notification queue failed',id,{from:current,to:next,error:ne?.message||String(ne)});toast('Order updated, but notification could not be queued','err');}}writeAudit('Order updated',id,{from:current,to:next,paymentStatus:pay,assigned_to:boy});if(next===current)toast('✅ Order updated');renderOrderDrawer({id,...o,...data});}catch(e){toast(e.message,'err');}
  },
- queueOrderNotification:(id,o,from,to)=>{
-   if(!o?.uid||from===to)return Promise.resolve(null);
+ triggerNotificationDispatch:async(eventId='',kind='')=>{
+   if(!auth.currentUser)return null;
+   try{
+     const token=await auth.currentUser.getIdToken(true);
+     const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/dispatchNotifications',{
+       method:'POST',
+       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+       body:JSON.stringify({eventId,kind})
+     });
+     return await r.json().catch(()=>({}));
+   }catch(err){
+     console.warn('Direct notification dispatch fallback to trigger:',err);
+     return null;
+   }
+ },
+ flushQueuedNotifications:async()=>{
+   toast('Sending queued notifications...');
+   const res=await App.triggerNotificationDispatch('','');
+   if(res&&res.ok)toast(`✅ Processed ${res.processed||0} queued notification(s)`);
+   else toast('Could not reach dispatch function — check functions deploy','err');
+ },
+ queueOrderNotification:async(id,o,from,to)=>{
+   if(!o?.uid||from===to)return null;
    const labels={pending:'Pickup Scheduled',picked_up:'Garments Collected',processing:'Expert Cleaning',quality_check:'Quality Check',out_for_delivery:'Fresh Clothes on the Way',delivered:'Delivered Successfully',cancelled:'Order Cancelled'};
    const label=labels[to]||'Order Update';
    const body={pending:'Your pickup is scheduled.',picked_up:'Your garments have been collected.',processing:'Your garments are now being cleaned.',quality_check:'Your order is in quality check.',out_for_delivery:'Your fresh clothes are on the way.',delivered:'Your order has been delivered successfully.',cancelled:'Your order has been cancelled.'}[to]||('Your order status changed to '+label+'.');
-   return db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · '+label,body,status:'queued',fromStatus:from,toStatus:to,createdAt:firebase.database.ServerValue.TIMESTAMP});
+   const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · '+label,body,status:'queued',fromStatus:from,toStatus:to,createdAt:firebase.database.ServerValue.TIMESTAMP});
+   App.triggerNotificationDispatch(ref.key,'order_status');
+   return ref;
  },
  setStatus:async(id,st)=>{const o=ordersSnap?.val()?.[id];if(!o)return;const current=o.status||'pending';if(st!==current){const validCancel=st==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===st;if(!validCancel&&!nextFlow){renderOrders();return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[st]||st}`,'err');}}try{await db.ref('orders/'+id).update({status:st});writeAudit('Order status changed',id,{from:current,to:st});let notificationQueued=true;try{await App.queueOrderNotification(id,o,current,st);}catch(ne){notificationQueued=false;writeAudit('Order notification queue failed',id,{from:current,to:st,error:ne?.message||String(ne)});}toast(notificationQueued?'Status updated':'Status updated · notification queue failed');if(App._openOrderId===id)renderOrderDrawer({id,...o,status:st});}catch(e){toast(e.message,'err');}},
  setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>{toast('Payment: '+v);if(App._openOrderId===id){const o=ordersSnap.val()[id];renderOrderDrawer({id,...o,paymentStatus:v});}}).catch(e=>toast(e.message,'err')),
@@ -1032,7 +1055,7 @@ const App={
  addArea:()=>{const name=$('areaName').value.trim();if(!name)return toast('Area name required','err');const id=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');const areas=serviceAreas.areas||{};if(areas[id])return toast('Area already exists','err');const data={name,status:$('areaStatus').value,pincodes:($('areaPins').value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('areaKeywords').value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),createdAt:firebase.database.ServerValue.TIMESTAMP};db.ref('settings/serviceAreas/areas/'+id).set(data).then(()=>writeAudit('Service area created',id)).then(()=>{$('areaName').value='';$('areaPins').value='';$('areaKeywords').value='';toast('✅ Service area added');}).catch(e=>toast(e.message,'err'));},
  saveArea:id=>{const data={name:$('an_'+id).value.trim(),status:$('as_'+id).value,pincodes:($('ap_'+id).value||'').split(',').map(x=>x.trim()).filter(Boolean),keywords:($('ak_'+id).value||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean),updatedAt:firebase.database.ServerValue.TIMESTAMP};if(!data.name)return toast('Area name required','err');db.ref('settings/serviceAreas/areas/'+id).update(data).then(()=>writeAudit('Service area updated',id)).then(()=>toast('✅ Area saved')).catch(e=>toast(e.message,'err'));},
  deleteArea:id=>askConfirm('Delete this service area?',()=>db.ref('settings/serviceAreas/areas/'+id).remove().then(()=>writeAudit('Service area deleted',id)).then(()=>toast('Area deleted')).catch(e=>toast(e.message,'err'))),
- sendManualNotification:()=>{
+ sendManualNotification:async()=>{
   const uid=$('manualNotifCustomer')?.value||'';
   const title=($('manualNotifTitle')?.value||'').trim();
   const body=($('manualNotifBody')?.value||'').trim();
@@ -1040,11 +1063,16 @@ const App={
   if(!title||!body)return toast('Title + message required','err');
   const c=customers?.[uid]||{};
   if(!c.fcmToken)return toast('Customer notifications enabled nahi hain','err');
-  db.ref('manual_notification_events').push({type:'manual',uid,title,body,status:'queued',createdAt:firebase.database.ServerValue.TIMESTAMP}).then(()=>{
+  try{
+    const ref=await db.ref('manual_notification_events').push({type:'manual',uid,title,body,status:'queued',createdAt:firebase.database.ServerValue.TIMESTAMP});
     $('manualNotifTitle').value=''; $('manualNotifBody').value='';
-    toast('✅ Notification queued for delivery');
     writeAudit('Manual notification queued',uid,{title});
-  }).catch(e=>toast(e.message,'err'));
+    const res=await App.triggerNotificationDispatch(ref.key,'manual');
+    const sentItem=res?.results?.find(x=>x.eventId===ref.key);
+    if(sentItem?.status==='sent')toast('✅ Notification sent to customer!');
+    else if(sentItem?.status==='failed')toast('⚠️ Send failed: '+(sentItem.error||'Invalid token'),'err');
+    else toast('✅ Notification queued for delivery');
+  }catch(e){toast(e.message,'err');}
  },
  refreshIntelligence:()=>{renderIntelligence();toast('Intelligence refreshed');},
  refreshAudit:()=>db.ref('audit_log').limitToLast(80).once('value').then(s=>{auditSnap=s;renderAudit();toast('Audit refreshed');}),
