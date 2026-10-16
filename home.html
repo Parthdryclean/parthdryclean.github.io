@@ -83,7 +83,7 @@ section { scroll-margin-top: 80px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
 
 :root {
---bg: #F8FAFC; --surface: #FFFFFF; --surface-soft:#F1F5F9; --text: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
+--bg: #F8FAFC; --canvas: #F8FAFC; --surface: #FFFFFF; --surface-soft:#F1F5F9; --text: #0F172A; --text-secondary: #334155; --text-muted: #64748B;
 --primary: #2563EB; --primary-dark: #2563EB; --accent: #2563EB; --accent-light: #EFF6FF;
 --success: #059669; --gold: #f59e0b; --danger: #EF4444; --border: #E2E8F0;
 --radius: 18px; --radius-sm: 12px; --shadow-sm: 0 4px 18px -4px rgba(var(--ink-rgb),0.05); --shadow: 0 6px 24px -6px rgba(var(--ink-rgb),0.06);
@@ -190,13 +190,14 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 @keyframes pulseDot { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.25); opacity:.72; } }
 .active-care-label { font-weight:800; font-size:13px; color:var(--text); display:flex; flex-direction:column; line-height:1.15; }
 .active-care-label small { font-size:10px; color:var(--text-muted); font-weight:700; }
-.active-orders-scroller { display:flex; align-items:center; gap:10px; overflow-x:auto; flex:1; padding:4px 12px 4px 2px; scrollbar-width:none; overscroll-behavior: contain; scroll-snap-type:x mandatory; }
+.active-orders-scroller { display:flex; align-items:center; gap:10px; overflow-x:auto; flex:1; min-width:0; padding:4px 4px 4px 2px; scrollbar-width:none; overscroll-behavior: contain; scroll-snap-type:x mandatory; }
 .active-orders-scroller::-webkit-scrollbar { display:none; }
-.care-order-pill { display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 14px; box-shadow:var(--shadow-sm); white-space:nowrap; flex-shrink:0; scroll-snap-align:start; }
+.care-order-pill { display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:7px 14px; box-shadow:var(--shadow-sm); white-space:nowrap; flex:0 0 100%; width:100%; max-width:100%; min-width:0; box-sizing:border-box; overflow:hidden; scroll-snap-align:start; scroll-snap-stop:always; }
 .care-order-pill .pill-icon { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; font-size:13px; flex-shrink:0; }
-.care-order-pill .pill-id { font-size:12px; font-weight:800; color:var(--text); line-height:1.1; }
-.care-order-pill .pill-status { font-size:11px; font-weight:700; color:var(--text-muted); }
-.care-order-pill .pill-eta { font-size:11px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:5px; }
+.care-order-pill .pill-main { min-width:0; flex:1; overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
+.care-order-pill .pill-id { font-size:12px; font-weight:800; color:var(--text); line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.care-order-pill .pill-status { font-size:11px; font-weight:700; color:var(--text-muted); line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.care-order-pill .pill-eta { font-size:11px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:5px; flex-shrink:0; margin-left:auto; padding-left:6px; }
 .pill-status.status-pending { color:var(--gold); } .pill-status.status-picked_up { color:var(--primary); } .pill-status.status-processing { color:var(--accent); } .pill-status.status-quality_check { color:var(--success); } .pill-status.status-out_for_delivery { color:var(--primary-dark); }
 .care-scroll-arrow { flex-shrink:0; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; margin-left:6px; box-shadow:0 3px 10px rgba(var(--primary-rgb),0.35); animation:arrowBounce 1.8s ease-in-out infinite; transition:opacity 0.3s; }
 @keyframes arrowBounce { 0%, 100% { transform: translateX(0); opacity:0.7; } 50% { transform: translateX(4px); opacity:1; } }
@@ -205,34 +206,46 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .care-hint.show { opacity:1; transform:translateY(0); }
 .care-hint i { color:var(--primary); }
 
-/* ACTIVE CARE DROPDOWN — smooth animated expansion */
+/* ACTIVE CARE DROPDOWN — full-screen smooth expansion below active bar */
 .active-care-dropdown {
+  height: 0;
+  min-height: 0;
   max-height: 0;
   opacity: 0;
-  transform: translateY(-14px);
+  transform: translateY(-10px);
   overflow: hidden;
   background: var(--surface);
-  position: relative;
-  z-index: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 98;
   overscroll-behavior: contain;
   pointer-events: none;
-  will-change: max-height, opacity, transform;
-  transition: max-height .42s cubic-bezier(.22,1,.36,1), opacity .28s ease, transform .34s cubic-bezier(.22,1,.36,1);
+  will-change: height, max-height, opacity, transform;
+  transition: height .36s cubic-bezier(.22,1,.36,1), max-height .36s cubic-bezier(.22,1,.36,1), opacity .24s ease, transform .3s cubic-bezier(.22,1,.36,1);
 }
 .active-care-dropdown.open {
-  max-height: 600px;
+  height: calc(100vh - var(--header-height) - 52px);
+  height: calc(100dvh - var(--header-height) - 52px);
+  min-height: calc(100vh - var(--header-height) - 52px);
+  min-height: calc(100dvh - var(--header-height) - 52px);
+  max-height: calc(100vh - var(--header-height) - 52px);
+  max-height: calc(100dvh - var(--header-height) - 52px);
   opacity: 1;
   transform: translateY(0);
   overflow-y: auto;
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.18);
   pointer-events: auto;
 }
-.dropdown-close-row { display:flex; justify-content:space-between; align-items:center; padding:14px 5% 0; position:sticky; top:0; background:var(--surface); z-index:2; }
+.dropdown-close-row { display:flex; justify-content:space-between; align-items:center; padding:14px 5% 10px; position:sticky; top:0; background:var(--surface); z-index:2; border-bottom:1px solid var(--border); }
 .dropdown-close-row > span { font-weight:800; font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.6px; display:flex; align-items:center; gap:6px; }
 .dropdown-close-row > span b { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .dropdown-close-btn { background:var(--bg); border:1px solid var(--border); color:var(--text-muted); width:30px; height:30px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.2s; font-size:13px; }
 .dropdown-close-btn:hover { color:var(--danger); border-color:var(--danger); }
-.active-care-dropdown .dropdown-inner { padding:14px 5% 18px; display:grid; gap:16px; }
+.active-care-dropdown .dropdown-inner { padding:16px 5% 90px; display:grid; gap:16px; max-width:760px; margin:0 auto; }
 .care-card { background:var(--bg); border:1px solid var(--border); border-radius:22px; padding:20px; box-shadow:var(--shadow-sm); }
 .care-card-top { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:18px; }
 .care-card-title { font-size:18px; font-weight:800; margin-bottom:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -261,6 +274,8 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .care-btn.soft-blue { background: var(--accent-light); color: var(--primary-dark); }
 .care-btn.soft-green { background: var(--success-soft); color: var(--success); }
 .care-btn.soft-red { background: var(--danger-soft); color: var(--danger); }
+.care-btn.whatsapp { background: #25d366; color: #fff; box-shadow: 0 4px 14px rgba(37,211,102,0.28); }
+.care-btn.primary { background: var(--gradient); color: #fff; box-shadow: 0 6px 18px rgba(var(--primary-rgb),0.25); }
 
 .express-badge { background: #fbbf24; color: #1e293b; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
 .express-badge i { font-size: 10px; }
@@ -720,9 +735,17 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 .booking-ui-home .stain-hanger{width:140px;bottom:-50px;right:20px;opacity:.7;}
 .floating-whatsapp { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 26px; }
 .whatsapp-tooltip { right: 0; left: auto; top: auto; bottom: calc(100% + 12px); transform: none; font-size: 11px; padding: 6px 12px; }
-.active-care-strip { padding:8px 4%; gap:8px; }
-.active-care-label small { display:none; }
-.active-care-dropdown.open { max-height: min(600px, calc(100vh - var(--header-height) - 56px)); }
+.active-care-strip { padding:7px 3.5%; gap:6px; }
+.active-care-left { gap:6px; }
+.active-care-label { display:none; }
+.active-care-dropdown.open {
+  height: calc(100vh - var(--header-height) - 48px);
+  height: calc(100dvh - var(--header-height) - 48px);
+  min-height: calc(100vh - var(--header-height) - 48px);
+  min-height: calc(100dvh - var(--header-height) - 48px);
+  max-height: calc(100vh - var(--header-height) - 48px);
+  max-height: calc(100dvh - var(--header-height) - 48px);
+}
 .care-card { padding:16px; border-radius:18px; }
 .care-card-title { font-size:16px; }
 .care-progress { gap:2px; }
@@ -731,13 +754,14 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 .step-label { font-size:8.5px; }
 .care-hint { right:4%; }
 .live-indicator { padding:4px 10px; font-size:9px; }
-.active-orders-scroller { gap: 8px; padding: 4px 2px 4px 2px; scroll-snap-type: x mandatory; scroll-padding: 0 2px; }
-.care-order-pill { flex: 0 0 calc(100% - 4px); scroll-snap-align: start; scroll-snap-stop: always; padding: 6px 10px; gap: 8px; justify-content: flex-start; }
+.active-orders-scroller { gap: 8px; padding: 2px 0; min-width: 0; width: 100%; scroll-snap-type: x mandatory; scroll-padding: 0; }
+.care-order-pill { flex: 0 0 100%; width: 100%; max-width: 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; padding: 6px 11px; gap: 8px; justify-content: space-between; }
 .care-order-pill .pill-icon { width: 26px; height: 26px; font-size: 12px; }
-.care-order-pill .pill-id { font-size: 11px; }
-.care-order-pill .pill-status { font-size: 10px; }
-.care-order-pill .pill-eta { font-size: 10px; margin-left: auto; }
-.care-scroll-arrow { width: 26px; height: 26px; font-size: 11px; margin-left: 4px; }
+.care-order-pill .pill-main { min-width: 0; flex: 1; overflow: hidden; }
+.care-order-pill .pill-id { font-size: 11.5px; }
+.care-order-pill .pill-status { font-size: 10.5px; }
+.care-order-pill .pill-eta { font-size: 10.5px; margin-left: auto; flex-shrink: 0; }
+.care-scroll-arrow { width: 26px; height: 26px; font-size: 11px; margin-left: 2px; }
 .footer-links-container { gap: 40px; }
 .modal-box { padding: 24px 20px; }
 .faq-answer { padding:0 15px 18px 22px; }
@@ -948,6 +972,7 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
   --gradient:linear-gradient(135deg,#2563EB,#2563EB);
   /* Neutrals */
   --bg:#090D16;
+  --canvas:#090D16;
   --surface:#111827;
   --surface-soft:#1E293B;
   --text:#F8FAFC;
@@ -1632,7 +1657,10 @@ document.querySelectorAll('.modal-grabber-wrapper').forEach(wrapper => {
 // SWITCH MODAL HELPER
 function switchModal(closeId, openId) {
   closeModal(closeId);
-  setTimeout(() => { openModal(openId); }, 300);
+  setTimeout(() => {
+    openModal(openId);
+    if (openId === 'ordersModal') loadOrderHistory();
+  }, 310);
 }
 
 function closeModalOutside(e, id) {
@@ -1642,8 +1670,7 @@ function closeModalOutside(e, id) {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id));
-    const dropdown = document.getElementById('activeOrderDropdown');
-    if (dropdown && dropdown.classList.contains('open')) dropdown.classList.remove('open');
+    closeActiveOrders();
   }
 });
 
@@ -2025,9 +2052,24 @@ function getOrderItemSummary(order) { if (!order.items) return '0 items'; const 
 window.cancelOrder = function(orderId) {
     if(confirm("Are you sure you want to cancel this order? This action cannot be undone.")) {
         showToast("Cancelling order...", "info");
-        db.ref('orders/' + orderId).update({ status: 'cancelled' })
+        db.ref('orders/' + orderId).update({ status: 'cancelled', cancelledAt: firebase.database.ServerValue.TIMESTAMP })
         .then(() => {
             showToast("Order cancelled successfully.", "success");
+            if (Array.isArray(allFetchedOrders) && allFetchedOrders.length) {
+                allFetchedOrders.forEach(o => {
+                    const refKey = safeId(o.firebaseKey || o._firebaseKey || o.orderId);
+                    if (refKey === orderId || o._firebaseKey === orderId || o.orderId === orderId) {
+                        o.status = 'cancelled';
+                    }
+                });
+                renderOrderHistoryList();
+            }
+            if (document.getElementById('ordersModal')?.classList.contains('active')) {
+                loadOrderHistory();
+            }
+            if (auth.currentUser) {
+                loadProfileStats(auth.currentUser.uid);
+            }
         })
         .catch((err) => {
             showToast("Failed to cancel order: " + err.message, "error");
@@ -2040,7 +2082,7 @@ function renderMiniTimeline(order) {
   const icon = statusIcons[order.status] || 'fa-circle-notch';
   const eta = formatEta(order);
   const orderIdDisplay = order.orderId ? sanitizeHTML(formatOrderDisplayId(order.orderId)) : 'Order ID unavailable';
-  return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div><div class="pill-id">#${orderIdDisplay}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`;
+  return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div class="pill-main"><div class="pill-id">#${orderIdDisplay}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`;
 }
 function renderCareProgress(order) { let currentIdx = careSteps.findIndex(step => step.key === order.status); if (currentIdx < 0) currentIdx = 0; return `<div class="care-progress">${careSteps.map((step, idx) => { let cls = ''; if (order.status === 'delivered' || idx < currentIdx) cls = 'done'; else if (idx === currentIdx) cls = 'current'; const icon = cls === 'done' ? 'fa-check' : step.icon; return `<div class="progress-step ${cls}"><div class="step-dot"><i class="fas ${icon}"></i></div><div class="step-label">${step.label}</div></div>`; }).join('')}</div>`; }
 function renderActiveOrderCard(order) { 
@@ -2106,51 +2148,122 @@ function attachActiveOrderListener(uid) {
   activeOrderListeners.push(ordersRef);
 }
 
-function toggleActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (dropdown.classList.contains('open')) closeActiveOrders(); else openActiveOrders(); }
-function openActiveOrders() { document.getElementById('activeOrderDropdown').classList.add('open'); history.pushState({ careDropdown: true }, '', '#active-orders'); }
-function closeActiveOrders() { const dropdown = document.getElementById('activeOrderDropdown'); if (!dropdown.classList.contains('open')) return; dropdown.classList.remove('open'); if (history.state && history.state.careDropdown) history.back(); }
+let isHandlingPopstate = false;
 
-document.addEventListener('click', (e) => { const wrapper = document.getElementById('activeCareWrapper'); const dropdown = document.getElementById('activeOrderDropdown'); if (!wrapper || !dropdown || !dropdown.classList.contains('open')) return; if (wrapper.contains(e.target)) return; dropdown.classList.remove('open'); });
+function syncActiveCareDropdownHeight() {
+  const dropdown = document.getElementById('activeOrderDropdown');
+  const bar = document.getElementById('activeOrderBar');
+  if (!dropdown || !bar) return;
+  if (!dropdown.classList.contains('open')) {
+    dropdown.style.height = '';
+    dropdown.style.minHeight = '';
+    dropdown.style.maxHeight = '';
+    return;
+  }
+  const barRect = bar.getBoundingClientRect();
+  const topOffset = Math.max(0, barRect.bottom);
+  const vh = window.innerHeight || document.documentElement.clientHeight || 700;
+  const fullHeight = Math.max(300, vh - topOffset);
+  dropdown.style.height = fullHeight + 'px';
+  dropdown.style.minHeight = fullHeight + 'px';
+  dropdown.style.maxHeight = fullHeight + 'px';
+}
+
+window.addEventListener('resize', syncActiveCareDropdownHeight);
+
+function toggleActiveOrders() {
+  const dropdown = document.getElementById('activeOrderDropdown');
+  if (dropdown.classList.contains('open')) closeActiveOrders();
+  else openActiveOrders();
+}
+
+function openActiveOrders() {
+  const dropdown = document.getElementById('activeOrderDropdown');
+  if (!dropdown) return;
+  dropdown.classList.add('open');
+  syncActiveCareDropdownHeight();
+  document.body.style.overflow = 'hidden';
+  const wa = document.getElementById('floatingWhatsappBtn');
+  if (wa) wa.style.display = 'none';
+  if (!isHandlingPopstate && (!history.state || !history.state.careDropdown)) {
+    history.pushState({ careDropdown: true }, '', '#active-orders');
+  }
+}
+
+function closeActiveOrders(fromPopstate = false) {
+  const dropdown = document.getElementById('activeOrderDropdown');
+  if (!dropdown || !dropdown.classList.contains('open')) return;
+  dropdown.classList.remove('open');
+  syncActiveCareDropdownHeight();
+  if (!document.querySelector('.modal-overlay.active')) {
+    document.body.style.overflow = '';
+    const wa = document.getElementById('floatingWhatsappBtn');
+    if (wa) wa.style.display = 'flex';
+  }
+  if (!fromPopstate && !isHandlingPopstate && history.state && history.state.careDropdown) {
+    history.back();
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const wrapper = document.getElementById('activeCareWrapper');
+  const dropdown = document.getElementById('activeOrderDropdown');
+  if (!wrapper || !dropdown || !dropdown.classList.contains('open')) return;
+  if (wrapper.contains(e.target)) return;
+  closeActiveOrders();
+});
 
 function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); const nextTheme = html.hasAttribute('data-theme') ? 'light' : 'dark'; if (nextTheme === 'light') html.removeAttribute('data-theme'); else html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', nextTheme); localStorage.setItem('pdc_theme', nextTheme); if (icon) icon.className = nextTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; }
 (() => { const savedTheme = localStorage.getItem('theme') || localStorage.getItem('pdc_theme') || 'light'; if (savedTheme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); const icon = document.querySelector('#themeToggle i'); if (icon) icon.className = 'fas fa-sun'; } })();
 
 function openModal(id) {
   const m = document.getElementById(id);
+  if (!m) return;
   m.classList.add('active');
   document.body.style.overflow = 'hidden';
-  history.pushState({ modal: id }, '', '#' + id);
+  if (!isHandlingPopstate && (!history.state || history.state.modal !== id)) {
+    history.pushState({ modal: id }, '', '#' + id);
+  }
   const wa = document.getElementById('floatingWhatsappBtn');
   if(wa) wa.style.display = 'none'; 
   if (id === 'authModal') {
     initRecaptcha();
   }
 }
-function closeModal(id) {
+function closeModal(id, fromPopstate = false) {
   const m = document.getElementById(id);
+  if (!m) return;
   m.classList.add('closing');
   setTimeout(() => {
     m.classList.remove('active');
     m.classList.remove('closing');
-    if (!document.querySelector('.modal-overlay.active')) {
+    const dropdownOpen = document.getElementById('activeOrderDropdown')?.classList.contains('open');
+    if (!document.querySelector('.modal-overlay.active') && !dropdownOpen) {
       document.body.style.overflow = '';
       const wa = document.getElementById('floatingWhatsappBtn');
       if(wa) wa.style.display = 'flex'; 
     }
   }, 300); 
-  if (history.state && history.state.modal === id) history.back();
+  if (!fromPopstate && !isHandlingPopstate && history.state && history.state.modal === id) {
+    history.back();
+  }
 }
 window.addEventListener('popstate', (e) => {
-  document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id));
-  const dropdown = document.getElementById('activeOrderDropdown');
-  if (!e.state || !e.state.careDropdown) { if (dropdown) dropdown.classList.remove('open'); }
+  isHandlingPopstate = true;
+  document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id, true));
+  if (!e.state || !e.state.careDropdown) {
+    closeActiveOrders(true);
+  }
   if (e.state && e.state.modal) {
     const m = document.getElementById(e.state.modal);
-    m.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    const wa = document.getElementById('floatingWhatsappBtn');
-    if(wa) wa.style.display = 'none';
+    if (m) {
+      m.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      const wa = document.getElementById('floatingWhatsappBtn');
+      if(wa) wa.style.display = 'none';
+    }
   }
+  setTimeout(() => { isHandlingPopstate = false; }, 50);
 });
 
 // ===== AUTHENTICATION ENGINE (SMS / Google) =====
@@ -2424,11 +2537,18 @@ function syncCanonicalAccount(user) {
 
 function completeOnboarding(){
   const name=document.getElementById('onboardName').value.trim();
+  const onboardEmailInput=document.getElementById('onboardEmail');
   if(!name) return showToast('Please enter your full name','warning');
   const user=auth.currentUser; if(!user) return;
-  const email=pdcNormalizeEmail(user.email||'');
+  const email=pdcNormalizeEmail((onboardEmailInput && onboardEmailInput.value) || user.email || '');
   const phone=user.phoneNumber?last10Digits(user.phoneNumber):'';
-  pdcUpdateCustomerProfile({name,email,phone}).then(()=>{ showToast('Profile created successfully!','success'); closeModal('onboardingModal'); applyLoggedInUI(name); }).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
+  pdcUpdateCustomerProfile({name,email,phone}).then(profile=>{
+    const savedName = profile.name || name;
+    cacheUser({ uid: user.uid, displayName: savedName, email: profile.email || email });
+    showToast('Profile created successfully!','success');
+    closeModal('onboardingModal');
+    applyLoggedInUI(savedName);
+  }).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
 }
 
 let profileAddresses = [];
@@ -2519,8 +2639,16 @@ function saveProfileAddress(){
   const draftId=profileAddressDraftId; const key=profileNormalizeAddress({type,house,floor,landmark,area,pincode}); const duplicate=profileAddresses.find(a=>a.id!==draftId&&profileNormalizeAddress(a)===key); if(duplicate){profileSelectedAddressId=duplicate.id;profileAddresses.forEach(a=>a.isDefault=a.id===duplicate.id);return persistProfileAddresses().then(cancelProfileAddressForm).catch(()=>showToast('Could not save address','error'));}
   const existing=draftId?profileAddresses.find(a=>a.id===draftId):null;
   const obj={id:draftId||'addr_'+Date.now(),type,house,floor,landmark,area,pincode,isDefault:true,createdAt:existing?.createdAt||Date.now()};
-  // Preserve booking map/location metadata when editing an existing address.
-  if(existing){if(existing.latitude!=null)obj.latitude=existing.latitude;if(existing.longitude!=null)obj.longitude=existing.longitude;if(existing.locationSource)obj.locationSource=existing.locationSource;}
+  // Preserve booking map/location metadata when editing an existing address, or provide Lucknow default coordinates so booking.html accepts it.
+  if(existing && existing.latitude!=null && existing.longitude!=null){
+    obj.latitude=existing.latitude;
+    obj.longitude=existing.longitude;
+    obj.locationSource=existing.locationSource||'manual';
+  } else {
+    obj.latitude=26.8833;
+    obj.longitude=80.9933;
+    obj.locationSource='profile';
+  }
   if(draftId){const i=profileAddresses.findIndex(a=>a.id===draftId);if(i>=0)profileAddresses[i]=obj;}else profileAddresses.push(obj);
   profileSelectedAddressId=obj.id;profileAddresses.forEach(a=>a.isDefault=a.id===obj.id);
   persistProfileAddresses().then(cancelProfileAddressForm).catch(()=>showToast('Could not save address','error'));
@@ -2536,7 +2664,7 @@ function saveProfile(){
   if(!phoneInput.disabled&&!/^\d{10}$/.test(phone)) return showToast('Enter valid 10-digit number','warning');
   const newName=document.getElementById('profName').value.trim()||'Guest'; const newEmail=pdcNormalizeEmail(document.getElementById('profEmail').value);
   if(!newEmail&&!phone) return showToast('Email ya verified phone required hai','warning');
-  pdcUpdateCustomerProfile({name:newName,email:newEmail,phone}).then(profile=>{ applyLoggedInUI(profile.name||newName); document.getElementById('profNameDisplay').textContent=profile.name||newName; document.getElementById('profEmailDisplay').textContent=profile.email||'Phone verified member'; setProfileHeader(user); return persistProfileAddresses(false); }).then(()=>showToast('Profile saved!','success')).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
+  pdcUpdateCustomerProfile({name:newName,email:newEmail,phone}).then(profile=>{ cacheUser({ uid: user.uid, displayName: profile.name||newName, email: profile.email||newEmail }); applyLoggedInUI(profile.name||newName); document.getElementById('profNameDisplay').textContent=profile.name||newName; document.getElementById('profEmailDisplay').textContent=profile.email||'Phone verified member'; setProfileHeader(user); return persistProfileAddresses(false); }).then(()=>showToast('Profile saved!','success')).catch(err=>showToast(pdcIdentityErrorMessage(err?.message),'warning'));
 }
 
 function logoutUser() {
@@ -2852,6 +2980,7 @@ auth.onAuthStateChanged(user => {
     db.ref('customers/' + user.uid).once('value').then(s => {
       const d = s.val() || {};
       const finalName = d.name || user.displayName || 'Guest';
+      cacheUser({ uid: user.uid, displayName: finalName, email: d.email || user.email || '' });
       applyLoggedInUI(finalName);
       loginBtn.onclick = () => {
         document.getElementById('profName').value = finalName;
@@ -2894,8 +3023,8 @@ function loadDynamicCategories() {
   db.ref('services/categories').once('value').then(s => {
     if (!s.exists()) return; // Keep the existing fallback catalog only when Firebase has no catalog.
     const data = s.val() || {};
-    const definedOrder = ['mens', 'ladies', 'winterMen', 'winterWomen', 'festival', 'iron', 'home', 'combos'];
-    const keys = Object.keys(data).filter(k => data[k] && Array.isArray(data[k].items));
+    const definedOrder = ['mens', 'ladies', 'winterMen', 'winterWomen', 'iron', 'festival', 'home', 'combos'];
+    const keys = Object.keys(data).filter(k => data[k] && data[k].active !== false && Array.isArray(data[k].items));
     if (!keys.length) return; // Avoid replacing a usable catalog with malformed/empty data.
     keys.sort((a,b) => {
       let ia = definedOrder.indexOf(a);
@@ -2911,8 +3040,10 @@ function loadDynamicCategories() {
     Object.keys(categoryNames).forEach(k => delete categoryNames[k]);
     keys.forEach(k => {
       const c = data[k] || {};
+      const activeItems = (c.items || []).filter(it => it && it.active !== false);
+      if (!activeItems.length) return;
       categoryNames[k] = c.name || k;
-      categories[k] = (c.items || []).map(it => ({
+      categories[k] = activeItems.map(it => ({
         id: k + '-' + String(it.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
         name: it.name,
         price: Number(it.price) || 0,
@@ -2936,8 +3067,9 @@ function applyGeneralSettings(v) {
 
   const banner = document.getElementById('topBanner');
   if (banner) {
-    if (settings.announcement) {
-      banner.innerHTML = '📢 ' + sanitizeHTML(settings.announcement) + ' <button class="close-banner" aria-label="Close Banner">&times;</button>';
+    const msg = settings.storeMessage || settings.announcement;
+    if (msg) {
+      banner.innerHTML = '📢 ' + sanitizeHTML(msg) + ' <button class="close-banner" aria-label="Close Banner">&times;</button>';
       banner.style.display = 'block';
     } else if (settings.couponEnabled === false) {
       banner.style.display = 'none';
