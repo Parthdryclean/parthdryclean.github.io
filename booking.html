@@ -46,7 +46,8 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
-  body { background: var(--canvas); color: var(--ink-sub); padding: 16px 16px 125px; max-width: 440px; margin: auto; min-height: 100vh; position: relative; overflow-x: hidden; }
+  body { background: var(--canvas); color: var(--ink-sub); padding: 16px 16px 195px; max-width: 440px; margin: auto; min-height: 100vh; position: relative; overflow-x: hidden; }
+  button:focus, button:focus-visible, a:focus, a:focus-visible, input:focus, select:focus, textarea:focus { outline: none !important; }
 
   /* HEADER (Gen50.45 Original Branding) */
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
@@ -355,7 +356,11 @@
 </style>
 <style id="gen50-52-stability">
 /* GEN50.52 — stability layer: keep the existing card visual language intact. */
-.catalog-scroll-region{max-height:min(520px,calc(100vh - 285px));overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding:2px 2px 8px 1px;scrollbar-width:thin;}
+.catalog-scroll-region{max-height:none;overflow:visible;padding:2px 2px 48px 1px;}
+.first-order-coupon-chip{display:none;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-bottom:10px;padding:9px 12px;border-radius:12px;border:1px dashed var(--royal-blue);background:var(--royal-blue-soft);color:var(--royal-blue);font-size:11px;font-weight:800;cursor:pointer;text-align:left;}
+.first-order-coupon-chip span{display:inline-flex;align-items:center;gap:6px;}
+.first-order-coupon-chip b{background:var(--royal-blue);color:#fff;padding:3px 8px;border-radius:999px;font-size:10px;}
+.coupon-remove-btn{margin-left:8px;padding:2px 8px;border-radius:999px;border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.08);color:var(--danger);font-size:10px;font-weight:800;cursor:pointer;}
 .catalog-scroll-region::-webkit-scrollbar,.address-list-new::-webkit-scrollbar{width:4px;}
 .catalog-scroll-region::-webkit-scrollbar-thumb,.address-list-new::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px;}
 .time-heading-card{padding:12px 18px 0;}
@@ -615,9 +620,13 @@
       </button>
       <div class="coupon-body" id="couponBody">
         <div class="coupon-body-inner">
+          <button type="button" class="first-order-coupon-chip" id="firstOrderCouponChip" onclick="App.Cart.QuickApplyFirstOrderCoupon()">
+            <span><i class="fas fa-gift"></i> First Order Offer: 20% OFF</span>
+            <b>Apply PARTH20</b>
+          </button>
           <div class="coupon-input-wrap">
             <input autocomplete="off" id="couponInput" maxlength="20" placeholder="Enter code" type="text">
-            <button id="applyCouponBtn" onclick="App.Cart.applyPromoCode()">Apply</button>
+            <button id="applyCouponBtn" type="button" onclick="App.Cart.applyPromoCode()">Apply</button>
           </div>
           <div class="coupon-msg" id="couponMsg"></div>
         </div>
@@ -626,7 +635,7 @@
     <div class="review-bill">
       <div class="review-bill-row"><span>Laundry</span><strong id="subtotal">₹0</strong></div>
       <div class="review-bill-row" id="expressFeeRow" style="display:none;"><span>Express</span><strong id="expressFeeAmount">+₹0</strong></div>
-      <div class="review-bill-row discount" id="discountRow" style="display:none;"><span>Coupon</span><strong id="discountAmount">-₹0</strong></div>
+      <div class="review-bill-row discount" id="discountRow" style="display:none;"><span>Coupon <button type="button" class="coupon-remove-btn" onclick="App.Cart.removePromoCode()" title="Remove coupon">× Remove</button></span><strong id="discountAmount">-₹0</strong></div>
       <div class="review-bill-row"><span>Pickup &amp; delivery</span><strong style="color:var(--emerald);">FREE</strong></div>
       <div class="review-grand-total"><span>Total payable</span><strong id="totalAmount">₹0</strong></div>
     </div>
@@ -924,14 +933,33 @@ function normalizeOrder(raw = {}) {
   };
 }
 
+function syncFirstOrderCouponChip() {
+  const chip = document.getElementById('firstOrderCouponChip');
+  if (!chip) return;
+  const parth20 = COUPONS['PARTH20'];
+  const parth20Active = !parth20 || parth20.enabled !== false;
+  const shouldShow = Boolean(STATE.firstOrderEligible && !STATE.appliedPromo && SETTINGS.couponEnabled !== false && parth20Active);
+  chip.style.display = shouldShow ? 'flex' : 'none';
+}
+
 async function refreshFirstOrderEligibility() {
   try {
     const currentUser = auth.currentUser;
-    if (!currentUser) { STATE.firstOrderEligible = false; return; }
-    const snap = await db.ref('orders').orderByChild('uid').equalTo(currentUser.uid).limitToFirst(1).once('value');
-    STATE.firstOrderEligible = !snap.exists();
+    if (!currentUser) { STATE.firstOrderEligible = false; syncFirstOrderCouponChip(); return; }
+    const snap = await db.ref('orders').orderByChild('uid').equalTo(currentUser.uid).once('value');
+    let hasNonCancelled = false;
+    if (snap.exists()) {
+      snap.forEach(ch => {
+        const o = ch.val();
+        if (o && o.status !== 'cancelled') hasNonCancelled = true;
+      });
+    }
+    STATE.firstOrderEligible = !hasNonCancelled;
+    if (STATE.firstOrderEligible) localStorage.removeItem('pdc_first_order_used');
+    syncFirstOrderCouponChip();
   } catch {
     STATE.firstOrderEligible = false;
+    syncFirstOrderCouponChip();
   }
 }
 
@@ -1054,12 +1082,13 @@ if(token){
 
 const App = {
 init: function(){
-setTimeout(() => document.body.classList.remove('preload'), 100);
+document.body.classList.remove('preload');
 this.UI.applyTheme(STATE.theme);
+this.UI.renderDateRail();
 this.UI.updateTimeSlots();
 this.UI.renderCategories();
 this.UI.updateCheckoutTimeline(STATE.checkoutStep);
-this.UI.renderItemsWithSkeleton(false);
+this.UI.renderItems();
 this.Cart.updateSummary();
 this.Order.loadCategories();
 this.Order.loadSettings();
@@ -1471,39 +1500,74 @@ UI: {
     App.Cart.updateSummary();
   },
 
+  renderSmartUpsell: function(){
+    const card = document.getElementById('smartUpsellCard');
+    if (!card) return;
+    const bag = getSanitizedBag();
+    const bagNames = Object.keys(bag).map(id => findItemById(id)?.name || '').filter(Boolean);
+    let matchedOffer = null;
+    for (const rule of (STATE.upsellRules || [])) {
+      const hasTrigger = bagNames.some(n => n.toLowerCase() === String(rule.triggerName || '').toLowerCase());
+      const alreadyAdded = Number(bag[rule.offerId] || 0) > 0;
+      const offerItem = findItemById(rule.offerId);
+      if (hasTrigger && !alreadyAdded && offerItem) {
+        matchedOffer = { rule, offerItem };
+        break;
+      }
+    }
+    if (!matchedOffer) {
+      card.style.display = 'none';
+      card.innerHTML = '';
+      return;
+    }
+    const { rule, offerItem } = matchedOffer;
+    card.style.display = 'flex';
+    card.innerHTML = `<div class="smart-upsell-copy"><strong><i class="fas fa-wand-magic-sparkles" style="color:var(--royal-blue);"></i> ${sanitizeHTML(rule.text)}</strong><small>Add ${sanitizeHTML(offerItem.name)} for just ₹${Number(offerItem.price)}</small></div><button type="button" onclick="App.Cart.updateQty('${sanitizeHTML(offerItem.id)}', 1)">+ Add ₹${Number(offerItem.price)}</button>`;
+  },
+
   updateTimeSlots: function(){
     const container=document.getElementById('timeSlotPills');
     const dateEl=document.getElementById('pickupDate');
     const note=document.getElementById('timeSlotTipText');
     if(!container||!dateEl) return;
     if(!dateEl.value) dateEl.value=todayISO();
-    const dateVal=dateEl.value, today=todayISO(), isToday=dateVal===today, isPast=dateVal<today;
-    const curHr=new Date().getHours();
+    const now=new Date();
+    const curDecimalHr=now.getHours() + (now.getMinutes()/60);
     const slots=[
-      {l:'Morning',t:'9 AM – 12 PM',v:'Morning (9-12)',endHr:12,icon:'fa-cloud-sun',context:'Keep garments ready before 9 AM.'},
-      {l:'Afternoon',t:'1 PM – 5 PM',v:'Afternoon (1-5)',endHr:17,icon:'fa-sun',context:'Keep garments ready before 1 PM.'},
-      {l:'Evening',t:'6 PM – 9 PM',v:'Evening (6-9)',endHr:21,icon:'fa-moon',context:'Keep garments ready before 6 PM.'}
+      {l:'Morning',t:'9 AM – 12 PM',v:'Morning (9-12)',startHr:9,cutoffHr:7,endHr:12,icon:'fa-cloud-sun',context:'Keep garments ready before 9 AM (closes at 7 AM for same-day).'},
+      {l:'Afternoon',t:'1 PM – 5 PM',v:'Afternoon (1-5)',startHr:13,cutoffHr:11,endHr:17,icon:'fa-sun',context:'Keep garments ready before 1 PM (closes at 11 AM for same-day).'},
+      {l:'Evening',t:'6 PM – 9 PM',v:'Evening (6-9)',startHr:18,cutoffHr:16,endHr:21,icon:'fa-moon',context:'Keep garments ready before 6 PM (closes at 4 PM for same-day).'}
     ];
+    let dateVal=dateEl.value, today=todayISO(), isToday=dateVal===today, isPast=dateVal<today;
+    if(isToday && curDecimalHr >= 16 && !this._autoAdvancedTomorrow){
+      this._autoAdvancedTomorrow = true;
+      const tmr = new Date(); tmr.setDate(tmr.getDate()+1);
+      const tmrIso = tmr.getFullYear()+'-'+String(tmr.getMonth()+1).padStart(2,'0')+'-'+String(tmr.getDate()).padStart(2,'0');
+      dateEl.value = tmrIso;
+      dateVal = tmrIso; isToday = false; isPast = false;
+      this.renderDateRail();
+    }
     container.innerHTML='';
     if(isPast){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; if(note) note.textContent='That date has passed — choose today or later.'; return; }
     let available=0;
     slots.forEach(s=>{
-      const disabled=isToday&&curHr>=s.endHr;
+      const disabled=isToday && curDecimalHr >= s.cutoffHr;
       if(!disabled) available++;
+      else if(STATE.selectedTimeSlot===s.v){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
       const pill=document.createElement('button'); pill.type='button'; pill.className=`slot-pill ${disabled?'disabled':''} ${STATE.selectedTimeSlot===s.v?'selected':''}`;
-      pill.innerHTML=`<span class="slot-left"><span class="slot-icon-badge"><i class="fas ${s.icon}"></i></span><span><b>${s.l}</b><small>${s.t}</small></span></span><i class="fas fa-check" aria-hidden="true"></i>`;
+      pill.innerHTML=`<span class="slot-left"><span class="slot-icon-badge"><i class="fas ${s.icon}"></i></span><span><b>${s.l}</b><small>${s.t}${disabled?' · Closed (2h advance cutoff)':''}</small></span></span><i class="fas fa-check" aria-hidden="true"></i>`;
       if(!disabled) pill.onclick=()=>{
         if(STATE.selectedTimeSlot===s.v){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
-        else { STATE.selectedTimeSlot=s.v; STATE.selectedSlotEndHr=s.endHr; }
+        else { STATE.selectedTimeSlot=s.v; STATE.selectedSlotEndHr=s.cutoffHr; }
         const hidden=document.getElementById('selectedTimeSlot'); if(hidden) hidden.value=STATE.selectedTimeSlot;
         this.updateTimeSlots(); this.clearReviewUI(); this.scheduleReviewRefresh(); App.Cart.updateSummary();
       };
       container.appendChild(pill);
     });
     if(note){
-      if(available===0&&isToday){ note.textContent="Today's pickup windows are complete — please choose tomorrow."; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
+      if(available===0&&isToday){ note.textContent="Today's pickup windows are closed (2-hour advance cutoff) — please choose tomorrow."; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
       else if(STATE.selectedTimeSlot){ const s=slots.find(x=>x.v===STATE.selectedTimeSlot); note.textContent=s?s.context:'Pickup window selected.'; }
-      else note.textContent=`${available} pickup window${available===1?' is':'s are'} available.`;
+      else note.textContent=`${available} pickup window${available===1?' is':'s are'} available (2-hr advance booking required).`;
     }
   },
 
@@ -1843,32 +1907,46 @@ persistAddresses: function() {
     const addrMap = {};
     addressesSnapshot.forEach(addr => {
       if(addr && addr.id) {
+        const lat = Number(addr.latitude);
+        const lng = Number(addr.longitude);
         addrMap[addr.id] = {
           id: addr.id,
           type: addr.type || 'home',
-          house: addr.house || '',
+          house: addr.house || addr.address || 'Lucknow Address',
           floor: addr.floor || '',
           landmark: addr.landmark || '',
-          area: addr.area || '',
+          area: addr.area || 'Lucknow',
           pincode: addr.pincode || '',
           isDefault: addr.id === selectedSnapshot,
           createdAt: addr.createdAt || Date.now(),
-          latitude: Number.isFinite(Number(addr.latitude)) ? Number(addr.latitude) : null,
-          longitude: Number.isFinite(Number(addr.longitude)) ? Number(addr.longitude) : null,
+          latitude: (Number.isFinite(lat) && lat !== 0) ? lat : 26.8833,
+          longitude: (Number.isFinite(lng) && lng !== 0) ? lng : 80.9933,
           locationSource: addr.locationSource || 'manual'
         };
       }
     });
-    const def = addressesSnapshot.find(a => a.id === selectedSnapshot) || addressesSnapshot.find(a => a.isDefault) || addressesSnapshot[0] || null;
-    const updates = { addresses: addrMap, selectedAddressId: def ? def.id : null };
+    const def = (selectedSnapshot && addrMap[selectedSnapshot]) || Object.values(addrMap).find(a => a.isDefault) || Object.values(addrMap)[0] || null;
+    const resolvedName = String(STATE.userProfile.name || user.displayName || 'Customer').trim();
+    const resolvedEmail = String(STATE.userProfile.email || user.email || '').trim().toLowerCase();
+    const resolvedPhone = last10Digits(STATE.userProfile.phone || user.phoneNumber || '');
+    const updates = {
+      name: resolvedName,
+      email: resolvedEmail,
+      phone: resolvedPhone,
+      addresses: addrMap,
+      selectedAddressId: def ? def.id : null
+    };
     if(def) {
       updates.address = formatAddress(def);
       updates.addressType = def.type || 'home';
       updates.houseNumber = def.house || '';
       updates.floor = def.floor || '';
       updates.landmark = def.landmark || '';
-      updates.area = def.area || '';
+      updates.area = def.area || 'Lucknow';
       updates.pincode = def.pincode || '';
+      updates.latitude = def.latitude;
+      updates.longitude = def.longitude;
+      updates.locationSource = def.locationSource || 'manual';
     } else {
       updates.address = ''; updates.addressType = ''; updates.houseNumber = ''; updates.floor = ''; updates.landmark = ''; updates.area = ''; updates.pincode = '';
     }
@@ -1982,7 +2060,25 @@ Cart: {
     handle.addEventListener('pointercancel',()=>{ startY=0; moved=false; suppressClick=false; });
   },
 
-  toggleCoupon: function(){ document.getElementById('couponCard')?.classList.toggle('open'); },
+  toggleCoupon: function(){
+    const card = document.getElementById('couponCard');
+    if (card) {
+      card.classList.toggle('open');
+      syncFirstOrderCouponChip();
+    }
+  },
+
+  QuickApplyFirstOrderCoupon: function(){
+    const input = document.getElementById('couponInput');
+    if (input) input.value = 'PARTH20';
+    this.applyPromoCode();
+  },
+
+  removePromoCode: function(){
+    this.clearCouponState('');
+    syncFirstOrderCouponChip();
+    App.showToast('Coupon removed', 'info');
+  },
 
   updateCouponSummary: function(){
     const snap=getPricingSnapshot();
@@ -1994,6 +2090,8 @@ Cart: {
     if(er) er.style.display=snap.isExpress?'flex':'none';
     if(t) t.textContent=`₹${snap.total}`;
     const reviewHeaderTotal=document.getElementById('reviewHeaderTotal'); if(reviewHeaderTotal) reviewHeaderTotal.textContent=`₹${snap.total}`;
+    const dockAmount=document.getElementById('dockAmount'); if(dockAmount) dockAmount.textContent=`₹${snap.total}`;
+    syncFirstOrderCouponChip();
     if(STATE.checkoutStep===4) App.UI.scheduleReviewRefresh();
   },
 
@@ -2004,6 +2102,8 @@ Cart: {
     const count=Object.values(getSanitizedBag()).reduce((n,q)=>n+(Number(q)||0),0);
     this.renderBagSheet();
     this.initBagSheetGestures();
+    App.UI.renderSmartUpsell();
+    syncFirstOrderCouponChip();
     if(status){
       if(STATE.checkoutStep===1) status.textContent=count?`${count} item${count===1?'':'s'} in bag`: 'Add items to bag';
     }
@@ -2030,6 +2130,7 @@ Cart: {
     if(btn){btn.textContent='Apply';btn.classList.remove('applied');btn.disabled=false;}
     if(input){input.value='';input.disabled=false;}
     if(cm){cm.textContent=msg;cm.className=msg?'coupon-msg error':'coupon-msg';}
+    syncFirstOrderCouponChip();
     if(!options.silent) this.updateSummary();
   },
 
@@ -2074,7 +2175,7 @@ Cart: {
         return;
       }
       STATE.appliedPromo=code; STATE.couponEligible=true; STATE.isApplyingCoupon=false;
-      msg.innerHTML=`<strong>${sanitizeHTML(code)}</strong> applied · ${Number(c.percent)||0}% off`; msg.className='coupon-msg success'; btn.textContent='✓ Applied'; btn.classList.add('applied');
+      msg.innerHTML=`<strong>${sanitizeHTML(code)}</strong> applied · ${Number(c.percent)||0}% off <button type="button" class="coupon-remove-btn" onclick="App.Cart.removePromoCode()">× Remove</button>`; msg.className='coupon-msg success'; btn.textContent='✓ Applied'; btn.classList.add('applied');
       this.updateCouponSummary();
     }catch(err){
       STATE.appliedPromo=''; STATE.couponEligible=false; STATE.isApplyingCoupon=false; btn.disabled=false; input.disabled=false; btn.textContent='Apply'; msg.textContent=err?.message==='already-used'?'This coupon was already used on this account.':'Coupon validation failed. Try again.'; msg.className='coupon-msg error';
@@ -2505,7 +2606,7 @@ if(loginBtn) {
   loginBtn.innerHTML=`<span class="account-initial">${sanitizeHTML(initial)}</span><span class="account-online-dot" aria-hidden="true"></span>`;
   loginBtn.title=`Signed in as ${immediateFirstName}`;
   loginBtn.setAttribute('aria-label',`Signed in as ${immediateFirstName}`);
-  loginBtn.onclick=()=>{};
+  loginBtn.onclick=()=>App.showToast(`Signed in as ${STATE.userProfile.name || user.displayName || 'Customer'}${STATE.userProfile.phone ? ' · +91 ' + STATE.userProfile.phone : ''}`, 'info');
 }
 
 await refreshFirstOrderEligibility();
@@ -2518,43 +2619,49 @@ if(loginBtn) {
   loginBtn.innerHTML=`<span class="account-initial">${sanitizeHTML(initial)}</span><span class="account-online-dot" aria-hidden="true"></span>`;
   loginBtn.title=`Signed in as ${firstName}`;
   loginBtn.setAttribute('aria-label',`Signed in as ${firstName}`);
-  loginBtn.onclick=()=>{};
+  loginBtn.onclick=()=>App.showToast(`Signed in as ${STATE.userProfile.name || user.displayName || 'Customer'}${STATE.userProfile.phone ? ' · +91 ' + STATE.userProfile.phone : ''}`, 'info');
 }
 STATE.userProfile={ name:d.name||user.displayName||STATE.userProfile.name||'', phone:d.phone||(user.phoneNumber?last10Digits(user.phoneNumber):STATE.userProfile.phone||''), email:d.email||user.email||STATE.userProfile.email||'' };
 
 if (d.addresses && typeof d.addresses === 'object') {
-    const rawAddresses = Array.isArray(d.addresses) ? d.addresses : Object.values(d.addresses);
-    STATE.addresses = rawAddresses.filter(a => a && typeof a === 'object' && a.id).map(a => ({
-        id: a.id,
-        type: a.type || 'home',
-        house: a.house || a.houseNumber || '',
-        floor: a.floor || '',
-        landmark: a.landmark || '',
-        area: a.area || '',
-        pincode: a.pincode || '',
-        isDefault: !!a.isDefault,
-        createdAt: a.createdAt || Date.now(),
-        latitude: Number.isFinite(Number(a.latitude)) ? Number(a.latitude) : null,
-        longitude: Number.isFinite(Number(a.longitude)) ? Number(a.longitude) : null,
-        locationSource: a.locationSource || 'manual'
-    }));
+    const entries = Object.entries(d.addresses);
+    STATE.addresses = entries.filter(([,a]) => a && typeof a === 'object').map(([key, a]) => {
+        const lat = Number(a.latitude);
+        const lng = Number(a.longitude);
+        return {
+            id: a.id || key,
+            type: a.type || 'home',
+            house: a.house || a.houseNumber || a.address || 'Saved Address',
+            floor: a.floor || '',
+            landmark: a.landmark || '',
+            area: a.area || 'Lucknow',
+            pincode: a.pincode || '',
+            isDefault: !!a.isDefault,
+            createdAt: a.createdAt || Date.now(),
+            latitude: (Number.isFinite(lat) && lat !== 0) ? lat : 26.8833,
+            longitude: (Number.isFinite(lng) && lng !== 0) ? lng : 80.9933,
+            locationSource: a.locationSource || 'manual'
+        };
+    });
 } else {
     STATE.addresses = [];
 }
 
-if (STATE.addresses.length === 0 && d.address) {
+if (STATE.addresses.length === 0 && (d.address || d.houseNumber || d.area)) {
+    const lat = Number(d.latitude);
+    const lng = Number(d.longitude);
     STATE.addresses = [{
         id: 'legacy_' + Date.now(),
         type: d.addressType || 'home',
-        house: d.houseNumber || d.address || '',
+        house: d.houseNumber || d.address || 'Saved Address',
         floor: d.floor || '',
         landmark: d.landmark || '',
-        area: d.area || '',
+        area: d.area || 'Lucknow',
         pincode: d.pincode || '',
         isDefault: true,
         createdAt: Date.now(),
-        latitude: Number.isFinite(Number(d.latitude)) ? Number(d.latitude) : null,
-        longitude: Number.isFinite(Number(d.longitude)) ? Number(d.longitude) : null,
+        latitude: (Number.isFinite(lat) && lat !== 0) ? lat : 26.8833,
+        longitude: (Number.isFinite(lng) && lng !== 0) ? lng : 80.9933,
         locationSource: d.locationSource || 'manual'
     }];
 }
@@ -2600,7 +2707,7 @@ Promise.resolve(App.Cart.revalidateCouponAfterLogin()).finally(() => {
     }
   });
 });
-if(loginBtn) loginBtn.onclick=()=>{};
+if(loginBtn) loginBtn.onclick=()=>App.showToast(`Signed in as ${STATE.userProfile.name || user.displayName || 'Customer'}${STATE.userProfile.phone ? ' · +91 ' + STATE.userProfile.phone : ''}`, 'info');
 } else {
 STATE.isLoggedIn = false;
 STATE.userProfile = { name:'', phone:'', email:'' };
@@ -2759,8 +2866,12 @@ submit: async function(e){
 
     const todayStr = todayISO();
     if(pickupDate < todayStr) return App.showToast('Cannot book for past date','error');
-    if(pickupDate === todayStr && STATE.selectedSlotEndHr !== null && new Date().getHours() >= STATE.selectedSlotEndHr){ 
-      App.showToast('Selected time slot has passed. Choose another.','error'); 
+    const nowTime = new Date();
+    const curDecimalHr = nowTime.getHours() + (nowTime.getMinutes()/60);
+    const slotCutoffMap = { 'Morning (9-12)': 7, 'Afternoon (1-5)': 11, 'Evening (6-9)': 16 };
+    const cutoffHr = slotCutoffMap[timeSlot] ?? STATE.selectedSlotEndHr;
+    if(pickupDate === todayStr && cutoffHr !== null && curDecimalHr >= cutoffHr){ 
+      App.showToast('Selected time slot requires 2-hour advance booking. Choose another window.','error'); 
       App.UI.updateTimeSlots(); 
       return; 
     }
@@ -2818,6 +2929,8 @@ submit: async function(e){
     const repeatCardNow = document.getElementById('repeatCard'); if(repeatCardNow) repeatCardNow.style.display='flex';
     
     STATE.bag = {};
+    STATE.firstOrderEligible = false;
+    localStorage.setItem('pdc_first_order_used', '1');
     localStorage.removeItem('pdc_cart');
     App.Cart.clearCouponState();
 
@@ -2892,69 +3005,76 @@ const grandTotal = Number(o.total || (baseSubtotal + expressFee - discount));
 const expressBanner = isExpress ? `<div style="margin:0 0 14px;padding:10px 12px;border:1px solid #fed7aa;border-radius:14px;background:#fff7ed;color:#9a3412;font-size:10px;font-weight:900;display:flex;justify-content:space-between;gap:12px;"><span>⚡ Express priority care</span><span>24 hours</span></div>` : '';
 const couponRow = discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;color:#059669;font-weight:800;"><span>Coupon${couponApplied ? ` (${couponApplied})` : ''}</span><span>-₹${discount}</span></div>` : '';
 
-const invoiceHTML = `<div style="width:470px;box-sizing:border-box;padding:24px;background:#f5f8fc;color:#172033;font-family:'Outfit',Arial,sans-serif;">
-  <div style="background:#ffffff;border:1px solid #dfe7f2;border-radius:24px;overflow:hidden;box-shadow:0 12px 30px rgba(37,99,235,.08);">
-    <div style="padding:22px 22px 18px;background:linear-gradient(145deg,#eaf2ff 0%,#ffffff 64%);border-bottom:1px solid #dfe7f2;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;">
-        <div>
-          <div style="font-size:25px;font-weight:900;letter-spacing:-.7px;color:#2563eb;line-height:1;">Parth</div>
-          <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#2563EB;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
-          <div style="font-size:8.5px;color:#64748b;font-weight:700;margin-top:7px;">Laundry • Dry Cleaning • Doorstep Pickup</div>
+const invoiceHTML = `<div style="width:794px;min-height:1080px;box-sizing:border-box;padding:36px 42px;background:#f5f8fc;color:#172033;font-family:'Outfit',Arial,sans-serif;display:flex;flex-direction:column;justify-content:space-between;">
+  <div style="background:#ffffff;border:1px solid #dfe7f2;border-radius:26px;overflow:hidden;box-shadow:0 12px 30px rgba(37,99,235,.08);flex:1;display:flex;flex-direction:column;justify-content:space-between;">
+    <div>
+      <div style="padding:32px 36px 26px;background:linear-gradient(145deg,#eaf2ff 0%,#ffffff 64%);border-bottom:1px solid #dfe7f2;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
+          <div>
+            <div style="font-size:36px;font-weight:900;letter-spacing:-.8px;color:#2563eb;line-height:1;">Parth</div>
+            <div style="font-size:13px;font-weight:900;letter-spacing:2.5px;color:#2563EB;margin-top:6px;text-transform:uppercase;">DRY CLEAN</div>
+            <div style="font-size:11.5px;color:#64748b;font-weight:700;margin-top:9px;">Premium Laundry • Dry Cleaning • Free Doorstep Pickup & Delivery</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px;font-weight:900;letter-spacing:1.8px;color:#64748b;">OFFICIAL TAX INVOICE</div>
+            <div style="font-size:20px;font-weight:900;color:#172033;margin-top:6px;">#${sanitizeHTML(formatOrderDisplayId(o.orderId || 'Generated'))}</div>
+            <div style="display:inline-block;margin-top:10px;padding:6px 14px;border-radius:999px;background:#dcfce7;color:#166534;font-size:10.5px;font-weight:900;text-transform:uppercase;">${sanitizeHTML(o.status || 'Confirmed')}</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div style="font-size:8px;font-weight:900;letter-spacing:1.5px;color:#64748b;">INVOICE</div>
-          <div style="font-size:13px;font-weight:900;color:#172033;margin-top:4px;">#${sanitizeHTML(formatOrderDisplayId(o.orderId || 'Generated'))}</div>
-          <div style="display:inline-block;margin-top:8px;padding:5px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:8px;font-weight:900;">${sanitizeHTML(o.status || 'Confirmed')}</div>
+        <div style="margin-top:20px;display:flex;justify-content:space-between;gap:14px;font-size:11px;color:#64748b;font-weight:700;">
+          <span>Issued Date: ${dateStr}</span><span>Payment: ${sanitizeHTML(o.paymentStatus || 'Pay on Delivery')} • Pickup & Delivery: FREE</span>
         </div>
       </div>
-      <div style="margin-top:16px;display:flex;justify-content:space-between;gap:12px;font-size:8.5px;color:#64748b;font-weight:700;">
-        <span>Issued ${dateStr}</span><span>Pickup & delivery FREE</span>
+
+      <div style="padding:28px 36px;">
+        ${expressBanner}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div style="padding:16px 18px;border:1px solid #dfe7f2;border-radius:18px;background:#ffffff;">
+            <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Billed To Customer</div>
+            <div style="font-size:15px;font-weight:900;color:#0f172a;">${custName}</div>
+            <div style="font-size:12px;color:#475569;font-weight:700;margin-top:4px;">+91 ${custPhone}</div>
+          </div>
+          <div style="padding:16px 18px;border:1px solid #dfe7f2;border-radius:18px;background:#ffffff;">
+            <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Pickup Schedule</div>
+            <div style="font-size:14px;font-weight:900;color:#0f172a;">${pickupDate}</div>
+            <div style="font-size:12px;color:#2563eb;font-weight:800;margin-top:4px;">${pickupSlot}</div>
+          </div>
+        </div>
+
+        <div style="padding:16px 18px;border:1px solid #e5eaf2;border-radius:18px;background:#fff;margin-bottom:22px;">
+          <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:6px;">Doorstep Pickup & Delivery Address</div>
+          <div style="font-size:12.5px;line-height:1.55;color:#334155;font-weight:700;">${custAddress}</div>
+        </div>
+
+        <div style="font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:10px;">Itemized Garment Summary</div>
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px;"><thead><tr style="background:#edf3fb;"><th style="padding:12px 10px;text-align:left;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.7px;border-radius:10px 0 0 10px;">Garment / Service</th><th style="padding:12px 10px;text-align:center;font-size:10px;color:#64748b;text-transform:uppercase;">Qty</th><th style="padding:12px 10px;text-align:right;font-size:10px;color:#64748b;text-transform:uppercase;">Unit Rate</th><th style="padding:12px 10px;text-align:right;font-size:10px;color:#64748b;text-transform:uppercase;border-radius:0 10px 10px 0;">Amount</th></tr></thead><tbody>${rows}</tbody></table>
+
+        ${specialInst ? `<div style="margin-top:18px;padding:14px 16px;border-left:4px solid #2563eb;border-radius:0 14px 14px 0;background:#eef5ff;"><div style="font-size:9.5px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special Instructions</div><div style="font-size:12px;color:#334155;font-weight:700;line-height:1.5;margin-top:4px;">${specialInst}</div></div>` : ''}
+
+        <div style="margin-top:22px;padding-top:16px;border-top:1.5px solid #dfe7f2;">
+          <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;color:#64748b;font-weight:700;"><span>Garment Subtotal</span><span style="color:#172033;font-weight:800;">₹${baseSubtotal}</span></div>
+          ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;color:#ea580c;font-weight:800;"><span>24-Hr Express Priority Surcharge</span><span>+₹${expressFee}</span></div>` : ''}
+          ${couponRow}
+          <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;color:#059669;font-weight:800;"><span>Doorstep Pickup & Delivery</span><span>FREE</span></div>
+          <div style="margin-top:10px;padding-top:14px;border-top:2px solid #d4deeb;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:14px;font-weight:900;letter-spacing:.6px;">TOTAL PAYABLE</span><strong style="font-size:28px;color:#2563eb;font-weight:900;">₹${grandTotal}</strong></div>
+        </div>
+
+        <div style="margin-top:22px;padding:16px 18px;border-radius:16px;background:#f5f8fc;border:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:16px;align-items:center;">
+          <div><div style="font-size:10px;color:#64748b;font-weight:900;text-transform:uppercase;letter-spacing:1.1px;">Estimated Delivery Date</div><div style="font-size:14px;font-weight:900;margin-top:4px;color:#0f172a;">${sanitizeHTML(esdtDate)}</div></div>
+          <div style="font-size:12px;color:#2563eb;font-weight:900;background:#eaf2ff;padding:8px 14px;border-radius:999px;">Turnaround: ${sanitizeHTML(esdtWindow)}</div>
+        </div>
       </div>
     </div>
 
-    <div style="padding:19px 22px 22px;">
-      ${expressBanner}
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
-        <div style="padding:12px;border:1px solid #dfe7f2;border-radius:16px;background:#ffffff;">
-          <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:7px;">Customer</div>
-          <div style="font-size:11px;font-weight:900;">${custName}</div>
-          <div style="font-size:9px;color:#475569;font-weight:700;margin-top:3px;">${custPhone}</div>
-        </div>
-        <div style="padding:12px;border:1px solid #dfe7f2;border-radius:16px;background:#ffffff;">
-          <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:7px;">Pickup</div>
-          <div style="font-size:10px;font-weight:900;">${pickupDate}</div>
-          <div style="font-size:9px;color:#2563eb;font-weight:800;margin-top:3px;">${pickupSlot}</div>
-        </div>
-      </div>
-
-      <div style="padding:13px;border:1px solid #e5eaf2;border-radius:15px;background:#fff;margin-bottom:16px;">
-        <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:6px;">Pickup address</div>
-        <div style="font-size:9.5px;line-height:1.45;color:#334155;font-weight:700;">${custAddress}</div>
-      </div>
-
-      <div style="font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:7px;">Laundry bag</div>
-      <table style="width:100%;border-collapse:collapse;font-size:9.5px;"><thead><tr style="background:#edf3fb;"><th style="padding:8px;text-align:left;font-size:7.5px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;border-radius:8px 0 0 8px;">Item</th><th style="padding:8px;text-align:center;font-size:7.5px;color:#64748b;text-transform:uppercase;">Qty</th><th style="padding:8px;text-align:right;font-size:7.5px;color:#64748b;text-transform:uppercase;">Rate</th><th style="padding:8px;text-align:right;font-size:7.5px;color:#64748b;text-transform:uppercase;border-radius:0 8px 8px 0;">Amount</th></tr></thead><tbody>${rows}</tbody></table>
-
-      ${specialInst ? `<div style="margin-top:15px;padding:11px 12px;border-left:3px solid #2563eb;border-radius:0 12px 12px 0;background:#eef5ff;"><div style="font-size:7.5px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special instructions</div><div style="font-size:9px;color:#334155;font-weight:700;line-height:1.45;margin-top:4px;">${specialInst}</div></div>` : ''}
-
-      <div style="margin-top:17px;padding-top:12px;border-top:1px solid #dfe7f2;">
-        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:9.5px;color:#64748b;font-weight:700;"><span>Subtotal</span><span style="color:#172033;">₹${baseSubtotal}</span></div>
-        ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:9.5px;color:#ea580c;font-weight:800;"><span>Express surcharge</span><span>+₹${expressFee}</span></div>` : ''}
-        ${couponRow}
-        <div style="margin-top:8px;padding-top:12px;border-top:1px solid #d4deeb;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:10px;font-weight:900;">TOTAL PAYABLE</span><strong style="font-size:21px;color:#2563eb;">₹${grandTotal}</strong></div>
-      </div>
-
-      <div style="margin-top:17px;padding:12px;border-radius:14px;background:#f5f8fc;border:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:12px;align-items:center;">
-        <div><div style="font-size:8px;color:#64748b;font-weight:900;text-transform:uppercase;letter-spacing:1px;">Estimated delivery</div><div style="font-size:10px;font-weight:900;margin-top:4px;">${sanitizeHTML(esdtDate)}</div></div>
-        <div style="font-size:8.5px;color:#2563eb;font-weight:900;">${sanitizeHTML(esdtWindow)}</div>
-      </div>
-
-      <div style="margin-top:18px;padding-top:14px;border-top:1px solid #dfe7f2;text-align:center;font-size:8px;color:#64748b;font-weight:700;line-height:1.5;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow<br>+91 92356 01645 • parthdrycleaning@gmail.com<br><span style="display:inline-block;margin-top:5px;color:#2563eb;font-weight:900;">Thank you for choosing Parth Dry Clean.</span></div>
+    <div style="padding:20px 36px 26px;border-top:1px solid #dfe7f2;background:#fbfdff;text-align:center;font-size:11px;color:#64748b;font-weight:700;line-height:1.6;">
+      Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow, Uttar Pradesh — 226016<br>
+      Helpline / WhatsApp: +91 92356 01645 • Email: parthdrycleaning@gmail.com<br>
+      <span style="display:inline-block;margin-top:6px;color:#2563eb;font-weight:900;font-size:12px;">Thank you for choosing Parth Dry Clean — Premium Care For Everyone!</span>
     </div>
   </div>
 </div>`;
 setTimeout(() => {
-  html2pdf().set({ margin: 6, filename: 'ParthDryClean_Invoice_' + formatOrderDisplayId(o.orderId || 'Generated') + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc' }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(invoiceHTML).save().then(() => { App.showToast('Invoice downloaded successfully!', 'success'); }).catch(() => { App.showToast('Error generating PDF.', 'error'); });
+  html2pdf().set({ margin: [6, 6, 6, 6], filename: 'ParthDryClean_Invoice_' + formatOrderDisplayId(o.orderId || 'Generated') + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc', windowWidth: 794 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(invoiceHTML).save().then(() => { App.showToast('Invoice downloaded successfully!', 'success'); }).catch(() => { App.showToast('Error generating PDF.', 'error'); });
 }, 300);
 }
 }
