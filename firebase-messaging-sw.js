@@ -1,4 +1,4 @@
-// firebase-messaging-sw.js (v1.0)
+// firebase-messaging-sw.js (v2.0)
 // Service Worker for Parth Dry Clean - Background Push Notifications
 
 importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
@@ -22,47 +22,51 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Background message received:', payload);
 
-  const notification = payload.notification;
-  const data = payload.data || {};
+  // If the browser already displays the standard notification payload, avoid duplicate popups
+  if (payload && payload.notification && payload.notification.title) {
+    return;
+  }
 
-  const title = notification?.title || data?.title || 'Parth Dry Clean';
-  const body = notification?.body || data?.body || 'Live order update';
+  const data = (payload && payload.data) || {};
+  const title = data.title || 'Parth Dry Clean';
+  const body = data.body || 'Live order update';
+
+  let parsedActions = [];
+  if (data.actions) {
+    try { parsedActions = JSON.parse(data.actions); } catch (e) { parsedActions = []; }
+  }
 
   const options = {
     body: body,
     icon: '/assets/icon-192.png',
     badge: '/assets/icon-192.png',
     data: data,
-    tag: data?.orderId || 'parth-dc-notification',
+    tag: data.orderId || data.eventId || 'parth-dc-notification',
     renotify: true,
-    requireInteraction: data?.requireInteraction === 'true',
-    actions: data?.actions ? JSON.parse(data.actions) : []
+    requireInteraction: data.requireInteraction === 'true',
+    actions: Array.isArray(parsedActions) ? parsedActions : []
   };
 
-  self.registration.showNotification(title, options);
+  return self.registration.showNotification(title, options);
 });
 
-// Optional: Notification click handler
+// Notification click handler
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   const data = event.notification.data || {};
-  let url = '/';
-
-  if (data.orderId) {
-    url = `/index.html#active-orders`;
-  }
+  const targetUrl = data.orderId ? '/#active-orders' : '/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          if ('focus' in client && client.url.includes(url)) {
+          if ('focus' in client) {
             return client.focus();
           }
         }
         if (clients.openWindow) {
-          return clients.openWindow(url);
+          return clients.openWindow(targetUrl);
         }
       })
   );
