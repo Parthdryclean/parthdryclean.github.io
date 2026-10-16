@@ -720,8 +720,10 @@
 <div class="modal-overlay" id="onboardingModal">
 <div class="modal-box">
 <h2 style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:6px;">Complete Profile</h2>
-<p style="color:var(--ink-muted);font-size:12px;font-weight:600;margin-bottom:18px;">Please enter your name for delivery updates.</p>
-<input class="form-control-pill" id="onboardName" placeholder="Your Full Name" style="margin-bottom:12px;" type="text"/>
+<p style="color:var(--ink-muted);font-size:12px;font-weight:600;margin-bottom:18px;">Please enter your details for pickup and delivery updates.</p>
+<input class="form-control-pill" id="onboardName" placeholder="Your Full Name *" style="margin-bottom:12px;" type="text"/>
+<input class="form-control-pill" id="onboardPhone" inputmode="numeric" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10-Digit Mobile Number *" style="margin-bottom:12px;" type="tel"/>
+<input class="form-control-pill" id="onboardEmail" placeholder="Email Address (Optional)" style="margin-bottom:14px;" type="email"/>
 <button class="btn-dock-pill" onclick="App.Auth.completeOnboarding()" style="width:100%;justify-content:center;" type="button">Save &amp; Continue</button>
 </div>
 </div>
@@ -864,10 +866,13 @@ function getPricingSnapshot() {
   const expressFee = isExpress ? Math.round(subtotal * (SETTINGS.expressPercent/100)) : 0;
   
   let discount = 0;
-  if(STATE.appliedPromo && STATE.couponEligible) {
+  if(SETTINGS.couponEnabled !== false && STATE.appliedPromo && STATE.couponEligible) {
     const c = COUPONS[STATE.appliedPromo];
-    if(c && c.enabled !== false) {
-      discount = Math.min(Math.round(subtotal * (c.percent || 0) / 100), c.max || 0);
+    const couponMin = Number(c?.minOrder || 0);
+    if(c && c.enabled !== false && subtotal >= couponMin) {
+      const rawDisc = Math.round(subtotal * (Number(c.percent) || 0) / 100);
+      const maxCap = Number(c.max) || 0;
+      discount = maxCap > 0 ? Math.min(rawDisc, maxCap) : rawDisc;
     }
   }
   const total = Math.max(0, subtotal + expressFee - discount);
@@ -978,8 +983,17 @@ home:[{id:'home-blanket-double',name:'Blanket (Double)',price:350,originalPrice:
 };
 const DEFAULT_CATNAMES = { mens:"Men's Wear", ladies:"Ladies Wear", festival:"Festival Wear", combos:"Combos", winterMen:"Winter (Men)", winterWomen:"Winter (Women)", iron:"Steam Iron", home:"Home & Travel" };
 const DEFAULT_UPSELL = [ {id:'upsell-tie',name:'Premium Tie Wash',price:40,icon:'fa-user-tie'}, {id:'upsell-pillow',name:'Pillow Cover Wash',price:20,icon:'fa-bed'} ];
-const SETTINGS = { minOrder:300, expressPercent:90, announcement:'', bookingOpen:true };
+const SETTINGS = { minOrder:300, expressPercent:90, announcement:'', bookingOpen:true, couponEnabled:true };
 let COUPONS = {};
+function syncCouponCardVisibility() {
+  const hasActive = SETTINGS.couponEnabled !== false && Object.values(COUPONS).some(c => c && c.enabled !== false);
+  const cc = document.getElementById('couponCard');
+  if (hasActive && cc) cc.classList.add('active');
+  else if (cc) cc.classList.remove('active');
+  if (SETTINGS.couponEnabled === false && STATE.appliedPromo) {
+    App.Cart.clearCouponState();
+  }
+}
 
 const STATE = {
 categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
@@ -2023,10 +2037,12 @@ Cart: {
     if(STATE.isApplyingCoupon) return;
     const msg=document.getElementById('couponMsg'), btn=document.getElementById('applyCouponBtn'), input=document.getElementById('couponInput');
     if(!msg||!btn||!input) return;
+    if(SETTINGS.couponEnabled===false){msg.textContent='Coupons are currently disabled';msg.className='coupon-msg error';return;}
     const code=(input.value||'').trim().toUpperCase();
     if(!code){msg.textContent='Enter a coupon code';msg.className='coupon-msg error';return;}
     const c=COUPONS[code];
     if(!c||c.enabled===false){msg.textContent='This coupon is not available';msg.className='coupon-msg error';return;}
+    if(Number(c.usageLimit)>0 && Number(c.usedCount||0)>=Number(c.usageLimit)){msg.textContent='Coupon usage limit reached';msg.className='coupon-msg error';return;}
     const user=auth.currentUser;
     if(c.type==='general'&&!user){msg.textContent='Login required to use this coupon';msg.className='coupon-msg error';App.showToast('Login required to use this coupon','warning');return;}
     if(c.type==='first_order'&&!STATE.firstOrderEligible){msg.textContent='This offer is for your first order';msg.className='coupon-msg error';return;}
@@ -2038,7 +2054,17 @@ Cart: {
         if(used.exists()) throw new Error('already-used');
       }
       const currentSnap = getPricingSnapshot();
-      const couponDiscount = Math.min(Math.round(currentSnap.subtotal * (Number(c.percent) || 0) / 100), Number(c.max) || 0);
+      const couponMin = Number(c.minOrder || 0);
+      if (currentSnap.subtotal < couponMin) {
+        STATE.appliedPromo=''; STATE.couponEligible=false; STATE.isApplyingCoupon=false;
+        btn.disabled=false; input.disabled=false; btn.textContent='Apply';
+        msg.textContent=`Minimum order value for ${code} is ₹${couponMin}.`;
+        msg.className='coupon-msg error';
+        return;
+      }
+      const rawDisc = Math.round(currentSnap.subtotal * (Number(c.percent) || 0) / 100);
+      const maxCap = Number(c.max) || 0;
+      const couponDiscount = maxCap > 0 ? Math.min(rawDisc, maxCap) : rawDisc;
       const couponTotal = Math.max(0, currentSnap.subtotal + currentSnap.expressFee - couponDiscount);
       if (couponTotal < SETTINGS.minOrder) {
         STATE.appliedPromo=''; STATE.couponEligible=false; STATE.isApplyingCoupon=false;
@@ -2394,37 +2420,56 @@ const releaseAndHandle = () => {
 };
 
 db.ref('customers/' + user.uid).once('value').then(snap => {
-  if (snap.exists() && snap.val().name) { 
-    releaseAndHandle(); 
-    return; 
+  const d = snap.exists() ? (snap.val() || {}) : {};
+  const savedName = String(d.name || user.displayName || STATE.userProfile.name || '').trim();
+  const savedPhone = last10Digits(d.phone || user.phoneNumber || STATE.userProfile.phone || '');
+  const savedEmail = String(d.email || user.email || STATE.userProfile.email || '').trim().toLowerCase();
+
+  if (snap.exists() && savedName && /^\d{10}$/.test(savedPhone)) {
+    releaseAndHandle();
+    return;
   }
-  
-  if (user.displayName) {
-    pdcUpdateCustomerProfile({ name: user.displayName, email, phone }).then(releaseAndHandle).catch(releaseAndHandle);
-  } else { 
-    STATE.authProcessing = false; 
-    STATE.authSyncUid = null; 
+
+  if (savedName && /^\d{10}$/.test(savedPhone)) {
+    pdcUpdateCustomerProfile({ name: savedName, email: savedEmail, phone: savedPhone }).then(releaseAndHandle).catch(releaseAndHandle);
+  } else {
+    STATE.authProcessing = false;
+    STATE.authSyncUid = null;
     this.handleStateChange(user);
-    App.UI.openModal('onboardingModal'); 
+    const nameInp = document.getElementById('onboardName');
+    const phoneInp = document.getElementById('onboardPhone');
+    const emailInp = document.getElementById('onboardEmail');
+    if (nameInp) nameInp.value = savedName;
+    if (phoneInp) {
+      phoneInp.value = savedPhone;
+      phoneInp.disabled = !!(user.phoneNumber || /^\d{10}$/.test(d.phone || ''));
+    }
+    if (emailInp) {
+      emailInp.value = savedEmail;
+      emailInp.disabled = !!(user.email || d.email);
+    }
+    App.UI.openModal('onboardingModal');
   }
 }).catch(releaseAndHandle);
 },
 
 completeOnboarding: function(){
-const nameInp = document.getElementById('onboardName');
-const emailInp = document.getElementById('onboardEmail');
-const name = nameInp ? nameInp.value.trim() : '';
-const email = emailInp ? emailInp.value.trim() : '';
-if (!name) return App.showToast('Please enter your full name', 'warning');
 const user = auth.currentUser;
 if (!user) return;
-const phone = user.phoneNumber ? last10Digits(user.phoneNumber) : (STATE.userProfile.phone || '');
+const nameInp = document.getElementById('onboardName');
+const phoneInp = document.getElementById('onboardPhone');
+const emailInp = document.getElementById('onboardEmail');
+const name = (nameInp ? nameInp.value.trim() : '') || (user.displayName || '').trim();
+const phone = last10Digits((phoneInp ? phoneInp.value.trim() : '') || user.phoneNumber || STATE.userProfile.phone || '');
+const email = ((emailInp ? emailInp.value.trim() : '') || user.email || STATE.userProfile.email || '').toLowerCase();
+if (!name) return App.showToast('Please enter your full name', 'warning');
+if (!/^\d{10}$/.test(phone)) return App.showToast('Please enter a valid 10-digit mobile number', 'warning');
 
 pdcUpdateCustomerProfile({ name, email, phone }).then(profile => {
   STATE.userProfile.name = profile.name || name;
-  STATE.userProfile.email = profile.email || '';
-  STATE.userProfile.phone = profile.phone || '';
-  App.showToast('Profile created successfully!', 'success');
+  STATE.userProfile.email = profile.email || email;
+  STATE.userProfile.phone = profile.phone || phone;
+  App.showToast('Profile saved successfully!', 'success');
   App.UI.closeModal('onboardingModal');
   this.handleStateChange(user);
 }).catch(err => App.showToast(err?.message || 'Error saving profile', 'error'));
@@ -2618,8 +2663,10 @@ loadCategories: function(){
 db.ref('services/categories').once('value').then(s=>{
 if(s.exists()){
 const data=s.val(); const rawCats={}; const rawNames={};
-for(const key in data){ const c=data[key]; if(!c||c.items===undefined) continue;
-rawCats[key]=(c.items||[]).map(it=>({id:key+'-'+slug(it.name), name:it.name, price:Number(it.price)||0, originalPrice:it.originalPrice?Number(it.originalPrice):undefined, icon:c.icon||'fa-tag'}));
+for(const key in data){ const c=data[key]; if(!c||c.active===false||!Array.isArray(c.items)) continue;
+const activeItems=(c.items||[]).filter(it=>it&&it.active!==false);
+if(!activeItems.length) continue;
+rawCats[key]=activeItems.map(it=>({id:key+'-'+slug(it.name), name:it.name, price:Number(it.price)||0, originalPrice:it.originalPrice?Number(it.originalPrice):undefined, icon:c.icon||'fa-tag'}));
 rawNames[key]=c.name||key; }
 const orderedCats={}; const orderedNames={};
 MASTER_CAT_ORDER.forEach(k=>{ if(rawCats[k]){ orderedCats[k]=rawCats[k]; orderedNames[k]=rawNames[k]||DEFAULT_CATNAMES[k]||k; } });
@@ -2627,27 +2674,29 @@ for(const k in rawCats){ if(!orderedCats[k]){ orderedCats[k]=rawCats[k]; ordered
 if(Object.keys(orderedCats).length){ STATE.categories=orderedCats; STATE.catNames=Object.assign({},DEFAULT_CATNAMES,orderedNames); }
 }
 STATE.categories.upsell=DEFAULT_UPSELL; STATE.catNames.upsell='Upsell';
-if(!STATE.categories[STATE.currentCat]) STATE.currentCat='mens';
+const firstValidCat=Object.keys(STATE.categories).find(k=>k!=='upsell')||'mens';
+if(!STATE.categories[STATE.currentCat]) STATE.currentCat=STATE.categories.mens?'mens':firstValidCat;
 App.UI.renderCategories(); App.UI.renderItems(); App.Cart.updateSummary();
 }).catch(err => {});
 },
 
-loadSettings: function(){ db.ref('settings/general').on('value',s=>{ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; SETTINGS.announcement=v.announcement||''; 
+loadSettings: function(){ db.ref('settings/general').on('value',s=>{ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; const msg=v.storeMessage||v.announcement||''; SETTINGS.announcement=msg; SETTINGS.couponEnabled=v.couponEnabled!==false;
 const bm = document.getElementById('bannerMin'); if(bm) bm.textContent=SETTINGS.minOrder; 
 const el = document.getElementById('expressLabel'); if(el) el.innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`;
 const banner = document.getElementById('topBanner');
-if (v.announcement && banner) {
-banner.innerHTML = '📢 ' + sanitizeHTML(v.announcement) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">×</button>';
+if (msg && banner) {
+banner.innerHTML = '📢 ' + sanitizeHTML(msg) + ' <button class="close-banner" id="closeBanner" aria-label="Close Banner">×</button>';
 banner.style.display = 'block';
 const cb = document.getElementById('closeBanner'); if(cb) cb.addEventListener('click', () => banner.style.display = 'none');
 } else if(banner) { banner.style.display = 'none'; }
+syncCouponCardVisibility();
+App.Cart.updateSummary();
 }); },
 
 loadCoupons: function(){ db.ref('settings/coupons').on('value',s=>{ COUPONS=s.val()||{};
-const hasActive=Object.values(COUPONS).some(c=>c&&c.enabled!==false);
-const cc=document.getElementById('couponCard');
-if(hasActive && cc){ cc.classList.add('active'); } else if(cc) { cc.classList.remove('active'); }
-if(STATE.appliedPromo && !COUPONS[STATE.appliedPromo]){ App.Cart.clearCouponState(); } }); },
+syncCouponCardVisibility();
+if(STATE.appliedPromo && (!COUPONS[STATE.appliedPromo] || COUPONS[STATE.appliedPromo].enabled===false)){ App.Cart.clearCouponState(); }
+else { App.Cart.updateSummary(); } }); },
 
 submit: async function(e){
   if (e && typeof e.preventDefault === 'function') e.preventDefault();
@@ -2685,11 +2734,22 @@ submit: async function(e){
     }
 
     const finalAddress = formatAddress(addr);
-    if (!name) {
+    if (!name || !/^\d{10}$/.test(phone)) {
+      const nameInp = document.getElementById('onboardName');
+      const phoneInp = document.getElementById('onboardPhone');
+      const emailInp = document.getElementById('onboardEmail');
+      if (nameInp) nameInp.value = name;
+      if (phoneInp) {
+        phoneInp.value = phone;
+        phoneInp.disabled = !!(user && user.phoneNumber);
+      }
+      if (emailInp) {
+        emailInp.value = (STATE.userProfile.email || (user && user.email) || '').toLowerCase();
+        emailInp.disabled = !!(user && user.email);
+      }
       App.UI.openModal('onboardingModal');
-      return App.showToast('Please enter your full name', 'warning');
+      return App.showToast(!name ? 'Please enter your full name' : 'Please enter your 10-digit mobile number', 'warning');
     }
-    if (!phone || phone.length < 10) return App.showToast('Valid phone number missing. Please login again.', 'error');
     if (!finalAddress) return App.showToast('Address missing. Please reselect address.', 'error');
 
     const bookingState = await db.ref('settings/general/bookingOpen').once('value').catch(()=>null);
@@ -2928,7 +2988,7 @@ const PDCServiceArea = {
   },
   norm:function(v){ return String(v||'').trim().toLowerCase(); },
   addressText:function(){
-    const ids=['addrLine1','addrLine2','addrLandmark','addrCity','addrPincode'];
+    const ids=['addrHouse','addrFloor','addrLandmark','addrArea','addrPincode'];
     return ids.map(id=>document.getElementById(id)?.value||'').join(' ');
   },
   matchesConfiguredArea:function(lat,lng,text){
@@ -3046,7 +3106,7 @@ App.Address.save = async function(){
     App.showToast('Please pin your pickup location on the map before saving this address.','warning');
     return;
   }
-  if(!PDCServiceArea.isValid(lat,lng,PDCMap.addressText || PDCServiceArea.addressText())){
+  if(!PDCServiceArea.isValid(lat,lng,[PDCMap.addressText, PDCServiceArea.addressText()].filter(Boolean).join(' '))){
     App.showToast(PDCServiceArea.message(),'warning');
     return;
   }
@@ -3122,4 +3182,3 @@ if(cInp) cInp.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDe
 </script>
 </body>
 </html>
-
