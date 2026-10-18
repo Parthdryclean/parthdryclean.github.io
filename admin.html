@@ -834,13 +834,13 @@ function renderRiderAlerts(snap){
  if(riderAlertsLoaded && list.length && list[0].id !== lastRiderAlertKey && !list[0].read){
    const latest=list[0];
    if(latest.type==='issue') toast(`⚠️ Issue reported by ${latest.boy||'Rider'}: ${latest.note||''}`,'err');
-   else if(latest.type==='extra_items') toast(`🧺 Extra items added by ${latest.boy||'Rider'} on #${latest.orderId||''}`);
+   else if(latest.type==='extra_items') toast(`🧺 Extra items added by ${latest.boy||'Rider'} on ${String(latest.orderId||'').startsWith('PDC-')?latest.orderId:'PDC-'+(latest.orderId||'')}`);
  }
  if(list.length) lastRiderAlertKey=list[0].id;
  riderAlertsLoaded=true;
  el.innerHTML=list.length?list.slice(0,25).map(x=>{
    const icon=x.type==='issue'?'⚠️':x.type==='extra_items'?'🧺':'🛵';
-   const title=x.type==='issue'?`Issue on #${esc(x.orderId||'')}`:x.type==='extra_items'?`Extra Garments · #${esc(x.orderId||'')}`:`Status → ${esc(x.status||'updated')} · #${esc(x.orderId||'')}`;
+   const cleanAlertId=String(x.orderId||'').startsWith('PDC-')?x.orderId:'PDC-'+(x.orderId||''); const title=x.type==='issue'?`Issue on ${esc(cleanAlertId)}`:x.type==='extra_items'?`Extra Garments · ${esc(cleanAlertId)}`:`Status → ${esc(x.status||'updated')} · ${esc(cleanAlertId)}`;
    return `<div class="audit-row" style="${x.read?'opacity:.72':''}"><div><b>${icon} ${title}</b><div class="audit-meta">${esc(x.boy||'Partner')} (${esc(x.boyPhone||'')}) · ${esc(x.customer||'')} ${x.note?'— '+esc(x.note):''}</div></div><div class="audit-meta">${x.at?new Date(x.at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</div></div>`;
  }).join(''):'<div class="empty-state" style="padding:24px">No partner alerts yet.</div>';
 }
@@ -1147,7 +1147,26 @@ const App={
    if(next!==current){const validCancel=next==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===next;if(!validCancel&&!nextFlow)return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[next]||next}`,'err');}
    const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(boy));
    const data={status:next,paymentStatus:pay,assigned_to:boy,assigned_to_e164:boy?'+91'+pdcPhone10(boy):'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''};
-   try{await db.ref('orders/'+id).update(data);if(next!==current){try{await App.queueOrderNotification(id,o,current,next);}catch(ne){writeAudit('Order notification queue failed',id,{from:current,to:next,error:ne?.message||String(ne)});toast('Order updated, but notification could not be queued','err');}}writeAudit('Order updated',id,{from:current,to:next,paymentStatus:pay,assigned_to:boy});if(next===current)toast('✅ Order updated');renderOrderDrawer({id,...o,...data});}catch(e){toast(e.message,'err');}
+   if(next==='delivered'&&current!=='delivered')data.deliveredAt=Date.now();
+   try{
+     await db.ref('orders/'+id).update(data);
+     if(next==='delivered'&&current!=='delivered'&&boyObj?.id){
+       db.ref(`delivery_boys/${boyObj.id}/total_deliveries`).transaction(v=>(Number(v)||0)+1).catch(()=>{});
+     }
+     if(next!==current){
+       try{
+         await App.queueOrderNotification(id,o,current,next);
+         toast(next==='delivered'?'🎉 Order Delivered & Customer Notified!':'✅ Status updated & notification sent');
+       }catch(ne){
+         writeAudit('Order notification queue failed',id,{from:current,to:next,error:ne?.message||String(ne)});
+         toast('Order updated, but notification could not be queued','err');
+       }
+     }else{
+       toast('✅ Order updated');
+     }
+     writeAudit('Order updated',id,{from:current,to:next,paymentStatus:pay,assigned_to:boy});
+     renderOrderDrawer({id,...o,...data});
+   }catch(e){toast(e.message,'err');}
  },
  triggerNotificationDispatch:async(eventId='',kind='')=>{
    if(!auth.currentUser)return null;
@@ -1172,17 +1191,26 @@ const App={
  },
  queueOrderNotification:async(id,o,from,to)=>{
    if(!o?.uid||from===to)return null;
-   const labels={pending:'Pickup Scheduled',picked_up:'Garments Collected',processing:'Expert Cleaning',quality_check:'Quality Check',out_for_delivery:'Fresh Clothes on the Way',delivered:'Delivered Successfully',cancelled:'Order Cancelled'};
+   const dispId=String(o.orderId||id).startsWith('PDC-')?String(o.orderId||id):'PDC-'+String(o.orderId||id);
+   const labels={pending:'Pickup Scheduled',picked_up:'Garments Collected',processing:'Expert Cleaning',quality_check:'Quality Check',out_for_delivery:'Fresh Clothes on the Way',delivered:'Delivered Successfully 🎉',cancelled:'Order Cancelled'};
    const label=labels[to]||'Order Update';
-   const body={pending:'Your pickup is scheduled.',picked_up:'Your garments have been collected.',processing:'Your garments are now being cleaned.',quality_check:'Your order is in quality check.',out_for_delivery:'Your fresh clothes are on the way.',delivered:'Your order has been delivered successfully.',cancelled:'Your order has been cancelled.'}[to]||('Your order status changed to '+label+'.');
+   const body={
+     pending:`Your order ${dispId} pickup is scheduled.`,
+     picked_up:`Your garments for order ${dispId} have been collected.`,
+     processing:`Your garments for order ${dispId} are now in expert cleaning.`,
+     quality_check:`Your order ${dispId} is in final quality check.`,
+     out_for_delivery:`Your fresh clothes for order ${dispId} are out for delivery!`,
+     delivered:`Your order ${dispId} has been delivered successfully. Thank you for choosing Parth Dry Clean!`,
+     cancelled:`Your order ${dispId} has been cancelled.`
+   }[to]||(`Your order ${dispId} status changed to `+label+'.');
    const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · '+label,body,status:'queued',fromStatus:from,toStatus:to,createdAt:firebase.database.ServerValue.TIMESTAMP});
-   App.triggerNotificationDispatch(ref.key,'order_status');
+   await App.triggerNotificationDispatch(ref.key,'order_status');
    return ref;
  },
- setStatus:async(id,st)=>{const o=ordersSnap?.val()?.[id];if(!o)return;const current=o.status||'pending';if(st!==current){const validCancel=st==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===st;if(!validCancel&&!nextFlow){renderOrders();return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[st]||st}`,'err');}}try{await db.ref('orders/'+id).update({status:st});writeAudit('Order status changed',id,{from:current,to:st});let notificationQueued=true;try{await App.queueOrderNotification(id,o,current,st);}catch(ne){notificationQueued=false;writeAudit('Order notification queue failed',id,{from:current,to:st,error:ne?.message||String(ne)});}toast(notificationQueued?'Status updated':'Status updated · notification queue failed');if(App._openOrderId===id)renderOrderDrawer({id,...o,status:st});}catch(e){toast(e.message,'err');}},
+ setStatus:async(id,st)=>{const o=ordersSnap?.val()?.[id];if(!o)return;const current=o.status||'pending';if(st!==current){const validCancel=st==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===st;if(!validCancel&&!nextFlow){renderOrders();return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[st]||st}`,'err');}}const updates={status:st};if(st==='delivered'&&current!=='delivered')updates.deliveredAt=Date.now();try{await db.ref('orders/'+id).update(updates);if(st==='delivered'&&current!=='delivered'&&o.deliveryBoyId){db.ref(`delivery_boys/${o.deliveryBoyId}/total_deliveries`).transaction(v=>(Number(v)||0)+1).catch(()=>{});}writeAudit('Order status changed',id,{from:current,to:st});let notificationQueued=true;try{await App.queueOrderNotification(id,o,current,st);}catch(ne){notificationQueued=false;writeAudit('Order notification queue failed',id,{from:current,to:st,error:ne?.message||String(ne)});}toast(notificationQueued?(st==='delivered'?'🎉 Order Delivered & Customer Notified!':'Status updated'):'Status updated · notification queue failed');if(App._openOrderId===id)renderOrderDrawer({id,...o,...updates});}catch(e){toast(e.message,'err');}},
  setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>{toast('Payment: '+v);if(App._openOrderId===id){const o=ordersSnap.val()[id];renderOrderDrawer({id,...o,paymentStatus:v});}}).catch(e=>toast(e.message,'err')),
- assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+pdcPhone10(p):'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p&&o.uid){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${pdcPhone10(p)}) has been assigned to your order #${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
- wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=pdcPhone10(bp||o.phone);if(!num)return toast('Number nahi','err');const dispId=String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id);const msg=`*Parth Dry Clean* 🧺\n*Order:* #${dispId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
+ assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+pdcPhone10(p):'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p&&o.uid){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${pdcPhone10(p)}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
+ wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=pdcPhone10(bp||o.phone);if(!num)return toast('Number nahi','err');const dispId=String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id);const msg=`*Parth Dry Clean* 🧺\n*Order:* ${dispId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  print:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');const items=Object.entries(o.items||{}).map(([k,v])=>{const nm=(v&&typeof v==='object'&&v.name)?v.name:k;const qty=(v&&typeof v==='object')?Number(v.qty??v.quantity??1):Number(v)||0;return `${esc(nm)} x${esc(qty)}`;}).join('<br>');const w=open('','_blank','width=320,height=500');if(!w)return toast('Print window blocked by browser','err');w.document.write(`<html><head><meta charset="utf-8"><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${esc(o.orderId||id)}<br><b>Name:</b> ${esc(o.customerName||o.name||'-')}<br><b>Phone:</b> ${esc(o.phone||'-')}<div class="dashed"></div><b>Items:</b><br>${items||'-'}<div class="dashed"></div><b>Total:</b> Rs ${Number(o.total)||0}<script>window.print();window.close()<\/script></body></html>`);},
  backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value'),db.ref('site_content').once('value'),db.ref('site_media').once('value'),db.ref('audit_log').once('value'),db.ref('notification_events').once('value'),db.ref('manual_notification_events').once('value')]).then(([o,c,b,s,srv,cms,media,audit,notifs,manualNotifs])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val(),site_media:media.val(),audit_log:audit.val(),notification_events:notifs.val(),manual_notification_events:manualNotifs.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Complete Backup downloaded');}).catch(e=>toast(e.message,'err'));},
  toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF')).catch(e=>toast(e.message,'err'));},
