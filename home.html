@@ -1404,33 +1404,35 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
   border-left: 3px solid var(--primary);
 }
 
-/* Floating Bottom Cart Bar on Home */
+/* Floating Bottom Cart Bar on Home (Theme-Aware Glass Dock) */
 .home-floating-cart {
   position: fixed;
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%) translateY(140%);
   width: min(92vw, 560px);
-  background: rgba(15, 23, 42, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 22px;
   padding: 10px 12px 10px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.35);
+  box-shadow: 0 16px 40px -8px rgba(37, 99, 235, 0.22), 0 4px 16px rgba(15, 23, 42, 0.06);
   z-index: 9990;
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease, background 0.2s ease, border-color 0.2s ease;
 }
 [data-theme="dark"] .home-floating-cart {
   background: rgba(17, 24, 39, 0.96);
+  color: #f8fafc;
   border-color: rgba(59, 130, 246, 0.32);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65);
 }
 .home-floating-cart.visible {
   transform: translateX(-50%) translateY(0);
@@ -1445,32 +1447,45 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 }
 .hfc-meta {
   font-size: 11px;
-  font-weight: 700;
-  color: #93c5fd;
+  font-weight: 800;
+  color: var(--primary);
   letter-spacing: 0.3px;
 }
+[data-theme="dark"] .hfc-meta {
+  color: #93c5fd;
+}
 .hfc-total {
-  font-size: 16px;
+  font-size: 16.5px;
   font-weight: 800;
-  color: #fff;
+  color: var(--text);
   display: flex;
   align-items: center;
   gap: 8px;
 }
+[data-theme="dark"] .hfc-total {
+  color: #ffffff;
+}
 .hfc-clear {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  color: #cbd5e1;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
   font-size: 10.5px;
-  font-weight: 700;
-  padding: 3px 8px;
+  font-weight: 800;
+  padding: 3px 9px;
   border-radius: 999px;
   cursor: pointer;
   font-family: 'Outfit', sans-serif;
+  transition: 0.18s ease;
+}
+[data-theme="dark"] .hfc-clear {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #cbd5e1;
 }
 .hfc-clear:hover {
-  background: rgba(239, 68, 68, 0.25);
-  color: #fecaca;
+  background: var(--danger-soft);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--danger);
 }
 .hfc-cta {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
@@ -2187,26 +2202,49 @@ function setNotificationButtonState(state) {
   }
 }
 
+async function getActiveFCMSWRegistration() {
+  let reg = fcmSWRegistration;
+  if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+  if (!reg) reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+  const sw = reg && (reg.installing || reg.waiting);
+  if (sw && sw.state !== 'activated') {
+    await new Promise(resolve => {
+      const t = setTimeout(resolve, 3500);
+      sw.addEventListener('statechange', () => {
+        if (sw.state === 'activated' || sw.state === 'redundant') { clearTimeout(t); resolve(); }
+      });
+    });
+  }
+  const readyReg = await Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise(resolve => setTimeout(() => resolve(reg), 3000))
+  ]);
+  fcmSWRegistration = readyReg || reg;
+  return fcmSWRegistration;
+}
+
 async function syncFCMTokenForUser(user) {
   if (!user || !('Notification' in window) || Notification.permission !== 'granted') return false;
   try {
     const ready = await initFCM();
     if (!ready || !messaging) return false;
-    let reg = fcmSWRegistration;
-    if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-    if (!reg) reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    const reg = await getActiveFCMSWRegistration();
     if (!reg) return false;
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    let token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    if (!token) {
+      await new Promise(r => setTimeout(r, 600));
+      token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    }
     if (!token) return false;
+    await db.ref('customers/' + user.uid).update({
+      fcmToken: token,
+      fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
     if (typeof currentCustomerData === 'object' && currentCustomerData) {
       currentCustomerData.fcmToken = token;
     }
     try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
     setNotificationButtonState('enabled');
-    await db.ref('customers/' + user.uid).update({
-      fcmToken: token,
-      fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
-    });
     return true;
   } catch (e) {
     console.warn('FCM token sync failed:', e);
@@ -2231,7 +2269,7 @@ async function requestFCMPermission() {
   setNotificationButtonState('enabling');
 
   try {
-    // CRITICAL: Request permission synchronously on the very first await inside the user click gesture!
+    // Request permission synchronously on the first await inside user click gesture
     const perm = currentPermission === 'granted' ? 'granted' : await Notification.requestPermission();
 
     if (perm !== 'granted') {
@@ -2243,47 +2281,19 @@ async function requestFCMPermission() {
       return;
     }
 
-    // Permission is granted! Immediately mark enabled in UI & local cache so profile listener never resets it
-    try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
-    setNotificationButtonState('enabled');
-
-    const ready = await initFCM();
-    if (!ready || !messaging) {
-      showToast('Notification permission enabled!', 'success');
-      return;
+    const synced = await syncFCMTokenForUser(user);
+    if (synced) {
+      setNotificationButtonState('enabled');
+      showToast('Live order push notifications enabled!', 'success');
+    } else {
+      try { localStorage.removeItem('pdc_notif_enabled_' + user.uid); } catch (_) {}
+      setNotificationButtonState('default');
+      showToast('Permission granted, par token register nahi ho paya — ek baar fir Enable tap karein.', 'warning');
     }
-
-    let reg = fcmSWRegistration;
-    if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-    if (!reg) reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-    if (reg && reg.installing) {
-      await new Promise(resolve => {
-        const sw = reg.installing;
-        const t = setTimeout(resolve, 1500);
-        sw.addEventListener('statechange', () => {
-          if (sw.state === 'activated' || sw.state === 'redundant') { clearTimeout(t); resolve(); }
-        });
-      });
-    }
-
-    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    if (token) {
-      if (typeof currentCustomerData === 'object' && currentCustomerData) {
-        currentCustomerData.fcmToken = token;
-      }
-      await db.ref('customers/' + user.uid).update({
-        fcmToken: token,
-        fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
-      });
-    }
-    setNotificationButtonState('enabled');
-    showToast('Live order push notifications enabled!', 'success');
   } catch (e) {
     console.warn('FCM permission setup warning:', e);
-    if (Notification.permission === 'granted') {
-      setNotificationButtonState('enabled');
-      showToast('Notifications enabled for your browser!', 'success');
-    } else if (Notification.permission === 'denied') {
+    try { localStorage.removeItem('pdc_notif_enabled_' + user.uid); } catch (_) {}
+    if (Notification.permission === 'denied') {
       setNotificationButtonState('blocked');
       showToast('Notifications blocked in browser settings', 'error');
     } else {
@@ -2716,7 +2726,7 @@ function renderMiniTimeline(order) {
   const icon = statusIcons[order.status] || 'fa-circle-notch';
   const eta = formatEta(order);
   const orderIdDisplay = order.orderId ? sanitizeHTML(formatOrderDisplayId(order.orderId)) : 'Order ID unavailable';
-  return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div class="pill-main"><div class="pill-id">#${orderIdDisplay}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`;
+  return `<div class="care-order-pill"><div class="pill-icon"><i class="fas ${icon}"></i></div><div class="pill-main"><div class="pill-id">${orderIdDisplay}</div><div class="pill-status status-${sanitizeHTML(order.status)}">${label}</div></div><div class="pill-eta"><i class="fas fa-clock"></i> ${eta}</div></div>`;
 }
 function renderCareProgress(order) { let currentIdx = careSteps.findIndex(step => step.key === order.status); if (currentIdx < 0) currentIdx = 0; return `<div class="care-progress">${careSteps.map((step, idx) => { let cls = ''; if (order.status === 'delivered' || idx < currentIdx) cls = 'done'; else if (idx === currentIdx) cls = 'current'; const icon = cls === 'done' ? 'fa-check' : step.icon; return `<div class="progress-step ${cls}"><div class="step-dot"><i class="fas ${icon}"></i></div><div class="step-label">${step.label}</div></div>`; }).join('')}</div>`; }
 function renderActiveOrderCard(order) { 
@@ -2751,19 +2761,40 @@ function renderActiveOrderCard(order) {
      actionBtnHtml += `<button class="care-btn soft-red" onclick="event.stopPropagation(); cancelOrder('${orderRef}');"><i class="fas fa-times-circle"></i> Cancel</button>`;
   }
 
-  return `<div class="care-card"><div class="care-card-top"><div><div class="care-card-title">#${orderIdDisplay} ${expressHtml}</div><div class="care-card-meta"><span class="meta-pill">${dateText}</span><span class="meta-pill">${itemCount}</span><span class="meta-pill">₹${formatMoney(order.total || 0)}</span><span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span>${riderPillHtml}</div></div><div class="live-indicator"><span class="live-care-dot"></span> LIVE</div></div>${renderCareProgress(order)}<div class="care-card-actions">${actionBtnHtml}</div></div>`; 
+  return `<div class="care-card"><div class="care-card-top"><div><div class="care-card-title">${orderIdDisplay} ${expressHtml}</div><div class="care-card-meta"><span class="meta-pill">${dateText}</span><span class="meta-pill">${itemCount}</span><span class="meta-pill">₹${formatMoney(order.total || 0)}</span><span class="meta-pill eta-highlight"><i class="fas fa-clock"></i> ETA: ${eta}</span>${riderPillHtml}</div></div><div class="live-indicator"><span class="live-care-dot"></span> LIVE</div></div>${renderCareProgress(order)}<div class="care-card-actions">${actionBtnHtml}</div></div>`; 
 }
+
+let prevCustomerOrderStatuses = {};
+let initialCustomerOrdersLoaded = false;
 
 function attachActiveOrderListener(uid) {
   activeOrderListeners.forEach(ref => ref.off('value'));
   activeOrderListeners = [];
+  prevCustomerOrderStatuses = {};
+  initialCustomerOrdersLoaded = false;
   const ordersRef = db.ref('orders').orderByChild('uid').equalTo(uid);
   const listener = ordersRef.on('value', snap => {
     const active = [];
+    const nextStatuses = {};
     snap.forEach(child => {
       const o = child.val();
-      if (o && activeStatuses.includes(o.status)) active.push({ ...o, _firebaseKey: o.firebaseKey || child.key });
+      if (!o) return;
+      const key = o.firebaseKey || child.key;
+      const st = String(o.status || 'pending');
+      nextStatuses[key] = st;
+      if (initialCustomerOrdersLoaded && prevCustomerOrderStatuses[key] && prevCustomerOrderStatuses[key] !== st) {
+        const dispId = formatOrderDisplayId(o.orderId || key);
+        const stLabel = statusLabels[st] || 'Order Updated';
+        showToast(`${dispId}: ${stLabel}`, st === 'delivered' ? 'success' : 'info');
+        if (document.getElementById('ordersModal')?.classList.contains('active')) {
+          loadOrderHistory();
+        }
+        loadProfileStats(uid);
+      }
+      if (activeStatuses.includes(st)) active.push({ ...o, _firebaseKey: key });
     });
+    prevCustomerOrderStatuses = nextStatuses;
+    initialCustomerOrdersLoaded = true;
     active.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     const wrapper = document.getElementById('activeCareWrapper');
     const bar = document.getElementById('activeOrderBar');
@@ -3584,11 +3615,19 @@ function setProfileHeader(user, custData) {
       notifRow.style.display = 'none';
     } else {
       notifRow.style.display = 'flex';
-      const hasSavedToken = Boolean((d && d.fcmToken) || localStorage.getItem('pdc_notif_enabled_' + user.uid) === '1');
-      if (Notification.permission === 'granted' && hasSavedToken) setNotificationButtonState('enabled');
-      else if (Notification.permission === 'granted') { setNotificationButtonState('enabled'); syncFCMTokenForUser(user); }
-      else if (Notification.permission === 'denied') setNotificationButtonState('blocked');
-      else setNotificationButtonState('default');
+      const hasSavedToken = Boolean(d && d.fcmToken);
+      if (Notification.permission === 'granted' && hasSavedToken) {
+        setNotificationButtonState('enabled');
+      } else if (Notification.permission === 'granted') {
+        setNotificationButtonState('enabling');
+        syncFCMTokenForUser(user).then(ok => {
+          if (!ok) setNotificationButtonState('default');
+        });
+      } else if (Notification.permission === 'denied') {
+        setNotificationButtonState('blocked');
+      } else {
+        setNotificationButtonState('default');
+      }
     }
   }
 }
@@ -3731,7 +3770,7 @@ function renderOrderHistoryList() {
 
     html += `
     <div class="history-card">
-      <div class="history-id">#${orderIdDisplay}</div>
+      <div class="history-id">${orderIdDisplay}</div>
       <div style="margin: 10px 0 16px;">
         <span class="status-badge ${statusClass}">
           <i class="fas ${statusIcons[o.status] || 'fa-circle-notch'}"></i> ${statusText}
@@ -3786,17 +3825,26 @@ function buildInvoicePDF(o, prof, orderId) {
   const isExpress = String(o.express || '').toLowerCase() === 'yes';
   const esdtWindow = isExpress ? '24 Hours' : '48–72 Hours';
   const esdtDate = sanitizeHTML(o.estd || o.estdTime || o.estimatedDelivery || o.deliveryDate || o.ESTD || formatEta(o) || '—');
+  const cleanDisplayId = sanitizeHTML(formatOrderDisplayId(orderId));
 
   let rows = '';
   let computedSubtotal = 0;
+  let itemCount = 0;
   const historicalRates = o.itemRates && typeof o.itemRates === 'object' ? o.itemRates : {};
   const items = o.items && typeof o.items === 'object' ? o.items : historicalRates;
 
-  for (const [key, raw] of Object.entries(items)) {
+  const entries = Object.entries(items).filter(([, raw]) => {
+    const qty = (raw && typeof raw === 'object') ? (Number(raw.qty ?? raw.quantity) || 0) : (Number(raw) || 0);
+    return qty > 0;
+  });
+  itemCount = entries.length;
+  const rowPad = itemCount > 10 ? '6px 10px' : (itemCount > 6 ? '8px 12px' : '11px 14px');
+  const rowFont = itemCount > 10 ? '11.5px' : '12.5px';
+
+  for (const [key, raw] of entries) {
     const snapshot = raw && typeof raw === 'object' ? raw : null;
     const historical = historicalRates[key] && typeof historicalRates[key] === 'object' ? historicalRates[key] : null;
     const qty = snapshot ? Number(snapshot.qty ?? snapshot.quantity) || 0 : Number(raw) || 0;
-    if (qty <= 0) continue;
 
     const name = snapshot?.name || historical?.name || key;
     const rateValue = snapshot?.rate ?? historical?.rate ?? getItemRate(name) ?? getItemRate(key);
@@ -3805,7 +3853,7 @@ function buildInvoicePDF(o, prof, orderId) {
     const amount = Number.isFinite(Number(amountValue)) ? Number(amountValue) : rate * qty;
     computedSubtotal += amount;
 
-    rows += `<tr><td style="padding:13px 14px;border-top:1px solid #e1e8f2;font-weight:800;color:#172033;font-size:13px;">${sanitizeHTML(name)}</td><td style="padding:13px 10px;border-top:1px solid #e1e8f2;text-align:center;color:#475569;font-size:13px;font-weight:700;">${qty}</td><td style="padding:13px 10px;border-top:1px solid #e1e8f2;text-align:right;color:#475569;font-size:13px;font-weight:700;">₹${formatMoney(rate)}</td><td style="padding:13px 14px;border-top:1px solid #e1e8f2;text-align:right;font-weight:900;color:#172033;font-size:13px;">₹${formatMoney(amount)}</td></tr>`;
+    rows += `<tr><td style="padding:${rowPad};border-top:1px solid #e1e8f2;font-weight:800;color:#172033;font-size:${rowFont};">${sanitizeHTML(name)}</td><td style="padding:${rowPad};border-top:1px solid #e1e8f2;text-align:center;color:#475569;font-size:${rowFont};font-weight:700;">${qty}</td><td style="padding:${rowPad};border-top:1px solid #e1e8f2;text-align:right;color:#475569;font-size:${rowFont};font-weight:700;">₹${formatMoney(rate)}</td><td style="padding:${rowPad};border-top:1px solid #e1e8f2;text-align:right;font-weight:900;color:#172033;font-size:${rowFont};">₹${formatMoney(amount)}</td></tr>`;
   }
 
   const baseSubtotal = Number(o.subtotal || computedSubtotal);
@@ -3813,95 +3861,117 @@ function buildInvoicePDF(o, prof, orderId) {
   const discount = Number(o.discount || 0);
   const couponApplied = o.couponCode ? sanitizeHTML(o.couponCode) : '';
   const grandTotal = Number(o.total || (baseSubtotal + expressFee - discount));
-  const expressBanner = isExpress ? `<div style="margin:0 0 18px;padding:13px 16px;border:1px solid #fed7aa;border-radius:14px;background:#fff7ed;color:#9a3412;font-size:12px;font-weight:900;display:flex;justify-content:space-between;gap:12px;"><span>⚡ Express Priority Care (24-Hour Turnaround)</span><span>Priority Processing</span></div>` : '';
-  const couponRow = discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:7px 0;color:#059669;font-weight:800;font-size:13px;"><span>Coupon Discount${couponApplied ? ` (${couponApplied})` : ''}</span><span>-₹${formatMoney(discount)}</span></div>` : '';
+  const expressBanner = isExpress ? `<div style="margin:0 0 12px;padding:10px 14px;border:1px solid #fed7aa;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:11.5px;font-weight:900;display:flex;justify-content:space-between;gap:12px;"><span>⚡ Express Priority Care (24-Hour Turnaround)</span><span>Priority Processing</span></div>` : '';
+  const couponRow = discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;color:#059669;font-weight:800;font-size:12.5px;"><span>Coupon Discount${couponApplied ? ` (${couponApplied})` : ''}</span><span>-₹${formatMoney(discount)}</span></div>` : '';
 
-  const invoiceHTML = `<div style="width:794px;min-height:1080px;box-sizing:border-box;padding:36px 42px;background:#ffffff;color:#172033;font-family:'Outfit',Arial,sans-serif;display:flex;flex-direction:column;justify-content:space-between;">
-    <div>
-      <div style="padding:28px 30px;background:linear-gradient(145deg,#eaf2ff 0%,#f8fbff 100%);border:1px solid #dfe7f2;border-radius:22px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
-          <div>
-            <div style="font-size:36px;font-weight:900;letter-spacing:-.8px;color:#2563eb;line-height:1;">Parth Dry Clean</div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:1.8px;color:#475569;margin-top:6px;text-transform:uppercase;">Premium Fabric Care • Free Doorstep Pickup & Delivery</div>
-            <div style="font-size:11.5px;color:#64748b;font-weight:600;margin-top:8px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow • +91 92356 01645</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:10px;font-weight:900;letter-spacing:2px;color:#64748b;">TAX / SERVICE INVOICE</div>
-            <div style="font-size:20px;font-weight:900;color:#172033;margin-top:5px;">#${sanitizeHTML(orderId)}</div>
-            <div style="display:inline-block;margin-top:8px;padding:6px 14px;border-radius:999px;background:#dcfce7;color:#166534;font-size:10.5px;font-weight:900;text-transform:uppercase;">${sanitizeHTML(o.status || 'Confirmed')}</div>
-          </div>
+  const invoiceHTML = `<div class="pdc-invoice-page" style="width:794px;box-sizing:border-box;padding:26px 34px;background:#ffffff;color:#172033;font-family:'Outfit',Arial,sans-serif;">
+    <div style="padding:22px 26px;background:linear-gradient(145deg,#eaf2ff 0%,#f8fbff 100%);border:1px solid #dfe7f2;border-radius:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+        <div>
+          <div style="font-size:32px;font-weight:900;letter-spacing:-.8px;color:#2563eb;line-height:1;">Parth Dry Clean</div>
+          <div style="font-size:10.5px;font-weight:800;letter-spacing:1.6px;color:#475569;margin-top:5px;text-transform:uppercase;">Premium Fabric Care • Free Doorstep Pickup & Delivery</div>
+          <div style="font-size:11px;color:#64748b;font-weight:600;margin-top:6px;">Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow • +91 92356 01645</div>
         </div>
-        <div style="margin-top:18px;padding-top:14px;border-top:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:12px;font-size:11.5px;color:#475569;font-weight:700;">
-          <span>Invoice Date: ${dateStr}</span>
-          <span>Payment Mode: ${sanitizeHTML(o.paymentStatus || 'Pay on Delivery')}</span>
-          <span style="color:#059669;">Doorstep Pickup & Delivery: FREE</span>
+        <div style="text-align:right;">
+          <div style="font-size:9.5px;font-weight:900;letter-spacing:1.8px;color:#64748b;">TAX / SERVICE INVOICE</div>
+          <div style="font-size:19px;font-weight:900;color:#172033;margin-top:4px;">${cleanDisplayId}</div>
+          <div style="display:inline-block;margin-top:6px;padding:5px 12px;border-radius:999px;background:#dcfce7;color:#166534;font-size:10px;font-weight:900;text-transform:uppercase;">${sanitizeHTML(o.status || 'Confirmed')}</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:11px;border-top:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#475569;font-weight:700;">
+        <span>Invoice Date: ${dateStr}</span>
+        <span>Payment Mode: ${sanitizeHTML(o.paymentStatus || 'Pay on Delivery')}</span>
+        <span style="color:#059669;">Doorstep Pickup & Delivery: FREE</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      ${expressBanner}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div style="padding:14px 16px;border:1px solid #dfe7f2;border-radius:14px;background:#f8fafc;">
+          <div style="font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:6px;">Billed To Customer</div>
+          <div style="font-size:14px;font-weight:900;color:#0f172a;">${custName}</div>
+          <div style="font-size:12px;color:#475569;font-weight:700;margin-top:3px;">+91 ${custPhone}</div>
+          <div style="font-size:11.5px;line-height:1.45;color:#334155;font-weight:600;margin-top:6px;">${custAddress}</div>
+        </div>
+        <div style="padding:14px 16px;border:1px solid #dfe7f2;border-radius:14px;background:#f8fafc;">
+          <div style="font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:6px;">Pickup & Delivery Schedule</div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;"><span style="color:#64748b;font-weight:700;">Pickup Date:</span><strong style="color:#0f172a;">${pickupDate}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;"><span style="color:#64748b;font-weight:700;">Collection Window:</span><strong style="color:#2563eb;">${pickupSlot}</strong></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;"><span style="color:#64748b;font-weight:700;">Estimated Delivery:</span><strong style="color:#0f172a;">${esdtDate} (${sanitizeHTML(esdtWindow)})</strong></div>
         </div>
       </div>
 
-      <div style="margin-top:22px;">
-        ${expressBanner}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;">
-          <div style="padding:18px;border:1px solid #dfe7f2;border-radius:16px;background:#f8fafc;">
-            <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Billed To Customer</div>
-            <div style="font-size:15px;font-weight:900;color:#0f172a;">${custName}</div>
-            <div style="font-size:12.5px;color:#475569;font-weight:700;margin-top:4px;">+91 ${custPhone}</div>
-            <div style="font-size:12px;line-height:1.5;color:#334155;font-weight:600;margin-top:8px;">${custAddress}</div>
-          </div>
-          <div style="padding:18px;border:1px solid #dfe7f2;border-radius:16px;background:#f8fafc;">
-            <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Pickup & Delivery Schedule</div>
-            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;"><span style="color:#64748b;font-weight:700;">Pickup Date:</span><strong style="color:#0f172a;">${pickupDate}</strong></div>
-            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;"><span style="color:#64748b;font-weight:700;">Collection Window:</span><strong style="color:#2563eb;">${pickupSlot}</strong></div>
-            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;"><span style="color:#64748b;font-weight:700;">Estimated Delivery:</span><strong style="color:#0f172a;">${esdtDate} (${sanitizeHTML(esdtWindow)})</strong></div>
-          </div>
-        </div>
+      <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin:12px 0 8px;">Itemized Garment Summary</div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #dfe7f2;border-radius:12px;overflow:hidden;">
+        <thead>
+          <tr style="background:#edf3fb;">
+            <th style="padding:10px 14px;text-align:left;font-size:9.5px;color:#475569;text-transform:uppercase;letter-spacing:.7px;">Garment / Service</th>
+            <th style="padding:10px 10px;text-align:center;font-size:9.5px;color:#475569;text-transform:uppercase;letter-spacing:.7px;">Qty</th>
+            <th style="padding:10px 10px;text-align:right;font-size:9.5px;color:#475569;text-transform:uppercase;letter-spacing:.7px;">Unit Rate</th>
+            <th style="padding:10px 14px;text-align:right;font-size:9.5px;color:#475569;text-transform:uppercase;letter-spacing:.7px;">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
 
-        <div style="font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin:20px 0 10px;">Itemized Garment Summary</div>
-        <table style="width:100%;border-collapse:collapse;border:1px solid #dfe7f2;border-radius:14px;overflow:hidden;">
-          <thead>
-            <tr style="background:#edf3fb;">
-              <th style="padding:12px 14px;text-align:left;font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:.8px;">Garment / Service</th>
-              <th style="padding:12px 10px;text-align:center;font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:.8px;">Qty</th>
-              <th style="padding:12px 10px;text-align:right;font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:.8px;">Unit Rate</th>
-              <th style="padding:12px 14px;text-align:right;font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:.8px;">Line Total</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
+      ${specialInst ? `<div style="margin-top:12px;padding:10px 14px;border-left:4px solid #2563eb;border-radius:0 10px 10px 0;background:#eef5ff;"><div style="font-size:9px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special Instructions</div><div style="font-size:11.5px;color:#334155;font-weight:700;line-height:1.45;margin-top:3px;">${specialInst}</div></div>` : ''}
 
-        ${specialInst ? `<div style="margin-top:18px;padding:14px 16px;border-left:4px solid #2563eb;border-radius:0 12px 12px 0;background:#eef5ff;"><div style="font-size:9.5px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special Instructions</div><div style="font-size:12px;color:#334155;font-weight:700;line-height:1.5;margin-top:4px;">${specialInst}</div></div>` : ''}
-
-        <div style="margin-top:22px;display:flex;justify-content:flex-end;">
-          <div style="width:340px;padding:18px 20px;border-radius:16px;background:#f8fafc;border:1px solid #dfe7f2;">
-            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#64748b;font-weight:700;"><span>Garment Subtotal</span><span style="color:#172033;font-weight:800;">₹${formatMoney(baseSubtotal)}</span></div>
-            ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#ea580c;font-weight:800;"><span>Express Surcharge</span><span>+₹${formatMoney(expressFee)}</span></div>` : ''}
-            ${couponRow}
-            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#64748b;font-weight:700;"><span>Pickup & Delivery</span><span style="color:#059669;font-weight:800;">FREE</span></div>
-            <div style="margin-top:10px;padding-top:12px;border-top:2px solid #cbd5e1;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:13px;font-weight:900;color:#0f172a;">TOTAL PAYABLE</span><strong style="font-size:24px;color:#2563eb;">₹${formatMoney(grandTotal)}</strong></div>
-          </div>
+      <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+        <div style="width:330px;padding:14px 18px;border-radius:14px;background:#f8fafc;border:1px solid #dfe7f2;">
+          <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:#64748b;font-weight:700;"><span>Garment Subtotal</span><span style="color:#172033;font-weight:800;">₹${formatMoney(baseSubtotal)}</span></div>
+          ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:#ea580c;font-weight:800;"><span>Express Surcharge</span><span>+₹${formatMoney(expressFee)}</span></div>` : ''}
+          ${couponRow}
+          <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;color:#64748b;font-weight:700;"><span>Pickup & Delivery</span><span style="color:#059669;font-weight:800;">FREE</span></div>
+          <div style="margin-top:8px;padding-top:10px;border-top:2px solid #cbd5e1;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12.5px;font-weight:900;color:#0f172a;">TOTAL PAYABLE</span><strong style="font-size:22px;color:#2563eb;">₹${formatMoney(grandTotal)}</strong></div>
         </div>
       </div>
     </div>
 
-    <div style="margin-top:28px;padding-top:16px;border-top:1px solid #dfe7f2;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#64748b;font-weight:700;">
+    <div style="margin-top:18px;padding-top:12px;border-top:1px solid #dfe7f2;display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:#64748b;font-weight:700;">
       <div>Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow • parthdrycleaning@gmail.com</div>
       <div style="color:#2563eb;font-weight:900;">Thank you for choosing Parth Dry Clean ✦</div>
     </div>
   </div>`;
 
+  const host = document.createElement('div');
+  host.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#ffffff;z-index:-1;overflow:hidden;';
+  host.innerHTML = invoiceHTML;
+  document.body.appendChild(host);
+  const pageEl = host.querySelector('.pdc-invoice-page');
+  const maxSinglePageHeight = 1115; // strictly < 1122px A4 height at 96dpi
+  const naturalHeight = pageEl.scrollHeight;
+  if (naturalHeight > maxSinglePageHeight) {
+    const scale = maxSinglePageHeight / naturalHeight;
+    pageEl.style.transformOrigin = 'top left';
+    pageEl.style.transform = `scale(${scale})`;
+    pageEl.style.width = `${Math.round(794 / scale)}px`;
+    host.style.height = `${maxSinglePageHeight}px`;
+  }
+
   setTimeout(() => {
     html2pdf().set({
       margin: 0,
-      filename: 'ParthDryClean_Invoice_' + String(orderId).replace(/[^a-z0-9_-]/gi, '_') + '.pdf',
+      filename: 'ParthDryClean_Invoice_' + String(cleanDisplayId).replace(/[^a-z0-9_-]/gi, '_') + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(invoiceHTML).save()
-      .then(() => showToast('Invoice downloaded successfully!', 'success'))
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: [] }
+    }).from(host).toPdf().get('pdf').then(pdf => {
+      while (pdf.internal.getNumberOfPages() > 1) {
+        pdf.deletePage(pdf.internal.getNumberOfPages());
+      }
+    }).save()
+      .then(() => {
+        host.remove();
+        showToast('Invoice downloaded successfully!', 'success');
+      })
       .catch(err => {
+        host.remove();
         console.warn('Invoice PDF generation failed:', err?.message || err);
         showToast('Error generating PDF.', 'error');
       });
-  }, 200);
+  }, 150);
 }
 
 auth.onAuthStateChanged(user => {
