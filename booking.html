@@ -1239,26 +1239,76 @@ function findItemByName(name){ const n=String(name||'').trim().toLowerCase(); if
 function findItemById(id){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.id===id); if(f) return f; } return null; }
 function getItemRateByName(name){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.name.toLowerCase()===String(name).toLowerCase()); if(f && f.price>0) return f.price; } return null; }
 
-async function saveFCMTokenAfterOrder(){
-try {
-const user = auth.currentUser;
-if(!user) return;
-if(!('Notification' in window) || !('PushManager' in window)) return;
-let permission = Notification.permission;
-if(permission === 'default'){ permission = await Notification.requestPermission(); }
-if(permission !== 'granted') return;
-if(!firebase.messaging) return;
-const messaging = firebase.messaging();
-let reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-if(!reg){ reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js'); }
-const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-if(token){ 
-  await db.ref('customers/' + user.uid).update({ 
-    fcmToken: token,
-    fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
-  }); 
+let bookingFCMInitialized = false;
+let bookingSWReg = null;
+
+async function ensureBookingFCMReady(askPermission = false) {
+  try {
+    const user = auth.currentUser;
+    if (!user) return '';
+    if (!('Notification' in window) || !('PushManager' in window) || !('serviceWorker' in navigator)) return '';
+    let permission = Notification.permission;
+    if (permission === 'default' && askPermission) {
+      permission = await Notification.requestPermission();
+    }
+    if (permission !== 'granted') return '';
+    if (!firebase.messaging) return '';
+    const messaging = firebase.messaging();
+    if (!bookingSWReg) bookingSWReg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+    if (!bookingSWReg) bookingSWReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    const sw = bookingSWReg && (bookingSWReg.installing || bookingSWReg.waiting);
+    if (sw && sw.state !== 'activated') {
+      await new Promise(resolve => {
+        const t = setTimeout(resolve, 3000);
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'activated' || sw.state === 'redundant') { clearTimeout(t); resolve(); }
+        });
+      });
+    }
+    const activeReg = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise(resolve => setTimeout(() => resolve(bookingSWReg), 2500))
+    ]) || bookingSWReg;
+
+    if (!bookingFCMInitialized) {
+      bookingFCMInitialized = true;
+      messaging.onMessage(payload => {
+        const title = payload.notification?.title || payload.data?.title || 'Parth Dry Clean';
+        const body = payload.notification?.body || payload.data?.body || 'Live order update';
+        App.showToast(`${title}: ${body}`, 'success');
+        if (activeReg && typeof activeReg.showNotification === 'function' && Notification.permission === 'granted') {
+          activeReg.showNotification(title, {
+            body,
+            icon: '/assets/icon-192.png',
+            badge: '/assets/icon-192.png',
+            tag: payload.data?.orderId || payload.data?.eventId || 'parth-dc-booking-fg'
+          }).catch(() => {});
+        }
+      });
+    }
+
+    let token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: activeReg });
+    if (!token) {
+      await new Promise(r => setTimeout(r, 500));
+      token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: activeReg });
+    }
+    if (token) {
+      STATE.userProfile.fcmToken = token;
+      try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
+      await db.ref('customers/' + user.uid).update({
+        fcmToken: token,
+        fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+    return token || '';
+  } catch (e) {
+    console.warn('FCM token sync warning:', e?.message || e);
+    return '';
+  }
 }
-} catch(e) { console.warn('FCM token save failed:', e?.message || e); }
+
+async function saveFCMTokenAfterOrder() {
+  return ensureBookingFCMReady(true);
 }
 
 const App = {
@@ -2760,13 +2810,29 @@ syncPushButtonState: function(){
     btn.disabled = true;
     return;
   }
-  const cached = user && localStorage.getItem('pdc_notif_enabled_' + user.uid) === '1';
-  if (Notification.permission === 'granted' || cached) {
+  const hasRealToken = Boolean(STATE.userProfile && STATE.userProfile.fcmToken);
+  if (Notification.permission === 'granted' && hasRealToken) {
     btn.innerHTML = '<i class="fas fa-bell"></i> Enabled';
     btn.style.background = 'var(--emerald-soft)';
     btn.style.color = 'var(--emerald)';
     btn.style.borderColor = 'rgba(5,150,105,0.28)';
     btn.disabled = false;
+  } else if (Notification.permission === 'granted') {
+    btn.textContent = 'Syncing…';
+    btn.disabled = true;
+    ensureBookingFCMReady(false).then(tok => {
+      if (tok) {
+        btn.innerHTML = '<i class="fas fa-bell"></i> Enabled';
+        btn.style.background = 'var(--emerald-soft)';
+        btn.style.color = 'var(--emerald)';
+        btn.style.borderColor = 'rgba(5,150,105,0.28)';
+      } else {
+        btn.textContent = 'Enable';
+        btn.style.background = 'var(--surface)';
+        btn.style.color = 'var(--ink)';
+      }
+      btn.disabled = false;
+    });
   } else if (Notification.permission === 'denied') {
     btn.innerHTML = 'Blocked · Help';
     btn.style.background = 'rgba(239,68,68,0.1)';
@@ -2795,14 +2861,18 @@ requestPushPermission: async function(){
   try {
     const perm = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
     if (perm !== 'granted') {
+      try { localStorage.removeItem('pdc_notif_enabled_' + user.uid); } catch (_) {}
       this.syncPushButtonState();
       return App.showToast('Notification permission denied', 'warning');
     }
-    try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
+    const token = await ensureBookingFCMReady(false);
     this.syncPushButtonState();
-    await saveFCMTokenAfterOrder();
-    this.syncPushButtonState();
-    App.showToast('Live order push notifications enabled!', 'success');
+    if (token) {
+      App.showToast('Live order push notifications enabled!', 'success');
+    } else {
+      try { localStorage.removeItem('pdc_notif_enabled_' + user.uid); } catch (_) {}
+      App.showToast('Permission granted, par token save nahi ho paya. Ek baar fir Enable tap karein.', 'warning');
+    }
   } catch (e) {
     this.syncPushButtonState();
     App.showToast('Could not enable notifications', 'error');
@@ -2883,7 +2953,8 @@ if(loginBtn) {
   loginBtn.setAttribute('aria-label',`Signed in as ${firstName}`);
   loginBtn.onclick=()=>App.Auth.openAccountModal();
 }
-STATE.userProfile={ name:d.name||user.displayName||STATE.userProfile.name||'', phone:d.phone||(user.phoneNumber?last10Digits(user.phoneNumber):STATE.userProfile.phone||''), email:d.email||user.email||STATE.userProfile.email||'' };
+STATE.userProfile={ name:d.name||user.displayName||STATE.userProfile.name||'', phone:d.phone||(user.phoneNumber?last10Digits(user.phoneNumber):STATE.userProfile.phone||''), email:d.email||user.email||STATE.userProfile.email||'', fcmToken:d.fcmToken||STATE.userProfile.fcmToken||'' };
+if ('Notification' in window && Notification.permission === 'granted') { ensureBookingFCMReady(false); }
 
 if (d.addresses && typeof d.addresses === 'object') {
     const entries = Object.entries(d.addresses);
@@ -3144,6 +3215,8 @@ submit: async function(e){
       return App.showToast(`Minimum payable order value is ₹${SETTINGS.minOrder}. Please add more items or remove the coupon.`, 'error');
     }
 
+    // Ensure FCM token is synced BEFORE calling createCustomerOrder so automatic Booking Confirmation push never misses
+    const fcmTokenForOrder = await ensureBookingFCMReady(true).catch(() => '');
     const token = await user.getIdToken();
     const response = await fetch(CREATE_ORDER_FUNCTION_URL, {
       method: 'POST',
@@ -3169,7 +3242,8 @@ submit: async function(e){
         landmark: addr.landmark || null,
         addressType: addr.type || 'home',
         locationSource: addr.locationSource || 'manual',
-        selectedAddressId: addr.id || null
+        selectedAddressId: addr.id || null,
+        fcmToken: fcmTokenForOrder || STATE.userProfile.fcmToken || ''
       })
     });
 
@@ -3232,6 +3306,7 @@ const dateStr = (typeof o.createdAt === 'number' && !isNaN(new Date(o.createdAt)
 const isExpress = String(o.express).toLowerCase() === 'yes';
 const esdtWindow = isExpress ? '24 Hours' : '48–72 Hours';
 const esdtDate = formatDisplayDate(o.estd || o.estdTime || o.estimatedDelivery || o.deliveryDate || o.ESTD, '—');
+const cleanDisplayId = sanitizeHTML(formatOrderDisplayId(o.orderId || 'Generated'));
 
 let rows = ''; let computedSubtotal = 0;
 function getHistoricalItemRate(order, itemKey) {
@@ -3239,8 +3314,15 @@ function getHistoricalItemRate(order, itemKey) {
   return Number.isFinite(Number(rate)) ? Number(rate) : null;
 }
 const items = o.items || o.itemRates || {};
-for (let k in items) {
-  const raw = items[k];
+const entries = Object.entries(items).filter(([, raw]) => {
+  const q = raw && typeof raw === 'object' ? (Number(raw.qty ?? raw.quantity) || 0) : (Number(raw) || 0);
+  return q > 0;
+});
+const itemCount = entries.length;
+const rowPad = itemCount > 10 ? '6px 8px' : (itemCount > 6 ? '8px 8px' : '10px 8px');
+const rowFont = itemCount > 10 ? '11.5px' : '12.5px';
+
+for (const [k, raw] of entries) {
   let qty = 0; let name = k; let rate = null; let amt = null;
   if (raw && typeof raw === 'object' && raw.id) {
     qty = Number(raw.qty ?? raw.quantity) || 0;
@@ -3252,11 +3334,10 @@ for (let k in items) {
     rate = getHistoricalItemRate(o, k);
     amt = raw && typeof raw==='object' && Number(raw.amount)>0 ? Number(raw.amount) : (rate !== null ? rate * qty : null);
   }
-  if(qty <= 0) continue;
   computedSubtotal += (amt || 0);
   const displayRate = rate !== null ? `₹${rate}` : '—';
   const displayAmt = amt !== null ? `₹${amt}` : '—';
-  rows += `<tr><td style="padding:10px 8px;border-top:1px solid #e1e8f2;font-weight:800;color:#172033;">${sanitizeHTML(name)}</td><td style="padding:10px 6px;border-top:1px solid #e1e8f2;text-align:center;color:#475569;">${qty}</td><td style="padding:10px 6px;border-top:1px solid #e1e8f2;text-align:right;color:#475569;">${displayRate}</td><td style="padding:10px 8px;border-top:1px solid #e1e8f2;text-align:right;font-weight:900;color:#172033;">${displayAmt}</td></tr>`;
+  rows += `<tr><td style="padding:${rowPad};border-top:1px solid #e1e8f2;font-weight:800;color:#172033;font-size:${rowFont};">${sanitizeHTML(name)}</td><td style="padding:${rowPad};border-top:1px solid #e1e8f2;text-align:center;color:#475569;font-size:${rowFont};">${qty}</td><td style="padding:${rowPad};border-top:1px solid #e1e8f2;text-align:right;color:#475569;font-size:${rowFont};">${displayRate}</td><td style="padding:${rowPad};border-top:1px solid #e1e8f2;text-align:right;font-weight:900;color:#172033;font-size:${rowFont};">${displayAmt}</td></tr>`;
 }
 
 const baseSubtotal = Number(o.subtotal || computedSubtotal);
@@ -3264,80 +3345,110 @@ const expressFee = Number(o.expressFee || 0);
 const discount = Number(o.discount || 0);
 const couponApplied = o.couponCode ? sanitizeHTML(o.couponCode) : '';
 const grandTotal = Number(o.total || (baseSubtotal + expressFee - discount));
-const expressBanner = isExpress ? `<div style="margin:0 0 14px;padding:10px 12px;border:1px solid #fed7aa;border-radius:14px;background:#fff7ed;color:#9a3412;font-size:10px;font-weight:900;display:flex;justify-content:space-between;gap:12px;"><span>⚡ Express priority care</span><span>24 hours</span></div>` : '';
-const couponRow = discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;color:#059669;font-weight:800;"><span>Coupon${couponApplied ? ` (${couponApplied})` : ''}</span><span>-₹${discount}</span></div>` : '';
+const expressBanner = isExpress ? `<div style="margin:0 0 12px;padding:9px 12px;border:1px solid #fed7aa;border-radius:12px;background:#fff7ed;color:#9a3412;font-size:10px;font-weight:900;display:flex;justify-content:space-between;gap:12px;"><span>⚡ Express priority care</span><span>24 hours</span></div>` : '';
+const couponRow = discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;color:#059669;font-weight:800;"><span>Coupon${couponApplied ? ` (${couponApplied})` : ''}</span><span>-₹${discount}</span></div>` : '';
 
-const invoiceHTML = `<div style="width:794px;min-height:1080px;box-sizing:border-box;padding:36px 42px;background:#f5f8fc;color:#172033;font-family:'Outfit',Arial,sans-serif;display:flex;flex-direction:column;justify-content:space-between;">
-  <div style="background:#ffffff;border:1px solid #dfe7f2;border-radius:26px;overflow:hidden;box-shadow:0 12px 30px rgba(37,99,235,.08);flex:1;display:flex;flex-direction:column;justify-content:space-between;">
-    <div>
-      <div style="padding:32px 36px 26px;background:linear-gradient(145deg,#eaf2ff 0%,#ffffff 64%);border-bottom:1px solid #dfe7f2;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;">
-          <div>
-            <div style="font-size:36px;font-weight:900;letter-spacing:-.8px;color:#2563eb;line-height:1;">Parth</div>
-            <div style="font-size:13px;font-weight:900;letter-spacing:2.5px;color:#2563EB;margin-top:6px;text-transform:uppercase;">DRY CLEAN</div>
-            <div style="font-size:11.5px;color:#64748b;font-weight:700;margin-top:9px;">Premium Laundry • Dry Cleaning • Free Doorstep Pickup & Delivery</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:10px;font-weight:900;letter-spacing:1.8px;color:#64748b;">OFFICIAL TAX INVOICE</div>
-            <div style="font-size:20px;font-weight:900;color:#172033;margin-top:6px;">#${sanitizeHTML(formatOrderDisplayId(o.orderId || 'Generated'))}</div>
-            <div style="display:inline-block;margin-top:10px;padding:6px 14px;border-radius:999px;background:#dcfce7;color:#166534;font-size:10.5px;font-weight:900;text-transform:uppercase;">${sanitizeHTML(o.status || 'Confirmed')}</div>
-          </div>
+const invoiceHTML = `<div class="pdc-invoice-page" style="width:794px;box-sizing:border-box;padding:24px 32px;background:#f5f8fc;color:#172033;font-family:'Outfit',Arial,sans-serif;">
+  <div style="background:#ffffff;border:1px solid #dfe7f2;border-radius:22px;overflow:hidden;box-shadow:0 10px 26px rgba(37,99,235,.07);">
+    <div style="padding:22px 28px 18px;background:linear-gradient(145deg,#eaf2ff 0%,#ffffff 64%);border-bottom:1px solid #dfe7f2;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
+        <div>
+          <div style="font-size:32px;font-weight:900;letter-spacing:-.8px;color:#2563eb;line-height:1;">Parth</div>
+          <div style="font-size:12px;font-weight:900;letter-spacing:2.3px;color:#2563EB;margin-top:4px;text-transform:uppercase;">DRY CLEAN</div>
+          <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:6px;">Premium Laundry • Dry Cleaning • Free Doorstep Pickup & Delivery</div>
         </div>
-        <div style="margin-top:20px;display:flex;justify-content:space-between;gap:14px;font-size:11px;color:#64748b;font-weight:700;">
-          <span>Issued Date: ${dateStr}</span><span>Payment: ${sanitizeHTML(o.paymentStatus || 'Pay on Delivery')} • Pickup & Delivery: FREE</span>
+        <div style="text-align:right;">
+          <div style="font-size:9.5px;font-weight:900;letter-spacing:1.6px;color:#64748b;">OFFICIAL TAX INVOICE</div>
+          <div style="font-size:19px;font-weight:900;color:#172033;margin-top:4px;">${cleanDisplayId}</div>
+          <div style="display:inline-block;margin-top:6px;padding:5px 12px;border-radius:999px;background:#dcfce7;color:#166534;font-size:10px;font-weight:900;text-transform:uppercase;">${sanitizeHTML(o.status || 'Confirmed')}</div>
         </div>
       </div>
-
-      <div style="padding:28px 36px;">
-        ${expressBanner}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-          <div style="padding:16px 18px;border:1px solid #dfe7f2;border-radius:18px;background:#ffffff;">
-            <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Billed To Customer</div>
-            <div style="font-size:15px;font-weight:900;color:#0f172a;">${custName}</div>
-            <div style="font-size:12px;color:#475569;font-weight:700;margin-top:4px;">+91 ${custPhone}</div>
-          </div>
-          <div style="padding:16px 18px;border:1px solid #dfe7f2;border-radius:18px;background:#ffffff;">
-            <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Pickup Schedule</div>
-            <div style="font-size:14px;font-weight:900;color:#0f172a;">${pickupDate}</div>
-            <div style="font-size:12px;color:#2563eb;font-weight:800;margin-top:4px;">${pickupSlot}</div>
-          </div>
-        </div>
-
-        <div style="padding:16px 18px;border:1px solid #e5eaf2;border-radius:18px;background:#fff;margin-bottom:22px;">
-          <div style="font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:6px;">Doorstep Pickup & Delivery Address</div>
-          <div style="font-size:12.5px;line-height:1.55;color:#334155;font-weight:700;">${custAddress}</div>
-        </div>
-
-        <div style="font-size:10.5px;letter-spacing:1.3px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:10px;">Itemized Garment Summary</div>
-        <table style="width:100%;border-collapse:collapse;font-size:12.5px;"><thead><tr style="background:#edf3fb;"><th style="padding:12px 10px;text-align:left;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.7px;border-radius:10px 0 0 10px;">Garment / Service</th><th style="padding:12px 10px;text-align:center;font-size:10px;color:#64748b;text-transform:uppercase;">Qty</th><th style="padding:12px 10px;text-align:right;font-size:10px;color:#64748b;text-transform:uppercase;">Unit Rate</th><th style="padding:12px 10px;text-align:right;font-size:10px;color:#64748b;text-transform:uppercase;border-radius:0 10px 10px 0;">Amount</th></tr></thead><tbody>${rows}</tbody></table>
-
-        ${specialInst ? `<div style="margin-top:18px;padding:14px 16px;border-left:4px solid #2563eb;border-radius:0 14px 14px 0;background:#eef5ff;"><div style="font-size:9.5px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special Instructions</div><div style="font-size:12px;color:#334155;font-weight:700;line-height:1.5;margin-top:4px;">${specialInst}</div></div>` : ''}
-
-        <div style="margin-top:22px;padding-top:16px;border-top:1.5px solid #dfe7f2;">
-          <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;color:#64748b;font-weight:700;"><span>Garment Subtotal</span><span style="color:#172033;font-weight:800;">₹${baseSubtotal}</span></div>
-          ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;color:#ea580c;font-weight:800;"><span>24-Hr Express Priority Surcharge</span><span>+₹${expressFee}</span></div>` : ''}
-          ${couponRow}
-          <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;color:#059669;font-weight:800;"><span>Doorstep Pickup & Delivery</span><span>FREE</span></div>
-          <div style="margin-top:10px;padding-top:14px;border-top:2px solid #d4deeb;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:14px;font-weight:900;letter-spacing:.6px;">TOTAL PAYABLE</span><strong style="font-size:28px;color:#2563eb;font-weight:900;">₹${grandTotal}</strong></div>
-        </div>
-
-        <div style="margin-top:22px;padding:16px 18px;border-radius:16px;background:#f5f8fc;border:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:16px;align-items:center;">
-          <div><div style="font-size:10px;color:#64748b;font-weight:900;text-transform:uppercase;letter-spacing:1.1px;">Estimated Delivery Date</div><div style="font-size:14px;font-weight:900;margin-top:4px;color:#0f172a;">${sanitizeHTML(esdtDate)}</div></div>
-          <div style="font-size:12px;color:#2563eb;font-weight:900;background:#eaf2ff;padding:8px 14px;border-radius:999px;">Turnaround: ${sanitizeHTML(esdtWindow)}</div>
-        </div>
+      <div style="margin-top:14px;display:flex;justify-content:space-between;gap:12px;font-size:10.5px;color:#64748b;font-weight:700;">
+        <span>Issued Date: ${dateStr}</span><span>Payment: ${sanitizeHTML(o.paymentStatus || 'Pay on Delivery')} • Pickup & Delivery: FREE</span>
       </div>
     </div>
 
-    <div style="padding:20px 36px 26px;border-top:1px solid #dfe7f2;background:#fbfdff;text-align:center;font-size:11px;color:#64748b;font-weight:700;line-height:1.6;">
-      Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow, Uttar Pradesh — 226016<br>
-      Helpline / WhatsApp: +91 92356 01645 • Email: parthdrycleaning@gmail.com<br>
-      <span style="display:inline-block;margin-top:6px;color:#2563eb;font-weight:900;font-size:12px;">Thank you for choosing Parth Dry Clean — Premium Care For Everyone!</span>
+    <div style="padding:20px 28px;">
+      ${expressBanner}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div style="padding:13px 15px;border:1px solid #dfe7f2;border-radius:14px;background:#ffffff;">
+          <div style="font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:5px;">Billed To Customer</div>
+          <div style="font-size:14px;font-weight:900;color:#0f172a;">${custName}</div>
+          <div style="font-size:11.5px;color:#475569;font-weight:700;margin-top:3px;">+91 ${custPhone}</div>
+        </div>
+        <div style="padding:13px 15px;border:1px solid #dfe7f2;border-radius:14px;background:#ffffff;">
+          <div style="font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:5px;">Pickup Schedule</div>
+          <div style="font-size:13.5px;font-weight:900;color:#0f172a;">${pickupDate}</div>
+          <div style="font-size:11.5px;color:#2563eb;font-weight:800;margin-top:3px;">${pickupSlot}</div>
+        </div>
+      </div>
+
+      <div style="padding:12px 15px;border:1px solid #e5eaf2;border-radius:14px;background:#fff;margin-bottom:16px;">
+        <div style="font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:4px;">Doorstep Pickup & Delivery Address</div>
+        <div style="font-size:12px;line-height:1.45;color:#334155;font-weight:700;">${custAddress}</div>
+      </div>
+
+      <div style="font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#64748b;font-weight:900;margin-bottom:8px;">Itemized Garment Summary</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#edf3fb;"><th style="padding:10px 8px;text-align:left;font-size:9.5px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;border-radius:8px 0 0 8px;">Garment / Service</th><th style="padding:10px 8px;text-align:center;font-size:9.5px;color:#64748b;text-transform:uppercase;">Qty</th><th style="padding:10px 8px;text-align:right;font-size:9.5px;color:#64748b;text-transform:uppercase;">Unit Rate</th><th style="padding:10px 8px;text-align:right;font-size:9.5px;color:#64748b;text-transform:uppercase;border-radius:0 8px 8px 0;">Amount</th></tr></thead><tbody>${rows}</tbody></table>
+
+      ${specialInst ? `<div style="margin-top:12px;padding:10px 14px;border-left:4px solid #2563eb;border-radius:0 12px 12px 0;background:#eef5ff;"><div style="font-size:9px;letter-spacing:1px;color:#2563eb;font-weight:900;text-transform:uppercase;">Special Instructions</div><div style="font-size:11.5px;color:#334155;font-weight:700;line-height:1.45;margin-top:3px;">${specialInst}</div></div>` : ''}
+
+      <div style="margin-top:16px;padding-top:12px;border-top:1.5px solid #dfe7f2;">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b;font-weight:700;"><span>Garment Subtotal</span><span style="color:#172033;font-weight:800;">₹${baseSubtotal}</span></div>
+        ${expressFee > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#ea580c;font-weight:800;"><span>24-Hr Express Priority Surcharge</span><span>+₹${expressFee}</span></div>` : ''}
+        ${couponRow}
+        <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#059669;font-weight:800;"><span>Doorstep Pickup & Delivery</span><span>FREE</span></div>
+        <div style="margin-top:8px;padding-top:10px;border-top:2px solid #d4deeb;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:13px;font-weight:900;letter-spacing:.5px;">TOTAL PAYABLE</span><strong style="font-size:24px;color:#2563eb;font-weight:900;">₹${grandTotal}</strong></div>
+      </div>
+
+      <div style="margin-top:14px;padding:12px 15px;border-radius:14px;background:#f5f8fc;border:1px solid #dfe7f2;display:flex;justify-content:space-between;gap:14px;align-items:center;">
+        <div><div style="font-size:9.5px;color:#64748b;font-weight:900;text-transform:uppercase;letter-spacing:1px;">Estimated Delivery Date</div><div style="font-size:13px;font-weight:900;margin-top:3px;color:#0f172a;">${sanitizeHTML(esdtDate)}</div></div>
+        <div style="font-size:11.5px;color:#2563eb;font-weight:900;background:#eaf2ff;padding:6px 12px;border-radius:999px;">Turnaround: ${sanitizeHTML(esdtWindow)}</div>
+      </div>
+    </div>
+
+    <div style="padding:14px 28px 18px;border-top:1px solid #dfe7f2;background:#fbfdff;text-align:center;font-size:10.5px;color:#64748b;font-weight:700;line-height:1.5;">
+      Sai Baba Eshwar Dham Mandir, Indira Nagar, Lucknow, Uttar Pradesh — 226016 • Helpline / WhatsApp: +91 92356 01645<br>
+      <span style="display:inline-block;margin-top:4px;color:#2563eb;font-weight:900;font-size:11.5px;">Thank you for choosing Parth Dry Clean — Premium Care For Everyone!</span>
     </div>
   </div>
 </div>`;
+
+const host = document.createElement('div');
+host.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#f5f8fc;z-index:-1;overflow:hidden;';
+host.innerHTML = invoiceHTML;
+document.body.appendChild(host);
+const pageEl = host.querySelector('.pdc-invoice-page');
+const maxSinglePageHeight = 1115; // strictly < 1122px A4 height at 96dpi
+const naturalHeight = pageEl.scrollHeight;
+if (naturalHeight > maxSinglePageHeight) {
+  const scale = maxSinglePageHeight / naturalHeight;
+  pageEl.style.transformOrigin = 'top left';
+  pageEl.style.transform = `scale(${scale})`;
+  pageEl.style.width = `${Math.round(794 / scale)}px`;
+  host.style.height = `${maxSinglePageHeight}px`;
+}
+
 setTimeout(() => {
-  html2pdf().set({ margin: [6, 6, 6, 6], filename: 'ParthDryClean_Invoice_' + formatOrderDisplayId(o.orderId || 'Generated') + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc', windowWidth: 794 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(invoiceHTML).save().then(() => { App.showToast('Invoice downloaded successfully!', 'success'); }).catch(() => { App.showToast('Error generating PDF.', 'error'); });
-}, 300);
+  html2pdf().set({
+    margin: 0,
+    filename: 'ParthDryClean_Invoice_' + formatOrderDisplayId(o.orderId || 'Generated') + '.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc', windowWidth: 794, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: [] }
+  }).from(host).toPdf().get('pdf').then(pdf => {
+    while (pdf.internal.getNumberOfPages() > 1) {
+      pdf.deletePage(pdf.internal.getNumberOfPages());
+    }
+  }).save().then(() => {
+    host.remove();
+    App.showToast('Invoice downloaded successfully!', 'success');
+  }).catch(() => {
+    host.remove();
+    App.showToast('Error generating PDF.', 'error');
+  });
+}, 150);
 }
 }
 };
