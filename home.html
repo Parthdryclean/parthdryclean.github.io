@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen23 : The Ultimate Elite Build (Original Greetings, Smooth 3D Modals, Zero-Jump, Perfect Invoice) -->
+<!-- ParthindexGen26 : Production Master Build (Zero-Jump, Zero-Flicker Bag, Expandable Dock, Notification Center, WhatsApp Quick Book, In-App Confirm & Invoice Preview) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -315,10 +315,11 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .ba-container { position:relative; width:100%; max-width:650px; margin: 20px auto; overflow:hidden; aspect-ratio: 16/10; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); border-radius: 20px; touch-action: pan-y; }
 .ba-img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; pointer-events:none; }
 .ba-clean-img { clip-path: inset(0 50% 0 0); z-index: 2; }
-.ba-slider { position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:ew-resize; z-index: 10; touch-action: pan-y; }
-.ba-slider:focus-visible ~ .ba-slider-btn { outline: 3px solid var(--primary); outline-offset: 2px; }
+.ba-container { user-select: none; -webkit-user-select: none; cursor: ew-resize; }
 .ba-slider-line { position: absolute; top: 0; left: 50%; width: 3px; height: 100%; background: #ffffff; z-index: 3; box-shadow: 0 0 10px rgba(0,0,0,0.3); transform: translateX(-50%); pointer-events: none; }
-.ba-slider-btn { position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; background: #ffffff; border-radius: 50%; z-index: 4; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); pointer-events: none; }
+.ba-slider-btn { position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; background: #ffffff; border-radius: 50%; z-index: 6; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); pointer-events: auto; touch-action: none; cursor: grab; border: 2px solid rgba(37,99,235,0.18); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.ba-slider-btn:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 6px 20px rgba(37,99,235,0.35); }
+.ba-slider-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 .ba-badge { position:absolute; top:15px; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:800; color:#fff; pointer-events:none; z-index:5; }
 .badge-dirty { right:15px; background:rgba(var(--danger-rgb),0.8); backdrop-filter:blur(4px); -webkit-backdrop-filter: blur(4px); }
 .badge-clean { left:15px; background:rgba(var(--success-rgb),0.8); backdrop-filter:blur(4px); -webkit-backdrop-filter: blur(4px); }
@@ -370,9 +371,9 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .fabric-content-card h3{color:var(--text);margin-bottom:8px;font-size:18px;display:flex;align-items:center;gap:8px;}
 .fabric-content-card h3 i{color:var(--primary)!important;}
 .fabric-content-card p{color:var(--text-muted);font-size:13px;font-weight:550;line-height:1.65;margin:0;}
-.fabric-content-card .trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:15px;font-size:10px;font-weight:850;color:var(--primary);background:var(--accent-light);padding:8px 12px;border-radius:var(--pill-radius);border:1px solid rgba(var(--primary-rgb),.14);width:fit-content;}
-.trust-badge-small{color:var(--primary);background:var(--accent-light);border-color:rgba(var(--primary-rgb),.14);}
-[data-theme="dark"] .trust-badge-small{background:transparent;border-color:transparent;}
+.fabric-content-card .trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:15px;font-size:12px;font-weight:800;color:var(--text-secondary);background:transparent!important;padding:4px 0!important;border:none!important;box-shadow:none!important;width:fit-content;}
+.trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:4px;font-size:12.5px;font-weight:800;color:var(--text-secondary);background:transparent!important;border:none!important;padding:4px 0!important;box-shadow:none!important;}
+[data-theme="dark"] .trust-badge-small{background:transparent!important;border:none!important;color:var(--text-secondary);}
 
 
 
@@ -1552,6 +1553,285 @@ body.has-home-cart-bar .floating-whatsapp {
   user-select: none;
 }
 
+
+/* ================================================================
+   GEN26 PRODUCTION UPGRADES — EXPANDABLE DOCK, ZERO-FLICKER STEPPER,
+   NOTIFICATION CENTER, WHATSAPP QUICK BOOK, INVOICE PREVIEW & CONFIRM
+================================================================ */
+@keyframes stepperExpand {
+  0% { opacity: 0.4; transform: scale(0.82); }
+  70% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes qtyPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.24); color: var(--primary); }
+  100% { transform: scale(1); }
+}
+.home-stepper.animate-expand, .home-add-btn.animate-expand {
+  animation: stepperExpand 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.home-step-num.animate-pop {
+  animation: qtyPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Header Notification Bell */
+.notif-bell-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: 0.2s ease;
+  font-size: 15px;
+}
+.notif-bell-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+.notif-unread-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface);
+  line-height: 1;
+}
+
+/* Expandable Home Floating Cart Dock */
+.home-floating-cart {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden;
+}
+.hfc-bag-toggle {
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+}
+.hfc-bag-grip {
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-muted);
+  opacity: 0.4;
+}
+.hfc-bag-chevron {
+  font-size: 10px;
+  color: var(--primary);
+  transition: transform 0.24s ease;
+}
+.home-floating-cart.bag-expanded .hfc-bag-chevron {
+  transform: rotate(180deg);
+}
+.hfc-bag-panel {
+  display: none;
+  flex-direction: column;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  max-height: 46vh;
+}
+.home-floating-cart.bag-expanded .hfc-bag-panel {
+  display: flex;
+}
+.hfc-bag-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.hfc-bag-head strong {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text);
+}
+.hfc-bag-items {
+  overflow-y: auto;
+  padding: 4px 16px;
+  max-height: 32vh;
+  overscroll-behavior: contain;
+}
+.hfc-bag-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.hfc-bag-row:last-child {
+  border-bottom: 0;
+}
+.hfc-bag-row-info {
+  min-width: 0;
+  flex: 1;
+}
+.hfc-bag-row-info strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hfc-bag-row-info small {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.hfc-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px 10px 16px;
+}
+.hfc-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.hfc-wa-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  background: rgba(37, 211, 102, 0.12);
+  color: #16a34a;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+[data-theme="dark"] .hfc-wa-btn {
+  color: #4ade80;
+  background: rgba(37, 211, 102, 0.18);
+}
+.hfc-wa-btn:hover {
+  background: #25d366;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Notification Center Feed */
+.notif-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+  text-align: left;
+  padding: 4px 2px 10px;
+}
+.notif-feed-item {
+  padding: 13px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: 0.2s ease;
+}
+.notif-feed-item.unread {
+  background: var(--accent-light);
+  border-color: rgba(var(--primary-rgb), 0.28);
+}
+.notif-feed-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.notif-feed-body {
+  flex: 1;
+  min-width: 0;
+}
+.notif-feed-body strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.notif-feed-body p {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0 0 5px;
+}
+.notif-feed-time {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+/* Invoice Preview Modal */
+#invoicePreviewModal .modal-box {
+  max-width: 840px;
+  width: min(96vw, 840px);
+  padding: 20px;
+  text-align: left;
+}
+.invoice-preview-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 68vh;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #f8fafc;
+  padding: 12px;
+  margin: 12px 0 16px;
+}
+.invoice-preview-scroll .pdc-invoice-page {
+  margin: 0 auto;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+}
 </style>
 </head>
 <body class="booking-ui-home">
@@ -1575,6 +1855,10 @@ body.has-home-cart-bar .floating-whatsapp {
 <li id="myOrdersNavItem" style="display:none;"><a href="javascript:void(0)" onclick="openModal('ordersModal'); loadOrderHistory();">My Orders</a></li>
 </ul></nav>
 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+<button class="notif-bell-btn" id="notifCenterBtn" onclick="openNotificationsModal()" aria-label="Notifications" title="Notifications">
+  <i class="fas fa-bell"></i>
+  <span class="notif-unread-badge" id="notifUnreadBadge">0</span>
+</button>
 <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install</button>
 <button class="icon-btn booking-account-btn" id="loginBtn" onclick="openModal('authModal')" aria-label="Account" title="Account"><i class="fas fa-user-circle"></i></button>
 <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu"><i class="fas fa-bars"></i></button>
@@ -1626,7 +1910,7 @@ body.has-home-cart-bar .floating-whatsapp {
 <p id="heroSubtitle">Experience expert dry cleaning & laundry with free doorstep pickup, 48-72 hour delivery, and anti-shrinkage technology.</p>
 <div class="action-buttons" style="margin-top:25px;">
 <a href="booking.html" class="btn btn-book-now"><i class="fas fa-calendar-check"></i> Book Free Pickup</a>
-<a href="https://wa.me/919235601645?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup." target="_blank" class="btn btn-outline" id="heroWaBtn"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+<button type="button" onclick="openWhatsAppBookingModal()" class="btn btn-outline" id="heroWaBtn"><i class="fab fa-whatsapp" style="color:#25d366;"></i> Book via WhatsApp</button>
 </div>
 <div class="hero-trust-badges">
   <span><i class="fas fa-check-circle"></i> Free Doorstep Pickup</span>
@@ -1643,14 +1927,13 @@ body.has-home-cart-bar .floating-whatsapp {
 
 <section class="before-after-section" id="how-it-works-section">
 <div class="section-header" style="margin-bottom:20px;"><h2>See The <span class="text-gradient">Magic</span></h2><p>Slide to see how our expert solvents remove the toughest stains.</p></div>
-<div class="ba-container">
+<div class="ba-container" id="baContainer">
 <img src="assets/dirty.jpg" alt="Stained garment before wash" class="ba-img" loading="lazy">
 <img src="assets/clean.jpg" alt="Clean garment after wash" class="ba-img ba-clean-img" id="baCleanImg" loading="lazy">
 <div class="ba-slider-line" id="baSliderLine"></div>
-<div class="ba-slider-btn" id="baSliderBtn"><i class="fas fa-arrows-alt-h"></i></div>
+<div class="ba-slider-btn" id="baSliderBtn" role="slider" tabindex="0" aria-label="Before and after comparison slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><i class="fas fa-arrows-alt-h"></i></div>
 <div class="ba-badge badge-dirty">Before</div>
 <div class="ba-badge badge-clean">After</div>
-<input type="range" min="0" max="100" value="50" class="ba-slider" aria-label="Before and after comparison slider" oninput="updateSlider(this.value)">
 </div>
 </section>
 
@@ -1707,7 +1990,7 @@ body.has-home-cart-bar .floating-whatsapp {
     <button type="button" class="stain-chip" onclick="selectStainCare('ink', this)">🖋️ Ink / Collar</button>
     <button type="button" class="stain-chip" onclick="selectStainCare('zari', this)">✨ Bridal Zari</button>
   </div>
-  <div class="stain-solution-text" id="stainSolutionText">Enzyme pre-spotting + cold hydrocarbon solvent lifts tough Haldi &amp; curry oils without bleaching fabric dye.</div>
+  <div class="stain-solution-text" id="stainSolutionText">Safe stain-lifting wash removes tough Haldi, curry, and oil marks while keeping your cloth colour safe and bright.</div>
 </div>
 </div>
 </div>
@@ -1803,19 +2086,37 @@ body.has-home-cart-bar .floating-whatsapp {
   </div>
 </section>
 
-<!-- FLOATING BOTTOM CART BAR (SYNCED WITH BOOKING.HTML) -->
+<!-- FLOATING BOTTOM CART BAR (EXPANDABLE BAG DOCK SYNCED WITH BOOKING.HTML) -->
 <div class="home-floating-cart" id="homeFloatingCartBar" role="region" aria-label="Selected laundry bag">
-  <div class="hfc-left">
-    <span class="hfc-meta" id="hfcMetaText">0 items in bag</span>
-    <div class="hfc-total">
-      <span id="hfcTotalText">₹0</span>
-      <button type="button" class="hfc-clear" onclick="clearHomeBag()" title="Clear bag">Clear</button>
+  <button type="button" class="hfc-bag-toggle" id="hfcBagToggle" onclick="toggleHomeBagDock()" aria-expanded="false">
+    <span class="hfc-bag-grip"></span>
+    <span id="hfcBagToggleText">View / Edit Bag Items</span>
+    <i class="fas fa-chevron-up hfc-bag-chevron"></i>
+  </button>
+  <div class="hfc-bag-panel" id="hfcBagPanel">
+    <div class="hfc-bag-head">
+      <strong>Your Laundry Bag</strong>
+      <button type="button" class="hfc-clear" onclick="clearHomeBag()" title="Clear bag">Clear All</button>
+    </div>
+    <div class="hfc-bag-items" id="hfcBagItemsList"></div>
+  </div>
+  <div class="hfc-main-row">
+    <div class="hfc-left" onclick="toggleHomeBagDock()" style="cursor:pointer;">
+      <span class="hfc-meta" id="hfcMetaText">0 items in bag</span>
+      <div class="hfc-total">
+        <span id="hfcTotalText">₹0</span>
+      </div>
+    </div>
+    <div class="hfc-actions-right">
+      <button type="button" class="hfc-wa-btn" onclick="openWhatsAppBookingModal()" title="Book this bag on WhatsApp" aria-label="Book on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+      </button>
+      <a href="booking.html" class="hfc-cta" id="hfcActionLink">
+        <span>Book Pickup</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
     </div>
   </div>
-  <a href="booking.html" class="hfc-cta" id="hfcActionLink">
-    <span>Book Pickup</span>
-    <i class="fas fa-arrow-right"></i>
-  </a>
 </div>
 
 <footer class="site-footer">
@@ -2055,6 +2356,83 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 </div>
 </div>
 
+<!-- CUSTOMER NOTIFICATION CENTER MODAL -->
+<div class="modal-overlay" id="notificationsModal" onclick="closeModalOutside(event, 'notificationsModal')">
+  <div class="modal-box" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div class="modal-grabber-wrapper"><div class="modal-grabber"></div></div>
+    <button type="button" class="close-modal-btn" onclick="closeModal('notificationsModal')" aria-label="Close">&times;</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-right:28px;">
+      <div style="text-align:left;">
+        <h2 style="color:var(--text);font-size:20px;font-weight:800;"><i class="fas fa-bell" style="color:var(--primary);"></i> Notifications</h2>
+        <p style="color:var(--text-muted);font-size:12px;font-weight:600;">Order updates &amp; messages from Parth Dry Clean</p>
+      </div>
+      <button type="button" onclick="markAllCustomerNotificationsRead()" style="background:var(--accent-light);color:var(--primary);border:1px solid rgba(var(--primary-rgb),0.2);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Outfit';"><i class="fas fa-check-double"></i> Mark all read</button>
+    </div>
+    <div class="notif-feed-list" id="customerNotifFeedList">
+      <div style="text-align:center;padding:32px 12px;color:var(--text-muted);font-size:13px;font-weight:600;">No notifications yet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK WHATSAPP BOOKING MODAL -->
+<div class="modal-overlay" id="waBookingModal" onclick="closeModalOutside(event, 'waBookingModal')">
+  <div class="modal-box" style="max-width:440px;text-align:left;" onclick="event.stopPropagation()">
+    <div class="modal-grabber-wrapper"><div class="modal-grabber"></div></div>
+    <button type="button" class="close-modal-btn" onclick="closeModal('waBookingModal')" aria-label="Close">&times;</button>
+    <h2 style="color:var(--text);font-size:20px;font-weight:800;margin-bottom:4px;"><i class="fab fa-whatsapp" style="color:#25d366;"></i> Quick WhatsApp Pickup</h2>
+    <p style="color:var(--text-muted);font-size:12px;font-weight:600;margin-bottom:14px;">Send your pickup request directly on WhatsApp in 1 tap.</p>
+    <div id="waBagSummaryBox" style="background:var(--accent-light);border:1px solid rgba(var(--primary-rgb),0.2);border-radius:14px;padding:10px 12px;margin-bottom:12px;font-size:12px;font-weight:700;color:var(--text);"></div>
+    <input type="text" id="waBookName" class="auth-input" placeholder="Your Name *" style="margin-bottom:10px;" />
+    <input type="tel" id="waBookPhone" class="auth-input" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10-Digit Mobile Number (Optional)" style="margin-bottom:10px;" />
+    <textarea id="waBookAddress" class="auth-input" rows="2" placeholder="Pickup Address / Area in Lucknow *" style="margin-bottom:10px;resize:vertical;"></textarea>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <input type="date" id="waBookDate" class="auth-input" style="margin-bottom:0;" />
+      <select id="waBookSlot" class="auth-input" style="margin-bottom:0;">
+        <option value="Morning (9 AM - 12 PM)">Morning (9-12)</option>
+        <option value="Afternoon (1 PM - 5 PM)">Afternoon (1-5)</option>
+        <option value="Evening (6 PM - 9 PM)">Evening (6-9)</option>
+      </select>
+    </div>
+    <button type="button" class="btn-primary-full" style="background:#25d366;box-shadow:0 8px 20px rgba(37,211,102,0.3);" onclick="submitWhatsAppBooking()">
+      <i class="fab fa-whatsapp" style="font-size:18px;"></i> Send Booking on WhatsApp
+    </button>
+  </div>
+</div>
+
+<!-- INVOICE PREVIEW & DOWNLOAD MODAL -->
+<div class="modal-overlay" id="invoicePreviewModal" onclick="closeModalOutside(event, 'invoicePreviewModal')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-grabber-wrapper"><div class="modal-grabber"></div></div>
+    <button type="button" class="close-modal-btn" onclick="closeModal('invoicePreviewModal')" aria-label="Close">&times;</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-right:28px;">
+      <div>
+        <h2 style="color:var(--text);font-size:19px;font-weight:800;"><i class="fas fa-file-invoice" style="color:var(--primary);"></i> Official Order Invoice</h2>
+        <p style="color:var(--text-muted);font-size:12px;font-weight:600;" id="invoicePreviewSub">Preview, print, or save as PDF</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="care-btn soft-blue" style="flex:0 0 auto;padding:9px 14px;" onclick="printCurrentInvoice()"><i class="fas fa-print"></i> Print</button>
+        <button type="button" class="care-btn primary" id="invoiceDownloadPdfBtn" style="flex:0 0 auto;padding:9px 16px;" onclick="saveCurrentInvoicePDF()"><i class="fas fa-download"></i> Download PDF</button>
+      </div>
+    </div>
+    <div class="invoice-preview-scroll" id="invoicePreviewContainer"></div>
+  </div>
+</div>
+
+<!-- IN-WEBSITE CONFIRMATION MODAL (REPLACES BROWSER CONFIRM) -->
+<div class="modal-overlay" id="pdcConfirmModal" onclick="resolvePdcConfirm(false)">
+  <div class="modal-box" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div style="width:48px;height:48px;border-radius:16px;background:var(--danger-soft);color:var(--danger);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 12px;" id="pdcConfirmIconWrap">
+      <i class="fas fa-triangle-exclamation" id="pdcConfirmIcon"></i>
+    </div>
+    <h3 id="pdcConfirmTitle" style="color:var(--text);font-size:19px;font-weight:800;margin-bottom:6px;">Are you sure?</h3>
+    <p id="pdcConfirmMessage" style="color:var(--text-muted);font-size:13.5px;font-weight:500;line-height:1.5;margin-bottom:20px;"></p>
+    <div style="display:flex;gap:10px;">
+      <button type="button" class="btn-secondary-full" style="margin-top:0;flex:1;" id="pdcConfirmCancelBtn" onclick="resolvePdcConfirm(false)">No, Keep</button>
+      <button type="button" class="btn-primary-full" style="flex:1;background:var(--danger);box-shadow:0 6px 18px rgba(239,68,68,0.28);" id="pdcConfirmOkBtn" onclick="resolvePdcConfirm(true)">Yes, Confirm</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // EXCLUSIVE GRABBER SWIPE TO CLOSE LOGIC
 document.querySelectorAll('.modal-grabber-wrapper').forEach(wrapper => {
@@ -2088,9 +2466,36 @@ document.querySelectorAll('.modal-grabber-wrapper').forEach(wrapper => {
    });
 });
 
-// SWITCH MODAL HELPER
+// IN-APP CONFIRMATION DIALOG (REPLACES NATIVE CONFIRM)
+let _pdcConfirmResolver = null;
+window.pdcConfirm = function(title, message, options = {}) {
+  const modal = document.getElementById('pdcConfirmModal');
+  if (!modal) return Promise.resolve(false);
+  document.getElementById('pdcConfirmTitle').textContent = title || 'Please Confirm';
+  document.getElementById('pdcConfirmMessage').textContent = message || 'Are you sure you want to continue?';
+  const okBtn = document.getElementById('pdcConfirmOkBtn');
+  const cancelBtn = document.getElementById('pdcConfirmCancelBtn');
+  okBtn.textContent = options.confirmText || 'Yes, Confirm';
+  cancelBtn.textContent = options.cancelText || 'Cancel';
+  okBtn.style.background = options.danger === false ? 'var(--gradient)' : 'var(--danger)';
+  modal.classList.add('active');
+  return new Promise(resolve => {
+    _pdcConfirmResolver = resolve;
+  });
+};
+window.resolvePdcConfirm = function(choice) {
+  const modal = document.getElementById('pdcConfirmModal');
+  if (modal) modal.classList.remove('active');
+  if (_pdcConfirmResolver) {
+    const r = _pdcConfirmResolver;
+    _pdcConfirmResolver = null;
+    r(Boolean(choice));
+  }
+};
+
+// SWITCH MODAL HELPER (SKIP HISTORY.BACK SO PAGE NEVER JUMPS)
 function switchModal(closeId, openId) {
-  closeModal(closeId);
+  closeModal(closeId, false, true);
   setTimeout(() => {
     openModal(openId);
     if (openId === 'ordersModal') loadOrderHistory();
@@ -2375,19 +2780,31 @@ function getHomeBag() {
 
 let HOME_BAG = getHomeBag();
 
-function buildHomeItemActionHTML(item) {
+function buildHomeItemActionHTML(item, animateMode = '') {
   if (!item || !(Number(item.price) > 0)) {
     return `<span class="price-on-request">On Request</span>`;
   }
   const qty = Number(HOME_BAG[item.id] || 0);
+  const expandCls = animateMode === 'expand' ? ' animate-expand' : '';
+  const popCls = animateMode === 'pop' ? ' animate-pop' : '';
   if (qty <= 0) {
-    return `<button type="button" class="home-add-btn" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', 1)"><i class="fas fa-plus"></i> Add</button>`;
+    return `<button type="button" class="home-add-btn${expandCls}" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', 1)"><i class="fas fa-plus"></i> Add</button>`;
   }
-  return `<div class="home-stepper">
+  return `<div class="home-stepper${expandCls}">
     <button type="button" class="home-step-btn" aria-label="Decrease ${sanitizeHTML(item.name)}" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', -1)"><i class="fas fa-minus"></i></button>
-    <span class="home-step-num">${qty}</span>
+    <span class="home-step-num${popCls}">${qty}</span>
     <button type="button" class="home-step-btn" aria-label="Increase ${sanitizeHTML(item.name)}" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', 1)"><i class="fas fa-plus"></i></button>
   </div>`;
+}
+
+function syncHomeBagControls(itemId, prevQty, nextQty) {
+  const item = findHomeCatalogItem(itemId);
+  if (!item) return;
+  const mode = (prevQty === 0 && nextQty > 0) || (prevQty > 0 && nextQty === 0) ? 'expand' : 'pop';
+  const html = buildHomeItemActionHTML(item, mode);
+  document.querySelectorAll(`[data-bag-ctl="${CSS.escape(item.id)}"]`).forEach(el => {
+    el.innerHTML = html;
+  });
 }
 
 function renderComboSpotlight() {
@@ -2408,43 +2825,66 @@ function renderComboSpotlight() {
           ${save > 0 ? `<span class="combo-save-pill">Save ₹${formatMoney(save)}</span>` : ''}
         </div>
         <h4 style="margin-top:10px;">${sanitizeHTML(item.name)}</h4>
-        <p style="margin-top:4px;">Doorstep pickup, premium solvent care &amp; hanger-ready packaging included.</p>
+        <p style="margin-top:4px;">Doorstep pickup, gentle fabric care &amp; hanger-ready packaging included.</p>
       </div>
       <div class="combo-bottom-row">
         <div class="combo-price-wrap">
           <strong>₹${formatMoney(item.price)}</strong>
           ${item.originalPrice ? `<del>₹${formatMoney(item.originalPrice)}</del>` : ''}
         </div>
-        <div>${buildHomeItemActionHTML(item)}</div>
+        <div data-bag-ctl="${sanitizeHTML(item.id)}">${buildHomeItemActionHTML(item)}</div>
       </div>
     </div>`;
   }).join('');
 }
 
+window.toggleHomeBagDock = function(force) {
+  const bar = document.getElementById('homeFloatingCartBar');
+  const toggleBtn = document.getElementById('hfcBagToggle');
+  if (!bar) return;
+  const nextState = typeof force === 'boolean' ? force : !bar.classList.contains('bag-expanded');
+  bar.classList.toggle('bag-expanded', nextState);
+  if (toggleBtn) toggleBtn.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+};
+
 function syncHomeFloatingCartBar() {
   HOME_BAG = getHomeBag();
   const bar = document.getElementById('homeFloatingCartBar');
+  const listEl = document.getElementById('hfcBagItemsList');
+  const toggleText = document.getElementById('hfcBagToggleText');
   if (!bar) return;
   let totalItems = 0;
   let subtotal = 0;
+  let rowsHtml = '';
   for (const [id, qty] of Object.entries(HOME_BAG)) {
     const item = findHomeCatalogItem(id);
     if (item && Number(item.price) > 0) {
       totalItems += qty;
-      subtotal += Number(item.price) * qty;
+      const lineTotal = Number(item.price) * qty;
+      subtotal += lineTotal;
+      rowsHtml += `<div class="hfc-bag-row">
+        <div class="hfc-bag-row-info">
+          <strong>${sanitizeHTML(item.name)}</strong>
+          <small>₹${formatMoney(item.price)} each · ₹${formatMoney(lineTotal)}</small>
+        </div>
+        <div>${buildHomeItemActionHTML(item)}</div>
+      </div>`;
     }
   }
+  if (listEl) listEl.innerHTML = rowsHtml;
+  if (toggleText) toggleText.textContent = `Your Bag (${totalItems} item${totalItems === 1 ? '' : 's'}) — Tap to review`;
   const anyOverlayOpen = Boolean(
     document.querySelector('.modal-overlay.active') ||
     document.getElementById('activeOrderDropdown')?.classList.contains('open')
   );
   if (totalItems > 0 && !anyOverlayOpen) {
-    document.getElementById('hfcMetaText').textContent = `${totalItems} item${totalItems === 1 ? '' : 's'} added to bag`;
+    document.getElementById('hfcMetaText').textContent = `${totalItems} item${totalItems === 1 ? '' : 's'} added · Tap to view list`;
     document.getElementById('hfcTotalText').textContent = `₹${formatMoney(subtotal)}`;
     bar.classList.add('visible');
     document.body.classList.add('has-home-cart-bar');
   } else {
     bar.classList.remove('visible');
+    bar.classList.remove('bag-expanded');
     document.body.classList.remove('has-home-cart-bar');
   }
 }
@@ -2454,26 +2894,21 @@ window.updateHomeBagQty = function(id, delta) {
   const canonicalId = LEGACY_ID_MAP[id] || id;
   const item = findHomeCatalogItem(canonicalId);
   if (!item || !(Number(item.price) > 0)) return;
-  const current = Number(HOME_BAG[item.id] || 0);
-  const next = current + Number(delta);
-  if (next <= 0) delete HOME_BAG[item.id];
-  else HOME_BAG[item.id] = Math.min(100, next);
+  const prevQty = Number(HOME_BAG[item.id] || 0);
+  const nextQty = Math.max(0, Math.min(100, prevQty + Number(delta)));
+  if (nextQty <= 0) delete HOME_BAG[item.id];
+  else HOME_BAG[item.id] = nextQty;
   localStorage.setItem('pdc_cart', JSON.stringify(HOME_BAG));
-  if (delta > 0 && navigator.vibrate) navigator.vibrate(25);
-  const searchVal = document.getElementById('priceSearchInput')?.value || '';
-  if (searchVal.trim()) globalSearch(searchVal);
-  else renderPricing();
-  renderComboSpotlight();
+  if (delta > 0 && navigator.vibrate) navigator.vibrate(20);
+  syncHomeBagControls(item.id, prevQty, nextQty);
   syncHomeFloatingCartBar();
 };
 
 window.clearHomeBag = function() {
+  const prevIds = Object.keys(HOME_BAG);
   HOME_BAG = {};
   localStorage.removeItem('pdc_cart');
-  const searchVal = document.getElementById('priceSearchInput')?.value || '';
-  if (searchVal.trim()) globalSearch(searchVal);
-  else renderPricing();
-  renderComboSpotlight();
+  prevIds.forEach(id => syncHomeBagControls(id, 1, 0));
   syncHomeFloatingCartBar();
   showToast('Bag cleared', 'info');
 };
@@ -2488,10 +2923,10 @@ window.addEventListener('storage', (e) => {
 });
 
 const STAIN_CARE_SOLUTIONS = {
-  oil: 'Enzyme pre-spotting + cold hydrocarbon solvent lifts tough Haldi & curry oils without bleaching fabric dye.',
-  coffee: 'Oxygenated micro-emulsion neutralizes tannin stains from tea, coffee & wine while keeping whites bright.',
-  ink: 'Ultrasonic cuff & collar treatment dissolves ink, sweat rings & mud without abrasive brushing.',
-  zari: 'Zero-moisture organic dry cleaning + acid-free tissue wrapping protects gold/silver Zari from tarnishing.'
+  oil: 'Safe stain-lifting wash removes tough Haldi, curry, and oil marks while keeping your cloth colour safe and bright.',
+  coffee: 'Gentle deep-clean treatment lifts old tea, coffee, and food spots without harsh bleaching.',
+  ink: ' targeted collar, cuff, and ink spot cleaning removes stubborn dirt without rough brushing or fabric damage.',
+  zari: 'Moisture-free dry cleaning and soft tissue packing keep your bridal silk and Zari shine safe like new.'
 };
 
 window.selectStainCare = function(type, btn) {
@@ -2530,7 +2965,76 @@ function setTimeGreeting(userName) {
 function getAccountInitial(name) { const n = String(name || 'U').trim(); return sanitizeHTML((n.charAt(0) || 'U').toUpperCase()); }
 function applyLoggedInUI(displayName) { const firstName = (displayName || 'Guest').split(' ')[0]; const loginBtn = document.getElementById('loginBtn'); if(loginBtn) { loginBtn.innerHTML = `<span class="account-initial">${getAccountInitial(displayName)}</span><span class="account-online-dot" aria-hidden="true"></span>`; loginBtn.classList.add('is-authed'); loginBtn.setAttribute('aria-label', `Open ${sanitizeHTML(firstName)} account`); loginBtn.title = `Hi, ${sanitizeHTML(firstName)}`; } const orders = document.getElementById('myOrdersNavItem'); if(orders) orders.style.display = 'block'; setTimeGreeting(firstName); }
 function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn'); if(loginBtn) { loginBtn.innerHTML = `<i class="fas fa-user-circle"></i>`; loginBtn.classList.remove('is-authed'); loginBtn.setAttribute('aria-label','Login / Account'); loginBtn.title='Login / Account'; } const orders = document.getElementById('myOrdersNavItem'); if(orders) orders.style.display = 'none'; setTimeGreeting(null); }
-function updateSlider(val) { document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`; document.getElementById('baSliderLine').style.left = `${val}%`; document.getElementById('baSliderBtn').style.left = `${val}%`; }
+function updateSlider(val) {
+  const num = Math.max(0, Math.min(100, Number(val) || 0));
+  const cleanImg = document.getElementById('baCleanImg');
+  const line = document.getElementById('baSliderLine');
+  const btn = document.getElementById('baSliderBtn');
+  if (cleanImg) cleanImg.style.clipPath = `inset(0 ${100 - num}% 0 0)`;
+  if (line) line.style.left = `${num}%`;
+  if (btn) {
+    btn.style.left = `${num}%`;
+    btn.setAttribute('aria-valuenow', String(Math.round(num)));
+  }
+}
+
+(function initBeforeAfterSlider() {
+  const container = document.getElementById('baContainer');
+  const btn = document.getElementById('baSliderBtn');
+  if (!container || !btn) return;
+  let dragging = false;
+  let touchStartX = 0, touchStartY = 0, touchHorizontal = null;
+
+  const setFromClientX = (clientX) => {
+    const rect = container.getBoundingClientRect();
+    if (!rect.width) return;
+    const pct = ((clientX - rect.left) / rect.width) * 100;
+    updateSlider(pct);
+  };
+
+  btn.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+    e.preventDefault();
+  });
+  btn.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    setFromClientX(e.clientX);
+  });
+  const endPointer = () => { dragging = false; };
+  btn.addEventListener('pointerup', endPointer);
+  btn.addEventListener('pointercancel', endPointer);
+
+  container.addEventListener('click', (e) => {
+    setFromClientX(e.clientX);
+  });
+
+  container.addEventListener('touchstart', (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchHorizontal = null;
+  }, { passive: true });
+
+  container.addEventListener('touchmove', (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if (touchHorizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      touchHorizontal = Math.abs(dx) > Math.abs(dy) * 1.35;
+    }
+    if (touchHorizontal) {
+      if (e.cancelable) e.preventDefault();
+      setFromClientX(e.touches[0].clientX);
+    }
+  }, { passive: false });
+
+  btn.addEventListener('keydown', (e) => {
+    const cur = Number(btn.getAttribute('aria-valuenow') || 50);
+    if (e.key === 'ArrowLeft') { e.preventDefault(); updateSlider(cur - 5); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); updateSlider(cur + 5); }
+  });
+})();
 function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); if(floatingImg){ floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); } }
 
 function renderPricing() {
@@ -2556,7 +3060,7 @@ function renderPricing() {
           <span class="price-name">${sanitizeHTML(item.name)}</span>
           ${hasPrice ? `<span class="price-tag">${priceText}${originalText}</span>` : ''}
         </div>
-        <div class="price-item-right">${buildHomeItemActionHTML(item)}</div>
+        <div class="price-item-right" data-bag-ctl="${sanitizeHTML(item.id)}">${buildHomeItemActionHTML(item)}</div>
       </div>`;
     });
     itemsHTML += `</div>`;
@@ -2567,7 +3071,6 @@ function renderPricing() {
   syncHomeFloatingCartBar();
 }
 
-function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
 window.filterCategory = function(cat, btn) { 
   const wrapper = document.getElementById('pricingChipsWrapper');
   if (btn && btn.classList.contains('active') && cat !== 'all') { 
@@ -2617,7 +3120,7 @@ function globalSearch(val) {
           <span class="price-name">${sanitizeHTML(i.name)}</span>
           ${hasPrice ? `<span class="price-tag">${priceText}${originalText}</span>` : ''}
         </div>
-        <div class="price-item-right">${buildHomeItemActionHTML(i)}</div>
+        <div class="price-item-right" data-bag-ctl="${sanitizeHTML(i.id)}">${buildHomeItemActionHTML(i)}</div>
       </div>`;
     }).join('');
   } else {
@@ -2682,7 +3185,7 @@ function getOrderItemSummary(order) { if (!order.items) return '0 items'; const 
 
 // CANCEL ORDER LOGIC (2 HOURS) + COUPON UNLOCK
 window.cancelOrder = async function(orderId) {
-    if(!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
+    if(!(await pdcConfirm("Cancel This Order?", "Are you sure you want to cancel this order? This action cannot be undone.", { confirmText: "Yes, Cancel Order", cancelText: "Keep Order", danger: true }))) return;
     showToast("Cancelling order...", "info");
     try {
         const orderSnap = await db.ref('orders/' + orderId).once('value').catch(() => null);
@@ -2894,9 +3397,13 @@ document.addEventListener('click', (e) => {
 function toggleTheme() { const html = document.documentElement; const icon = document.querySelector('#themeToggle i'); const nextTheme = html.hasAttribute('data-theme') ? 'light' : 'dark'; if (nextTheme === 'light') html.removeAttribute('data-theme'); else html.setAttribute('data-theme', 'dark'); localStorage.setItem('theme', nextTheme); localStorage.setItem('pdc_theme', nextTheme); if (icon) icon.className = nextTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; }
 (() => { const savedTheme = localStorage.getItem('theme') || localStorage.getItem('pdc_theme') || 'light'; if (savedTheme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); const icon = document.querySelector('#themeToggle i'); if (icon) icon.className = 'fas fa-sun'; } })();
 
+let _savedModalScrollY = 0;
 function openModal(id) {
   const m = document.getElementById(id);
   if (!m) return;
+  if (!document.querySelector('.modal-overlay.active')) {
+    _savedModalScrollY = window.scrollY || window.pageYOffset || 0;
+  }
   m.classList.add('active');
   document.body.style.overflow = 'hidden';
   if (!isHandlingPopstate && (!history.state || history.state.modal !== id)) {
@@ -2909,9 +3416,13 @@ function openModal(id) {
   }
   syncHomeFloatingCartBar();
 }
-function closeModal(id, fromPopstate = false) {
+function closeModal(id, fromPopstate = false, skipHistoryBack = false) {
   const m = document.getElementById(id);
   if (!m) return;
+  const scrollTarget = _savedModalScrollY;
+  if (document.activeElement && m.contains(document.activeElement)) {
+    try { document.activeElement.blur(); } catch (_) {}
+  }
   m.classList.add('closing');
   setTimeout(() => {
     m.classList.remove('active');
@@ -2920,11 +3431,12 @@ function closeModal(id, fromPopstate = false) {
     if (!document.querySelector('.modal-overlay.active') && !dropdownOpen) {
       document.body.style.overflow = '';
       const wa = document.getElementById('floatingWhatsappBtn');
-      if(wa) wa.style.display = 'flex'; 
+      if(wa) wa.style.display = 'flex';
+      window.scrollTo({ top: scrollTarget, behavior: 'instant' in window ? 'instant' : 'auto' });
     }
     syncHomeFloatingCartBar();
   }, 300); 
-  if (!fromPopstate && !isHandlingPopstate && history.state && history.state.modal === id) {
+  if (!skipHistoryBack && !fromPopstate && !isHandlingPopstate && history.state && history.state.modal === id) {
     history.back();
   }
 }
@@ -3070,7 +3582,7 @@ function verifyOTP() {
   confirmationResult.confirm(code).then(res => {
     const user = res.user;
     showToast('Mobile verified.', 'success');
-    closeModal('authModal');
+    closeModal('authModal', false, true);
     editPhoneNumber();
     syncCanonicalAccount(user);
   }).catch(() => {
@@ -3084,7 +3596,7 @@ function signInWithGoogle() {
   auth.signInWithPopup(provider).then(res => {
     const user = res.user;
     showToast('Google sign-in successful.', 'success');
-    closeModal('authModal');
+    closeModal('authModal', false, true);
     syncCanonicalAccount(user);
   }).catch(e => showToast(e.message, 'error'));
 }
@@ -3100,90 +3612,7 @@ function pdcNormalizePhone(value){
   const raw=String(value||'').replace(/\D/g,'');
   return raw.length>=10 ? raw.slice(-10) : raw;
 }
-function pdcIdentityKey(kind,value){
-  const encoded=encodeURIComponent(String(value||'')).replace(/\./g,'%2E');
-  return kind+'/'+encoded;
-}
-async function pdcReadIdentity(kind,value){
-  const v=String(value||''); if(!v) return null;
-  const snap=await db.ref('identity/'+pdcIdentityKey(kind,v)).once('value');
-  const d=snap.val(); return d&&d.uid ? String(d.uid) : null;
-}
-async function pdcFindCustomer(kind,value){
-  const v=String(value||''); if(!v) return null;
-  const snap=await db.ref('customers').orderByChild(kind).equalTo(v).once('value');
-  let found=null;
-  snap.forEach(c=>{
-    if(!found && c.val()) found={uid:c.key,data:c.val()||{}};
-  });
-  return found;
-}
-function pdcCustomerOwns(kind,data,value){
-  if(!data) return false;
-  const v=String(value||'');
-  if(kind==='email') return pdcNormalizeEmail(data.email)===pdcNormalizeEmail(v);
-  if(kind==='phone') return pdcNormalizePhone(data.phone)===pdcNormalizePhone(v);
-  return false;
-}
-async function pdcResolveOwner(kind,value,currentUid){
-  const v=String(value||''); if(!v) return null;
-  const [registered,customer]=await Promise.all([
-    pdcReadIdentity(kind,v),
-    pdcFindCustomer(kind,v)
-  ]);
-  const owners=[];
-  // Registry is trusted only when its customer record still owns this identity.
-  if(registered && registered!==currentUid){
-    const ownerSnap=await db.ref('customers/'+registered).once('value');
-    const ownerData=ownerSnap.exists()?(ownerSnap.val()||{}):null;
-    if(ownerData && pdcCustomerOwns(kind,ownerData,v)) owners.push(registered);
-  }
-  if(customer && customer.uid!==currentUid && pdcCustomerOwns(kind,customer.data,v)) owners.push(customer.uid);
-  return [...new Set(owners)][0] || null;
-}
-async function pdcResolveIdentity(email,phone,currentUid){
-  const e=pdcNormalizeEmail(email), p=pdcNormalizePhone(phone);
-  const [emailOwner,phoneOwner]=await Promise.all([
-    e ? pdcResolveOwner('email',e,currentUid) : Promise.resolve(null),
-    p && p.length===10 ? pdcResolveOwner('phone',p,currentUid) : Promise.resolve(null)
-  ]);
-  if(emailOwner && phoneOwner && emailOwner!==phoneOwner) return {ok:false,reason:'identity-conflict',ownerUid:emailOwner};
-  if(emailOwner || phoneOwner) return {ok:false,reason:'identity-already-linked',ownerUid:emailOwner||phoneOwner};
-  return {ok:true,email:e,phone:p};
-}
-async function pdcClaimIdentity(kind,value,uid){
-  const v=String(value||''); if(!v) return true;
-  const ref=db.ref('identity/'+pdcIdentityKey(kind,v));
-  const result=await ref.transaction(current=>{
-    if(current && current.uid && String(current.uid)!==String(uid)) return;
-    return {uid:String(uid),updatedAt:Date.now()};
-  });
-  const val=result.snapshot.val();
-  return !!(val && String(val.uid)===String(uid));
-}
-async function pdcClaimIdentities(email,phone,uid){
-  const e=pdcNormalizeEmail(email), p=pdcNormalizePhone(phone);
-  if(e && !(await pdcClaimIdentity('email',e,uid))) throw new Error('EMAIL_ALREADY_LINKED');
-  try{
-    if(p && p.length===10 && !(await pdcClaimIdentity('phone',p,uid))) throw new Error('PHONE_ALREADY_LINKED');
-  }catch(err){
-    if(e){
-      const r=db.ref('identity/'+pdcIdentityKey('email',e));
-      const snap=await r.once('value');
-      if(snap.val()?.uid===String(uid)) await r.remove();
-    }
-    throw err;
-  }
-  return true;
-}
-async function pdcIdentityGate(user,profileEmail,profilePhone){
-  const email=pdcNormalizeEmail(profileEmail || user?.email || '');
-  const phone=pdcNormalizePhone(profilePhone || (user?.phoneNumber||''));
-  const result=await pdcResolveIdentity(email,phone,user.uid);
-  if(!result.ok) return result;
-  await pdcClaimIdentities(email,phone,user.uid);
-  return {ok:true,email,phone};
-}
+// Server-authoritative identity validation is handled by updateCustomerProfile Cloud Function.
 function pdcIdentityErrorMessage(reason){
   if(reason==='identity-already-linked') return 'Account already linked. Please use the original login.';
   if(reason==='identity-conflict') return 'Email and phone belong to different accounts.';
@@ -3501,8 +3930,8 @@ function saveProfileAddress(){
     showToast(err?.message || 'Could not save address','error');
   });
 }
-function deleteProfileAddress(id){
-  if(!confirm('Are you sure you want to delete this address?'))return;
+async function deleteProfileAddress(id){
+  if(!(await pdcConfirm('Delete Saved Address?', 'Are you sure you want to remove this pickup address from your profile?', { confirmText: 'Yes, Delete', cancelText: 'Cancel', danger: true }))) return;
   const before = JSON.parse(JSON.stringify(profileAddresses));
   const beforeSelected = profileSelectedAddressId;
   profileAddresses=profileAddresses.filter(a=>a.id!==id); if(profileSelectedAddressId===id)profileSelectedAddressId=profileAddresses[0]?.id||null; profileAddresses.forEach(a=>a.isDefault=a.id===profileSelectedAddressId);
@@ -3542,6 +3971,9 @@ function logoutUser() {
     showToast('Logged out', 'info');
     activeOrderListeners.forEach(ref => ref.off('value'));
     activeOrderListeners = [];
+    customerNotifRefs.forEach(r => r.off());
+    customerNotifRefs = [];
+    const bellBtn = document.getElementById('notifCenterBtn'); if (bellBtn) bellBtn.style.display = 'none';
     setTrustBarVisible(true);
   });
 }
@@ -3824,7 +4256,8 @@ function buildInvoicePDF(o, prof, orderId) {
     : formatDisplayDate(new Date());
   const isExpress = String(o.express || '').toLowerCase() === 'yes';
   const esdtWindow = isExpress ? '24 Hours' : '48–72 Hours';
-  const esdtDate = sanitizeHTML(o.estd || o.estdTime || o.estimatedDelivery || o.deliveryDate || o.ESTD || formatEta(o) || '—');
+  const rawEstd = o.estd || o.estdTime || o.estimatedDelivery || o.deliveryDate || o.ESTD;
+  const esdtDate = sanitizeHTML(rawEstd ? formatDisplayDate(rawEstd) : (formatEta(o) || '—'));
   const cleanDisplayId = sanitizeHTML(formatOrderDisplayId(orderId));
 
   let rows = '';
@@ -3934,45 +4367,279 @@ function buildInvoicePDF(o, prof, orderId) {
     </div>
   </div>`;
 
+  window._currentInvoiceHTML = invoiceHTML;
+  window._currentInvoiceFilename = 'ParthDryClean_Invoice_' + String(cleanDisplayId).replace(/[^a-z0-9_-]/gi, '_') + '.pdf';
+  const previewContainer = document.getElementById('invoicePreviewContainer');
+  const previewSub = document.getElementById('invoicePreviewSub');
+  if (previewContainer) previewContainer.innerHTML = invoiceHTML;
+  if (previewSub) previewSub.textContent = `Order ${cleanDisplayId} • Ready to download or print`;
+  openModal('invoicePreviewModal');
+}
+
+window.printCurrentInvoice = function() {
+  if (!window._currentInvoiceHTML) return;
+  const w = window.open('', '_blank', 'width=850,height=900');
+  if (!w) return showToast('Pop-up blocked. Please use Download PDF.', 'warning');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Parth Dry Clean Invoice</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><style>@page{size:A4;margin:8mm;}body{margin:0;background:#fff;font-family:'Outfit',Arial,sans-serif;}</style></head><body>${window._currentInvoiceHTML}<script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script></body></html>`);
+  w.document.close();
+};
+
+window.saveCurrentInvoicePDF = function() {
+  if (!window._currentInvoiceHTML) return;
+  const btn = document.getElementById('invoiceDownloadPdfBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving PDF...'; }
   const host = document.createElement('div');
-  host.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#ffffff;z-index:-1;overflow:hidden;';
-  host.innerHTML = invoiceHTML;
+  host.style.cssText = 'position:fixed;left:0;top:0;width:794px;background:#ffffff;z-index:-9999;opacity:1;pointer-events:none;overflow:hidden;';
+  host.innerHTML = window._currentInvoiceHTML;
   document.body.appendChild(host);
   const pageEl = host.querySelector('.pdc-invoice-page');
-  const maxSinglePageHeight = 1115; // strictly < 1122px A4 height at 96dpi
-  const naturalHeight = pageEl.scrollHeight;
-  if (naturalHeight > maxSinglePageHeight) {
+  const maxSinglePageHeight = 1115;
+  const naturalHeight = pageEl ? pageEl.scrollHeight : 900;
+  if (pageEl && naturalHeight > maxSinglePageHeight) {
     const scale = maxSinglePageHeight / naturalHeight;
     pageEl.style.transformOrigin = 'top left';
     pageEl.style.transform = `scale(${scale})`;
     pageEl.style.width = `${Math.round(794 / scale)}px`;
     host.style.height = `${maxSinglePageHeight}px`;
   }
-
   setTimeout(() => {
     html2pdf().set({
       margin: 0,
-      filename: 'ParthDryClean_Invoice_' + String(cleanDisplayId).replace(/[^a-z0-9_-]/gi, '_') + '.pdf',
+      filename: window._currentInvoiceFilename || 'ParthDryClean_Invoice.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 794, scrollY: 0 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', width: 794, windowWidth: 794, x: 0, y: 0, scrollX: 0, scrollY: 0 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: [] }
-    }).from(host).toPdf().get('pdf').then(pdf => {
+    }).from(pageEl || host).toPdf().get('pdf').then(pdf => {
       while (pdf.internal.getNumberOfPages() > 1) {
         pdf.deletePage(pdf.internal.getNumberOfPages());
       }
     }).save()
       .then(() => {
-        host.remove();
-        showToast('Invoice downloaded successfully!', 'success');
+        showToast('Invoice PDF downloaded!', 'success');
       })
       .catch(err => {
-        host.remove();
         console.warn('Invoice PDF generation failed:', err?.message || err);
-        showToast('Error generating PDF.', 'error');
+        showToast('Could not save PDF directly — opening print view.', 'warning');
+        printCurrentInvoice();
+      })
+      .finally(() => {
+        host.remove();
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-download"></i> Download PDF'; }
       });
   }, 150);
 }
+
+
+// ===== CUSTOMER NOTIFICATION CENTER (ORDER UPDATES + ADMIN MESSAGES) =====
+let customerNotifRefs = [];
+let customerNotifMap = { order: {}, manual: {} };
+
+function getReadNotifMap(uid) {
+  if (!uid) return {};
+  try { return JSON.parse(localStorage.getItem('pdc_read_notifs_' + uid) || '{}'); } catch (_) { return {}; }
+}
+
+function saveReadNotifMap(uid, map) {
+  if (!uid) return;
+  try { localStorage.setItem('pdc_read_notifs_' + uid, JSON.stringify(map || {})); } catch (_) {}
+}
+
+function getMergedCustomerNotifications() {
+  const combined = [
+    ...Object.values(customerNotifMap.order || {}),
+    ...Object.values(customerNotifMap.manual || {})
+  ];
+  combined.sort((a, b) => (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0));
+  return combined.slice(0, 40);
+}
+
+function renderCustomerNotificationsUI() {
+  const user = auth.currentUser;
+  const bellBtn = document.getElementById('notifCenterBtn');
+  const badge = document.getElementById('notifUnreadBadge');
+  const listEl = document.getElementById('customerNotifFeedList');
+  if (!user) {
+    if (bellBtn) bellBtn.style.display = 'none';
+    return;
+  }
+  if (bellBtn) bellBtn.style.display = 'inline-flex';
+  const readMap = getReadNotifMap(user.uid);
+  const items = getMergedCustomerNotifications();
+  const unreadCount = items.filter(it => !readMap[it.id]).length;
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+  if (!listEl) return;
+  if (!items.length) {
+    listEl.innerHTML = '<div style="text-align:center;padding:34px 12px;color:var(--text-muted);font-size:13px;font-weight:600;"><i class="fas fa-bell-slash" style="font-size:28px;margin-bottom:10px;opacity:0.5;display:block;"></i>No notifications yet. Order updates and special offers will appear here.</div>';
+    return;
+  }
+  listEl.innerHTML = items.map(it => {
+    const isUnread = !readMap[it.id];
+    const icon = it.kind === 'manual' ? 'fa-bullhorn' : 'fa-box-open';
+    const timeStr = it.createdAt ? new Date(Number(it.createdAt)).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+    return `<div class="notif-feed-item ${isUnread ? 'unread' : ''}" onclick="onCustomerNotifClick('${sanitizeHTML(it.id)}', '${sanitizeHTML(it.orderId || '')}')">
+      <div class="notif-feed-icon"><i class="fas ${icon}"></i></div>
+      <div class="notif-feed-body">
+        <strong>${sanitizeHTML(it.title || 'Parth Dry Clean')}</strong>
+        <p>${sanitizeHTML(it.body || '')}</p>
+        <span class="notif-feed-time">${sanitizeHTML(timeStr)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openNotificationsModal = function() {
+  if (!auth.currentUser) return openModal('authModal');
+  renderCustomerNotificationsUI();
+  openModal('notificationsModal');
+};
+
+window.markAllCustomerNotificationsRead = function() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const readMap = getReadNotifMap(user.uid);
+  getMergedCustomerNotifications().forEach(it => { readMap[it.id] = 1; });
+  saveReadNotifMap(user.uid, readMap);
+  renderCustomerNotificationsUI();
+  showToast('All notifications marked as read', 'success');
+};
+
+window.onCustomerNotifClick = function(notifId, orderId) {
+  const user = auth.currentUser;
+  if (user && notifId) {
+    const readMap = getReadNotifMap(user.uid);
+    readMap[notifId] = 1;
+    saveReadNotifMap(user.uid, readMap);
+    renderCustomerNotificationsUI();
+  }
+  if (orderId) {
+    switchModal('notificationsModal', 'ordersModal');
+  }
+};
+
+function attachCustomerNotificationsListener(uid) {
+  customerNotifRefs.forEach(r => r.off());
+  customerNotifRefs = [];
+  customerNotifMap = { order: {}, manual: {} };
+  if (!uid) return;
+  const orderQuery = db.ref('notification_events').orderByChild('uid').equalTo(uid).limitToLast(30);
+  const manualQuery = db.ref('manual_notification_events').orderByChild('uid').equalTo(uid).limitToLast(30);
+
+  orderQuery.on('value', snap => {
+    const next = {};
+    snap.forEach(ch => {
+      const v = ch.val();
+      if (v) next[ch.key] = { id: ch.key, kind: 'order', ...v };
+    });
+    customerNotifMap.order = next;
+    renderCustomerNotificationsUI();
+  }, () => {});
+
+  manualQuery.on('value', snap => {
+    const next = {};
+    snap.forEach(ch => {
+      const v = ch.val();
+      if (v) next[ch.key] = { id: ch.key, kind: 'manual', ...v };
+    });
+    customerNotifMap.manual = next;
+    renderCustomerNotificationsUI();
+  }, () => {});
+
+  customerNotifRefs.push(orderQuery, manualQuery);
+}
+
+// ===== QUICK WHATSAPP BOOKING MODAL =====
+let _activeWaNumber = '919235601645';
+window.openWhatsAppBookingModal = function() {
+  HOME_BAG = getHomeBag();
+  const summaryBox = document.getElementById('waBagSummaryBox');
+  let totalItems = 0, subtotal = 0, lines = [];
+  for (const [id, qty] of Object.entries(HOME_BAG)) {
+    const item = findHomeCatalogItem(id);
+    if (item && Number(item.price) > 0) {
+      totalItems += qty;
+      subtotal += Number(item.price) * qty;
+      lines.push(`${item.name} x${qty}`);
+    }
+  }
+  if (summaryBox) {
+    if (totalItems > 0) {
+      summaryBox.innerHTML = `<i class="fas fa-bag-shopping" style="color:var(--primary);"></i> <b>Selected Bag (${totalItems} items · ₹${formatMoney(subtotal)}):</b><br><span style="font-weight:600;color:var(--text-secondary);">${sanitizeHTML(lines.join(', '))}</span>`;
+    } else {
+      summaryBox.innerHTML = `<i class="fas fa-sparkles" style="color:var(--primary);"></i> <b>Quick Doorstep Pickup:</b> Our rider will count &amp; tag your garments at your doorstep.`;
+    }
+  }
+  const nameInp = document.getElementById('waBookName');
+  const phoneInp = document.getElementById('waBookPhone');
+  const addrInp = document.getElementById('waBookAddress');
+  const dateInp = document.getElementById('waBookDate');
+  if (nameInp && !nameInp.value && currentCustomerData?.name) nameInp.value = currentCustomerData.name;
+  if (phoneInp && !phoneInp.value && currentCustomerData?.phone) phoneInp.value = last10Digits(currentCustomerData.phone);
+  if (addrInp && !addrInp.value) {
+    const selAddr = profileAddresses.find(a => a.id === profileSelectedAddressId) || profileAddresses[0];
+    if (selAddr) addrInp.value = profileFormatAddress(selAddr);
+    else if (currentCustomerData?.address) addrInp.value = currentCustomerData.address;
+  }
+  if (dateInp && !dateInp.value) {
+    const now = new Date();
+    dateInp.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  }
+  openModal('waBookingModal');
+};
+
+window.submitWhatsAppBooking = function() {
+  const name = (document.getElementById('waBookName')?.value || '').trim();
+  const phone = (document.getElementById('waBookPhone')?.value || '').trim();
+  const addr = (document.getElementById('waBookAddress')?.value || '').trim();
+  const date = (document.getElementById('waBookDate')?.value || '').trim();
+  const slot = (document.getElementById('waBookSlot')?.value || '').trim();
+  if (!name) return showToast('Please enter your name', 'warning');
+  if (!addr) return showToast('Please enter your pickup address / locality', 'warning');
+
+  HOME_BAG = getHomeBag();
+  let lines = [], subtotal = 0;
+  for (const [id, qty] of Object.entries(HOME_BAG)) {
+    const item = findHomeCatalogItem(id);
+    if (item && Number(item.price) > 0) {
+      subtotal += Number(item.price) * qty;
+      lines.push(`• ${item.name} x${qty} (₹${Number(item.price) * qty})`);
+    }
+  }
+
+  let msg = `*New Pickup Request — Parth Dry Clean* 🧺
+
+`;
+  msg += `*Customer:* ${name}
+`;
+  if (phone) msg += `*Phone:* +91 ${phone}
+`;
+  msg += `*Address:* ${addr}
+`;
+  if (date) msg += `*Pickup Date:* ${date}
+`;
+  if (slot) msg += `*Preferred Slot:* ${slot}
+`;
+  if (lines.length) {
+    msg += `
+*Selected Garments:*
+${lines.join('\n')}
+*Estimated Total:* ₹${formatMoney(subtotal)}
+`;
+  } else {
+    msg += `
+*Items:* Doorstep garment inspection & pickup
+`;
+  }
+  closeModal('waBookingModal');
+  window.open(`https://wa.me/${_activeWaNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+};
 
 auth.onAuthStateChanged(user => {
   const loginBtn = document.getElementById('loginBtn');
@@ -4011,6 +4678,7 @@ auth.onAuthStateChanged(user => {
       openModal('profileModal');
     };
     attachActiveOrderListener(user.uid);
+    attachCustomerNotificationsListener(user.uid);
     syncFCMTokenForUser(user);
   } else {
     currentCustomerData = {};
@@ -4022,6 +4690,9 @@ auth.onAuthStateChanged(user => {
     document.getElementById('activeOrderDropdown').classList.remove('open');
     activeOrderListeners.forEach(ref => ref.off('value'));
     activeOrderListeners = [];
+    customerNotifRefs.forEach(r => r.off());
+    customerNotifRefs = [];
+    const bellBtn = document.getElementById('notifCenterBtn'); if (bellBtn) bellBtn.style.display = 'none';
     setTrustBarVisible(true);
     refreshFirstOrderBannerState(null);
   }
@@ -4174,6 +4845,7 @@ function loadSiteCMSContent() {
       }
       if (cms.contact.whatsapp) {
         const cleanWa = cms.contact.whatsapp.replace(/\D/g, '');
+        if (cleanWa) _activeWaNumber = cleanWa.length === 10 ? '91' + cleanWa : cleanWa;
         document.getElementById('floatingWhatsappBtn').href = `https://wa.me/${cleanWa}?text=Hello%2C%20I%20need%20help%20with%20my%20laundry%20order.`;
         const heroWa = document.getElementById('heroWaBtn');
         if(heroWa) heroWa.href = `https://wa.me/${cleanWa}?text=Hi%20Parth%20Dry%20Clean%2C%20I%20want%20to%20book%20a%20pickup.`;
