@@ -487,6 +487,138 @@
   [data-theme="dark"] .success-modal-box .success-order-card strong{
     color:var(--royal-blue);
   }
+
+/* ================================================================
+   GEN50.70 PRODUCTION UPGRADE:
+   1. Readable Typography Floor in Step 4 Review (11px–14px)
+   2. Desktop 2-Column Workspace (@media min-width: 900px) with
+      Single Sticky #bookingDock (Mobile <900px 100% Untouched)
+================================================================ */
+.booking-workspace {
+  display: block;
+}
+
+/* Step 4 Review Readable Font Sizes (Mobile & Desktop) */
+#step4 .review-v2-kicker { font-size: 10px; }
+#step4 .review-v2-header h2 { font-size: 20px; }
+#step4 .review-v2-header p { font-size: 12px; }
+#step4 .review-v2-total small { font-size: 10px; }
+#step4 .review-v2-total strong { font-size: 19px; }
+#step4 .review-section-title b { font-size: 13px; }
+#step4 .review-section-title small { font-size: 11px; }
+#step4 .review-edit-link { font-size: 11px; padding: 6px 12px; cursor: pointer; }
+#step4 .review-item-name b { font-size: 13px; }
+#step4 .review-item-name small { font-size: 11.5px; }
+#step4 .review-item-actions { font-size: 12px; gap: 7px; }
+#step4 .review-item-actions strong { font-size: 13px; min-width: 52px; }
+#step4 .review-qty-btn { width: 26px; height: 26px; font-size: 13px; cursor: pointer; }
+#step4 .review-address-premium strong { font-size: 13px; }
+#step4 .review-address-premium p { font-size: 12px !important; }
+#step4 .review-address-premium small { font-size: 11px !important; }
+#step4 .review-section-premium .review-schedule-box span { font-size: 12px; }
+#step4 .review-note { font-size: 12px; }
+#step4 .express-pill { font-size: 13px; }
+#step4 .express-pill small { font-size: 11px; }
+#step4 .coupon-toggle { font-size: 13px; }
+#step4 .review-bill-row { font-size: 12.5px; padding: 6px 0; }
+#step4 .review-grand-total span { font-size: 13.5px; }
+#step4 .review-grand-total strong { font-size: 21px; }
+
+/* Desktop 2-Column Layout (>= 900px) */
+@media (min-width: 900px) {
+  body {
+    max-width: 1120px;
+    padding: 24px 32px 64px;
+  }
+  header {
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+  }
+  .reel-stepper {
+    max-width: 640px;
+    margin: 0 0 24px 0;
+  }
+  .r-box {
+    font-size: 12.5px;
+    padding: 11px 10px;
+  }
+  .booking-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 28px;
+    align-items: start;
+  }
+  .booking-steps-col {
+    min-width: 0;
+  }
+  .catalog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .item-card {
+    min-height: 204px;
+    padding: 16px 14px;
+  }
+  .i-title {
+    font-size: 14px;
+  }
+  .i-price {
+    font-size: 16px;
+  }
+  .dynamic-glass-dock {
+    position: sticky;
+    top: 24px;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    border-radius: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+  .dynamic-glass-dock .dock-bag-toggle {
+    display: flex !important;
+    cursor: default;
+    padding: 12px 16px;
+    background: var(--surface-soft);
+  }
+  .dynamic-glass-dock .dock-bag-grip,
+  .dynamic-glass-dock .dock-bag-chevron {
+    display: none;
+  }
+  .dynamic-glass-dock .dock-bag-toggle-text {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .dynamic-glass-dock .dock-bag-panel {
+    display: flex !important;
+    flex-direction: column;
+  }
+  .dynamic-glass-dock .dock-bag-items {
+    max-height: 360px;
+    padding: 0 16px;
+  }
+  .dock-bag-copy strong {
+    font-size: 12.5px;
+  }
+  .dock-bag-copy small {
+    font-size: 11px;
+  }
+  .dock-bag-total {
+    font-size: 12px;
+  }
+  .dock-bag-clear {
+    font-size: 11px;
+  }
+  .dynamic-glass-dock .dock-main-row {
+    padding: 14px 16px;
+  }
+}
+
 </style>
 </head>
 <body class="preload">
@@ -526,6 +658,8 @@
 <i class="fas fa-check-circle"></i> 4. Review
   </div>
 </div>
+<div class="booking-workspace">
+<div class="booking-steps-col">
 <!-- STEP 1: GARMENTS CATALOG -->
 <div class="pane active" id="step1">
 <div class="search-wrap">
@@ -642,6 +776,7 @@
   </div>
 </div>
 </div>
+</div><!-- /.booking-steps-col -->
 <!-- DOCK-ATTACHED BAG -->
 <!-- GEN50.63 — DYNAMIC FLOATING GLASS-DOCK + FOLDABLE BAG -->
 <div class="dynamic-glass-dock" id="bookingDock" aria-label="Booking progress">
@@ -668,6 +803,7 @@
     </button>
   </div>
 </div>
+</div><!-- /.booking-workspace -->
 <!-- MINI BAG PREVIEW -->
 
 <!-- REPEAT ORDER CHOICE MODAL -->
@@ -682,6 +818,35 @@
 <button type="button" class="repeat-choice-secondary" onclick="App.Cart.repeatLastOrder('replace')"><i class="fas fa-arrow-rotate-right"></i><span><b>Start fresh / Replace</b><small>Clear the current bag and use the previous order.</small></span></button>
 <button type="button" class="repeat-choice-cancel" onclick="App.UI.closeModal('repeatChoiceModal')">Cancel</button>
 </div>
+</div>
+</div>
+<!-- ACCOUNT QUICK MODAL (PRODUCTION) -->
+<div class="modal-overlay" id="bookingAccountModal">
+<div class="modal-box" style="max-width:380px;text-align:left;">
+  <button class="close-modal-btn" onclick="App.UI.closeModal('bookingAccountModal')" type="button">×</button>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+    <div id="bamAvatar" style="width:48px;height:48px;border-radius:16px;background:var(--royal-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;">U</div>
+    <div style="min-width:0;flex:1;">
+      <h3 id="bamName" style="font-size:17px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Customer</h3>
+      <p id="bamMeta" style="font-size:12px;color:var(--ink-muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Verified Account</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:14px;background:var(--surface-soft);border:1px solid var(--border);margin-bottom:14px;">
+    <div>
+      <strong style="display:block;font-size:12.5px;color:var(--ink);">Order Push Alerts</strong>
+      <small style="font-size:10.5px;color:var(--ink-muted);font-weight:600;">Instant pickup &amp; delivery updates</small>
+    </div>
+    <button type="button" id="bookingNotifBtn" onclick="App.Auth.requestPushPermission()" style="padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:11px;font-weight:800;cursor:pointer;">Enable</button>
+  </div>
+  <div style="display:grid;gap:8px;">
+    <a href="/#ordersModal" style="text-decoration:none;padding:12px 14px;border-radius:14px;border:1px solid var(--border);background:var(--canvas);color:var(--ink);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between;">
+      <span><i class="fas fa-box" style="color:var(--royal-blue);margin-right:8px;"></i> View My Orders on Home</span>
+      <i class="fas fa-chevron-right" style="font-size:11px;color:var(--ink-muted);"></i>
+    </a>
+    <button type="button" onclick="App.Auth.logout()" style="padding:12px 14px;border-radius:14px;border:1px solid rgba(239,68,68,0.28);background:rgba(239,68,68,0.08);color:var(--danger);font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <i class="fas fa-power-off"></i> Logout Account
+    </button>
+  </div>
 </div>
 </div>
 <!-- AUTH MODAL (Google + Phone OTP) -->
@@ -841,13 +1006,29 @@ function normalizeAddressKey(addr = {}) {
   ].join('|');
 }
 
+const LEGACY_CART_ID_MAP = {
+  'ladies-kurta': 'ladies-ladies-kurta',
+  'wm-sweater': 'winterMen-sweater',
+  'wm-jacket': 'winterMen-jacket',
+  'ww-sweater': 'winterWomen-sweater',
+  'ww-jacket': 'winterWomen-jacket',
+  'fest-saree': 'festival-saree',
+  'fest-lehenga': 'festival-lehenga-3-pc',
+  'fest-coat-pant': 'festival-coat-pant',
+  'fest-sherwani': 'festival-sherwani',
+  'iron-shirt': 'iron-iron-shirt',
+  'combo-winter': 'combos-winter-wardrobe-3-jackets-2-sweaters',
+  'combo-party': 'combos-couples-party-wear-1-saree-1-suit'
+};
+
 function sanitizeStoredCart(rawCart) {
   const out = {};
   if (!rawCart || typeof rawCart !== 'object') return out;
   for (const [id, qty] of Object.entries(rawCart)) {
     const q = parseInt(qty, 10);
     if (!Number.isFinite(q) || q <= 0 || q > 100) continue;
-    out[id] = q;
+    const canonical = LEGACY_CART_ID_MAP[id] || id;
+    out[canonical] = Math.min(100, (out[canonical] || 0) + q);
   }
   return out;
 }
@@ -1001,12 +1182,12 @@ async function releaseCouponClaim(uid, code) {
 const MASTER_CAT_ORDER = ['mens', 'ladies', 'winterMen', 'winterWomen', 'iron', 'festival', 'home', 'combos'];
 const DEFAULT_CATEGORIES = {
 mens:[{id:'mens-shirt',name:'Shirt',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-pant',name:'Pant',price:60,originalPrice:80,icon:'fa-tshirt'},{id:'mens-kurta',name:'Kurta',price:60,originalPrice:80,icon:'fa-vest'},{id:'mens-jeans',name:'Jeans',price:0,icon:'fa-tshirt'}],
-ladies:[{id:'ladies-kurta',name:'Ladies Kurta',price:60,originalPrice:80,icon:'fa-female'},{id:'ladies-jeans',name:'Jeans',price:0,icon:'fa-female'}],
-festival:[{id:'fest-saree',name:'Saree',price:200,originalPrice:300,icon:'fa-female'},{id:'fest-lehenga',name:'Lehenga (3 Pc)',price:400,originalPrice:600,icon:'fa-female'},{id:'fest-coat-pant',name:'Coat Pant',price:350,originalPrice:500,icon:'fa-user-tie'}],
-combos:[{id:'combo-winter',name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150,icon:'fa-box'},{id:'combo-party',name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550,icon:'fa-box'}],
-winterMen:[{id:'wm-sweater',name:'Sweater',price:150,originalPrice:200,icon:'fa-snowflake'},{id:'wm-jacket',name:'Jacket',price:250,originalPrice:320,icon:'fa-snowflake'}],
-winterWomen:[{id:'ww-sweater',name:'Sweater',price:150,originalPrice:200,icon:'fa-snowflake'},{id:'ww-jacket',name:'Jacket',price:250,originalPrice:320,icon:'fa-snowflake'}],
-iron:[{id:'iron-shirt',name:'Iron Shirt',price:20,icon:'fa-fire'}],
+ladies:[{id:'ladies-ladies-kurta',name:'Ladies Kurta',price:60,originalPrice:80,icon:'fa-female'},{id:'ladies-jeans',name:'Jeans',price:0,icon:'fa-female'}],
+festival:[{id:'festival-saree',name:'Saree',price:200,originalPrice:300,icon:'fa-female'},{id:'festival-lehenga-3-pc',name:'Lehenga (3 Pc)',price:400,originalPrice:600,icon:'fa-female'},{id:'festival-coat-pant',name:'Coat Pant',price:350,originalPrice:500,icon:'fa-user-tie'}],
+combos:[{id:'combos-winter-wardrobe-3-jackets-2-sweaters',name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150,icon:'fa-box'},{id:'combos-couples-party-wear-1-saree-1-suit',name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550,icon:'fa-box'}],
+winterMen:[{id:'winterMen-sweater',name:'Sweater',price:150,originalPrice:200,icon:'fa-snowflake'},{id:'winterMen-jacket',name:'Jacket',price:250,originalPrice:320,icon:'fa-snowflake'}],
+winterWomen:[{id:'winterWomen-sweater',name:'Sweater',price:150,originalPrice:200,icon:'fa-snowflake'},{id:'winterWomen-jacket',name:'Jacket',price:250,originalPrice:320,icon:'fa-snowflake'}],
+iron:[{id:'iron-iron-shirt',name:'Iron Shirt',price:20,icon:'fa-fire'}],
 home:[{id:'home-blanket-double',name:'Blanket (Double)',price:350,originalPrice:450,icon:'fa-bed'}]
 };
 const DEFAULT_CATNAMES = { mens:"Men's Wear", ladies:"Ladies Wear", festival:"Festival Wear", combos:"Combos", winterMen:"Winter (Men)", winterWomen:"Winter (Women)", iron:"Steam Iron", home:"Home & Travel" };
@@ -2554,6 +2735,87 @@ db.ref('customers/' + user.uid).once('value').then(snap => {
 }).catch(releaseAndHandle);
 },
 
+openAccountModal: function(){
+  const user = auth.currentUser;
+  if (!user) return App.UI.openModal('authModal');
+  const name = (STATE.userProfile.name || user.displayName || 'Customer').trim();
+  const phone = STATE.userProfile.phone || (user.phoneNumber ? last10Digits(user.phoneNumber) : '');
+  const email = STATE.userProfile.email || user.email || '';
+  const av = document.getElementById('bamAvatar');
+  const nm = document.getElementById('bamName');
+  const mt = document.getElementById('bamMeta');
+  if (av) av.textContent = (name.charAt(0) || 'U').toUpperCase();
+  if (nm) nm.textContent = name;
+  if (mt) mt.textContent = [phone ? '+91 ' + phone : '', email].filter(Boolean).join(' · ') || 'Verified Member';
+  this.syncPushButtonState();
+  App.UI.openModal('bookingAccountModal');
+},
+
+syncPushButtonState: function(){
+  const btn = document.getElementById('bookingNotifBtn');
+  if (!btn) return;
+  const user = auth.currentUser;
+  if (!('Notification' in window)) {
+    btn.textContent = 'Unsupported';
+    btn.disabled = true;
+    return;
+  }
+  const cached = user && localStorage.getItem('pdc_notif_enabled_' + user.uid) === '1';
+  if (Notification.permission === 'granted' || cached) {
+    btn.innerHTML = '<i class="fas fa-bell"></i> Enabled';
+    btn.style.background = 'var(--emerald-soft)';
+    btn.style.color = 'var(--emerald)';
+    btn.style.borderColor = 'rgba(5,150,105,0.28)';
+    btn.disabled = false;
+  } else if (Notification.permission === 'denied') {
+    btn.innerHTML = 'Blocked · Help';
+    btn.style.background = 'rgba(239,68,68,0.1)';
+    btn.style.color = 'var(--danger)';
+    btn.disabled = false;
+  } else {
+    btn.textContent = 'Enable';
+    btn.style.background = 'var(--surface)';
+    btn.style.color = 'var(--ink)';
+    btn.disabled = false;
+  }
+},
+
+requestPushPermission: async function(){
+  const user = auth.currentUser;
+  if (!user) return App.showToast('Please login first', 'warning');
+  if (!('Notification' in window) || !('PushManager' in window)) {
+    return App.showToast('Notifications not supported on this browser', 'error');
+  }
+  if (Notification.permission === 'denied') {
+    this.syncPushButtonState();
+    return App.showToast('Browser notifications blocked hain — URL bar ke Lock (🔒) icon se Notifications Allow karein.', 'warning');
+  }
+  const btn = document.getElementById('bookingNotifBtn');
+  if (btn) { btn.textContent = 'Enabling…'; btn.disabled = true; }
+  try {
+    const perm = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+    if (perm !== 'granted') {
+      this.syncPushButtonState();
+      return App.showToast('Notification permission denied', 'warning');
+    }
+    try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
+    this.syncPushButtonState();
+    await saveFCMTokenAfterOrder();
+    this.syncPushButtonState();
+    App.showToast('Live order push notifications enabled!', 'success');
+  } catch (e) {
+    this.syncPushButtonState();
+    App.showToast('Could not enable notifications', 'error');
+  }
+},
+
+logout: function(){
+  auth.signOut().then(() => {
+    App.UI.closeModal('bookingAccountModal');
+    App.showToast('Logged out successfully', 'info');
+  });
+},
+
 completeOnboarding: function(){
 const user = auth.currentUser;
 if (!user) return;
@@ -2606,7 +2868,7 @@ if(loginBtn) {
   loginBtn.innerHTML=`<span class="account-initial">${sanitizeHTML(initial)}</span><span class="account-online-dot" aria-hidden="true"></span>`;
   loginBtn.title=`Signed in as ${immediateFirstName}`;
   loginBtn.setAttribute('aria-label',`Signed in as ${immediateFirstName}`);
-  loginBtn.onclick=()=>App.showToast(`Signed in as ${STATE.userProfile.name || user.displayName || 'Customer'}${STATE.userProfile.phone ? ' · +91 ' + STATE.userProfile.phone : ''}`, 'info');
+  loginBtn.onclick=()=>App.Auth.openAccountModal();
 }
 
 await refreshFirstOrderEligibility();
@@ -2619,7 +2881,7 @@ if(loginBtn) {
   loginBtn.innerHTML=`<span class="account-initial">${sanitizeHTML(initial)}</span><span class="account-online-dot" aria-hidden="true"></span>`;
   loginBtn.title=`Signed in as ${firstName}`;
   loginBtn.setAttribute('aria-label',`Signed in as ${firstName}`);
-  loginBtn.onclick=()=>App.showToast(`Signed in as ${STATE.userProfile.name || user.displayName || 'Customer'}${STATE.userProfile.phone ? ' · +91 ' + STATE.userProfile.phone : ''}`, 'info');
+  loginBtn.onclick=()=>App.Auth.openAccountModal();
 }
 STATE.userProfile={ name:d.name||user.displayName||STATE.userProfile.name||'', phone:d.phone||(user.phoneNumber?last10Digits(user.phoneNumber):STATE.userProfile.phone||''), email:d.email||user.email||STATE.userProfile.email||'' };
 
@@ -3152,6 +3414,13 @@ const PDCMap = {
     this.map=L.map(el,{zoomControl:true,attributionControl:true}).setView([26.8467,80.9462],13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(this.map);
     setTimeout(()=>{try{this.map&&this.map.invalidateSize(true);}catch(e){}},120);
+    if (typeof ResizeObserver !== 'undefined') {
+      try {
+        if (this._ro) this._ro.disconnect();
+        this._ro = new ResizeObserver(() => { try { this.map && this.map.invalidateSize(true); } catch (_) {} });
+        this._ro.observe(el);
+      } catch (_) {}
+    }
     this.map.on('click',e=>this.setLocation(e.latlng.lat,e.latlng.lng,true));
   },
   setLocation:function(lat,lng,reverse){
