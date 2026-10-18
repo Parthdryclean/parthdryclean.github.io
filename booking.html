@@ -353,8 +353,9 @@
     #step4 .review-item-actions strong { min-width:34px; }
     #step4 .review-schedule { grid-template-columns:1fr; }
   }
-</style>
-<style id="gen50-52-stability">
+
+
+
 /* GEN50.52 — stability layer: keep the existing card visual language intact. */
 .catalog-scroll-region{max-height:none;overflow:visible;padding:2px 2px 48px 1px;}
 .first-order-coupon-chip{display:none;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-bottom:10px;padding:9px 12px;border-radius:12px;border:1px dashed var(--royal-blue);background:var(--royal-blue-soft);color:var(--royal-blue);font-size:11px;font-weight:800;cursor:pointer;text-align:left;}
@@ -382,10 +383,9 @@
 .repeat-choice-primary small,.repeat-choice-secondary small{display:block;font-size:8.5px;color:var(--ink-muted);line-height:1.35;margin-top:2px;font-weight:600;}
 .repeat-choice-cancel{border:0;background:transparent;color:var(--ink-muted);font-size:10px;font-weight:800;text-align:center!important;padding:7px;}
 [data-theme="dark"] .repeat-choice-primary{background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.25);}
-</style>
 
 
-<style id="gen50-55-fixes">
+
   .review-section-premium{padding:16px 0 17px;}
   .review-section-premium + .review-section-premium{padding-top:17px;}
   .review-address-premium{display:flex;align-items:flex-start;gap:10px;padding:12px 13px!important;border:1px solid var(--border);border-radius:15px;background:var(--canvas);}
@@ -406,9 +406,9 @@
   .review-grand-total{margin-top:7px;padding-top:11px;}
   .btn-dock-pill{min-width:138px;justify-content:center;}
   @media(max-width:380px){.btn-dock-pill{min-width:126px;padding-left:13px;padding-right:13px}.dynamic-glass-dock{left:10px;right:10px}.review-card{padding:15px}.review-schedule{grid-template-columns:1fr!important;}}
-</style>
 
-<style id="gen50-56-success">
+
+
   /* GEN50.56 — success confirmation visual layer only. Existing IDs/actions stay intact. */
   .success-modal-box{max-width:460px;padding:0;background:var(--surface);border:1px solid var(--border);border-radius:30px;overflow:hidden;}
   .success-modal-box .close-modal-btn{z-index:3;top:14px;right:16px;width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.82);box-shadow:0 4px 16px rgba(15,23,42,.08);font-size:20px;}
@@ -431,10 +431,9 @@
   .success-details-card .success-detail-row:last-child strong{color:var(--royal-blue);font-size:13px;}
   .success-invoice-btn{width:calc(100% - 36px);margin:0 18px 18px;min-height:46px;border-radius:15px;}
   @media(max-width:380px){.success-hero{padding:27px 18px 19px}.success-order-card,.success-details-card{margin-left:13px;margin-right:13px}.success-invoice-btn{width:calc(100% - 26px);margin-left:13px;margin-right:13px;margin-bottom:13px;}}
-</style>
 
 
-<style id="gen50-63-bag-dock">
+
 /* GEN50.63 — Bag is part of the existing dock. No separate drawer/sheet. */
 .dynamic-glass-dock{overflow:hidden;flex-direction:column;align-items:stretch;justify-content:flex-end;padding:0;gap:0;transition:min-height .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease;}
 .dynamic-glass-dock .dock-bag-toggle{display:none;order:1;min-height:36px;align-items:center;justify-content:center;gap:8px;padding:0 12px;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--ink-muted);cursor:pointer;touch-action:none;}
@@ -619,6 +618,43 @@
   }
 }
 
+
+/* GEN50.75 PRODUCTION POLISH — ZERO-FLICKER STEPPER, IN-APP CONFIRM & INVOICE PREVIEW */
+@keyframes pdcStepperExpand {
+  0% { opacity: 0.4; transform: scale(0.84); }
+  70% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes pdcQtyPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.24); color: var(--royal-blue); }
+  100% { transform: scale(1); }
+}
+.stepper.animate-expand, .add-btn.animate-expand {
+  animation: pdcStepperExpand 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.step-num.animate-pop {
+  animation: pdcQtyPop 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#invoicePreviewModal .modal-box {
+  max-width: 840px;
+  width: min(96vw, 840px);
+  padding: 18px;
+  text-align: left;
+}
+.booking-invoice-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 66vh;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #f5f8fc;
+  padding: 10px;
+  margin: 12px 0 14px;
+}
+.booking-invoice-scroll .pdc-invoice-page {
+  margin: 0 auto;
+}
 </style>
 </head>
 <body class="preload">
@@ -921,6 +957,39 @@
 </button>
 </div>
 </div>
+
+<!-- INVOICE PREVIEW & DOWNLOAD MODAL -->
+<div class="modal-overlay" id="invoicePreviewModal">
+  <div class="modal-box">
+    <button class="close-modal-btn" onclick="App.UI.closeModal('invoicePreviewModal')" type="button" aria-label="Close">×</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-right:26px;">
+      <div>
+        <h2 style="font-size:18px;font-weight:800;color:var(--ink);"><i class="fas fa-file-invoice" style="color:var(--royal-blue);"></i> Official Tax Invoice</h2>
+        <p style="font-size:11.5px;color:var(--ink-muted);font-weight:600;" id="bookingInvoicePreviewSub">Preview, print, or download PDF</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="btn-dock-pill" style="padding:9px 14px;font-size:12px;background:var(--surface-soft);color:var(--ink);box-shadow:none;border:1px solid var(--border);" onclick="App.Order.printCurrentInvoice()"><i class="fas fa-print"></i> Print</button>
+        <button type="button" class="btn-dock-pill" id="bookingInvoiceSaveBtn" style="padding:9px 16px;font-size:12px;" onclick="App.Order.saveCurrentInvoicePDF()"><i class="fas fa-download"></i> Download PDF</button>
+      </div>
+    </div>
+    <div class="booking-invoice-scroll" id="bookingInvoicePreviewContainer"></div>
+  </div>
+</div>
+
+<!-- IN-WEBSITE CONFIRMATION MODAL (REPLACES NATIVE CONFIRM) -->
+<div class="modal-overlay" id="pdcConfirmModal">
+  <div class="modal-box" style="max-width:360px;">
+    <div style="width:46px;height:46px;border-radius:15px;background:rgba(239,68,68,0.12);color:var(--danger);display:flex;align-items:center;justify-content:center;font-size:19px;margin:0 auto 12px;">
+      <i class="fas fa-triangle-exclamation"></i>
+    </div>
+    <h3 id="pdcConfirmTitle" style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:6px;">Please Confirm</h3>
+    <p id="pdcConfirmMessage" style="font-size:12.5px;color:var(--ink-muted);font-weight:600;line-height:1.5;margin-bottom:18px;"></p>
+    <div style="display:flex;gap:10px;">
+      <button type="button" class="btn-dock-pill" style="flex:1;justify-content:center;background:var(--surface-soft);color:var(--ink);box-shadow:none;border:1px solid var(--border);" id="pdcConfirmCancelBtn" onclick="window.resolveBookingConfirm(false)">Cancel</button>
+      <button type="button" class="btn-dock-pill" style="flex:1;justify-content:center;background:var(--danger);box-shadow:0 6px 18px rgba(239,68,68,0.28);" id="pdcConfirmOkBtn" onclick="window.resolveBookingConfirm(true)">Yes, Delete</button>
+    </div>
+  </div>
+</div>
 <script crossorigin="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 
 console.log('🧺 ParthbookGen50.56 - Booking UI 4-Step Active');
@@ -953,27 +1022,7 @@ function formatOrderDisplayId(id) {
   return raw.startsWith('PDC-') ? raw : `PDC-${raw}`;
 }
 
-function safeOrderId() {
-  if (window.crypto && crypto.getRandomValues) {
-    const arr = new Uint32Array(1);
-    crypto.getRandomValues(arr);
-    return String(arr[0] % 900000 + 100000);
-  }
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-async function generateUniqueOrderId() {
-  for (let i = 0; i < 20; i++) {
-    const id = safeOrderId();
-    const ref = db.ref('orderIds/' + id);
-    const tx = await ref.transaction(current => {
-      if (current) return;
-      return { reservedAt: firebase.database.ServerValue.TIMESTAMP };
-    }, undefined, false);
-    if (tx.committed) return id;
-  }
-  throw new Error('Unable to generate unique order ID. Please retry.');
-}
+// Order IDs are generated atomically on the server via createCustomerOrder.
 
 function formatDisplayDate(dateValue, fallback = '—') {
   if (!dateValue) return fallback;
@@ -1069,18 +1118,7 @@ function getPricingSnapshot() {
   return { subtotal, expressFee, discount, total, isExpress };
 }
 
-function buildFrozenItemRates() {
-  const out = {};
-  const cleanBag = getSanitizedBag();
-  for(const [id, qty] of Object.entries(cleanBag)) {
-    const item = findItemById(id);
-    if(item && qty > 0) {
-      const rate = Number(item.price || 0);
-      out[id] = { id: item.id, name: item.name, qty, rate, amount: rate * qty, icon: item.icon || '' };
-    }
-  }
-  return out;
-}
+
 
 function normalizeOrder(raw = {}) {
   return {
@@ -1144,40 +1182,7 @@ async function refreshFirstOrderEligibility() {
   }
 }
 
-async function claimCouponAtomically(uid, code) {
-  if (!uid || !code) return { ok: false, reason: 'invalid' };
-  const coupon = COUPONS[code];
-  if (!coupon || coupon.enabled === false) return { ok: false, reason: 'missing' };
-  if (coupon.type !== 'general') return { ok: true, reason: 'not-needed' };
 
-  const ref = db.ref(`customers/${uid}/usedCoupons/${code}`);
-  const result = await ref.transaction(current => {
-    if (current === true) return; 
-    return { claimedAt: firebase.database.ServerValue.TIMESTAMP, pending: true };
-  }, undefined, false);
-
-  if (!result.committed) return { ok: false, reason: 'already-used' };
-  return { ok: true, reason: 'claimed' };
-}
-
-async function finalizeCouponClaim(uid, code) {
-  if (!uid || !code) return;
-  const coupon = COUPONS[code];
-  if (!coupon || coupon.type !== 'general') return;
-  await db.ref(`customers/${uid}/usedCoupons/${code}`).set(true);
-}
-
-async function releaseCouponClaim(uid, code) {
-  if (!uid || !code) return;
-  const coupon = COUPONS[code];
-  if (!coupon || coupon.type !== 'general') return;
-  const ref = db.ref(`customers/${uid}/usedCoupons/${code}`);
-  const snap = await ref.once('value');
-  const val = snap.val();
-  if (val && typeof val === 'object' && val.pending === true) {
-    await ref.remove().catch(()=>{});
-  }
-}
 
 const MASTER_CAT_ORDER = ['mens', 'ladies', 'winterMen', 'winterWomen', 'iron', 'festival', 'home', 'combos'];
 const DEFAULT_CATEGORIES = {
@@ -1234,10 +1239,7 @@ addressMode: 'list',
 addressDraft: { id:null, type:'home', house:'', floor:'', landmark:'', area:'', pincode:'' }
 };
 
-function findItemByName(name){ const n=String(name||'').trim().toLowerCase(); if(!n) return null; for(const cat of Object.keys(STATE.categories||{})){ for(const item of (STATE.categories[cat]||[])){ if(String(item.name||'').trim().toLowerCase()===n) return item; } } return null; }
-
 function findItemById(id){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.id===id); if(f) return f; } return null; }
-function getItemRateByName(name){ for(const cat in STATE.categories){ const f=STATE.categories[cat].find(i=>i.name.toLowerCase()===String(name).toLowerCase()); if(f && f.price>0) return f.price; } return null; }
 
 let bookingFCMInitialized = false;
 let bookingSWReg = null;
@@ -1310,6 +1312,28 @@ async function ensureBookingFCMReady(askPermission = false) {
 async function saveFCMTokenAfterOrder() {
   return ensureBookingFCMReady(true);
 }
+
+
+let _bookingConfirmResolver = null;
+window.pdcBookingConfirm = function(title, message, confirmText = 'Yes, Delete', cancelText = 'Cancel') {
+  const modal = document.getElementById('pdcConfirmModal');
+  if (!modal) return Promise.resolve(false);
+  document.getElementById('pdcConfirmTitle').textContent = title || 'Please Confirm';
+  document.getElementById('pdcConfirmMessage').textContent = message || 'Are you sure?';
+  document.getElementById('pdcConfirmOkBtn').textContent = confirmText;
+  document.getElementById('pdcConfirmCancelBtn').textContent = cancelText;
+  modal.classList.add('active');
+  return new Promise(resolve => { _bookingConfirmResolver = resolve; });
+};
+window.resolveBookingConfirm = function(choice) {
+  const modal = document.getElementById('pdcConfirmModal');
+  if (modal) modal.classList.remove('active');
+  if (_bookingConfirmResolver) {
+    const r = _bookingConfirmResolver;
+    _bookingConfirmResolver = null;
+    r(Boolean(choice));
+  }
+};
 
 const App = {
 init: function(){
@@ -1671,9 +1695,11 @@ UI: {
     if(autoRender) setTimeout(()=>this.renderItems(),180);
   },
 
-  buildAddControl: function(item,qty){
-    if(qty<=0) return `<div class="stepper-wrap"><button type="button" class="add-btn" onclick="App.Cart.updateQty('${sanitizeHTML(item.id)}',1)">ADD <i class="fas fa-plus"></i></button></div>`;
-    return `<div class="stepper-wrap"><div class="stepper"><button type="button" class="step-btn" aria-label="Decrease ${sanitizeHTML(item.name)}" onclick="App.Cart.updateQty('${sanitizeHTML(item.id)}',-1)"><i class="fas fa-minus"></i></button><span class="step-num">${qty}</span><button type="button" class="step-btn" aria-label="Increase ${sanitizeHTML(item.name)}" onclick="App.Cart.updateQty('${sanitizeHTML(item.id)}',1)"><i class="fas fa-plus"></i></button></div></div>`;
+  buildAddControl: function(item,qty,animateMode=''){
+    const expandCls = animateMode==='expand' ? ' animate-expand' : '';
+    const popCls = animateMode==='pop' ? ' animate-pop' : '';
+    if(qty<=0) return `<div class="stepper-wrap"><button type="button" class="add-btn${expandCls}" onclick="App.Cart.updateQty('${sanitizeHTML(item.id)}',1)">ADD <i class="fas fa-plus"></i></button></div>`;
+    return `<div class="stepper-wrap"><div class="stepper${expandCls}"><button type="button" class="step-btn" aria-label="Decrease ${sanitizeHTML(item.name)}" onclick="App.Cart.updateQty('${sanitizeHTML(item.id)}',-1)"><i class="fas fa-minus"></i></button><span class="step-num${popCls}">${qty}</span><button type="button" class="step-btn" aria-label="Increase ${sanitizeHTML(item.name)}" onclick="App.Cart.updateQty('${sanitizeHTML(item.id)}',1)"><i class="fas fa-plus"></i></button></div></div>`;
   },
 
   renderItems: function(filterText=''){
@@ -1966,6 +1992,17 @@ let html = `
 <i class="fas fa-arrow-left"></i> Cancel / View Saved Addresses
 </button>
 <div class="booking-form" style="margin-bottom:16px;">
+<div class="location-picker">
+  <div class="location-picker-head">
+    <div><strong>Pin your pickup location</strong><small>Required — tap, drag the pin, or use your current location.</small></div>
+    <button type="button" class="location-btn" onclick="PDCMap.locate()"><i class="fas fa-crosshairs"></i> Use my location</button>
+  </div>
+  <div id="pdcMap" class="pdc-map"></div>
+  <div id="mapAddressHint" class="map-address-hint">Tap the map or use your current location.</div>
+  <input type="hidden" id="addrLat" value="${Number.isFinite(Number(draft.latitude)) ? Number(draft.latitude) : ''}">
+  <input type="hidden" id="addrLng" value="${Number.isFinite(Number(draft.longitude)) ? Number(draft.longitude) : ''}">
+  <input type="hidden" id="addrLocationSource" value="${sanitizeHTML(draft.locationSource || 'manual')}">
+</div>
 <div class="form-group">
 <label>Address Type</label>
 <select id="addrType" style="width:100%; padding:14px; border-radius:14px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; font-weight:700; outline:none; font-family:inherit; transition:0.3s; -webkit-appearance:none; appearance:none;">
@@ -1988,6 +2025,13 @@ let html = `
 </button>
 </div>`;
 container.innerHTML = html;
+setTimeout(() => {
+  PDCMap.init();
+  if (Number.isFinite(Number(draft.latitude)) && Number.isFinite(Number(draft.longitude))) {
+    PDCMap.setLocation(Number(draft.latitude), Number(draft.longitude), false);
+  }
+  try { PDCMap.map && PDCMap.map.invalidateSize(true); } catch (e) {}
+}, 100);
 },
 
 select: function(id) {
@@ -2001,8 +2045,6 @@ select: function(id) {
   App.UI.clearReviewUI();
   App.UI.scheduleReviewRefresh();
 
-  // Selection is deliberately UI-first. Never wait for Firebase before showing
-  // the selected state and never navigate to the next checkout step here.
   this.persistAddresses().catch(err=>{
     if(mutationId!==this._mutationSeq) return;
     STATE.selectedAddressId=before.selectedAddressId;
@@ -2037,29 +2079,44 @@ updateSelectionUI: function(){
 },
 
 showForm: function() {
+PDCMap.clear();
 this._draftLocation=null;
 STATE.addressMode = 'form';
 STATE.addressDraft = { id:null, type:'home', house:'', floor:'', landmark:'', area:'', pincode:'' };
 this.render();
+try { App.UI.pushBackState('addressForm'); } catch(e){}
 },
 
 edit: function(id) {
 const addr = STATE.addresses.find(a => a.id === id);
 if(!addr) return;
+PDCMap.clear();
 this._draftLocation={latitude:addr.latitude ?? null,longitude:addr.longitude ?? null,locationSource:addr.locationSource || 'manual'};
 STATE.addressMode = 'form';
 STATE.addressDraft = { ...addr };
 this.render();
+try { App.UI.pushBackState('addressForm'); } catch(e){}
 },
 
 cancelForm: function() {
+PDCMap.clear();
 this._draftLocation=null;
 STATE.addressMode = 'list';
 STATE.addressDraft = { id:null, type:'home', house:'', floor:'', landmark:'', area:'', pincode:'' };
 this.render();
+try { if(history.state?.pdcLayer==='addressForm') history.replaceState({},'',location.href); } catch(e){}
 },
 
 save: async function() {
+const lat = Number(document.getElementById('addrLat')?.value);
+const lng = Number(document.getElementById('addrLng')?.value);
+const src = document.getElementById('addrLocationSource')?.value || 'manual';
+if (!Number.isFinite(lat) || !Number.isFinite(lng) || (lat === 0 && lng === 0)) {
+  return App.showToast('Please pin your pickup location on the map before saving this address.', 'warning');
+}
+if (!PDCServiceArea.isValid(lat, lng, [PDCMap.addressText, PDCServiceArea.addressText()].filter(Boolean).join(' '))) {
+  return App.showToast(PDCServiceArea.message(), 'warning');
+}
 const type = document.getElementById('addrType')?.value || 'home';
 const house = document.getElementById('addrHouse')?.value.trim() || '';
 const floor = document.getElementById('addrFloor')?.value.trim() || '';
@@ -2077,14 +2134,18 @@ const mutationId=++this._mutationSeq;
 const addrObj = {
   id: draft.id || 'addr_' + Date.now(), type, house, floor, landmark, area, pincode, isDefault:true,
   createdAt:draft.id ? (draft.createdAt || Date.now()) : Date.now(),
-  latitude:Number.isFinite(Number(this._draftLocation?.latitude)) ? Number(this._draftLocation.latitude) : (draft.latitude ?? null),
-  longitude:Number.isFinite(Number(this._draftLocation?.longitude)) ? Number(this._draftLocation.longitude) : (draft.longitude ?? null),
-  locationSource:this._draftLocation?.locationSource || draft.locationSource || 'manual'
+  latitude: lat,
+  longitude: lng,
+  locationSource: src
 };
 const newKey=normalizeAddressKey({type,house,floor,landmark,area,pincode});
 const duplicate=STATE.addresses.find(a=>a.id!==draft.id && normalizeAddressKey(a)===newKey);
 if(duplicate){
+  duplicate.latitude = lat;
+  duplicate.longitude = lng;
+  duplicate.locationSource = src;
   STATE.selectedAddressId=duplicate.id; STATE.addressMode='list';
+  PDCMap.clear();
   this.updateSelectionUI();
   this.render();
   App.UI.clearReviewUI(); App.UI.scheduleReviewRefresh();
@@ -2101,6 +2162,7 @@ else STATE.addresses.push(addrObj);
 STATE.selectedAddressId=addrObj.id;
 STATE.addresses.forEach(a=>a.isDefault=(a.id===addrObj.id));
 STATE.addressMode='list';
+PDCMap.clear();
 this.render();
 App.UI.clearReviewUI(); App.UI.scheduleReviewRefresh();
 App.showToast('Address saved successfully','success');
@@ -2112,7 +2174,7 @@ this.persistAddresses().catch(err=>{
 },
 
 delete: async function(id) {
-if(!confirm('Are you sure you want to delete this address?')) return;
+if(!(await window.pdcBookingConfirm('Delete Pickup Address?', 'Are you sure you want to delete this saved pickup address?', 'Yes, Delete', 'Cancel'))) return;
 const before=JSON.parse(JSON.stringify({addresses:STATE.addresses,selectedAddressId:STATE.selectedAddressId}));
 const mutationId=++this._mutationSeq;
 STATE.addresses=STATE.addresses.filter(a=>a.id!==id);
@@ -2193,11 +2255,15 @@ Cart: {
   updateQty: function(id,delta){
     const item=findItemById(id); if(!item) return;
     delta=Number(delta); if(![-1,1].includes(delta)) return;
-    const current=Number(STATE.bag[id]||0); const next=current+delta;
-    if(next<=0) delete STATE.bag[id]; else STATE.bag[id]=Math.min(next,100);
+    const current=Number(STATE.bag[id]||0); const next=Math.max(0, Math.min(100, current+delta));
+    if(next<=0) delete STATE.bag[id]; else STATE.bag[id]=next;
     localStorage.setItem('pdc_cart',JSON.stringify(STATE.bag));
-    if(delta>0 && navigator.vibrate) navigator.vibrate(30);
-    App.UI.renderItems(document.getElementById('itemSearch')?.value||'');
+    if(delta>0 && navigator.vibrate) navigator.vibrate(25);
+    const ctlEl = document.getElementById('addctl_' + id);
+    if (ctlEl) {
+      const mode = (current === 0 && next > 0) || (current > 0 && next === 0) ? 'expand' : 'pop';
+      ctlEl.innerHTML = App.UI.buildAddControl(item, next, mode);
+    }
     if(!Object.keys(STATE.bag).length) this.clearCouponState();
     this.updateSummary();
     if(STATE.checkoutStep===4) App.UI.scheduleReviewRefresh();
@@ -3040,7 +3106,7 @@ Promise.resolve(App.Cart.revalidateCouponAfterLogin()).finally(() => {
     }
   });
 });
-if(loginBtn) loginBtn.onclick=()=>App.showToast(`Signed in as ${STATE.userProfile.name || user.displayName || 'Customer'}${STATE.userProfile.phone ? ' · +91 ' + STATE.userProfile.phone : ''}`, 'info');
+if(loginBtn) loginBtn.onclick=()=>App.Auth.openAccountModal();
 } else {
 STATE.isLoggedIn = false;
 STATE.userProfile = { name:'', phone:'', email:'' };
@@ -3414,41 +3480,63 @@ const invoiceHTML = `<div class="pdc-invoice-page" style="width:794px;box-sizing
   </div>
 </div>`;
 
-const host = document.createElement('div');
-host.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#f5f8fc;z-index:-1;overflow:hidden;';
-host.innerHTML = invoiceHTML;
-document.body.appendChild(host);
-const pageEl = host.querySelector('.pdc-invoice-page');
-const maxSinglePageHeight = 1115; // strictly < 1122px A4 height at 96dpi
-const naturalHeight = pageEl.scrollHeight;
-if (naturalHeight > maxSinglePageHeight) {
-  const scale = maxSinglePageHeight / naturalHeight;
-  pageEl.style.transformOrigin = 'top left';
-  pageEl.style.transform = `scale(${scale})`;
-  pageEl.style.width = `${Math.round(794 / scale)}px`;
-  host.style.height = `${maxSinglePageHeight}px`;
-}
+this._currentInvoiceHTML = invoiceHTML;
+this._currentInvoiceFilename = 'ParthDryClean_Invoice_' + formatOrderDisplayId(o.orderId || 'Generated') + '.pdf';
+const previewContainer = document.getElementById('bookingInvoicePreviewContainer');
+const previewSub = document.getElementById('bookingInvoicePreviewSub');
+if (previewContainer) previewContainer.innerHTML = invoiceHTML;
+if (previewSub) previewSub.textContent = `Order ${cleanDisplayId} • Ready to download or print`;
+App.UI.openModal('invoicePreviewModal');
+},
 
-setTimeout(() => {
-  html2pdf().set({
-    margin: 0,
-    filename: 'ParthDryClean_Invoice_' + formatOrderDisplayId(o.orderId || 'Generated') + '.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc', windowWidth: 794, scrollY: 0 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: [] }
-  }).from(host).toPdf().get('pdf').then(pdf => {
-    while (pdf.internal.getNumberOfPages() > 1) {
-      pdf.deletePage(pdf.internal.getNumberOfPages());
-    }
-  }).save().then(() => {
-    host.remove();
-    App.showToast('Invoice downloaded successfully!', 'success');
-  }).catch(() => {
-    host.remove();
-    App.showToast('Error generating PDF.', 'error');
-  });
-}, 150);
+printCurrentInvoice: function(){
+  if (!this._currentInvoiceHTML) return;
+  const w = window.open('', '_blank', 'width=850,height=900');
+  if (!w) return App.showToast('Pop-up blocked. Please use Download PDF.', 'warning');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Parth Dry Clean Invoice</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet"><style>@page{size:A4;margin:8mm;}body{margin:0;background:#fff;font-family:'Outfit',Arial,sans-serif;}</style></head><body>${this._currentInvoiceHTML}<script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script></body></html>`);
+  w.document.close();
+},
+
+saveCurrentInvoicePDF: function(){
+  if (!this._currentInvoiceHTML) return;
+  const btn = document.getElementById('bookingInvoiceSaveBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving PDF...'; }
+  const host = document.createElement('div');
+  host.style.cssText = 'position:fixed;left:0;top:0;width:794px;background:#f5f8fc;z-index:-9999;opacity:1;pointer-events:none;overflow:hidden;';
+  host.innerHTML = this._currentInvoiceHTML;
+  document.body.appendChild(host);
+  const pageEl = host.querySelector('.pdc-invoice-page');
+  const maxSinglePageHeight = 1115;
+  const naturalHeight = pageEl ? pageEl.scrollHeight : 900;
+  if (pageEl && naturalHeight > maxSinglePageHeight) {
+    const scale = maxSinglePageHeight / naturalHeight;
+    pageEl.style.transformOrigin = 'top left';
+    pageEl.style.transform = `scale(${scale})`;
+    pageEl.style.width = `${Math.round(794 / scale)}px`;
+    host.style.height = `${maxSinglePageHeight}px`;
+  }
+  setTimeout(() => {
+    html2pdf().set({
+      margin: 0,
+      filename: this._currentInvoiceFilename || 'ParthDryClean_Invoice.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f5f8fc', width: 794, windowWidth: 794, x: 0, y: 0, scrollX: 0, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: [] }
+    }).from(pageEl || host).toPdf().get('pdf').then(pdf => {
+      while (pdf.internal.getNumberOfPages() > 1) {
+        pdf.deletePage(pdf.internal.getNumberOfPages());
+      }
+    }).save().then(() => {
+      App.showToast('Invoice PDF downloaded!', 'success');
+    }).catch(() => {
+      App.showToast('Could not save PDF directly — opening print view.', 'warning');
+      App.Order.printCurrentInvoice();
+    }).finally(() => {
+      host.remove();
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-download"></i> Download PDF'; }
+    });
+  }, 150);
 }
 }
 };
@@ -3587,73 +3675,7 @@ const PDCMap = {
   clear:function(){try{if(this.map)this.map.remove();}catch(e){} this.map=null;this.marker=null;this.lat=null;this.lng=null;this.addressText='';}
 };
 
-const _addressRenderForm = App.Address.renderForm;
-App.Address.renderForm = function(container){
-  _addressRenderForm.call(this,container);
-  const form=container?.querySelector('.booking-form');
-  if(!form) return;
-  const mapBox=document.createElement('div');
-  mapBox.className='location-picker';
-  mapBox.innerHTML=`<div class="location-picker-head"><div><strong>Pin your pickup location</strong><small>Required — tap, drag the pin, or use your current location.</small></div><button type="button" class="location-btn" onclick="PDCMap.locate()"><i class="fas fa-crosshairs"></i> Use my location</button></div><div id="pdcMap" class="pdc-map"></div><div id="mapAddressHint" class="map-address-hint">Tap the map or use your current location.</div><input type="hidden" id="addrLat" value=""><input type="hidden" id="addrLng" value=""><input type="hidden" id="addrLocationSource" value="manual">`;
-  form.insertBefore(mapBox,form.firstElementChild);
-  setTimeout(()=>{ PDCMap.init(); try{PDCMap.map&&PDCMap.map.invalidateSize(true);}catch(e){} },120);
-};
-
-const _addressSave = App.Address.save;
-App.Address.save = async function(){
-  const lat=Number(document.getElementById('addrLat')?.value), lng=Number(document.getElementById('addrLng')?.value), src=document.getElementById('addrLocationSource')?.value||'manual';
-  if(!Number.isFinite(lat) || !Number.isFinite(lng)){
-    App.showToast('Please pin your pickup location on the map before saving this address.','warning');
-    return;
-  }
-  if(!PDCServiceArea.isValid(lat,lng,[PDCMap.addressText, PDCServiceArea.addressText()].filter(Boolean).join(' '))){
-    App.showToast(PDCServiceArea.message(),'warning');
-    return;
-  }
-  this._draftLocation={latitude:lat,longitude:lng,locationSource:src};
-  const draftLocation={...this._draftLocation};
-  try{
-    await _addressSave.call(this);
-  }catch(err){
-    this._draftLocation=null;
-    PDCMap.clear();
-    return;
-  }
-  const saved=STATE.addresses.find(a=>a.id===STATE.selectedAddressId);
-  if(saved){
-    saved.latitude=draftLocation.latitude;
-    saved.longitude=draftLocation.longitude;
-    saved.locationSource=draftLocation.locationSource;
-    // Base save may persist before the location wrapper enriches the object.
-    try{ await this.persistAddresses(); }catch(e){}
-  }
-  this._draftLocation=null;
-  PDCMap.clear();
-};
-
-const _addressEdit = App.Address.edit;
-App.Address.edit = function(id){
-  _addressEdit.call(this,id);
-  try{ App.UI.pushBackState('addressForm'); }catch(e){}
-  const a=STATE.addressDraft;
-  setTimeout(()=>{
-    if(Number.isFinite(Number(a?.latitude)) && Number.isFinite(Number(a?.longitude))) PDCMap.setLocation(Number(a.latitude),Number(a.longitude),false);
-  },50);
-};
-
-const _addressShowForm = App.Address.showForm;
-App.Address.showForm = function(){
-  PDCMap.clear();
-  _addressShowForm.call(this);
-  try{ App.UI.pushBackState('addressForm'); }catch(e){}
-};
-
-const _addressCancel = App.Address.cancelForm;
-App.Address.cancelForm = function(){
-  PDCMap.clear();
-  _addressCancel.call(this);
-  try{ if(history.state?.pdcLayer==='addressForm') history.replaceState({},'',location.href); }catch(e){}
-};
+// Location picker & validation integrated directly into App.Address.
 
 const specialInstEl = document.getElementById('specialInst');
 const specialInstCount = document.getElementById('specialInstCount');
