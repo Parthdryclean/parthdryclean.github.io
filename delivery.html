@@ -468,10 +468,8 @@ function safeUrl(v, fallback = '') {
 function formatOrderId(val) {
   let s = String(val || '').trim().replace(/^#/, '');
   if (!s) return 'PDC-000000';
-  let clean = s.replace(/^PDC[-_]?/i, '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-  if (clean.length > 6) clean = clean.slice(-6);
-  while (clean.length < 6) clean = clean + '0';
-  return 'PDC-' + clean;
+  let clean = s.replace(/^PDC[-_]?/i, '').replace(/[^A-Za-z0-9-]/g, '').toUpperCase();
+  return 'PDC-' + (clean || '000000');
 }
 
 function toast(m, t) {
@@ -680,7 +678,11 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const tabEl = $('tab-' + btn.dataset.tab);
     if (tabEl) tabEl.classList.add('active');
     if (btn.dataset.tab === 'dashboard') loadDashboard();
-    if (btn.dataset.tab === 'chat') loadChat();
+    if (btn.dataset.tab === 'chat') {
+      const dot = btn.querySelector('.chat-unread-dot');
+      if (dot) dot.style.display = 'none';
+      loadChat();
+    }
   };
 });
 
@@ -780,16 +782,11 @@ function listen() {
     merged.forEach((o, id) => {
       if (!o) return;
       const assigned = (o.assigned_to_e164 || o.assigned_to || '');
-      if (last10Digits(assigned) === phone10) { curIds.add(id); curStatuses[id] = o.status; myOrders.push({ _id: id, ...o }); }
+      const matchesBoy = (last10Digits(assigned) === phone10) || (BOY?.id && (o.deliveryBoyId === BOY.id || o.assignedTo === BOY.id));
+      if (matchesBoy) { curIds.add(id); curStatuses[id] = o.status; myOrders.push({ _id: id, ...o }); }
     });
 
     if (Object.keys(prevStatuses).length > 0) {
-      for (const id in curStatuses) {
-        if (prevStatuses[id] && prevStatuses[id] !== curStatuses[id]) {
-          const o = myOrders.find(x => x._id === id);
-          if (o) notifyAdmin('status_change', { orderId: formatOrderId(o.orderId || id), status: curStatuses[id], customer: o.customerName || o.name || '' }).catch(() => {});
-        }
-      }
       curIds.forEach(id => {
         if (!prevOrderIds.has(id)) {
           const o = myOrders.find(x => x._id === id);
@@ -901,8 +898,9 @@ function renderCard(o) {
     <div class="oc-top"><span class="oc-id">${displayId}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
     <div class="oc-name">${esc(o.customerName || o.name || '-')}</div>
     <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
+    ${o.specialInst ? `<div class="oc-addr" style="margin-top:6px;padding:8px 10px;border-radius:10px;background:rgba(37,99,235,.08);border-left:3px solid var(--primary);color:var(--text)"><i class="fas fa-comment-dots" style="color:var(--primary)"></i> <b>Customer Note:</b> ${esc(o.specialInst)}</div>` : ''}
     ${timelineHTML(st)}
-    <div class="oc-meta">${items}<span class="chip">Total: ₹${Number(o.total) || 0}</span><span class="chip">${esc(o.timeSlot || '')}</span></div>
+    <div class="oc-meta">${items}<span class="chip">Total: ₹${Number(o.total) || 0}</span>${o.pickupDate ? `<span class="chip"><i class="fas fa-calendar-day"></i> ${esc(o.pickupDate)}</span>` : ''}<span class="chip">${esc(o.timeSlot || '')}</span>${o.hasExtraItems ? `<span class="chip" style="color:var(--good);border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.08)">🧺 +Extra Added</span>` : ''}</div>
     <div class="oc-actions">
      <a class="call" href="tel:+91${phone}"><i class="fas fa-phone"></i> Call</a>
      <a class="wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/91${phone}?text=${waMsg}"><i class="fab fa-whatsapp"></i> Chat</a>
@@ -952,34 +950,58 @@ window.collectPayment = (id, total) => {
 let EXTRA_CATALOG = null;
 function catalogItemKey(v) { return String(v || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 async function loadExtraCatalog() {
-  if (EXTRA_CATALOG) return EXTRA_CATALOG;
   const snap = await db.ref('services/categories').once('value');
   const data = snap.val() || {};
-  EXTRA_CATALOG = Object.entries(data).map(([key, cat]) => ({
-    key, name: cat?.name || key,
-    items: Array.isArray(cat?.items) ? cat.items.map(it => ({ key: catalogItemKey(it?.name), name: String(it?.name || ''), price: Number(it?.price) || 0 })).filter(it => it.key && it.name) : []
-  })).filter(c => c.items.length);
+  EXTRA_CATALOG = Object.entries(data)
+    .filter(([, cat]) => cat && cat.active !== false)
+    .map(([key, cat]) => ({
+      key, name: cat?.name || key,
+      items: Array.isArray(cat?.items)
+        ? cat.items
+            .filter(it => it && it.active !== false)
+            .map(it => ({ key: catalogItemKey(it?.name), name: String(it?.name || ''), price: Number(it?.price) || 0 }))
+            .filter(it => it.key && it.name && Number.isFinite(it.price) && it.price > 0)
+        : []
+    }))
+    .filter(c => c.items.length);
   return EXTRA_CATALOG;
 }
+function updateExtraItemsSummary() {
+  let sum = 0;
+  document.querySelectorAll('#extraItems .item-row').forEach(r => {
+    const q = Math.max(0, parseInt(r.querySelector('.ei-qty')?.value, 10) || 0);
+    let picked = null;
+    try { picked = JSON.parse(r.querySelector('.ei-item')?.value || 'null'); } catch(_) {}
+    if (picked && q > 0 && Number.isFinite(Number(picked.price))) {
+      sum += Number(picked.price) * q;
+    }
+  });
+  const saveBtn = document.querySelector('#addItemModal .btn.good');
+  if (saveBtn) saveBtn.textContent = sum > 0 ? `Save (+₹${sum})` : 'Save';
+}
 window.openAddItem = async id => {
-  issueCtx.orderId = id; $('addItemOrderId').textContent = formatOrderId(id);$('extraItems').innerHTML = '';
-  try { await loadExtraCatalog(); addExtraItemRow(); openModal('addItemModal'); } catch(e) { toast('Service list load nahi hui', 'err'); }
+  issueCtx.orderId = id; $('addItemOrderId').textContent = formatOrderId(id); $('extraItems').innerHTML = '';
+  try { await loadExtraCatalog(); addExtraItemRow(); updateExtraItemsSummary(); openModal('addItemModal'); } catch(e) { toast('Service list load nahi hui', 'err'); }
 };
 function addExtraItemRow() {
   const row = document.createElement('div'); row.className = 'item-row';
-  row.innerHTML = `<select class="ei-item"></select><input class="ei-qty" type="number" min="1" max="50" value="1" style="width:60px"/><button class="rm" onclick="this.parentElement.remove()">×</button>`;
+  row.innerHTML = `<select class="ei-item"></select><input class="ei-qty" type="number" min="1" max="50" value="1" style="width:60px"/><button class="rm" onclick="this.parentElement.remove();updateExtraItemsSummary()">×</button>`;
   const sel = row.querySelector('.ei-item');
-  EXTRA_CATALOG.forEach(cat => {
+  const qtyInp = row.querySelector('.ei-qty');
+  (EXTRA_CATALOG || []).forEach(cat => {
     const group = document.createElement('optgroup'); group.label = cat.name;
     cat.items.forEach(it => {
       const o = document.createElement('option');
-      o.value = JSON.stringify({ categoryKey: cat.key, itemKey: it.key, name: it.name });
+      o.value = JSON.stringify({ categoryKey: cat.key, itemKey: it.key, name: it.name, price: it.price });
       o.textContent = `${it.name} · ₹${it.price}`;
       group.appendChild(o);
     });
     sel.appendChild(group);
   });
+  sel.onchange = updateExtraItemsSummary;
+  qtyInp.oninput = updateExtraItemsSummary;
   $('extraItems').appendChild(row);
+  updateExtraItemsSummary();
 }
 window.addExtraItemRow = addExtraItemRow;
 
@@ -1107,6 +1129,17 @@ function startChatListener() {
         toast('💬 Admin ka naya message aaya');
         beep();
         vibrate([100, 50, 100]);
+        const chatTabBtn = document.querySelector('.tab-btn[data-tab="chat"]');
+        if (chatTabBtn && !chatTabBtn.classList.contains('active')) {
+          let dot = chatTabBtn.querySelector('.chat-unread-dot');
+          if (!dot) {
+            dot = document.createElement('span');
+            dot.className = 'chat-unread-dot';
+            dot.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bad);margin-left:6px;vertical-align:middle;box-shadow:0 0 8px var(--bad)';
+            chatTabBtn.appendChild(dot);
+          }
+          dot.style.display = 'inline-block';
+        }
       }
     }
     chatFirstLoad = false;
