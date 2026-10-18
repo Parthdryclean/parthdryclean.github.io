@@ -1170,6 +1170,373 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
   }
 }
 
+
+/* ================================================================
+   PARTH PRODUCTION UPGRADES (GEN25) — ZERO-JUMP, INTERACTIVE CART,
+   COMBO SPOTLIGHT, STAIN CARE FINDER, 3-TAB SWIPEABLE ORDERS
+================================================================ */
+#pricing-section, #pricingContainer, #fabric-advisor, #fabricCardsContainer {
+  overflow-anchor: none;
+}
+
+/* Interactive Pricing Stepper on Home */
+.price-item {
+  gap: 12px;
+}
+.price-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.price-item-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.home-add-btn {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--accent-light);
+  border: 1px solid rgba(var(--primary-rgb), 0.24);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Outfit', sans-serif;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+}
+.home-add-btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.home-add-btn:active {
+  transform: scale(0.94);
+}
+.home-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--primary);
+  border-radius: 999px;
+  padding: 3px 5px;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.14);
+}
+.home-step-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-light);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.18s ease, color 0.18s ease;
+}
+.home-step-btn:active {
+  transform: scale(0.88);
+  background: var(--primary);
+  color: #fff;
+}
+.home-step-num {
+  min-width: 18px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* Featured Combo & Seasonal Offer Cards */
+.combo-spotlight-wrap {
+  max-width: 700px;
+  margin: 0 auto 24px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.combo-spotlight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+.combo-spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), #f59e0b);
+}
+.combo-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.combo-save-pill {
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.combo-tag-pill {
+  background: var(--accent-light);
+  color: var(--primary);
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.combo-spotlight-card h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.3;
+}
+.combo-spotlight-card p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.5;
+}
+.combo-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.combo-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.combo-price-wrap strong {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--primary);
+}
+.combo-price-wrap del {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Interactive Stain & Care Finder inside Masterclass */
+.stain-finder-box {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.stain-finder-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stain-finder-title i {
+  color: var(--primary);
+}
+.stain-chips-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.stain-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: 0.18s ease;
+}
+.stain-chip.active, .stain-chip:hover {
+  background: var(--accent-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.stain-solution-text {
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: var(--accent-light);
+  border-left: 3px solid var(--primary);
+}
+
+/* Floating Bottom Cart Bar on Home */
+.home-floating-cart {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(140%);
+  width: min(92vw, 560px);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  padding: 10px 12px 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.35);
+  z-index: 9990;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+}
+[data-theme="dark"] .home-floating-cart {
+  background: rgba(17, 24, 39, 0.96);
+  border-color: rgba(59, 130, 246, 0.32);
+}
+.home-floating-cart.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.hfc-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.hfc-meta {
+  font-size: 11px;
+  font-weight: 700;
+  color: #93c5fd;
+  letter-spacing: 0.3px;
+}
+.hfc-total {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hfc-clear {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #cbd5e1;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+.hfc-clear:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fecaca;
+}
+.hfc-cta {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.38);
+  transition: transform 0.18s ease;
+}
+.hfc-cta:hover {
+  transform: translateY(-1px);
+}
+body.has-home-cart-bar .floating-whatsapp {
+  bottom: 92px;
+}
+@media (max-width: 768px) {
+  body.has-home-cart-bar .floating-whatsapp {
+    bottom: 88px;
+  }
+  .home-floating-cart {
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    padding: 9px 10px 9px 14px;
+  }
+  .hfc-cta {
+    padding: 11px 15px;
+    font-size: 12.5px;
+  }
+}
+
+/* 3-Tab My Orders Badges & Touch Swipe Hint */
+.order-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.order-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 800;
+  background: rgba(var(--ink-rgb), 0.08);
+  color: var(--text-muted);
+}
+.order-tab.active .order-tab-badge {
+  background: var(--accent-light);
+  color: var(--primary);
+}
+#orderHistoryList {
+  touch-action: pan-y;
+  user-select: none;
+}
+
 </style>
 </head>
 <body class="booking-ui-home">
@@ -1317,12 +1684,23 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 </div>
 </div>
 <div class="trust-badge-small"><i class="fas fa-shield-alt" style="color:var(--success);"></i> Anti-Shrinkage Technology</div>
+<div class="stain-finder-box" id="stainFinderBox">
+  <div class="stain-finder-title"><i class="fas fa-wand-magic-sparkles"></i> Instant Stain &amp; Care Advisor — Tap a stain type:</div>
+  <div class="stain-chips-row">
+    <button type="button" class="stain-chip active" onclick="selectStainCare('oil', this)">🍛 Haldi / Oil</button>
+    <button type="button" class="stain-chip" onclick="selectStainCare('coffee', this)">☕ Tea / Coffee</button>
+    <button type="button" class="stain-chip" onclick="selectStainCare('ink', this)">🖋️ Ink / Collar</button>
+    <button type="button" class="stain-chip" onclick="selectStainCare('zari', this)">✨ Bridal Zari</button>
+  </div>
+  <div class="stain-solution-text" id="stainSolutionText">Enzyme pre-spotting + cold hydrocarbon solvent lifts tough Haldi &amp; curry oils without bleaching fabric dye.</div>
+</div>
 </div>
 </div>
 </section>
 
 <section class="pricing" id="pricing-section">
-<div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>Clear pricing with uncompromising quality</p></div>
+<div class="section-header"><h2>Transparent <span class="text-gradient">Pricing</span></h2><p>Tap + Add on any garment to build your pickup bag directly</p></div>
+<div class="combo-spotlight-wrap" id="comboSpotlightWrap"></div>
 <div class="price-search-container">
 <i class="fas fa-search"></i>
 <input type="text" id="priceSearchInput" class="price-search-input" placeholder="Search for a garment (e.g., Jacket, Saree)..." oninput="debouncedSearch(this.value)">
@@ -1409,6 +1787,21 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
     </div>
   </div>
 </section>
+
+<!-- FLOATING BOTTOM CART BAR (SYNCED WITH BOOKING.HTML) -->
+<div class="home-floating-cart" id="homeFloatingCartBar" role="region" aria-label="Selected laundry bag">
+  <div class="hfc-left">
+    <span class="hfc-meta" id="hfcMetaText">0 items in bag</span>
+    <div class="hfc-total">
+      <span id="hfcTotalText">₹0</span>
+      <button type="button" class="hfc-clear" onclick="clearHomeBag()" title="Clear bag">Clear</button>
+    </div>
+  </div>
+  <a href="booking.html" class="hfc-cta" id="hfcActionLink">
+    <span>Book Pickup</span>
+    <i class="fas fa-arrow-right"></i>
+  </a>
+</div>
 
 <footer class="site-footer">
   <div class="footer-content-wrapper">
@@ -1634,10 +2027,11 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 <p style="color:var(--text-muted); font-size:12px; font-weight:600; margin-bottom:10px;">Track all your expert care orders.</p>
 <div style="font-size:11px; color:var(--text-muted); font-weight:500; margin-bottom:20px; background:rgba(var(--primary-rgb),0.05); border:1px solid rgba(var(--primary-rgb),0.1); padding:6px 10px; border-radius:8px; display:inline-block;"><i class="fas fa-info-circle" style="color:var(--primary);"></i> Note: Orders can be cancelled within 2 hours of booking.</div>
 
-<!-- TABS FOR ORDERS -->
-<div class="orders-tab-container">
-  <button class="order-tab active" id="tab-active" onclick="switchOrderTab('active')">Active Orders</button>
-  <button class="order-tab" id="tab-past" onclick="switchOrderTab('past')">Past Orders</button>
+<!-- TABS FOR ORDERS (3 TABS + SWIPE SUPPORT) -->
+<div class="orders-tab-container" role="tablist" aria-label="Order categories">
+  <button type="button" class="order-tab active" id="tab-active" onclick="switchOrderTab('active')">Active <span class="order-tab-badge" id="badge-tab-active">0</span></button>
+  <button type="button" class="order-tab" id="tab-completed" onclick="switchOrderTab('completed')">Completed <span class="order-tab-badge" id="badge-tab-completed">0</span></button>
+  <button type="button" class="order-tab" id="tab-cancelled" onclick="switchOrderTab('cancelled')">Cancelled <span class="order-tab-badge" id="badge-tab-cancelled">0</span></button>
 </div>
 
 <div id="orderHistoryList">
@@ -1765,20 +2159,21 @@ function setNotificationButtonState(state) {
   if (!notifBtn) return;
   if (state === 'enabled') {
     notifBtn.innerHTML = '<i class="fas fa-bell" aria-hidden="true"></i> Enabled';
-    notifBtn.title = 'Notifications enabled (Tap to refresh)';
+    notifBtn.title = 'Live order push notifications active';
     notifBtn.setAttribute('aria-label', 'Notifications enabled');
-    notifBtn.style.background = 'rgba(var(--success-rgb),0.12)';
+    notifBtn.style.background = 'rgba(var(--success-rgb),0.14)';
     notifBtn.style.color = 'var(--success)';
-    notifBtn.style.borderColor = 'rgba(var(--success-rgb),0.28)';
+    notifBtn.style.borderColor = 'rgba(var(--success-rgb),0.32)';
     notifBtn.disabled = false;
   } else if (state === 'blocked') {
-    notifBtn.innerHTML = 'Blocked';
-    notifBtn.style.background = 'rgba(var(--danger-rgb),0.1)';
+    notifBtn.innerHTML = '<i class="fas fa-bell-slash" aria-hidden="true"></i> Blocked · Help';
+    notifBtn.title = 'Tap to see how to unblock notifications in browser settings';
+    notifBtn.style.background = 'rgba(var(--danger-rgb),0.12)';
     notifBtn.style.color = 'var(--danger)';
-    notifBtn.style.borderColor = 'transparent';
+    notifBtn.style.borderColor = 'rgba(var(--danger-rgb),0.28)';
     notifBtn.disabled = false;
   } else if (state === 'enabling') {
-    notifBtn.innerHTML = 'Enabling…';
+    notifBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Enabling…';
     notifBtn.style.background = 'var(--surface)';
     notifBtn.style.color = 'var(--text-muted)';
     notifBtn.style.borderColor = 'var(--border)';
@@ -1799,9 +2194,15 @@ async function syncFCMTokenForUser(user) {
     if (!ready || !messaging) return false;
     let reg = fcmSWRegistration;
     if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+    if (!reg) reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
     if (!reg) return false;
     const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
     if (!token) return false;
+    if (typeof currentCustomerData === 'object' && currentCustomerData) {
+      currentCustomerData.fcmToken = token;
+    }
+    try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
+    setNotificationButtonState('enabled');
     await db.ref('customers/' + user.uid).update({
       fcmToken: token,
       fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
@@ -1817,76 +2218,78 @@ async function requestFCMPermission() {
   const user = auth.currentUser;
   if (!user) { showToast('Please login first', 'warning'); return; }
   if (!('Notification' in window) || !('PushManager' in window)) {
-    showToast('Notifications not supported on this device', 'error'); return;
+    showToast('Notifications not supported on this browser/device', 'error'); return;
   }
 
   const currentPermission = Notification.permission;
   if (currentPermission === 'denied') {
     setNotificationButtonState('blocked');
-    showToast('Notifications are blocked in your browser settings', 'warning');
+    showToast('Browser notifications blocked hain — URL bar ke Lock (🔒) icon par tap karke Notifications "Allow" karein, fir page reload karein.', 'warning');
     return;
   }
+
   setNotificationButtonState('enabling');
 
   try {
-    // Start FCM setup before the native permission prompt so the service worker
-    // can be ready by the time the user taps Allow.
-    const setupPromise = initFCM();
+    // CRITICAL: Request permission synchronously on the very first await inside the user click gesture!
     const perm = currentPermission === 'granted' ? 'granted' : await Notification.requestPermission();
 
     if (perm !== 'granted') {
-      setNotificationButtonState('blocked');
-      showToast('Notification permission denied', 'error');
+      try { localStorage.removeItem('pdc_notif_enabled_' + user.uid); } catch (_) {}
+      setNotificationButtonState(perm === 'denied' ? 'blocked' : 'default');
+      showToast(perm === 'denied'
+        ? 'Notification permission denied — URL bar ke Lock (🔒) icon se Allow karein.'
+        : 'Notification permission dismissed', 'warning');
       return;
     }
 
-    const ready = await setupPromise;
+    // Permission is granted! Immediately mark enabled in UI & local cache so profile listener never resets it
+    try { localStorage.setItem('pdc_notif_enabled_' + user.uid, '1'); } catch (_) {}
+    setNotificationButtonState('enabled');
+
+    const ready = await initFCM();
     if (!ready || !messaging) {
-      setNotificationButtonState('default');
-      showToast('Could not set up notifications. Please try again', 'warning');
+      showToast('Notification permission enabled!', 'success');
       return;
     }
 
     let reg = fcmSWRegistration;
     if (!reg) reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
-    if (!reg) {
-      setNotificationButtonState('default');
-      showToast('Could not set up notifications. Please try again', 'warning');
-      return;
+    if (!reg) reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    if (reg && reg.installing) {
+      await new Promise(resolve => {
+        const sw = reg.installing;
+        const t = setTimeout(resolve, 1500);
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'activated' || sw.state === 'redundant') { clearTimeout(t); resolve(); }
+        });
+      });
     }
 
     const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    if (!token) {
-      setNotificationButtonState('default');
-      showToast('Could not enable notifications. Please try again', 'warning');
-      return;
-    }
-
-    // Token is ready: update the drawer immediately. Do not make the UI wait
-    // for the customer-profile write to finish. The token write is persisted
-    // right after the visual state changes; on failure we safely roll back.
-    setNotificationButtonState('enabled');
-    showToast('Live order updates enabled', 'success');
-
-    try {
+    if (token) {
+      if (typeof currentCustomerData === 'object' && currentCustomerData) {
+        currentCustomerData.fcmToken = token;
+      }
       await db.ref('customers/' + user.uid).update({
         fcmToken: token,
         fcmTokenUpdatedAt: firebase.database.ServerValue.TIMESTAMP
       });
-      if (typeof currentCustomerData === 'object' && currentCustomerData) {
-        currentCustomerData.fcmToken = token;
-      }
-      setNotificationButtonState('enabled');
-    } catch (persistErr) {
-      console.warn('FCM token persistence failed:', persistErr);
-      setNotificationButtonState('default');
-      showToast('Could not save notification settings. Please try again', 'warning');
     }
-  } catch(e) {
-    console.warn('FCM permission failed', e);
-    if (Notification.permission === 'denied') setNotificationButtonState('blocked');
-    else setNotificationButtonState('default');
-    showToast('Could not enable notifications. Please try again', 'error');
+    setNotificationButtonState('enabled');
+    showToast('Live order push notifications enabled!', 'success');
+  } catch (e) {
+    console.warn('FCM permission setup warning:', e);
+    if (Notification.permission === 'granted') {
+      setNotificationButtonState('enabled');
+      showToast('Notifications enabled for your browser!', 'success');
+    } else if (Notification.permission === 'denied') {
+      setNotificationButtonState('blocked');
+      showToast('Notifications blocked in browser settings', 'error');
+    } else {
+      setNotificationButtonState('default');
+      showToast('Could not enable notifications. Please try again', 'error');
+    }
   }
 }
 
@@ -1906,14 +2309,188 @@ function clearCachedUser() { try { localStorage.removeItem(USER_CACHE_KEY); } ca
 
 /* --- STRICT CATEGORY ORDERING --- */
 const categories = {
-mens: [ { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80 }, { id:'mens-pant', name:'Pant', price:60, originalPrice:80 }, { id:'mens-tshirt', name:'T‑Shirt', price:0 }, { id:'mens-kurta', name:'Kurta', price:60, originalPrice:80 }, { id:'mens-pajama', name:'Pajama', price:0 }, { id:'mens-lower', name:'Lower', price:0 }, { id:'mens-jeans', name:'Jeans', price:0 }, { id:'mens-shoes', name:'Shoes', price:0 } ],
-ladies: [ { id:'ladies-kurta', name:'Ladies Kurta', price:60, originalPrice:80 }, { id:'ladies-pajama', name:'Pajama', price:0 }, { id:'ladies-tshirt', name:'T‑Shirt', price:0 }, { id:'ladies-jeans', name:'Jeans', price:0 }, { id:'ladies-shoes', name:'Shoes', price:0 } ],
-winterMen: [ { id:'wm-sadri', name:'Sadri', price:0 }, { id:'wm-sweater', name:'Sweater', price:150, originalPrice:200 }, { id:'wm-jacket', name:'Jacket', price:250, originalPrice:320 }, { id:'wm-woollen-pant-shirt', name:'Woollen Pant/Shirt', price:0 } ],
-winterWomen: [ { id:'ww-sweater', name:'Sweater', price:150, originalPrice:200 }, { id:'ww-jacket', name:'Jacket', price:250, originalPrice:320 }, { id:'ww-kurti-pajama', name:'Woollen Kurti‑Pajama', price:0 } ],
-festival: [ { id:'fest-saree', name:'Saree', price:200, originalPrice:300 }, { id:'fest-lehenga', name:'Lehenga (3 Pc)', price:400, originalPrice:600 }, { id:'fest-coat-pant', name:'Coat Pant', price:350, originalPrice:500 }, { id:'fest-sherwani', name:'Sherwani', price:350, originalPrice:500 }, { id:'fest-gown', name:'Gown (Ladies)', price:0 } ],
-iron: [ { id:'iron-coat-pant', name:'Coat Pant', price:0 }, { id:'iron-shirt', name:'Shirt', price:0 }, { id:'iron-jeans', name:'Jeans', price:0 }, { id:'iron-saree', name:'Saree', price:0 }, { id:'iron-kurta-pajama', name:'Kurta Pyjama', price:0 }, { id:'iron-lehenga', name:'Lehenga', price:0 }, { id:'iron-gown', name:'Gown', price:0 } ],
-home: [ { id:'home-curtain', name:'Parde (Curtain)', price:0 }, { id:'home-blanket-single', name:'Blanket (Single)', price:0 }, { id:'home-blanket-double', name:'Blanket (Double)', price:350, originalPrice:450 }, { id:'home-bedsheet-single', name:'Bed Sheet (Single)', price:0 }, { id:'home-bedsheet-double', name:'Bed Sheet (Double)', price:0 }, { id:'home-carpet', name:'Carpet', price:0 }, { id:'home-towel', name:'Towel', price:0 }, { id:'home-pillow-cover', name:'Pillow Cover', price:0 } ],
-combos: [ { id:'combo-winter', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150 }, { id:'combo-party', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550 } ]
+mens: [ { id:'mens-shirt', name:'Shirt', price:60, originalPrice:80 }, { id:'mens-pant', name:'Pant', price:60, originalPrice:80 }, { id:'mens-t-shirt', name:'T‑Shirt', price:0 }, { id:'mens-kurta', name:'Kurta', price:60, originalPrice:80 }, { id:'mens-pajama', name:'Pajama', price:0 }, { id:'mens-lower', name:'Lower', price:0 }, { id:'mens-jeans', name:'Jeans', price:0 }, { id:'mens-shoes', name:'Shoes', price:0 } ],
+ladies: [ { id:'ladies-ladies-kurta', name:'Ladies Kurta', price:60, originalPrice:80 }, { id:'ladies-pajama', name:'Pajama', price:0 }, { id:'ladies-t-shirt', name:'T‑Shirt', price:0 }, { id:'ladies-jeans', name:'Jeans', price:0 }, { id:'ladies-shoes', name:'Shoes', price:0 } ],
+winterMen: [ { id:'winterMen-sadri', name:'Sadri', price:0 }, { id:'winterMen-sweater', name:'Sweater', price:150, originalPrice:200 }, { id:'winterMen-jacket', name:'Jacket', price:250, originalPrice:320 }, { id:'winterMen-woollen-pant-shirt', name:'Woollen Pant/Shirt', price:0 } ],
+winterWomen: [ { id:'winterWomen-sweater', name:'Sweater', price:150, originalPrice:200 }, { id:'winterWomen-jacket', name:'Jacket', price:250, originalPrice:320 }, { id:'winterWomen-woollen-kurti-pajama', name:'Woollen Kurti‑Pajama', price:0 } ],
+festival: [ { id:'festival-saree', name:'Saree', price:200, originalPrice:300 }, { id:'festival-lehenga-3-pc', name:'Lehenga (3 Pc)', price:400, originalPrice:600 }, { id:'festival-coat-pant', name:'Coat Pant', price:350, originalPrice:500 }, { id:'festival-sherwani', name:'Sherwani', price:350, originalPrice:500 }, { id:'festival-gown-ladies', name:'Gown (Ladies)', price:0 } ],
+iron: [ { id:'iron-coat-pant', name:'Coat Pant', price:0 }, { id:'iron-iron-shirt', name:'Iron Shirt', price:20 }, { id:'iron-jeans', name:'Jeans', price:0 }, { id:'iron-saree', name:'Saree', price:0 }, { id:'iron-kurta-pyjama', name:'Kurta Pyjama', price:0 }, { id:'iron-lehenga', name:'Lehenga', price:0 }, { id:'iron-gown', name:'Gown', price:0 } ],
+home: [ { id:'home-parde-curtain', name:'Parde (Curtain)', price:0 }, { id:'home-blanket-single', name:'Blanket (Single)', price:0 }, { id:'home-blanket-double', name:'Blanket (Double)', price:350, originalPrice:450 }, { id:'home-bed-sheet-single', name:'Bed Sheet (Single)', price:0 }, { id:'home-bed-sheet-double', name:'Bed Sheet (Double)', price:0 }, { id:'home-carpet', name:'Carpet', price:0 }, { id:'home-towel', name:'Towel', price:0 }, { id:'home-pillow-cover', name:'Pillow Cover', price:0 } ],
+combos: [ { id:'combos-winter-wardrobe-3-jackets-2-sweaters', name:'Winter Wardrobe (3 Jackets + 2 Sweaters)', price:999, originalPrice:1150 }, { id:'combos-couples-party-wear-1-saree-1-suit', name:'Couples Party Wear (1 Saree + 1 Suit)', price:499, originalPrice:550 } ]
+};
+
+const LEGACY_ID_MAP = {
+  'ladies-kurta': 'ladies-ladies-kurta',
+  'wm-sweater': 'winterMen-sweater',
+  'wm-jacket': 'winterMen-jacket',
+  'ww-sweater': 'winterWomen-sweater',
+  'ww-jacket': 'winterWomen-jacket',
+  'fest-saree': 'festival-saree',
+  'fest-lehenga': 'festival-lehenga-3-pc',
+  'fest-coat-pant': 'festival-coat-pant',
+  'fest-sherwani': 'festival-sherwani',
+  'iron-shirt': 'iron-iron-shirt',
+  'combo-winter': 'combos-winter-wardrobe-3-jackets-2-sweaters',
+  'combo-party': 'combos-couples-party-wear-1-saree-1-suit'
+};
+
+function findHomeCatalogItem(id) {
+  const mappedId = LEGACY_ID_MAP[id] || id;
+  for (const cat in categories) {
+    const found = (categories[cat] || []).find(it => it.id === mappedId || it.id === id);
+    if (found) return found;
+  }
+  return null;
+}
+
+function getHomeBag() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('pdc_cart') || '{}');
+    if (!raw || typeof raw !== 'object') return {};
+    const out = {};
+    let mutated = false;
+    for (const [k, v] of Object.entries(raw)) {
+      const q = parseInt(v, 10);
+      if (!Number.isFinite(q) || q <= 0 || q > 100) continue;
+      const canonical = LEGACY_ID_MAP[k] || k;
+      if (canonical !== k) mutated = true;
+      out[canonical] = Math.min(100, (out[canonical] || 0) + q);
+    }
+    if (mutated) localStorage.setItem('pdc_cart', JSON.stringify(out));
+    return out;
+  } catch (_) {
+    return {};
+  }
+}
+
+let HOME_BAG = getHomeBag();
+
+function buildHomeItemActionHTML(item) {
+  if (!item || !(Number(item.price) > 0)) {
+    return `<span class="price-on-request">On Request</span>`;
+  }
+  const qty = Number(HOME_BAG[item.id] || 0);
+  if (qty <= 0) {
+    return `<button type="button" class="home-add-btn" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', 1)"><i class="fas fa-plus"></i> Add</button>`;
+  }
+  return `<div class="home-stepper">
+    <button type="button" class="home-step-btn" aria-label="Decrease ${sanitizeHTML(item.name)}" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', -1)"><i class="fas fa-minus"></i></button>
+    <span class="home-step-num">${qty}</span>
+    <button type="button" class="home-step-btn" aria-label="Increase ${sanitizeHTML(item.name)}" onclick="updateHomeBagQty('${sanitizeHTML(item.id)}', 1)"><i class="fas fa-plus"></i></button>
+  </div>`;
+}
+
+function renderComboSpotlight() {
+  const wrap = document.getElementById('comboSpotlightWrap');
+  if (!wrap) return;
+  const comboItems = (categories.combos || []).filter(it => Number(it.price) > 0);
+  if (!comboItems.length) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'grid';
+  wrap.innerHTML = comboItems.map(item => {
+    const save = item.originalPrice ? (Number(item.originalPrice) - Number(item.price)) : 0;
+    return `<div class="combo-spotlight-card">
+      <div>
+        <div class="combo-badge-row">
+          <span class="combo-tag-pill"><i class="fas fa-fire"></i> Value Bundle</span>
+          ${save > 0 ? `<span class="combo-save-pill">Save ₹${formatMoney(save)}</span>` : ''}
+        </div>
+        <h4 style="margin-top:10px;">${sanitizeHTML(item.name)}</h4>
+        <p style="margin-top:4px;">Doorstep pickup, premium solvent care &amp; hanger-ready packaging included.</p>
+      </div>
+      <div class="combo-bottom-row">
+        <div class="combo-price-wrap">
+          <strong>₹${formatMoney(item.price)}</strong>
+          ${item.originalPrice ? `<del>₹${formatMoney(item.originalPrice)}</del>` : ''}
+        </div>
+        <div>${buildHomeItemActionHTML(item)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function syncHomeFloatingCartBar() {
+  HOME_BAG = getHomeBag();
+  const bar = document.getElementById('homeFloatingCartBar');
+  if (!bar) return;
+  let totalItems = 0;
+  let subtotal = 0;
+  for (const [id, qty] of Object.entries(HOME_BAG)) {
+    const item = findHomeCatalogItem(id);
+    if (item && Number(item.price) > 0) {
+      totalItems += qty;
+      subtotal += Number(item.price) * qty;
+    }
+  }
+  const anyOverlayOpen = Boolean(
+    document.querySelector('.modal-overlay.active') ||
+    document.getElementById('activeOrderDropdown')?.classList.contains('open')
+  );
+  if (totalItems > 0 && !anyOverlayOpen) {
+    document.getElementById('hfcMetaText').textContent = `${totalItems} item${totalItems === 1 ? '' : 's'} added to bag`;
+    document.getElementById('hfcTotalText').textContent = `₹${formatMoney(subtotal)}`;
+    bar.classList.add('visible');
+    document.body.classList.add('has-home-cart-bar');
+  } else {
+    bar.classList.remove('visible');
+    document.body.classList.remove('has-home-cart-bar');
+  }
+}
+
+window.updateHomeBagQty = function(id, delta) {
+  HOME_BAG = getHomeBag();
+  const canonicalId = LEGACY_ID_MAP[id] || id;
+  const item = findHomeCatalogItem(canonicalId);
+  if (!item || !(Number(item.price) > 0)) return;
+  const current = Number(HOME_BAG[item.id] || 0);
+  const next = current + Number(delta);
+  if (next <= 0) delete HOME_BAG[item.id];
+  else HOME_BAG[item.id] = Math.min(100, next);
+  localStorage.setItem('pdc_cart', JSON.stringify(HOME_BAG));
+  if (delta > 0 && navigator.vibrate) navigator.vibrate(25);
+  const searchVal = document.getElementById('priceSearchInput')?.value || '';
+  if (searchVal.trim()) globalSearch(searchVal);
+  else renderPricing();
+  renderComboSpotlight();
+  syncHomeFloatingCartBar();
+};
+
+window.clearHomeBag = function() {
+  HOME_BAG = {};
+  localStorage.removeItem('pdc_cart');
+  const searchVal = document.getElementById('priceSearchInput')?.value || '';
+  if (searchVal.trim()) globalSearch(searchVal);
+  else renderPricing();
+  renderComboSpotlight();
+  syncHomeFloatingCartBar();
+  showToast('Bag cleared', 'info');
+};
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'pdc_cart') {
+    HOME_BAG = getHomeBag();
+    renderPricing();
+    renderComboSpotlight();
+    syncHomeFloatingCartBar();
+  }
+});
+
+const STAIN_CARE_SOLUTIONS = {
+  oil: 'Enzyme pre-spotting + cold hydrocarbon solvent lifts tough Haldi & curry oils without bleaching fabric dye.',
+  coffee: 'Oxygenated micro-emulsion neutralizes tannin stains from tea, coffee & wine while keeping whites bright.',
+  ink: 'Ultrasonic cuff & collar treatment dissolves ink, sweat rings & mud without abrasive brushing.',
+  zari: 'Zero-moisture organic dry cleaning + acid-free tissue wrapping protects gold/silver Zari from tarnishing.'
+};
+
+window.selectStainCare = function(type, btn) {
+  document.querySelectorAll('#stainFinderBox .stain-chip').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const box = document.getElementById('stainSolutionText');
+  if (box && STAIN_CARE_SOLUTIONS[type]) {
+    box.textContent = STAIN_CARE_SOLUTIONS[type];
+  }
 };
 const categoryNames = { mens: "Men's Wear", ladies: "Ladies Wear", winterMen: "Winter (Men)", winterWomen: "Winter (Women)", festival: "Festival Special", iron: "Iron / Press", home: "Home & Travel", combos: "Value Combos" };
 const catOrder = Object.keys(categories);
@@ -1946,37 +2523,38 @@ function applyLoggedOutUI() { const loginBtn = document.getElementById('loginBtn
 function updateSlider(val) { document.getElementById('baCleanImg').style.clipPath = `inset(0 ${100 - val}% 0 0)`; document.getElementById('baSliderLine').style.left = `${val}%`; document.getElementById('baSliderBtn').style.left = `${val}%`; }
 function switchFabric(type, el, imageSrc) { document.querySelectorAll('.fabric-pill').forEach(p => p.classList.remove('active')); document.querySelectorAll('.fabric-content-card').forEach(c => c.classList.remove('active')); el.classList.add('active'); const card = document.getElementById(`fabric-${type}`); if (card) card.classList.add('active'); const floatingImg = document.getElementById('mainFloatingImg'); if(floatingImg){ floatingImg.style.opacity = 0; floatingImg.style.transform = 'scale(0.95) translateY(-10px)'; setTimeout(() => { floatingImg.src = imageSrc; floatingImg.style.opacity = 1; floatingImg.style.transform = 'scale(1) translateY(0)'; }, 300); } }
 
-function renderPricing() { 
-  const chipsWrapper = document.getElementById('pricingChipsWrapper'); 
-  const container = document.getElementById('pricingContainer'); 
-  chipsWrapper.innerHTML = ''; 
-  let chipsHTML = `<button class="price-chip ${activeCategory === 'all' ? 'active' : ''}" onclick="filterCategory('all', this)">All Items</button>`; 
-  let itemsHTML = ''; 
-  Object.keys(categories).forEach(cat => { 
-    const items = categories[cat]; 
-    const isActive = (cat === activeCategory) ? 'active' : ''; 
-    chipsHTML += `<button class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${sanitizeHTML(categoryNames[cat])}</button>`; 
-    const displayStyle = (activeCategory === 'all' || cat === activeCategory) ? 'display:block; animation:fadeIn 0.3s ease;' : 'display:none;'; 
-    itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`; 
-    itemsHTML += `<h3 class="category-group-title">${sanitizeHTML(categoryNames[cat])}</h3>`; 
-    items.forEach(item => { 
-      const priceText = item.price > 0 ? `₹${formatMoney(item.price)}` : `<span class="price-on-request">On Request</span>`; 
-      const originalText = item.originalPrice ? `<span class="price-original">₹${formatMoney(item.originalPrice)}</span>` : ''; 
-      itemsHTML += `<div class="price-item" data-name="${sanitizeHTML(item.name.toLowerCase())}"><span class="price-name">${sanitizeHTML(item.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`; 
-    }); 
-    itemsHTML += `</div>`; 
-  }); 
-  chipsWrapper.innerHTML = chipsHTML; 
-  container.innerHTML = itemsHTML; 
-  
-  // Custom scroll logic avoiding scrollIntoView (prevents vertical page jumps)
-  setTimeout(() => {
-    const activeChip = document.querySelector('.price-chip.active');
-    const wrapper = document.getElementById('pricingChipsWrapper');
-    if(activeChip && wrapper) {
-      wrapper.scrollLeft = activeChip.offsetLeft - (wrapper.offsetWidth / 2) + (activeChip.offsetWidth / 2);
-    }
-  }, 100);
+function renderPricing() {
+  HOME_BAG = getHomeBag();
+  const chipsWrapper = document.getElementById('pricingChipsWrapper');
+  const container = document.getElementById('pricingContainer');
+  chipsWrapper.innerHTML = '';
+  let chipsHTML = `<button type="button" class="price-chip ${activeCategory === 'all' ? 'active' : ''}" onclick="filterCategory('all', this)">All Items</button>`;
+  let itemsHTML = '';
+  Object.keys(categories).forEach(cat => {
+    const items = categories[cat];
+    const isActive = (cat === activeCategory) ? 'active' : '';
+    chipsHTML += `<button type="button" class="price-chip ${isActive}" onclick="filterCategory('${cat}', this)">${sanitizeHTML(categoryNames[cat])}</button>`;
+    const displayStyle = (activeCategory === 'all' || cat === activeCategory) ? 'display:block; animation:fadeIn 0.22s ease;' : 'display:none;';
+    itemsHTML += `<div class="price-category-group" data-category="${cat}" style="${displayStyle}">`;
+    itemsHTML += `<h3 class="category-group-title">${sanitizeHTML(categoryNames[cat])}</h3>`;
+    items.forEach(item => {
+      const hasPrice = Number(item.price) > 0;
+      const priceText = hasPrice ? `₹${formatMoney(item.price)}` : '';
+      const originalText = (hasPrice && item.originalPrice) ? `<span class="price-original">₹${formatMoney(item.originalPrice)}</span>` : '';
+      itemsHTML += `<div class="price-item" data-name="${sanitizeHTML(item.name.toLowerCase())}">
+        <div class="price-item-left">
+          <span class="price-name">${sanitizeHTML(item.name)}</span>
+          ${hasPrice ? `<span class="price-tag">${priceText}${originalText}</span>` : ''}
+        </div>
+        <div class="price-item-right">${buildHomeItemActionHTML(item)}</div>
+      </div>`;
+    });
+    itemsHTML += `</div>`;
+  });
+  chipsWrapper.innerHTML = chipsHTML;
+  container.innerHTML = itemsHTML;
+  renderComboSpotlight();
+  syncHomeFloatingCartBar();
 }
 
 function quickFilter(cat) { const btn = document.querySelector(`.price-chip[onclick*="${cat}"]`); if (btn) filterCategory(cat, btn); else filterCategory(cat, null); }
@@ -2020,10 +2598,17 @@ function globalSearch(val) {
   }
   let html = `<div class="price-category-group" style="display:block;"><h3 class="category-group-title"><i class="fas fa-search"></i> Search Results for "${sanitizeHTML(val)}"</h3>`; 
   if(results.length) {
-    html += results.map(i => { 
-      const priceText = i.price > 0 ? `₹${formatMoney(i.price)}` : `<span class="price-on-request">On Request</span>`; 
-      const originalText = i.originalPrice ? `<span class="price-original">₹${formatMoney(i.originalPrice)}</span>` : ''; 
-      return `<div class="price-item"><span class="price-name">${sanitizeHTML(i.name)}</span><span class="price-tag">${priceText}${originalText}</span></div>`; 
+    html += results.map(i => {
+      const hasPrice = Number(i.price) > 0;
+      const priceText = hasPrice ? `₹${formatMoney(i.price)}` : '';
+      const originalText = (hasPrice && i.originalPrice) ? `<span class="price-original">₹${formatMoney(i.originalPrice)}</span>` : '';
+      return `<div class="price-item">
+        <div class="price-item-left">
+          <span class="price-name">${sanitizeHTML(i.name)}</span>
+          ${hasPrice ? `<span class="price-tag">${priceText}${originalText}</span>` : ''}
+        </div>
+        <div class="price-item-right">${buildHomeItemActionHTML(i)}</div>
+      </div>`;
     }).join('');
   } else {
     html += `<div style="padding:20px; text-align:center;">
@@ -2245,6 +2830,7 @@ function openActiveOrders() {
   document.body.style.overflow = 'hidden';
   const wa = document.getElementById('floatingWhatsappBtn');
   if (wa) wa.style.display = 'none';
+  syncHomeFloatingCartBar();
   if (!isHandlingPopstate && (!history.state || !history.state.careDropdown)) {
     history.pushState({ careDropdown: true }, '', '#active-orders');
   }
@@ -2260,6 +2846,7 @@ function closeActiveOrders(fromPopstate = false) {
     const wa = document.getElementById('floatingWhatsappBtn');
     if (wa) wa.style.display = 'flex';
   }
+  syncHomeFloatingCartBar();
   if (!fromPopstate && !isHandlingPopstate && history.state && history.state.careDropdown) {
     history.back();
   }
@@ -2289,6 +2876,7 @@ function openModal(id) {
   if (id === 'authModal') {
     initRecaptcha();
   }
+  syncHomeFloatingCartBar();
 }
 function closeModal(id, fromPopstate = false) {
   const m = document.getElementById(id);
@@ -2303,6 +2891,7 @@ function closeModal(id, fromPopstate = false) {
       const wa = document.getElementById('floatingWhatsappBtn');
       if(wa) wa.style.display = 'flex'; 
     }
+    syncHomeFloatingCartBar();
   }, 300); 
   if (!fromPopstate && !isHandlingPopstate && history.state && history.state.modal === id) {
     history.back();
@@ -2995,8 +3584,9 @@ function setProfileHeader(user, custData) {
       notifRow.style.display = 'none';
     } else {
       notifRow.style.display = 'flex';
-      const hasSavedToken = Boolean(d && d.fcmToken);
+      const hasSavedToken = Boolean((d && d.fcmToken) || localStorage.getItem('pdc_notif_enabled_' + user.uid) === '1');
       if (Notification.permission === 'granted' && hasSavedToken) setNotificationButtonState('enabled');
+      else if (Notification.permission === 'granted') { setNotificationButtonState('enabled'); syncFCMTokenForUser(user); }
       else if (Notification.permission === 'denied') setNotificationButtonState('blocked');
       else setNotificationButtonState('default');
     }
@@ -3020,20 +3610,70 @@ function loadProfileStats(uid) {
   });
 }
 
-/* --- TABBED ORDER HISTORY LOGIC --- */
+/* --- 3-TAB ORDER HISTORY LOGIC (ACTIVE | COMPLETED | CANCELLED) + TOUCH SWIPE --- */
 let allFetchedOrders = [];
 let currentOrderTab = 'active';
+const ORDER_TAB_SEQUENCE = ['active', 'completed', 'cancelled'];
 
 function switchOrderTab(tab) {
+  if (!ORDER_TAB_SEQUENCE.includes(tab)) tab = 'active';
   currentOrderTab = tab;
   document.querySelectorAll('.order-tab').forEach(btn => btn.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+  const targetBtn = document.getElementById('tab-' + tab);
+  if (targetBtn) targetBtn.classList.add('active');
   renderOrderHistoryList();
+}
+
+function updateOrderTabBadges() {
+  const activeStatusSet = ['pending', 'picked_up', 'processing', 'quality_check', 'out_for_delivery'];
+  let activeCount = 0, completedCount = 0, cancelledCount = 0;
+  allFetchedOrders.forEach(o => {
+    const st = String(o.status || 'pending');
+    if (activeStatusSet.includes(st)) activeCount++;
+    else if (st === 'cancelled') cancelledCount++;
+    else completedCount++;
+  });
+  const bActive = document.getElementById('badge-tab-active');
+  const bCompleted = document.getElementById('badge-tab-completed');
+  const bCancelled = document.getElementById('badge-tab-cancelled');
+  if (bActive) bActive.textContent = activeCount;
+  if (bCompleted) bCompleted.textContent = completedCount;
+  if (bCancelled) bCancelled.textContent = cancelledCount;
+}
+
+function initOrderModalSwipe() {
+  const list = document.getElementById('orderHistoryList');
+  if (!list || list._swipeInitialized) return;
+  list._swipeInitialized = true;
+  let startX = 0, startY = 0, tracking = false;
+  list.addEventListener('touchstart', (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    tracking = true;
+  }, { passive: true });
+  list.addEventListener('touchend', (e) => {
+    if (!tracking || !e.changedTouches || !e.changedTouches.length) return;
+    tracking = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.8) {
+      const idx = ORDER_TAB_SEQUENCE.indexOf(currentOrderTab);
+      if (dx < 0 && idx < ORDER_TAB_SEQUENCE.length - 1) {
+        if (navigator.vibrate) navigator.vibrate(15);
+        switchOrderTab(ORDER_TAB_SEQUENCE[idx + 1]);
+      } else if (dx > 0 && idx > 0) {
+        if (navigator.vibrate) navigator.vibrate(15);
+        switchOrderTab(ORDER_TAB_SEQUENCE[idx - 1]);
+      }
+    }
+  }, { passive: true });
 }
 
 function loadOrderHistory() {
   const list = document.getElementById('orderHistoryList');
   if (!auth.currentUser) return;
+  initOrderModalSwipe();
   const uid = auth.currentUser.uid;
   list.innerHTML = `<p style="text-align:center; font-size:13px; color:var(--text-muted); padding:20px 0;"><i class="fas fa-spinner fa-spin"></i> Loading orders...</p>`;
   
@@ -3044,6 +3684,7 @@ function loadOrderHistory() {
       if (o) allFetchedOrders.push({...o, _firebaseKey: child.key});
     });
     allFetchedOrders.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    updateOrderTabBadges();
     renderOrderHistoryList();
   });
 }
@@ -3051,15 +3692,20 @@ function loadOrderHistory() {
 function renderOrderHistoryList() {
   const list = document.getElementById('orderHistoryList');
   const activeStatusSet = ['pending', 'picked_up', 'processing', 'quality_check', 'out_for_delivery'];
+  updateOrderTabBadges();
   
   const filteredOrders = allFetchedOrders.filter(o => {
-    if (currentOrderTab === 'active') return activeStatusSet.includes(o.status);
-    else return !activeStatusSet.includes(o.status);
+    const st = String(o.status || 'pending');
+    if (currentOrderTab === 'active') return activeStatusSet.includes(st);
+    if (currentOrderTab === 'cancelled') return st === 'cancelled';
+    return !activeStatusSet.includes(st) && st !== 'cancelled';
   });
 
   if (!filteredOrders.length) {
-    let emptyMsg = currentOrderTab === 'active' ? 'No active orders right now.' : 'No past orders found.';
-    list.innerHTML = `<div style="text-align:center; padding:34px 10px 20px; color:var(--text-muted); font-weight:600;"><i class="fas fa-box-open" style="font-size:42px; margin-bottom:18px;"></i><br>${emptyMsg}<br><div style="margin-top: 24px;"><a href="booking.html" class="care-btn primary" style="padding: 14px 32px; font-size: 15px; border-radius: 30px; width: 100%; max-width: 240px; box-shadow: 0 8px 25px rgba(var(--primary-rgb),0.3); text-decoration:none; display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div></div>`;
+    let emptyMsg = currentOrderTab === 'active'
+      ? 'No active orders right now.'
+      : (currentOrderTab === 'completed' ? 'No completed orders yet.' : 'No cancelled orders.');
+    list.innerHTML = `<div style="text-align:center; padding:34px 10px 20px; color:var(--text-muted); font-weight:600;"><i class="fas fa-box-open" style="font-size:42px; margin-bottom:18px;"></i><br>${emptyMsg}<br><span style="font-size:11px;opacity:0.75;">Tip: Swipe left or right to switch tabs</span><div style="margin-top: 24px;"><a href="booking.html" class="care-btn primary" style="padding: 14px 32px; font-size: 15px; border-radius: 30px; width: 100%; max-width: 240px; box-shadow: 0 8px 25px rgba(var(--primary-rgb),0.3); text-decoration:none; display:inline-flex;"><i class="fas fa-calendar-check"></i> Book Now</a></div></div>`;
     return;
   }
 
