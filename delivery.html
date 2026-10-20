@@ -12,6 +12,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -223,7 +224,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 <!-- BOTTOM NEW ORDER HUD ALERT -->
 <div class="new-order-alert" id="newOrderAlert" role="alert">
   <div class="noa-head">
-    <div class="noa-badge"><span class="noa-pulse"></span> Naya Order Assign Hua!</div>
+    <div class="noa-badge"><span class="noa-pulse"></span> <span id="noaBadgeText">Naya Order Assign Hua!</span></div>
     <button class="noa-close" onclick="dismissOrderAlert()" aria-label="Dismiss"><i class="fas fa-times"></i></button>
   </div>
   <div class="noa-body">
@@ -262,6 +263,7 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
   </div>
   <div class="top-actions">
    <div class="conn-dot" id="connDot" title="Online"></div>
+   <button class="icon-btn" id="riderPushBtn" title="Enable Push Alerts" onclick="enableRiderPushManual()"><i class="fas fa-bell"></i></button>
    <button class="icon-btn" id="themeBtn" title="Theme"><i class="fas fa-moon"></i></button>
    <button class="icon-btn" id="logoutBtn" title="Logout"><i class="fas fa-power-off"></i></button>
   </div>
@@ -387,11 +389,13 @@ window.onerror = function(msg, url, line) {
   console.error("Rider App Notice:", msg, line);
 };
 
-// 2. PURGE OLD SERVICE WORKERS
+// 2. REGISTER SERVICE WORKER FOR BACKGROUND RIDER PUSH
+let riderSWReg = null;
+const RIDER_VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 try {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => {
-      for (let r of regs) r.unregister();
+    navigator.serviceWorker.register('/firebase-messaging-sw.js').then(reg => {
+      riderSWReg = reg;
     }).catch(() => {});
   }
 } catch(_) {}
@@ -592,28 +596,121 @@ function enterApp() {
   requestNotificationPermission();
 }
 
-function requestNotificationPermission() {
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission().then(p => { if (p === 'granted') toast('🔔 Notifications enabled!'); });
+function syncRiderPushButtonUI() {
+  const btn = $('riderPushBtn');
+  if (!btn || !('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    btn.style.color = 'var(--good)';
+    btn.style.borderColor = 'var(--good)';
+    btn.title = 'Push Alerts Active';
+  } else if (Notification.permission === 'denied') {
+    btn.style.color = 'var(--bad)';
+    btn.title = 'Notifications Blocked in Browser';
+  } else {
+    btn.style.color = 'var(--muted)';
+    btn.title = 'Tap to Enable Push Alerts';
   }
 }
 
-// 7. BOTTOM ORDER HUD ALERT (Shows PDC-XXXXXX)
-function triggerNewOrderAlert(orderKey, displayId, customerName, address) {
+async function syncRiderFCMToken() {
+  try {
+    syncRiderPushButtonUI();
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    if (!firebase.messaging || !('serviceWorker' in navigator)) return;
+    const messaging = firebase.messaging();
+    const reg = riderSWReg || await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    riderSWReg = reg;
+    const token = await messaging.getToken({ vapidKey: RIDER_VAPID_KEY, serviceWorkerRegistration: reg });
+    if (token) {
+      const uid = auth.currentUser ? auth.currentUser.uid : (BOY && BOY.authUid);
+      if (uid) db.ref('boy_sessions/' + uid + '/fcmToken').set(token).catch(() => {});
+      if (BOY && BOY.id) db.ref('delivery_boys/' + BOY.id + '/fcmToken').set(token).catch(() => {});
+    }
+  } catch (e) {
+    console.warn('Rider FCM sync note:', e);
+  }
+}
+
+window.enableRiderPushManual = async function() {
+  if (!('Notification' in window)) return toast('Browser notifications supported nahi hain', 'err');
+  if (Notification.permission === 'denied') {
+    return toast('Browser settings me जाकर Notifications Allow karein', 'err');
+  }
+  const p = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+  syncRiderPushButtonUI();
+  if (p === 'granted') {
+    await syncRiderFCMToken();
+    toast('🔔 Rider Push Alerts Enabled!');
+  } else {
+    toast('Notification permission dismissed', 'err');
+  }
+};
+
+function requestNotificationPermission() {
+  syncRiderPushButtonUI();
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      syncRiderFCMToken();
+    } else if (Notification.permission === 'default') {
+      Notification.requestPermission().then(p => {
+        syncRiderPushButtonUI();
+        if (p === 'granted') {
+          syncRiderFCMToken();
+          toast('🔔 Notifications enabled!');
+        }
+      }).catch(() => {});
+    }
+  }
+}
+
+function showRiderSystemNotification(title, body, orderKey) {
+  try {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const opts = {
+      body,
+      icon: '/assets/icon-192.png',
+      badge: '/assets/icon-192.png',
+      tag: 'rider-order-' + (orderKey || Date.now()),
+      renotify: true,
+      data: { orderId: orderKey, targetUrl: '/delivery.html' }
+    };
+    if (riderSWReg && typeof riderSWReg.showNotification === 'function') {
+      riderSWReg.showNotification(title, opts).catch(() => {
+        try { new Notification(title, opts); } catch (_) {}
+      });
+    } else {
+      new Notification(title, opts);
+    }
+  } catch (_) {}
+}
+
+// 7. BOTTOM ORDER HUD ALERT (Shows PDC-XXXXXX for both New Pickup & Out for Delivery)
+function triggerNewOrderAlert(orderKey, displayId, customerName, address, alertType = 'new') {
   latestAssignedOrderId = orderKey;
   beep();
   vibrate([150, 80, 150, 80, 250]);
 
+  const badgeEl = $('noaBadgeText');
   const tEl = $('noaOrderTitle');
   const sEl = $('noaOrderSub');
+  const isDelivery = alertType === 'delivery';
+  const badgeTitle = isDelivery ? 'Order Delivery Ke Liye Ready! 🚚' : 'Naya Order Assign Hua! 📥';
+  if (badgeEl) badgeEl.textContent = badgeTitle;
   if (tEl) tEl.textContent = displayId;
-  if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${address ? address.slice(0, 32) + '…' : 'Doorstep Pickup'}`;
+  const cleanAddr = cleanAddress(address || '');
+  if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${cleanAddr ? cleanAddr.slice(0, 34) + (cleanAddr.length > 34 ? '…' : '') : (isDelivery ? 'Out for Delivery' : 'Doorstep Pickup')}`;
 
   const alertEl = $('newOrderAlert');
   if (alertEl) alertEl.classList.add('show');
 
+  showRiderSystemNotification(
+    `Parth Rider · ${badgeTitle}`,
+    `${displayId} — ${customerName || 'Customer'} (${cleanAddr || 'Lucknow'})`,
+    orderKey
+  );
+
   clearTimeout(alertTimer);
-  alertTimer = setTimeout(() => { dismissOrderAlert(); }, 12000);
+  alertTimer = setTimeout(() => { dismissOrderAlert(); }, 14000);
 }
 
 function dismissOrderAlert() {
@@ -763,7 +860,7 @@ window.batchStartPickup = async () => {
   } catch(e) { toast(e?.message || 'Pickup update failed', 'err'); }
 };
 
-// 9. REALTIME ORDERS LISTENER
+// 9. REALTIME ORDERS LISTENER (Zero-False-Positive Baseline + First-Order & Out-for-Delivery Alerts)
 function listen() {
   if (ordersRef && ordersRef.refs) { ordersRef.refs.forEach((r, i) => r.off('value', ordersRef.cbs[i])); }
   const phone10 = last10Digits(BOY?.phone);
@@ -774,7 +871,9 @@ function listen() {
     db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10)
   ];
   const buckets = [new Map(), new Map(), new Map()];
-  let readyCount = 0;
+  const readyBuckets = new Set();
+  let baselineLoaded = false;
+
   const rebuild = () => {
     const merged = new Map();
     buckets.forEach(bucket => bucket.forEach((o, id) => merged.set(id, o)));
@@ -783,25 +882,41 @@ function listen() {
       if (!o) return;
       const assigned = (o.assigned_to_e164 || o.assigned_to || '');
       const matchesBoy = (last10Digits(assigned) === phone10) || (BOY?.id && (o.deliveryBoyId === BOY.id || o.assignedTo === BOY.id));
-      if (matchesBoy) { curIds.add(id); curStatuses[id] = o.status; myOrders.push({ _id: id, ...o }); }
+      if (matchesBoy) { curIds.add(id); curStatuses[id] = o.status || 'pending'; myOrders.push({ _id: id, ...o }); }
     });
 
-    if (Object.keys(prevStatuses).length > 0) {
+    if (baselineLoaded) {
       curIds.forEach(id => {
+        const o = myOrders.find(x => x._id === id);
+        if (!o || o.status === 'cancelled' || o.status === 'delivered') return;
+        const displayId = formatOrderId(o.orderId || id);
         if (!prevOrderIds.has(id)) {
-          const o = myOrders.find(x => x._id === id);
-          const displayId = formatOrderId(o?.orderId || id);
-          triggerNewOrderAlert(id, displayId, o?.customerName || o?.name || '', o?.address || '');
+          const aType = o.status === 'out_for_delivery' ? 'delivery' : 'new';
+          triggerNewOrderAlert(id, displayId, o.customerName || o.name || '', o.address || '', aType);
+        } else if (prevStatuses[id] && prevStatuses[id] !== 'out_for_delivery' && o.status === 'out_for_delivery') {
+          triggerNewOrderAlert(id, displayId, o.customerName || o.name || '', o.address || '', 'delivery');
         }
       });
     }
-    prevOrderIds = curIds; prevStatuses = curStatuses; render(myOrders);
+
+    if (readyBuckets.size >= queries.length) {
+      baselineLoaded = true;
+      prevOrderIds = curIds;
+      prevStatuses = curStatuses;
+    }
+    render(myOrders);
   };
+
   const cbs = queries.map((ref, i) => ref.on('value', s => {
     buckets[i].clear();
     s.forEach(c => { const o = c.val(); if (o) buckets[i].set(c.key, o); });
-    readyCount++; rebuild();
-  }, err => { console.warn('Orders read warning:', err); readyCount++; if (readyCount >= queries.length) rebuild(); }));
+    readyBuckets.add(i);
+    rebuild();
+  }, err => {
+    console.warn('Orders read warning:', err);
+    readyBuckets.add(i);
+    rebuild();
+  }));
   ordersRef = { refs: queries, cbs };
 }
 
