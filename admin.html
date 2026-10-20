@@ -11,6 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -106,9 +107,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .toolbar input,.toolbar select{background:var(--panel);border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow-sm)}
 .toolbar input{flex:1;min-width:200px}
-.tbl-wrap{overflow-x:auto}
+.tbl-wrap{overflow-x:auto;max-height:68vh;overflow-y:auto}
 table{width:100%;border-collapse:collapse;font-size:13px;min-width:980px}
-th{padding:12px 14px;text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;font-weight:800;border-bottom:1px solid var(--line);background:var(--panel2)}
+th{padding:12px 14px;text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;font-weight:800;border-bottom:1px solid var(--line);background:var(--panel2);position:sticky;top:0;z-index:5;box-shadow:0 1px 0 var(--line)}
 td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:hover td{background:rgba(37,99,235,.03)}
 .row-urgent td{background:rgba(217,119,6,.06)}.row-overdue td{background:rgba(239,68,68,.06)}
@@ -262,11 +263,94 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 @media(max-width:900px){.v4-subgrid{grid-template-columns:1fr}.area-edit{grid-template-columns:1fr 1fr}.area-edit .wide{grid-column:1/-1}}
 @media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;min-height:0;position:relative;display:none}.sidebar.open{display:flex}.menu-toggle{display:inline-flex}.main{padding:16px}.bento{grid-template-columns:repeat(2,1fr)}.customer-stats{grid-template-columns:repeat(2,1fr)}.customer-profile-grid{grid-template-columns:1fr}.customer-profile-grid .full{grid-column:auto}}
 @media(max-width:600px){.order-drawer{width:100vw}.order-drawer-body{padding:12px 14px 24px}.od-grid,.od-status-row{grid-template-columns:1fr}.od-field.full{grid-column:auto}.area-edit{grid-template-columns:1fr}.area-edit .wide{grid-column:auto}}
+
+/* Compact Scrollable Feeds, Collapsible Sections & Live New Order Alert Banner */
+#auditList, #notificationList, #manualNotificationList {
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.area-list {
+  max-height: 540px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.area-row .area-edit {
+  display: none;
+}
+.area-row.editing .area-edit {
+  display: grid;
+}
+.cat-block.collapsed > *:not(.cat-head) {
+  display: none !important;
+}
+.cat-block.collapsed {
+  padding-bottom: 14px;
+}
+.cat-block.collapsed .cat-head {
+  margin-bottom: 0;
+}
+.cat-collapse-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: .18s;
+  flex-shrink: 0;
+}
+.cat-collapse-btn:hover {
+  color: var(--pink);
+  border-color: var(--line2);
+}
+.cat-block.collapsed .cat-collapse-btn i {
+  transform: rotate(-90deg);
+}
+.admin-order-banner {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 9998;
+  background: var(--panel);
+  border: 2px solid var(--pink);
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 18px 42px rgba(37,99,235,.28);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 430px;
+  transform: translateY(150%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .32s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+}
+.admin-order-banner.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
 </style>
 </head>
 <body>
 <div class="sun"></div><div class="horizon"></div>
 <div id="toast"></div>
+<div class="admin-order-banner" id="adminNewOrderBanner" role="alert">
+  <div style="width:42px;height:42px;border-radius:12px;background:rgba(37,99,235,.12);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><i class="fas fa-bell fa-shake"></i></div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:10px;font-weight:800;color:var(--pink);text-transform:uppercase;letter-spacing:.8px">Naya Order Aaya!</div>
+    <div style="font-size:14.5px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="adminBannerTitle">PDC-000000</div>
+    <div style="font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="adminBannerSub">Customer · ₹0</div>
+  </div>
+  <button class="btn solid" id="adminBannerViewBtn" style="padding:8px 12px"><i class="fas fa-eye"></i> View</button>
+  <button class="order-drawer-close" onclick="document.getElementById('adminNewOrderBanner').classList.remove('show')" style="width:28px;height:28px"><i class="fas fa-xmark"></i></button>
+</div>
 <div class="order-drawer-backdrop" id="orderDrawerBackdrop" onclick="App.closeOrder()"></div>
 <aside class="order-drawer" id="orderDrawer" aria-hidden="true">
  <div class="order-drawer-head">
@@ -306,6 +390,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
  <div class="topbar">
   <div class="page-title"><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Live overview</p></div>
   <div class="top-actions">
+   <button class="icon-btn" id="adminPushBtn" title="Enable Order Push Alerts" onclick="App.enableAdminPush()"><i class="fas fa-bell"></i></button>
    <button class="icon-btn" id="themeBtn" title="Day/Night"><i class="fas fa-moon"></i></button>
    <button class="icon-btn menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
   </div>
@@ -378,7 +463,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     <button class="btn good" onclick="App.saveAllCMS()"><i class="fas fa-save"></i> Save All CMS Content</button>
    </div>
 
-   <div class="cms-quickbar"><button class="btn" onclick="document.getElementById('cmsHeroBadge').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-crown"></i> Hero</button><button class="btn" onclick="document.getElementById('cmsTrustList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-shield"></i> Trust</button><button class="btn" onclick="document.getElementById('cmsFabricsList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-shirt"></i> Content</button><button class="btn" onclick="document.getElementById('cmsMediaList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-photo-film"></i> Media</button><button class="btn solid" onclick="App.previewHome()"><i class="fas fa-external-link-alt"></i> Preview Home</button></div>
+   <div class="cms-quickbar"><button class="btn" onclick="App.toggleAllCats('tab-cms')"><i class="fas fa-layer-group"></i> Collapse / Expand Sections</button><button class="btn" onclick="document.getElementById('cmsHeroBadge').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-crown"></i> Hero</button><button class="btn" onclick="document.getElementById('cmsTrustList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-shield"></i> Trust</button><button class="btn" onclick="document.getElementById('cmsFabricsList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-shirt"></i> Content</button><button class="btn" onclick="document.getElementById('cmsMediaList').scrollIntoView({behavior:'smooth',block:'center'})"><i class="fas fa-photo-film"></i> Media</button><button class="btn solid" onclick="App.previewHome()"><i class="fas fa-external-link-alt"></i> Preview Home</button></div>
 
    <!-- 0. Section Visibility Switches -->
    <div class="cat-block">
@@ -538,7 +623,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   </div>
 
   <div class="tab-content" id="tab-services">
-   <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-tags"></i> Services Manager</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn solid" onclick="App.addCat()"><i class="fas fa-plus"></i> Add Category</button><button class="btn good" onclick="App.saveServices()"><i class="fas fa-save"></i> Save All</button></div></div>
+   <div class="panel" style="margin-bottom:16px"><div class="panel-head"><h3><i class="fas fa-tags"></i> Services Manager</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="App.toggleAllCats('priceUI')"><i class="fas fa-compress-alt"></i> Expand / Collapse All</button><button class="btn solid" onclick="App.addCat()"><i class="fas fa-plus"></i> Add Category</button><button class="btn good" onclick="App.saveServices()"><i class="fas fa-save"></i> Save All</button></div></div>
     <div class="form-grid" style="border:0;border-radius:0;margin:0">
      <div class="fg"><label>New Category</label><input id="newCatName" placeholder="e.g. Wedding Special"/></div>
      <div class="fg"><label>Icon</label><input id="newCatIcon" placeholder="fa-gift"/></div>
@@ -718,8 +803,128 @@ $('logoutBtn').onclick=()=>{closeBoyChatListener();db.ref('orders').off();db.ref
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
 function switchTab(t){document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));$('tab-'+t).classList.add('active');$('pageTitle').textContent=TITLES[t][0];$('pageSub').textContent=TITLES[t][1];if(t==='orders')renderOrders();if(t==='reports')renderReports();if(t==='dashboard')renderDashboard();if(t==='customers')renderCustomers();if(t==='services')renderServices();if(t==='boys')renderBoys();if(t==='coupons')renderCoupons();if(t==='cms')renderCMS();if(t==='intelligence')renderIntelligence();if(t==='areas')renderServiceAreas();}
 
+let adminOrdersBaselineLoaded = false;
+let knownAdminOrderIds = new Set();
+const ADMIN_VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
+let adminSWReg = null;
+
+function adminBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.type = 'sine'; o.frequency.value = 784; g.gain.value = 0.18;
+    o.start();
+    setTimeout(() => o.frequency.value = 1046, 130);
+    setTimeout(() => o.frequency.value = 1318, 260);
+    setTimeout(() => { o.stop(); ctx.close(); }, 460);
+  } catch(_) {}
+}
+
+function triggerAdminNewOrderAlert(orderKey, orderObj) {
+  adminBeep();
+  const rawId = String(orderObj.orderId || orderKey);
+  const dispId = rawId.startsWith('PDC-') ? rawId : 'PDC-' + rawId;
+  const cust = orderObj.customerName || orderObj.name || 'Customer';
+  const total = Number(orderObj.total) || 0;
+  const slot = orderObj.timeSlot || '';
+  const banner = $('adminNewOrderBanner');
+  if (banner) {
+    $('adminBannerTitle').textContent = `${dispId} · ₹${total}`;
+    $('adminBannerSub').textContent = `${cust}${slot ? ' · ' + slot : ''}`;
+    const vBtn = $('adminBannerViewBtn');
+    if (vBtn) {
+      vBtn.onclick = () => {
+        banner.classList.remove('show');
+        document.querySelectorAll('.nav-item').forEach(x => x.classList.toggle('active', x.dataset.tab === 'orders'));
+        switchTab('orders');
+        App.openOrder(orderKey);
+      };
+    }
+    banner.classList.add('show');
+    clearTimeout(banner._t);
+    banner._t = setTimeout(() => banner.classList.remove('show'), 14000);
+  }
+  toast(`🔔 Naya Order Aaya: ${dispId} (${cust} · ₹${total})`);
+  try {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const title = `Parth Admin · Naya Order ${dispId}! 🧺`;
+      const body = `${cust} booked pickup (${ orderObj.pickupDate || 'Today' } · ${slot}) — ₹${total}`;
+      if (adminSWReg && typeof adminSWReg.showNotification === 'function') {
+        adminSWReg.showNotification(title, { body, icon: '/assets/icon-192.png', badge: '/assets/icon-192.png', tag: 'admin-new-order-' + orderKey, data: { targetUrl: '/admin.html' } }).catch(() => {});
+      } else {
+        new Notification(title, { body, icon: '/assets/icon-192.png' });
+      }
+    }
+  } catch(_) {}
+}
+
+async function syncAdminFCMToken(askPerm = false) {
+  const btn = $('adminPushBtn');
+  try {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'default' && askPerm) {
+      await Notification.requestPermission();
+    }
+    if (btn) {
+      btn.style.color = Notification.permission === 'granted' ? 'var(--good)' : (Notification.permission === 'denied' ? 'var(--bad)' : 'var(--muted)');
+      btn.title = Notification.permission === 'granted' ? 'Admin Push Alerts Active' : 'Click to Enable Admin Push Alerts';
+    }
+    if (Notification.permission !== 'granted' || !firebase.messaging || !('serviceWorker' in navigator)) return;
+    const reg = adminSWReg || await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    adminSWReg = reg;
+    const token = await firebase.messaging().getToken({ vapidKey: ADMIN_VAPID_KEY, serviceWorkerRegistration: reg });
+    if (token && auth.currentUser) {
+      await db.ref('admin_tokens/' + auth.currentUser.uid).set({
+        token,
+        email: auth.currentUser.email || 'admin',
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+  } catch (e) {
+    console.warn('Admin FCM sync note:', e);
+  }
+}
+
+function initAdminCollapsibleCards() {
+  document.querySelectorAll('#tab-cms .cat-block').forEach((block, idx) => {
+    const head = block.querySelector('.cat-head');
+    if (head && !head.querySelector('.cat-collapse-btn')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cat-collapse-btn';
+      btn.title = 'Collapse/Expand Section';
+      btn.innerHTML = '<i class="fas fa-chevron-down"></i>';
+      btn.onclick = () => block.classList.toggle('collapsed');
+      head.prepend(btn);
+      if (idx >= 2) block.classList.add('collapsed');
+    }
+  });
+}
+
 function start(){
- db.ref('orders').on('value',s=>{ordersSnap=s;renderDashboard();if($('tab-orders').classList.contains('active'))renderOrders();if($('tab-reports').classList.contains('active'))renderReports();if($('tab-customers').classList.contains('active'))renderCustomers();if($('tab-boys').classList.contains('active'))renderBoys();});
+ initAdminCollapsibleCards();
+ syncAdminFCMToken(false);
+ db.ref('orders').on('value',s=>{
+   ordersSnap=s;
+   const val=s.val()||{};
+   const currentKeys=Object.keys(val);
+   if(adminOrdersBaselineLoaded){
+     currentKeys.forEach(k=>{
+       if(!knownAdminOrderIds.has(k)){
+         const o=val[k];
+         if(o && (o.status||'pending')==='pending') triggerAdminNewOrderAlert(k,o);
+       }
+     });
+   }
+   knownAdminOrderIds=new Set(currentKeys);
+   adminOrdersBaselineLoaded=true;
+   renderDashboard();
+   if($('tab-orders').classList.contains('active'))renderOrders();
+   if($('tab-reports').classList.contains('active'))renderReports();
+   if($('tab-customers').classList.contains('active'))renderCustomers();
+   if($('tab-boys').classList.contains('active'))renderBoys();
+   if($('tab-intelligence').classList.contains('active'))renderIntelligence();
+ });
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();renderManualNotificationCustomers();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;$('ctlMessage').value=v.storeMessage||'';$('ctlHours').value=v.workingHours||'';App.updateControlState();});
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
@@ -771,7 +976,7 @@ function renderServiceAreas(){
  const enabled=serviceAreas.enabled!==false; const toggle=$('areasGlobal'); if(toggle)toggle.checked=enabled;
  const list=Object.entries(serviceAreas.areas||{});
  $('iAreas').textContent=list.filter(([,a])=>a&&a.status==='active').length;
- $('areaList').innerHTML=list.length?list.map(([id,a])=>{const status=a.status||'active';const pins=(a.pincodes||[]).join(', ');const keys=(a.keywords||[]).join(', ');return `<div class="area-row"><div style="flex:1"><div class="area-name">${esc(a.name||id)} <span class="type-badge ${status==='active'?'general':status==='coming_soon'?'code':'first_order'}">${status==='active'?'Serving':status==='coming_soon'?'Coming Soon':'Paused'}</span></div><div class="area-meta">PIN: ${esc(pins||'—')} · Keywords: ${esc(keys||'—')}</div><div class="area-edit"><div><label style="font-size:9px;color:var(--muted)">Name</label><input id="an_${id}" value="${esc(a.name||'')}"/></div><div><label style="font-size:9px;color:var(--muted)">PINs</label><input id="ap_${id}" value="${esc(pins)}"/></div><div class="wide"><label style="font-size:9px;color:var(--muted)">Keywords</label><input id="ak_${id}" value="${esc(keys)}"/></div><div><label style="font-size:9px;color:var(--muted)">Status</label><select id="as_${id}"><option value="active" ${status==='active'?'selected':''}>Serving</option><option value="coming_soon" ${status==='coming_soon'?'selected':''}>Coming Soon</option><option value="paused" ${status==='paused'?'selected':''}>Paused</option></select></div><div style="display:flex;gap:6px;grid-column:1/-1"><button class="btn good" onclick="App.saveArea('${id}')"><i class="fas fa-save"></i> Save</button><button class="btn bad" onclick="App.deleteArea('${id}')"><i class="fas fa-trash"></i></button></div></div></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-map-location-dot"></i>No service areas yet — create your first Lucknow area above.</div>';
+ $('areaList').innerHTML=list.length?list.map(([id,a])=>{const status=a.status||'active';const pins=(a.pincodes||[]).join(', ');const keys=(a.keywords||[]).join(', ');return `<div class="area-row" id="arow_${id}"><div style="flex:1"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div><div class="area-name">${esc(a.name||id)} <span class="type-badge ${status==='active'?'general':status==='coming_soon'?'code':'first_order'}">${status==='active'?'Serving':status==='coming_soon'?'Coming Soon':'Paused'}</span></div><div class="area-meta">PIN: ${esc(pins||'—')} · Keywords: ${esc(keys||'—')}</div></div><div style="display:flex;gap:6px"><button class="btn" onclick="document.getElementById('arow_${id}').classList.toggle('editing')"><i class="fas fa-pen"></i> Edit</button><button class="btn bad" onclick="App.deleteArea('${id}')"><i class="fas fa-trash"></i></button></div></div><div class="area-edit"><div><label style="font-size:9px;color:var(--muted)">Name</label><input id="an_${id}" value="${esc(a.name||'')}"/></div><div><label style="font-size:9px;color:var(--muted)">PINs</label><input id="ap_${id}" value="${esc(pins)}"/></div><div class="wide"><label style="font-size:9px;color:var(--muted)">Keywords</label><input id="ak_${id}" value="${esc(keys)}"/></div><div><label style="font-size:9px;color:var(--muted)">Status</label><select id="as_${id}"><option value="active" ${status==='active'?'selected':''}>Serving</option><option value="coming_soon" ${status==='coming_soon'?'selected':''}>Coming Soon</option><option value="paused" ${status==='paused'?'selected':''}>Paused</option></select></div><div style="display:flex;gap:6px;grid-column:1/-1"><button class="btn good" onclick="App.saveArea('${id}')"><i class="fas fa-save"></i> Save Changes</button><button class="btn" onclick="document.getElementById('arow_${id}').classList.remove('editing')">Close</button></div></div></div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-map-location-dot"></i>No service areas yet — create your first Lucknow area above.</div>';
 }
 
 function renderIntelligence(){
@@ -839,8 +1044,9 @@ function renderRiderAlerts(snap){
  if(list.length) lastRiderAlertKey=list[0].id;
  riderAlertsLoaded=true;
  el.innerHTML=list.length?list.slice(0,25).map(x=>{
-   const icon=x.type==='issue'?'⚠️':x.type==='extra_items'?'🧺':'🛵';
-   const cleanAlertId=String(x.orderId||'').startsWith('PDC-')?x.orderId:'PDC-'+(x.orderId||''); const title=x.type==='issue'?`Issue on ${esc(cleanAlertId)}`:x.type==='extra_items'?`Extra Garments · ${esc(cleanAlertId)}`:`Status → ${esc(x.status||'updated')} · ${esc(cleanAlertId)}`;
+   const icon=x.type==='issue'?'⚠️':x.type==='extra_items'?'🧺':x.type==='new_order'?'🔔':'🛵';
+   const cleanAlertId=String(x.orderId||'').startsWith('PDC-')?x.orderId:'PDC-'+(x.orderId||'');
+   const title=x.type==='issue'?`Issue on ${esc(cleanAlertId)}`:x.type==='extra_items'?`Extra Garments · ${esc(cleanAlertId)}`:x.type==='new_order'?`New Order Booked · ${esc(cleanAlertId)}`:`Status → ${esc(x.status||'updated')} · ${esc(cleanAlertId)}`;
    return `<div class="audit-row" style="${x.read?'opacity:.72':''}"><div><b>${icon} ${title}</b><div class="audit-meta">${esc(x.boy||'Partner')} (${esc(x.boyPhone||'')}) · ${esc(x.customer||'')} ${x.note?'— '+esc(x.note):''}</div></div><div class="audit-meta">${x.at?new Date(x.at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</div></div>`;
  }).join(''):'<div class="empty-state" style="padding:24px">No partner alerts yet.</div>';
 }
@@ -1042,7 +1248,7 @@ function renderReports(){
 }
 function renderServices(){const wrap=$('priceUI');let html='';
  for(const key in CATS){const c=CATS[key]||{items:[]};
-  html+=`<div class="cat-block"><div class="cat-head"><i class="fas ${c.icon||'fa-tag'}" style="color:var(--pink)"></i><input value="${c.name||key}" onchange="App.renameCat('${key}',this.value)" style="flex:1;min-width:120px"/><input value="${c.icon||''}" onchange="App.setCatIcon('${key}',this.value)" style="width:110px" placeholder="icon"/><button class="btn bad" onclick="App.delCat('${key}')"><i class="fas fa-trash"></i></button></div><div class="item-grid">`;
+  html+=`<div class="cat-block" id="catblock_${key}"><div class="cat-head"><button type="button" class="cat-collapse-btn" onclick="this.closest('.cat-block').classList.toggle('collapsed')" title="Collapse/Expand"><i class="fas fa-chevron-down"></i></button><i class="fas ${c.icon||'fa-tag'}" style="color:var(--pink)"></i><input value="${c.name||key}" onchange="App.renameCat('${key}',this.value)" style="flex:1;min-width:120px"/><span class="type-badge code">${(c.items||[]).length} items</span><input value="${c.icon||''}" onchange="App.setCatIcon('${key}',this.value)" style="width:110px" placeholder="icon"/><button class="btn bad" onclick="App.delCat('${key}')"><i class="fas fa-trash"></i></button></div><div class="item-grid">`;
   (c.items||[]).forEach((it,idx)=>{const active=it.active!==false;html+=`<div class="item-box"><div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><input value="${esc(it.name)}" onchange="App.renameItem('${key}',${idx},this.value)" style="flex:1;margin:0"/><label class="switch" title="${active?'Active':'Inactive'}"><input type="checkbox" ${active?'checked':''} onchange="App.toggleItem('${key}',${idx},this.checked)"><span class="sl"></span></label><button class="item-del-btn" style="margin-left:6px" onclick="App.delItem('${key}',${idx})"><i class="fas fa-times"></i></button></div><input type="number" value="${Number(it.price)||0}" min="0" onchange="App.setItemPrice('${key}',${idx},this.value)" placeholder="price (0 = On Request)"/><input type="number" value="${it.originalPrice??''}" min="0" onchange="App.setItemOrig('${key}',${idx},this.value)" placeholder="original"/><div style="font-size:10px;color:var(--muted)">${active?(Number(it.price)>0?'Available for booking':'On Request'):'Hidden from booking'}</div></div>`;});
   html+=`<button class="btn" onclick="App.addItem('${key}')"><i class="fas fa-plus"></i> Add Item</button></div></div>`;}
  wrap.innerHTML=html||'<div class="empty-state"><i class="fas fa-tags"></i>Koi category nahi</div>';}
@@ -1153,6 +1359,7 @@ const App={
      if(next==='delivered'&&current!=='delivered'&&boyObj?.id){
        db.ref(`delivery_boys/${boyObj.id}/total_deliveries`).transaction(v=>(Number(v)||0)+1).catch(()=>{});
      }
+     if(boy && pdcPhone10(boy)!==pdcPhone10(o.assigned_to||'')){App.queueRiderNotification(id,{...o,...data},boyObj,'assigned');}else if(next==='out_for_delivery'&&current!=='out_for_delivery'&&boy){App.queueRiderNotification(id,{...o,...data},boyObj,'out_for_delivery');}
      if(next!==current){
        try{
          await App.queueOrderNotification(id,o,current,next);
@@ -1207,9 +1414,46 @@ const App={
    await App.triggerNotificationDispatch(ref.key,'order_status');
    return ref;
  },
- setStatus:async(id,st)=>{const o=ordersSnap?.val()?.[id];if(!o)return;const current=o.status||'pending';if(st!==current){const validCancel=st==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===st;if(!validCancel&&!nextFlow){renderOrders();return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[st]||st}`,'err');}}const updates={status:st};if(st==='delivered'&&current!=='delivered')updates.deliveredAt=Date.now();try{await db.ref('orders/'+id).update(updates);if(st==='delivered'&&current!=='delivered'&&o.deliveryBoyId){db.ref(`delivery_boys/${o.deliveryBoyId}/total_deliveries`).transaction(v=>(Number(v)||0)+1).catch(()=>{});}writeAudit('Order status changed',id,{from:current,to:st});let notificationQueued=true;try{await App.queueOrderNotification(id,o,current,st);}catch(ne){notificationQueued=false;writeAudit('Order notification queue failed',id,{from:current,to:st,error:ne?.message||String(ne)});}toast(notificationQueued?(st==='delivered'?'🎉 Order Delivered & Customer Notified!':'Status updated'):'Status updated · notification queue failed');if(App._openOrderId===id)renderOrderDrawer({id,...o,...updates});}catch(e){toast(e.message,'err');}},
+ setStatus:async(id,st)=>{const o=ordersSnap?.val()?.[id];if(!o)return;const current=o.status||'pending';if(st!==current){const validCancel=st==='cancelled'&&current!=='delivered'&&current!=='cancelled';const nextFlow=ORDER_NEXT[current]===st;if(!validCancel&&!nextFlow){renderOrders();return toast(`Invalid status move: ${ORDER_LABELS[current]||current} → ${ORDER_LABELS[st]||st}`,'err');}}const updates={status:st};if(st==='delivered'&&current!=='delivered')updates.deliveredAt=Date.now();try{await db.ref('orders/'+id).update(updates);if(st==='delivered'&&current!=='delivered'&&o.deliveryBoyId){db.ref(`delivery_boys/${o.deliveryBoyId}/total_deliveries`).transaction(v=>(Number(v)||0)+1).catch(()=>{});}writeAudit('Order status changed',id,{from:current,to:st});if(st==='out_for_delivery'&&(o.assigned_to||o.deliveryBoyId)){const bObj=boys.find(b=>b.id===o.deliveryBoyId||pdcPhone10(b.phone)===pdcPhone10(o.assigned_to));App.queueRiderNotification(id,o,bObj,'out_for_delivery');}let notificationQueued=true;try{await App.queueOrderNotification(id,o,current,st);}catch(ne){notificationQueued=false;writeAudit('Order notification queue failed',id,{from:current,to:st,error:ne?.message||String(ne)});}toast(notificationQueued?(st==='delivered'?'🎉 Order Delivered & Customer Notified!':'Status updated'):'Status updated · notification queue failed');if(App._openOrderId===id)renderOrderDrawer({id,...o,...updates});}catch(e){toast(e.message,'err');}},
  setPay:(id,v)=>db.ref('orders/'+id).update({paymentStatus:v}).then(()=>{toast('Payment: '+v);if(App._openOrderId===id){const o=ordersSnap.val()[id];renderOrderDrawer({id,...o,paymentStatus:v});}}).catch(e=>toast(e.message,'err')),
- assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+pdcPhone10(p):'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p&&o.uid){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${pdcPhone10(p)}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
+ enableAdminPush:async()=>{
+   await syncAdminFCMToken(true);
+   if('Notification' in window && Notification.permission==='granted') toast('🔔 Admin Order Push Alerts Active!');
+   else toast('Browser me Notification permission allow karein','err');
+ },
+ toggleAllCats:containerId=>{
+   const root=document.getElementById(containerId);
+   if(!root)return;
+   const blocks=Array.from(root.querySelectorAll('.cat-block'));
+   if(!blocks.length)return;
+   const anyOpen=blocks.some(b=>!b.classList.contains('collapsed'));
+   blocks.forEach(b=>b.classList.toggle('collapsed',anyOpen));
+ },
+ queueRiderNotification:async(id,o,boyObj,reason='assigned')=>{
+   try{
+     const boyPhone=pdcPhone10(boyObj?.phone||o?.assigned_to||o?.assigned_to_e164||'');
+     const boyId=boyObj?.id||o?.deliveryBoyId||'';
+     if(!boyPhone&&!boyId)return;
+     const dispId=String(o?.orderId||id).startsWith('PDC-')?String(o?.orderId||id):'PDC-'+String(o?.orderId||id);
+     const cust=o?.customerName||o?.name||'Customer';
+     const addr=o?.address||'Lucknow';
+     const title=reason==='out_for_delivery'?`Parth Rider · Delivery Ready 🚚 (${dispId})`:`Parth Rider · New Order Assigned 📥 (${dispId})`;
+     const body=reason==='out_for_delivery'?`${cust} ka order ${dispId} delivery ke liye ready hai (${addr}).`:`${cust} (${o?.pickupDate||'Today'} · ${o?.timeSlot||''}) — ₹${Number(o?.total)||0}`;
+     const ref=await db.ref('rider_notification_events').push({
+       type:'rider_alert',
+       reason,
+       orderId:id,
+       boyId,
+       boyPhone,
+       title,
+       body,
+       status:'queued',
+       createdAt:firebase.database.ServerValue.TIMESTAMP
+     });
+     App.triggerNotificationDispatch(ref.key,'rider');
+   }catch(e){console.warn('Rider push queue note:',e);}
+ },
+ assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+pdcPhone10(p):'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p){App.queueRiderNotification(id,o,boyObj,'assigned');}if(p&&o.uid){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${pdcPhone10(p)}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=pdcPhone10(bp||o.phone);if(!num)return toast('Number nahi','err');const dispId=String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id);const msg=`*Parth Dry Clean* 🧺\n*Order:* ${dispId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  print:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');const items=Object.entries(o.items||{}).map(([k,v])=>{const nm=(v&&typeof v==='object'&&v.name)?v.name:k;const qty=(v&&typeof v==='object')?Number(v.qty??v.quantity??1):Number(v)||0;return `${esc(nm)} x${esc(qty)}`;}).join('<br>');const w=open('','_blank','width=320,height=500');if(!w)return toast('Print window blocked by browser','err');w.document.write(`<html><head><meta charset="utf-8"><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${esc(o.orderId||id)}<br><b>Name:</b> ${esc(o.customerName||o.name||'-')}<br><b>Phone:</b> ${esc(o.phone||'-')}<div class="dashed"></div><b>Items:</b><br>${items||'-'}<div class="dashed"></div><b>Total:</b> Rs ${Number(o.total)||0}<script>window.print();window.close()<\/script></body></html>`);},
  backup:()=>{Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value'),db.ref('site_content').once('value'),db.ref('site_media').once('value'),db.ref('audit_log').once('value'),db.ref('notification_events').once('value'),db.ref('manual_notification_events').once('value')]).then(([o,c,b,s,srv,cms,media,audit,notifs,manualNotifs])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val(),site_media:media.val(),audit_log:audit.val(),notification_events:notifs.val(),manual_notification_events:manualNotifs.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Complete Backup downloaded');}).catch(e=>toast(e.message,'err'));},
