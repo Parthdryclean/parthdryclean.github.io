@@ -1837,6 +1837,18 @@ body.has-home-cart-bar .floating-whatsapp {
   margin: 0 auto;
   box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
 }
+
+/* GEN26.1 — AUTO-FITTING INVOICE PREVIEW ON MOBILE & DESKTOP */
+.invoice-preview-scroll {
+  overflow-x: hidden !important;
+  overflow-y: auto;
+  padding: 8px;
+}
+.pdc-invoice-stage {
+  margin: 0 auto;
+  overflow: hidden;
+}
+
 </style>
 </head>
 <body class="booking-ui-home">
@@ -4379,7 +4391,46 @@ function buildInvoicePDF(o, prof, orderId) {
   if (previewContainer) previewContainer.innerHTML = invoiceHTML;
   if (previewSub) previewSub.textContent = `Order ${cleanDisplayId} • Ready to download or print`;
   openModal('invoicePreviewModal');
+  requestAnimationFrame(() => {
+    fitHomeInvoicePreview();
+    setTimeout(fitHomeInvoicePreview, 80);
+  });
 }
+
+function fitHomeInvoicePreview() {
+  const containerEl = document.getElementById('invoicePreviewContainer');
+  if (!containerEl) return;
+  const page = containerEl.querySelector('.pdc-invoice-page');
+  if (!page) return;
+  page.style.transform = 'none';
+  page.style.margin = '0';
+  let stage = page.parentElement;
+  if (!stage || !stage.classList.contains('pdc-invoice-stage')) {
+    stage = document.createElement('div');
+    stage.className = 'pdc-invoice-stage';
+    page.parentNode.insertBefore(stage, page);
+    stage.appendChild(page);
+  }
+  stage.style.width = '794px';
+  stage.style.height = 'auto';
+  stage.style.overflow = 'hidden';
+  stage.style.margin = '0 auto';
+  const cs = window.getComputedStyle(containerEl);
+  const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+  const availWidth = Math.max(240, containerEl.clientWidth - padX);
+  const naturalWidth = 794;
+  const naturalHeight = page.offsetHeight || page.scrollHeight || 980;
+  const scale = availWidth < naturalWidth ? (availWidth / naturalWidth) : 1;
+  page.style.transformOrigin = 'top left';
+  page.style.transform = `scale(${scale})`;
+  stage.style.width = `${Math.floor(naturalWidth * scale)}px`;
+  stage.style.height = `${Math.ceil(naturalHeight * scale)}px`;
+}
+window.addEventListener('resize', () => {
+  if (document.getElementById('invoicePreviewModal')?.classList.contains('active')) {
+    fitHomeInvoicePreview();
+  }
+});
 
 window.printCurrentInvoice = function() {
   if (!window._currentInvoiceHTML) return;
