@@ -55,7 +55,7 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   const data = event.notification.data || {};
-  const targetUrl = data.orderId ? '/#active-orders' : '/';
+  const targetUrl = data.targetUrl || (data.orderId ? '/#active-orders' : '/');
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
