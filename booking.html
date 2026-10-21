@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <meta content="#2563EB" name="theme-color"/>
-<meta content="ParthbookGen50.55-CLEAN-ReviewV3" name="app-version"/>
+<meta content="ParthbookGen51.0-40MinCutoff-WaLocation" name="app-version"/>
 <meta content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup &amp; delivery in Lucknow." name="description"/>
 <title>Book Pickup | Parth Dry Clean</title>
 <!-- Fonts & Icons -->
@@ -1039,9 +1039,14 @@ body:not(.has-booking-dock) {
 <strong id="successOrderId">PDC-000000</strong>
 </div>
 <div id="successDetails" class="success-details-card"></div>
-<button class="btn-dock-pill success-invoice-btn" onclick="App.Order.downloadInvoice()" type="button">
+<div style="display:grid;gap:8px;margin:0 18px 18px;">
+<button class="btn-dock-pill success-invoice-btn" style="width:100%;margin:0;background:#25d366;box-shadow:0 8px 20px rgba(37,211,102,0.28);" onclick="App.Order.shareOrderOnWhatsApp()" type="button">
+<i class="fab fa-whatsapp"></i><span>Send Order &amp; Current Location on WhatsApp</span>
+</button>
+<button class="btn-dock-pill success-invoice-btn" style="width:100%;margin:0;" onclick="App.Order.downloadInvoice()" type="button">
 <i class="fas fa-file-invoice"></i><span>View / Download Invoice</span>
 </button>
+</div>
 </div>
 </div>
 
@@ -1882,14 +1887,14 @@ UI: {
     if(!container||!dateEl) return;
     if(!dateEl.value) dateEl.value=todayISO();
     const now=new Date();
-    const curDecimalHr=now.getHours() + (now.getMinutes()/60);
+    const curMins=now.getHours()*60 + now.getMinutes();
     const slots=[
-      {l:'Morning',t:'9 AM – 12 PM',v:'Morning (9-12)',startHr:9,cutoffHr:7,endHr:12,icon:'fa-cloud-sun',context:'Keep garments ready before 9 AM (closes at 7 AM for same-day).'},
-      {l:'Afternoon',t:'1 PM – 5 PM',v:'Afternoon (1-5)',startHr:13,cutoffHr:11,endHr:17,icon:'fa-sun',context:'Keep garments ready before 1 PM (closes at 11 AM for same-day).'},
-      {l:'Evening',t:'6 PM – 9 PM',v:'Evening (6-9)',startHr:18,cutoffHr:16,endHr:21,icon:'fa-moon',context:'Keep garments ready before 6 PM (closes at 4 PM for same-day).'}
+      {l:'Morning',t:'9 AM – 12 PM',v:'Morning (9-12)',startHr:9,cutoffMins:9*60-40,cutoffHr:(9*60-40)/60,endHr:12,icon:'fa-cloud-sun',context:'Keep garments ready before 9 AM (closes at 8:20 AM for same-day).'},
+      {l:'Afternoon',t:'1 PM – 5 PM',v:'Afternoon (1-5)',startHr:13,cutoffMins:13*60-40,cutoffHr:(13*60-40)/60,endHr:17,icon:'fa-sun',context:'Keep garments ready before 1 PM (closes at 12:20 PM for same-day).'},
+      {l:'Evening',t:'6 PM – 9 PM',v:'Evening (6-9)',startHr:18,cutoffMins:18*60-40,cutoffHr:(18*60-40)/60,endHr:21,icon:'fa-moon',context:'Keep garments ready before 6 PM (closes at 5:20 PM for same-day).'}
     ];
     let dateVal=dateEl.value, today=todayISO(), isToday=dateVal===today, isPast=dateVal<today;
-    if(isToday && curDecimalHr >= 16 && !this._autoAdvancedTomorrow){
+    if(isToday && curMins >= (18*60 - 40) && !this._autoAdvancedTomorrow){
       this._autoAdvancedTomorrow = true;
       const tmr = new Date(); tmr.setDate(tmr.getDate()+1);
       const tmrIso = tmr.getFullYear()+'-'+String(tmr.getMonth()+1).padStart(2,'0')+'-'+String(tmr.getDate()).padStart(2,'0');
@@ -1901,11 +1906,11 @@ UI: {
     if(isPast){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; if(note) note.textContent='That date has passed — choose today or later.'; return; }
     let available=0;
     slots.forEach(s=>{
-      const disabled=isToday && curDecimalHr >= s.cutoffHr;
+      const disabled=isToday && curMins >= s.cutoffMins;
       if(!disabled) available++;
       else if(STATE.selectedTimeSlot===s.v){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
       const pill=document.createElement('button'); pill.type='button'; pill.className=`slot-pill ${disabled?'disabled':''} ${STATE.selectedTimeSlot===s.v?'selected':''}`;
-      pill.innerHTML=`<span class="slot-left"><span class="slot-icon-badge"><i class="fas ${s.icon}"></i></span><span><b>${s.l}</b><small>${s.t}${disabled?' · Closed (2h advance cutoff)':''}</small></span></span><i class="fas fa-check" aria-hidden="true"></i>`;
+      pill.innerHTML=`<span class="slot-left"><span class="slot-icon-badge"><i class="fas ${s.icon}"></i></span><span><b>${s.l}</b><small>${s.t}${disabled?' · Closed (40m advance cutoff)':''}</small></span></span><i class="fas fa-check" aria-hidden="true"></i>`;
       if(!disabled) pill.onclick=()=>{
         if(STATE.selectedTimeSlot===s.v){ STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
         else { STATE.selectedTimeSlot=s.v; STATE.selectedSlotEndHr=s.cutoffHr; }
@@ -1915,9 +1920,9 @@ UI: {
       container.appendChild(pill);
     });
     if(note){
-      if(available===0&&isToday){ note.textContent="Today's pickup windows are closed (2-hour advance cutoff) — please choose tomorrow."; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
+      if(available===0&&isToday){ note.textContent="Today's pickup windows are closed (40-min advance cutoff) — please choose tomorrow."; STATE.selectedTimeSlot=''; STATE.selectedSlotEndHr=null; }
       else if(STATE.selectedTimeSlot){ const s=slots.find(x=>x.v===STATE.selectedTimeSlot); note.textContent=s?s.context:'Pickup window selected.'; }
-      else note.textContent=`${available} pickup window${available===1?' is':'s are'} available (2-hr advance booking required).`;
+      else note.textContent=`${available} pickup window${available===1?' is':'s are'} available (40-min advance booking required).`;
     }
   },
 
@@ -3369,11 +3374,11 @@ submit: async function(e){
     const todayStr = todayISO();
     if(pickupDate < todayStr) return App.showToast('Cannot book for past date','error');
     const nowTime = new Date();
-    const curDecimalHr = nowTime.getHours() + (nowTime.getMinutes()/60);
-    const slotCutoffMap = { 'Morning (9-12)': 7, 'Afternoon (1-5)': 11, 'Evening (6-9)': 16 };
-    const cutoffHr = slotCutoffMap[timeSlot] ?? STATE.selectedSlotEndHr;
-    if(pickupDate === todayStr && cutoffHr !== null && curDecimalHr >= cutoffHr){ 
-      App.showToast('Selected time slot requires 2-hour advance booking. Choose another window.','error'); 
+    const curMins = nowTime.getHours()*60 + nowTime.getMinutes();
+    const slotCutoffMinsMap = { 'Morning (9-12)': 9*60 - 40, 'Afternoon (1-5)': 13*60 - 40, 'Evening (6-9)': 18*60 - 40 };
+    const cutoffMins = slotCutoffMinsMap[timeSlot] ?? (STATE.selectedSlotEndHr !== null ? STATE.selectedSlotEndHr * 60 : null);
+    if(pickupDate === todayStr && cutoffMins !== null && curMins >= cutoffMins){ 
+      App.showToast('Selected time slot requires 40-minute advance booking. Choose another window.','error'); 
       App.UI.updateTimeSlots(); 
       return; 
     }
@@ -3457,6 +3462,31 @@ submit: async function(e){
     const btn = document.getElementById('dockActionBtn');
     if(btn) { btn.innerHTML='<span class="dock-action-copy"><span class="dock-action-label">Place request</span></span><span class="dock-action-icon"><i class="fas fa-check"></i></span>'; btn.disabled=false; }
   }
+},
+
+shareOrderOnWhatsApp: function(){
+const o = STATE.lastCreatedOrder;
+if(!o) return App.showToast('Order details not found', 'error');
+const dispId = formatOrderDisplayId(o.orderId || '000000');
+const lat = Number(o.latitude), lng = Number(o.longitude);
+const hasCoords = Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0);
+const mapUrl = hasCoords ? `https://maps.google.com/?q=${lat},${lng}` : '';
+const itemsSummary = Object.entries(o.items || {}).map(([k, v]) => {
+  const nm = (v && typeof v === 'object') ? (v.name || k) : k;
+  const q = (v && typeof v === 'object') ? (Number(v.qty ?? v.quantity) || 0) : (Number(v) || 0);
+  return `• ${nm} x${q}`;
+}).join('\n');
+let msg = `*Booking Confirmed — Parth Dry Clean* 🧺\n\n`;
+msg += `🆔 *Order ID:* ${dispId}\n`;
+msg += `👤 *Customer:* ${o.customerName || o.name || ''}\n`;
+msg += `📞 *Phone:* +91 ${o.phone || ''}\n`;
+msg += `🏠 *Address:* ${o.address || ''}\n`;
+msg += `🗓️ *Pickup:* ${o.pickupDate || ''} (${o.timeSlot || ''})\n`;
+if (itemsSummary) msg += `\n🧺 *Items:*\n${itemsSummary}\n`;
+msg += `💰 *Total Bill:* ₹${Number(o.total || 0)}\n`;
+if (mapUrl) msg += `\n📍 *Exact Pickup Map Pin:* ${mapUrl}\n`;
+msg += `\n📍 *Tip:* Agar aap kisi aur location par hain toh niche WhatsApp se apni *Current Location* bhi share kar sakte hain.`;
+window.open(`https://wa.me/919235601645?text=${encodeURIComponent(msg)}`, '_blank');
 },
 
 downloadInvoice: function(){
