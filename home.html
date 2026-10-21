@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen26 : Production Master Build (Zero-Jump, Zero-Flicker Bag, Expandable Dock, Notification Center, WhatsApp Quick Book, In-App Confirm & Invoice Preview) -->
+<!-- ParthindexGen27 : Production Master Build (Auth History Fix, 2-Mode WhatsApp Booking + Live GPS & Location Alert, 40-Min Slot Sync, Deep-Link Modals) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -15,7 +15,6 @@
 
 <!-- PWA Manifest Link -->
 <link rel="manifest" href="manifest.json">
-<link rel="prefetch" href="booking.html" as="document">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
@@ -1877,7 +1876,7 @@ body.has-home-cart-bar .floating-whatsapp {
   <span class="notif-unread-badge" id="notifUnreadBadge">0</span>
 </button>
 <button class="install-pill installAppBtn"><i class="fas fa-download"></i> Install</button>
-<button class="icon-btn booking-account-btn" id="loginBtn" onclick="openModal('authModal')" aria-label="Account" title="Account"><i class="fas fa-user-circle"></i></button>
+<button class="icon-btn booking-account-btn" id="loginBtn" onclick="handleAccountBtnClick()" aria-label="Account" title="Account"><i class="fas fa-user-circle"></i></button>
 <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu"><i class="fas fa-bars"></i></button>
 </div>
 </header>
@@ -2393,15 +2392,41 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
 
 <!-- QUICK WHATSAPP BOOKING MODAL -->
 <div class="modal-overlay" id="waBookingModal" onclick="closeModalOutside(event, 'waBookingModal')">
-  <div class="modal-box" style="max-width:440px;text-align:left;" onclick="event.stopPropagation()">
+  <div class="modal-box" style="max-width:450px;text-align:left;" onclick="event.stopPropagation()">
     <div class="modal-grabber-wrapper"><div class="modal-grabber"></div></div>
     <button type="button" class="close-modal-btn" onclick="closeModal('waBookingModal')" aria-label="Close">&times;</button>
-    <h2 style="color:var(--text);font-size:20px;font-weight:800;margin-bottom:4px;"><i class="fab fa-whatsapp" style="color:#25d366;"></i> Quick WhatsApp Pickup</h2>
-    <p style="color:var(--text-muted);font-size:12px;font-weight:600;margin-bottom:14px;">Send your pickup request directly on WhatsApp in 1 tap.</p>
-    <div id="waBagSummaryBox" style="background:var(--accent-light);border:1px solid rgba(var(--primary-rgb),0.2);border-radius:14px;padding:10px 12px;margin-bottom:12px;font-size:12px;font-weight:700;color:var(--text);"></div>
+    <h2 style="color:var(--text);font-size:20px;font-weight:800;margin-bottom:4px;"><i class="fab fa-whatsapp" style="color:#25d366;"></i> <span id="waModalHeadingText">Quick WhatsApp Pickup</span></h2>
+    <p id="waModalSubText" style="color:var(--text-muted);font-size:12px;font-weight:600;margin-bottom:12px;">Send your pickup request directly on WhatsApp in 1 tap.</p>
+    <div id="waBagSummaryBox" style="background:var(--accent-light);border:1px solid rgba(var(--primary-rgb),0.2);border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:12px;font-weight:700;color:var(--text);"></div>
+    <div id="waNoItemExtraWrap" style="display:none;margin-bottom:10px;">
+      <label style="display:block;font-size:10.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Service Type / Approx Clothes (Optional)</label>
+      <select id="waNoItemServiceType" class="auth-input" style="margin-bottom:0;padding:11px 13px;font-size:13px;">
+        <option value="Doorstep par kapde count & check karke pickup karein">🧺 Rider doorstep par kapde count karega (Default)</option>
+        <option value="Dry Cleaning & Steam Press (Mixed Garments)">✨ Dry Cleaning & Steam Press (Mixed Kapde)</option>
+        <option value="Saree / Lehenga / Bridal Heavy Wear">👑 Saree / Lehenga / Suit / Party Wear</option>
+        <option value="Blanket / Curtain / Home Linen">🛏️ Blanket / Parde / Bed Sheet</option>
+        <option value="24-Hr Express Urgent Pickup">⚡ 24-Hr Express Urgent Pickup</option>
+      </select>
+    </div>
     <input type="text" id="waBookName" class="auth-input" placeholder="Your Name *" style="margin-bottom:10px;" />
-    <input type="tel" id="waBookPhone" class="auth-input" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10-Digit Mobile Number (Optional)" style="margin-bottom:10px;" />
-    <textarea id="waBookAddress" class="auth-input" rows="2" placeholder="Pickup Address / Area in Lucknow *" style="margin-bottom:10px;resize:vertical;"></textarea>
+    <input type="tel" id="waBookPhone" class="auth-input" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="10-Digit Mobile Number *" style="margin-bottom:10px;" />
+    <textarea id="waBookAddress" class="auth-input" rows="2" placeholder="Pickup Address / Area in Lucknow *" style="margin-bottom:8px;resize:vertical;"></textarea>
+    <!-- Live GPS Location Attachment & Alert Box -->
+    <div id="waLocationAlertBox" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);border-radius:13px;padding:10px 12px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <div style="font-size:11.5px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:6px;">
+          <i class="fas fa-location-crosshairs" style="color:var(--gold);font-size:14px;"></i>
+          <span id="waGpsStatusLabel">Current Location Bhejna Zaroori Hai</span>
+        </div>
+        <button type="button" id="waAttachGpsBtn" onclick="attachWaCurrentLocation()" style="background:var(--primary);color:#fff;border:none;padding:6px 11px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Outfit';">
+          <i class="fas fa-location-arrow"></i> Attach Current GPS
+        </button>
+      </div>
+      <div id="waGpsSubHint" style="font-size:10.5px;color:var(--text-muted);font-weight:600;margin-top:5px;line-height:1.4;">
+        Upar <b>"Attach Current GPS"</b> dabayein taaki Google Maps link message me jud jaye, ya WhatsApp khulne par apni <b>📍 Current Location</b> zaroor bhejein.
+      </div>
+      <input type="hidden" id="waBookGpsUrl" value="" />
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
       <input type="date" id="waBookDate" class="auth-input" style="margin-bottom:0;" />
       <select id="waBookSlot" class="auth-input" style="margin-bottom:0;">
@@ -2411,7 +2436,7 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
       </select>
     </div>
     <button type="button" class="btn-primary-full" style="background:#25d366;box-shadow:0 8px 20px rgba(37,211,102,0.3);" onclick="submitWhatsAppBooking()">
-      <i class="fab fa-whatsapp" style="font-size:18px;"></i> Send Booking on WhatsApp
+      <i class="fab fa-whatsapp" style="font-size:18px;"></i> <span id="waSubmitBtnLabel">Send Booking on WhatsApp</span>
     </button>
   </div>
 </div>
@@ -2510,11 +2535,11 @@ window.resolvePdcConfirm = function(choice) {
   }
 };
 
-// SWITCH MODAL HELPER (SKIP HISTORY.BACK SO PAGE NEVER JUMPS)
+// SWITCH MODAL HELPER (REPLACES HISTORY STATE CLEANLY SO BACK BUTTON NEVER RE-OPENS OLD DRAWER)
 function switchModal(closeId, openId) {
   closeModal(closeId, false, true);
   setTimeout(() => {
-    openModal(openId);
+    openModal(openId, true);
     if (openId === 'ordersModal') loadOrderHistory();
   }, 310);
 }
@@ -2735,7 +2760,16 @@ const safeId = (str) => String(str || '').replace(/[^a-zA-Z0-9_-]/g, '');
 function formatOrderDisplayId(id) { const raw = String(id || '').trim(); if (!raw) return 'PDC-000000'; return raw.toUpperCase().startsWith('PDC-') ? raw : `PDC-${raw}`; }
 const last10Digits = (s) => String(s || '').replace(/\D/g, '').slice(-10);
 const USER_CACHE_KEY = 'pdc_cached_user';
-function cacheUser(user) { try { localStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid: user.uid, name: user.displayName || '', email: user.email || '' })); } catch(e) {} }
+function cacheUser(user) {
+  try {
+    const prev = getCachedUser() || {};
+    const sameUid = prev.uid === user.uid;
+    const name = user.displayName || user.name || (sameUid ? prev.name : '') || '';
+    const email = user.email || (sameUid ? prev.email : '') || '';
+    const phone = user.phone || (user.phoneNumber ? last10Digits(user.phoneNumber) : (sameUid ? prev.phone : '')) || '';
+    localStorage.setItem(USER_CACHE_KEY, JSON.stringify({ uid: user.uid, name, email, phone }));
+  } catch(e) {}
+}
 function getCachedUser() { try { const raw = localStorage.getItem(USER_CACHE_KEY); return raw ? JSON.parse(raw) : null; } catch(e) { return null; } }
 function clearCachedUser() { try { localStorage.removeItem(USER_CACHE_KEY); } catch(e) {} }
 
@@ -3415,7 +3449,52 @@ function toggleTheme() { const html = document.documentElement; const icon = doc
 (() => { const savedTheme = localStorage.getItem('theme') || localStorage.getItem('pdc_theme') || 'light'; if (savedTheme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); const icon = document.querySelector('#themeToggle i'); if (icon) icon.className = 'fas fa-sun'; } })();
 
 let _savedModalScrollY = 0;
-function openModal(id) {
+function clearAuthModalHistoryState() {
+  try {
+    if (history.state && (history.state.modal === 'authModal' || history.state.modal === 'onboardingModal')) {
+      history.replaceState({ pdcHome: true }, '', window.location.pathname + window.location.search);
+    } else if (window.location.hash === '#authModal' || window.location.hash === '#onboardingModal') {
+      history.replaceState(history.state || { pdcHome: true }, '', window.location.pathname + window.location.search);
+    }
+  } catch (_) {}
+}
+
+window.handleAccountBtnClick = function() {
+  const user = auth.currentUser;
+  if (user) {
+    openProfileModalForUser(user);
+    return;
+  }
+  const cached = getCachedUser();
+  if (cached && cached.uid && !window._authInitialCheckDone) {
+    showToast('Loading your profile...', 'info');
+    return;
+  }
+  openModal('authModal');
+};
+
+function openProfileModalForUser(user) {
+  if (!user) return openModal('authModal');
+  const d = currentCustomerData || {};
+  const cached = getCachedUser() || {};
+  const finalName = d.name || user.displayName || cached.name || 'Guest';
+  document.getElementById('profName').value = finalName;
+  document.getElementById('profEmail').value = d.email || user.email || cached.email || '';
+  document.getElementById('profPhone').value = d.phone || (user.phoneNumber ? last10Digits(user.phoneNumber) : (cached.phone || ''));
+  loadProfileAddresses(user.uid, d);
+  const addrSection = document.getElementById('profileAddressSection');
+  if (addrSection) { addrSection.classList.remove('open'); const b=addrSection.querySelector('.profile-address-toggle'); if(b)b.setAttribute('aria-expanded','false'); }
+  cancelProfileAddressForm();
+  setProfileHeader(user, d);
+  loadProfileStats(user.uid);
+  openModal('profileModal');
+}
+
+function openModal(id, replaceHistory = false) {
+  if ((id === 'authModal' || id === 'onboardingModal') && auth.currentUser && id === 'authModal') {
+    openProfileModalForUser(auth.currentUser);
+    return;
+  }
   const m = document.getElementById(id);
   if (!m) return;
   if (!document.querySelector('.modal-overlay.active')) {
@@ -3423,8 +3502,15 @@ function openModal(id) {
   }
   m.classList.add('active');
   document.body.style.overflow = 'hidden';
-  if (!isHandlingPopstate && (!history.state || history.state.modal !== id)) {
-    history.pushState({ modal: id }, '', '#' + id);
+  if (!isHandlingPopstate) {
+    try {
+      const currentModalState = history.state && history.state.modal;
+      if (replaceHistory || currentModalState === 'authModal' || currentModalState === 'onboardingModal') {
+        history.replaceState({ modal: id }, '', '#' + id);
+      } else if (currentModalState !== id) {
+        history.pushState({ modal: id }, '', '#' + id);
+      }
+    } catch (_) {}
   }
   const wa = document.getElementById('floatingWhatsappBtn');
   if(wa) wa.style.display = 'none'; 
@@ -3440,12 +3526,16 @@ function closeModal(id, fromPopstate = false, skipHistoryBack = false) {
   if (document.activeElement && m.contains(document.activeElement)) {
     try { document.activeElement.blur(); } catch (_) {}
   }
+  if (skipHistoryBack && (id === 'authModal' || id === 'onboardingModal')) {
+    clearAuthModalHistoryState();
+  }
   m.classList.add('closing');
   setTimeout(() => {
     m.classList.remove('active');
     m.classList.remove('closing');
     const dropdownOpen = document.getElementById('activeOrderDropdown')?.classList.contains('open');
-    if (!document.querySelector('.modal-overlay.active') && !dropdownOpen) {
+    const anyOtherActive = document.querySelector('.modal-overlay.active:not(.closing)');
+    if (!anyOtherActive && !dropdownOpen) {
       document.body.style.overflow = '';
       const wa = document.getElementById('floatingWhatsappBtn');
       if(wa) wa.style.display = 'flex';
@@ -3464,12 +3554,18 @@ window.addEventListener('popstate', (e) => {
     closeActiveOrders(true);
   }
   if (e.state && e.state.modal) {
-    const m = document.getElementById(e.state.modal);
-    if (m) {
-      m.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      const wa = document.getElementById('floatingWhatsappBtn');
-      if(wa) wa.style.display = 'none';
+    const targetModalId = e.state.modal;
+    // Never reopen authModal or onboardingModal from history if user is already logged in!
+    if ((targetModalId === 'authModal' || targetModalId === 'onboardingModal') && auth.currentUser) {
+      clearAuthModalHistoryState();
+    } else {
+      const m = document.getElementById(targetModalId);
+      if (m) {
+        m.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        const wa = document.getElementById('floatingWhatsappBtn');
+        if(wa) wa.style.display = 'none';
+      }
     }
   }
   setTimeout(() => { isHandlingPopstate = false; }, 50);
@@ -4611,11 +4707,67 @@ function attachCustomerNotificationsListener(uid) {
   customerNotifRefs.push(orderQuery, manualQuery);
 }
 
-// ===== QUICK WHATSAPP BOOKING MODAL =====
+// ===== QUICK WHATSAPP BOOKING MODAL (2-MODE: DIRECT PICKUP VS ITEMIZED BAG + LIVE GPS ALERT) =====
 let _activeWaNumber = '919235601645';
+
+window.attachWaCurrentLocation = function(silent = false) {
+  const btn = document.getElementById('waAttachGpsBtn');
+  const statusLbl = document.getElementById('waGpsStatusLabel');
+  const subHint = document.getElementById('waGpsSubHint');
+  const gpsInp = document.getElementById('waBookGpsUrl');
+  const alertBox = document.getElementById('waLocationAlertBox');
+  if (!navigator.geolocation) {
+    if (!silent) showToast('GPS is browser me available nahi hai — WhatsApp khulne par Current Location bhejein', 'warning');
+    return Promise.resolve('');
+  }
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting GPS...';
+  }
+  return new Promise(resolve => {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = Number(pos.coords.latitude).toFixed(6);
+        const lng = Number(pos.coords.longitude).toFixed(6);
+        const mapUrl = `https://maps.google.com/?q=${lat},${lng}`;
+        if (gpsInp) gpsInp.value = mapUrl;
+        if (btn) {
+          btn.disabled = false;
+          btn.style.background = 'var(--success)';
+          btn.innerHTML = '<i class="fas fa-check-circle"></i> GPS Attached';
+        }
+        if (statusLbl) statusLbl.innerHTML = '<span style="color:var(--success);">✅ Exact GPS Location Jud Gayi!</span>';
+        if (subHint) subHint.innerHTML = `Google Maps Pin: <a href="${mapUrl}" target="_blank" style="color:var(--primary);font-weight:800;">${lat}, ${lng}</a> (Message ke sath jayegi)`;
+        if (alertBox) {
+          alertBox.style.background = 'var(--success-soft)';
+          alertBox.style.borderColor = 'rgba(5,150,105,0.35)';
+        }
+        if (!silent) showToast('📍 Current GPS Location attach ho gayi!', 'success');
+        resolve(mapUrl);
+      },
+      () => {
+        if (btn) {
+          btn.disabled = false;
+          btn.style.background = 'var(--primary)';
+          btn.innerHTML = '<i class="fas fa-location-arrow"></i> Attach Current GPS';
+        }
+        if (!silent) {
+          showToast('GPS permission off hai — kripya WhatsApp chat me apni Current Location share karein!', 'warning');
+        }
+        resolve('');
+      },
+      { enableHighAccuracy: true, timeout: 9000, maximumAge: 60000 }
+    );
+  });
+};
+
 window.openWhatsAppBookingModal = function() {
   HOME_BAG = getHomeBag();
   const summaryBox = document.getElementById('waBagSummaryBox');
+  const headingEl = document.getElementById('waModalHeadingText');
+  const subTextEl = document.getElementById('waModalSubText');
+  const noItemWrap = document.getElementById('waNoItemExtraWrap');
+  const submitLbl = document.getElementById('waSubmitBtnLabel');
   let totalItems = 0, subtotal = 0, lines = [];
   for (const [id, qty] of Object.entries(HOME_BAG)) {
     const item = findHomeCatalogItem(id);
@@ -4625,79 +4777,169 @@ window.openWhatsAppBookingModal = function() {
       lines.push(`${item.name} x${qty}`);
     }
   }
-  if (summaryBox) {
-    if (totalItems > 0) {
-      summaryBox.innerHTML = `<i class="fas fa-bag-shopping" style="color:var(--primary);"></i> <b>Selected Bag (${totalItems} items · ₹${formatMoney(subtotal)}):</b><br><span style="font-weight:600;color:var(--text-secondary);">${sanitizeHTML(lines.join(', '))}</span>`;
-    } else {
-      summaryBox.innerHTML = `<i class="fas fa-sparkles" style="color:var(--primary);"></i> <b>Quick Doorstep Pickup:</b> Our rider will count &amp; tag your garments at your doorstep.`;
+  if (totalItems > 0) {
+    if (headingEl) headingEl.textContent = 'WhatsApp Bag Booking';
+    if (subTextEl) subTextEl.textContent = 'Apne selected kapdo ki list ke sath pickup book karein.';
+    if (noItemWrap) noItemWrap.style.display = 'none';
+    if (submitLbl) submitLbl.textContent = `Send ${totalItems} Items Order on WhatsApp`;
+    if (summaryBox) {
+      summaryBox.style.background = 'var(--accent-light)';
+      summaryBox.style.borderColor = 'rgba(var(--primary-rgb),0.22)';
+      summaryBox.innerHTML = `<i class="fas fa-bag-shopping" style="color:var(--primary);"></i> <b>Selected Bag (${totalItems} items · Est. ₹${formatMoney(subtotal)}):</b><br><span style="font-weight:600;color:var(--text-secondary);">${sanitizeHTML(lines.join(', '))}</span>`;
+    }
+  } else {
+    if (headingEl) headingEl.textContent = 'Direct Doorstep Pickup';
+    if (subTextEl) subTextEl.textContent = 'Bina item select kiye seedhe pickup bulayein — Rider ghar aakar kapde count karega!';
+    if (noItemWrap) noItemWrap.style.display = 'block';
+    if (submitLbl) submitLbl.textContent = 'Request Direct Pickup on WhatsApp';
+    if (summaryBox) {
+      summaryBox.style.background = 'var(--success-soft)';
+      summaryBox.style.borderColor = 'rgba(5,150,105,0.28)';
+      summaryBox.innerHTML = `<i class="fas fa-motorcycle" style="color:var(--success);"></i> <b>Bina Item Add Kiye Direct Pickup:</b> Aapko kapde select karne ki zaroorat nahi hai. Hamara pickup partner doorstep par aakar kapde count &amp; tag karega.`;
     }
   }
   const nameInp = document.getElementById('waBookName');
   const phoneInp = document.getElementById('waBookPhone');
   const addrInp = document.getElementById('waBookAddress');
   const dateInp = document.getElementById('waBookDate');
+  const slotInp = document.getElementById('waBookSlot');
+  const gpsInp = document.getElementById('waBookGpsUrl');
   if (nameInp && !nameInp.value && currentCustomerData?.name) nameInp.value = currentCustomerData.name;
   if (phoneInp && !phoneInp.value && currentCustomerData?.phone) phoneInp.value = last10Digits(currentCustomerData.phone);
+  const selAddr = profileAddresses.find(a => a.id === profileSelectedAddressId) || profileAddresses[0];
   if (addrInp && !addrInp.value) {
-    const selAddr = profileAddresses.find(a => a.id === profileSelectedAddressId) || profileAddresses[0];
     if (selAddr) addrInp.value = profileFormatAddress(selAddr);
     else if (currentCustomerData?.address) addrInp.value = currentCustomerData.address;
   }
-  if (dateInp && !dateInp.value) {
-    const now = new Date();
-    dateInp.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  // Pre-fill GPS link if saved address has coordinates
+  if (gpsInp && !gpsInp.value && selAddr && Number.isFinite(Number(selAddr.latitude)) && Number.isFinite(Number(selAddr.longitude))) {
+    const lat = Number(selAddr.latitude), lng = Number(selAddr.longitude);
+    if (lat !== 26.8833 || lng !== 80.9933) {
+      gpsInp.value = `https://maps.google.com/?q=${lat},${lng}`;
+      const statusLbl = document.getElementById('waGpsStatusLabel');
+      if (statusLbl) statusLbl.innerHTML = '<span style="color:var(--success);">📍 Saved Address Pin Ready (Tap Attach GPS for Live Location)</span>';
+    }
+  }
+  // 40-minute advance slot auto-selection
+  const now = new Date();
+  const curMins = now.getHours() * 60 + now.getMinutes();
+  const toIso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  if (dateInp) {
+    if (curMins >= (18 * 60 - 40)) {
+      const tmr = new Date(now); tmr.setDate(tmr.getDate() + 1);
+      dateInp.value = toIso(tmr);
+      if (slotInp) slotInp.selectedIndex = 0;
+    } else {
+      dateInp.value = toIso(now);
+      if (slotInp) {
+        if (curMins < (9 * 60 - 40)) slotInp.selectedIndex = 0;
+        else if (curMins < (13 * 60 - 40)) slotInp.selectedIndex = 1;
+        else slotInp.selectedIndex = 2;
+      }
+    }
   }
   openModal('waBookingModal');
 };
 
-window.submitWhatsAppBooking = function() {
+window.submitWhatsAppBooking = async function() {
   const name = (document.getElementById('waBookName')?.value || '').trim();
   const phone = (document.getElementById('waBookPhone')?.value || '').trim();
   const addr = (document.getElementById('waBookAddress')?.value || '').trim();
   const date = (document.getElementById('waBookDate')?.value || '').trim();
   const slot = (document.getElementById('waBookSlot')?.value || '').trim();
-  if (!name) return showToast('Please enter your name', 'warning');
-  if (!addr) return showToast('Please enter your pickup address / locality', 'warning');
+  const serviceType = (document.getElementById('waNoItemServiceType')?.value || 'Doorstep par kapde count & check karke pickup karein').trim();
+  let gpsUrl = (document.getElementById('waBookGpsUrl')?.value || '').trim();
+
+  if (!name) return showToast('Kripya apna naam likhein', 'warning');
+  if (phone && !/^\d{10}$/.test(phone)) return showToast('Kripya 10-digit mobile number sahi likhein', 'warning');
+  if (!addr) return showToast('Kripya apna pickup address / area likhein', 'warning');
 
   HOME_BAG = getHomeBag();
-  let lines = [], subtotal = 0;
+  let lines = [], subtotal = 0, totalItems = 0;
   for (const [id, qty] of Object.entries(HOME_BAG)) {
     const item = findHomeCatalogItem(id);
     if (item && Number(item.price) > 0) {
+      totalItems += qty;
       subtotal += Number(item.price) * qty;
       lines.push(`• ${item.name} x${qty} (₹${Number(item.price) * qty})`);
     }
   }
 
-  let msg = `*New Pickup Request — Parth Dry Clean* 🧺
+  // If user hasn't attached GPS yet, show the Current Location Alert prompt!
+  if (!gpsUrl) {
+    const wantAutoGps = await pdcConfirm(
+      '📍 Current Location Bhejein!',
+      'Tez doorstep pickup ke liye kya hum aapki Current GPS Location message me jod dein? (Ya aap WhatsApp khulne par wahan se bhi Current Location bhej sakte hain)',
+      { confirmText: '📍 Attach GPS & Send', cancelText: '📲 Send & Share on WhatsApp', danger: false }
+    );
+    if (wantAutoGps) {
+      gpsUrl = await window.attachWaCurrentLocation(false);
+    } else {
+      showToast('📍 Yaad se WhatsApp chat me apni Current Location zaroor bhej dein!', 'info');
+    }
+  }
+
+  let msg = '';
+  if (lines.length > 0) {
+    // MODE 1: WITH ITEMS IN BAG (Itemized Order Estimate)
+    msg += `*🛍️ Itemized Order Booking — Parth Dry Clean* 🧺
 
 `;
-  msg += `*Customer:* ${name}
+    msg += `👤 *Customer:* ${name}
 `;
-  if (phone) msg += `*Phone:* +91 ${phone}
+    if (phone) msg += `📞 *Mobile:* +91 ${phone}
 `;
-  msg += `*Address:* ${addr}
+    msg += `🏠 *Pickup Address:* ${addr}
 `;
-  if (date) msg += `*Pickup Date:* ${date}
+    if (date) msg += `🗓️ *Pickup Date:* ${date}
 `;
-  if (slot) msg += `*Preferred Slot:* ${slot}
+    if (slot) msg += `⏰ *Preferred Slot:* ${slot}
 `;
-  if (lines.length) {
     msg += `
-*Selected Garments:*
+🧺 *Selected Garments (${totalItems} pcs):*
 ${lines.join('\n')}
-*Estimated Total:* ₹${formatMoney(subtotal)}
+`;
+    msg += `💰 *Estimated Bill:* ₹${formatMoney(subtotal)} *(Free Pickup & Delivery)*
+`;
+  } else {
+    // MODE 2: WITHOUT ITEMS IN BAG (Direct Doorstep Pickup & Counting)
+    msg += `*⚡ Direct Doorstep Pickup Request — Parth Dry Clean* 🧺
+`;
+    msg += `*(Bina Item Select Kiye · Doorstep Garment Counting)*
+
+`;
+    msg += `👤 *Customer:* ${name}
+`;
+    if (phone) msg += `📞 *Mobile:* +91 ${phone}
+`;
+    msg += `🏠 *Pickup Address:* ${addr}
+`;
+    if (date) msg += `🗓️ *Pickup Date:* ${date}
+`;
+    if (slot) msg += `⏰ *Preferred Slot:* ${slot}
+`;
+    msg += `✨ *Service Note:* ${serviceType}
+`;
+    msg += `📋 *Billing:* Rider doorstep par kapde count karke final bill banayega.
+`;
+  }
+
+  if (gpsUrl) {
+    msg += `
+📍 *Exact GPS Map Pin:* ${gpsUrl}
 `;
   } else {
     msg += `
-*Items:* Doorstep garment inspection & pickup
+📍 *Location Note:* Main is message ke niche WhatsApp se apni *Current Location* bhej raha/rahi hu. 👇
 `;
   }
+
   closeModal('waBookingModal');
   window.open(`https://wa.me/${_activeWaNumber}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
 auth.onAuthStateChanged(user => {
+  window._authInitialCheckDone = true;
   const loginBtn = document.getElementById('loginBtn');
   const myOrdersItem = document.getElementById('myOrdersNavItem');
   if (customerProfileRef) {
@@ -4705,6 +4947,11 @@ auth.onAuthStateChanged(user => {
     customerProfileRef = null;
   }
   if (user) {
+    clearAuthModalHistoryState();
+    const authMod = document.getElementById('authModal');
+    if (authMod && authMod.classList.contains('active')) {
+      authMod.classList.remove('active', 'closing');
+    }
     cacheUser(user);
     customerProfileRef = db.ref('customers/' + user.uid);
     customerProfileRef.on('value', s => {
@@ -4719,23 +4966,15 @@ auth.onAuthStateChanged(user => {
       }
       refreshFirstOrderBannerState(user.uid);
     });
-    loginBtn.onclick = () => {
-      const d = currentCustomerData || {};
-      const finalName = d.name || user.displayName || 'Guest';
-      document.getElementById('profName').value = finalName;
-      document.getElementById('profEmail').value = d.email || user.email || '';
-      document.getElementById('profPhone').value = d.phone || (user.phoneNumber ? last10Digits(user.phoneNumber) : '');
-      loadProfileAddresses(user.uid, d);
-      const addrSection = document.getElementById('profileAddressSection');
-      if (addrSection) { addrSection.classList.remove('open'); const b=addrSection.querySelector('.profile-address-toggle'); if(b)b.setAttribute('aria-expanded','false'); }
-      cancelProfileAddressForm();
-      setProfileHeader(user, d);
-      loadProfileStats(user.uid);
-      openModal('profileModal');
-    };
+    loginBtn.onclick = () => openProfileModalForUser(user);
     attachActiveOrderListener(user.uid);
     attachCustomerNotificationsListener(user.uid);
     syncFCMTokenForUser(user);
+    if (window.location.hash === '#ordersModal') {
+      setTimeout(() => { openModal('ordersModal', true); loadOrderHistory(); }, 120);
+    } else if (window.location.hash === '#profileModal') {
+      setTimeout(() => { openProfileModalForUser(user); }, 120);
+    }
   } else {
     currentCustomerData = {};
     clearCachedUser();
