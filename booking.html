@@ -233,7 +233,7 @@
   input:checked + .slider:before { transform: translateX(20px); }
 
   /* DYNAMIC FLOATING GLASS-DOCK */
-  .dynamic-glass-dock { position: fixed; bottom: 14px; left: 14px; right: 14px; max-width: 412px; margin: auto; background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 22px; padding: 9px 9px 9px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 72px; box-shadow: var(--shadow-floating); z-index: 90; }
+  .dynamic-glass-dock { position: fixed; bottom: 14px; left: 14px; right: 14px; max-width: 412px; margin: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 9px 9px 9px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 72px; box-shadow: var(--shadow-floating); z-index: 90; will-change: transform, opacity; contain: layout style; }
   .dock-left-content strong { font-size: 16.5px; font-weight: 800; color: var(--ink); line-height: 1.1; }
   .dock-left-content small { font-size: 10.5px; font-weight: 700; color: var(--emerald); display: block; }
   .btn-dock-pill { background: linear-gradient(135deg, var(--royal-blue), var(--indigo-accent)); color: #fff; border: none; padding: 12px 24px; border-radius: var(--pill-radius); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35); }
@@ -1122,6 +1122,7 @@ console.log('🧺 ParthbookGen50.56 - Booking UI 4-Step Active');
 const firebaseConfig = { apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain:"parth-dry-clean.firebaseapp.com", databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"parth-dry-clean", storageBucket:"parth-dry-clean.firebasestorage.app", messagingSenderId:"673481985335", appId:"1:673481985335:web:eb4194b4860cf979b21eb2" };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 const CREATE_ORDER_FUNCTION_URL = "https://asia-southeast1-parth-dry-clean.cloudfunctions.net/createCustomerOrder";
 const PROFILE_UPDATE_FUNCTION_URL = "https://asia-southeast1-parth-dry-clean.cloudfunctions.net/updateCustomerProfile";
@@ -2443,21 +2444,26 @@ Cart: {
 
     const bag=getSanitizedBag();
     let html=''; let count=0; let subtotal=0;
+    const shouldRenderRows = (window.innerWidth >= 900) || dock.classList.contains('bag-expanded');
     for(const [id,qty] of Object.entries(bag)){
       const item=findItemById(id); if(!item) continue;
       const q=Number(qty)||0; const price=Number(item.price)||0; const amount=price*q;
       count+=q; subtotal+=amount;
-      html+=`<div class="dock-bag-row">
-        <span class="dock-bag-icon"><i class="fas ${item.icon||'fa-shirt'}"></i></span>
-        <span class="dock-bag-copy"><strong>${sanitizeHTML(item.name)}</strong><small>₹${price} each · ₹${amount}</small></span>
-        <span class="dock-bag-actions" aria-label="Quantity controls">
-          <button type="button" onclick="App.Cart.updateQty('${sanitizeHTML(id)}',-1)" aria-label="Decrease ${sanitizeHTML(item.name)}">−</button>
-          <strong>${q}</strong>
-          <button type="button" onclick="App.Cart.updateQty('${sanitizeHTML(id)}',1)" aria-label="Increase ${sanitizeHTML(item.name)}">+</button>
-        </span>
-      </div>`;
+      if(shouldRenderRows){
+        html+=`<div class="dock-bag-row">
+          <span class="dock-bag-icon"><i class="fas ${item.icon||'fa-shirt'}"></i></span>
+          <span class="dock-bag-copy"><strong>${sanitizeHTML(item.name)}</strong><small>₹${price} each · ₹${amount}</small></span>
+          <span class="dock-bag-actions" aria-label="Quantity controls">
+            <button type="button" onclick="App.Cart.updateQty('${sanitizeHTML(id)}',-1)" aria-label="Decrease ${sanitizeHTML(item.name)}">−</button>
+            <strong>${q}</strong>
+            <button type="button" onclick="App.Cart.updateQty('${sanitizeHTML(id)}',1)" aria-label="Increase ${sanitizeHTML(item.name)}">+</button>
+          </span>
+        </div>`;
+      }
     }
-    wrap.innerHTML=html || '<div class="dock-bag-empty"><i class="fas fa-bag-shopping"></i><div>Your bag is empty</div></div>';
+    if(shouldRenderRows){
+      wrap.innerHTML=html || '<div class="dock-bag-empty"><i class="fas fa-bag-shopping"></i><div>Your bag is empty</div></div>';
+    }
     if(meta) meta.textContent=count?`${count} item${count===1?'':'s'} · ₹${subtotal}`:'0 items · ₹0';
     if(totalEl) totalEl.textContent=`₹${subtotal}`;
     if(handleText) handleText.textContent=count?`Your bag · ${count} item${count===1?'':'s'} · ₹${subtotal}`:'Your bag';
@@ -2477,6 +2483,7 @@ Cart: {
     if(!dock || !dock.classList.contains('has-bag')) return;
     const open=typeof force==='boolean'?force:!dock.classList.contains('bag-expanded');
     dock.classList.toggle('bag-expanded',open);
+    if(open) this.renderBagSheet();
     if(handle) handle.setAttribute('aria-expanded',open?'true':'false');
   },
 
