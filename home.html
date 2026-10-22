@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthindexGen27 : Production Master Build (Auth History Fix, 2-Mode WhatsApp Booking + Live GPS & Location Alert, 40-Min Slot Sync, Deep-Link Modals) -->
+<!-- ParthindexGen28 : Production Master Build (Phase 2 Full-Stack: WhatsApp Auto-Order Queue, Phone-to-Account Auto-Linking, Zero-Click Paytm/UPI Dynamic QR Auto-Confirm) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -2460,6 +2460,41 @@ OTP sent to +91 <span id="displayOtpPhone" style="color:var(--text); font-weight
   </div>
 </div>
 
+<!-- ZERO-CLICK PAYTM / UPI DYNAMIC QR & AUTO-CONFIRM MODAL -->
+<div class="modal-overlay" id="upiPaymentModal" onclick="closeUpiPaymentModal()">
+  <div class="modal-box" style="max-width:410px;text-align:center;" onclick="event.stopPropagation()">
+    <div class="modal-grabber-wrapper"><div class="modal-grabber"></div></div>
+    <button type="button" class="close-modal-btn" onclick="closeUpiPaymentModal()" aria-label="Close">&times;</button>
+    <div id="upiModalActiveView">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-light);color:var(--primary);padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;margin-bottom:8px;">
+        <span class="live-care-dot"></span> LIVE AUTO-CONFIRM UPI
+      </div>
+      <h2 style="color:var(--text);font-size:20px;font-weight:800;margin-bottom:2px;">Scan or Tap to Pay</h2>
+      <p style="color:var(--text-muted);font-size:12px;font-weight:600;margin-bottom:12px;" id="upiModalOrderSub">Order PDC-000000</p>
+      <div style="background:#ffffff;border:2px solid var(--primary);border-radius:20px;padding:14px;display:inline-block;box-shadow:0 10px 28px rgba(37,99,235,0.14);margin-bottom:10px;">
+        <img id="upiModalQrImg" src="" alt="Scan UPI QR" style="width:210px;height:210px;display:block;border-radius:10px;" />
+      </div>
+      <div style="font-size:26px;font-weight:900;color:var(--primary);line-height:1.1;margin-bottom:4px;" id="upiModalAmountText">₹0</div>
+      <div style="font-size:11px;color:var(--text-muted);font-weight:700;margin-bottom:12px;" id="upiModalVpaText">UPI ID: —</div>
+      <a id="upiModalIntentBtn" href="#" class="btn-primary-full" style="text-decoration:none;margin-bottom:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+        <i class="fas fa-mobile-screen-button"></i> Pay via Paytm / GPay / PhonePe
+      </a>
+      <div style="background:var(--surface-soft);border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-size:11.5px;color:var(--text-secondary);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <i class="fas fa-spinner fa-spin" style="color:var(--primary);"></i>
+        <span id="upiModalWaitText">Waiting for payment… Screen will confirm automatically!</span>
+      </div>
+    </div>
+    <div id="upiModalSuccessView" style="display:none;padding:18px 6px;">
+      <div style="width:68px;height:68px;border-radius:50%;background:var(--success-soft);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 14px;border:2px solid rgba(5,150,105,0.3);">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3 style="color:var(--text);font-size:22px;font-weight:900;margin-bottom:6px;">Payment Confirmed! 🎉</h3>
+      <p style="color:var(--text-muted);font-size:13px;font-weight:600;margin-bottom:18px;" id="upiModalSuccessSub">Your payment has been verified automatically.</p>
+      <button type="button" class="btn-primary-full" style="background:var(--success);" onclick="closeUpiPaymentModal()">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- IN-WEBSITE CONFIRMATION MODAL (REPLACES BROWSER CONFIRM) -->
 <div class="modal-overlay" id="pdcConfirmModal" onclick="resolvePdcConfirm(false)">
   <div class="modal-box" style="max-width:380px;" onclick="event.stopPropagation()">
@@ -3302,7 +3337,15 @@ function renderActiveOrderCard(order) {
   const diffMs = Date.now() - createdTime;
   const isWithin2Hours = diffMs < (2 * 60 * 60 * 1000);
 
+  const isOrderPaid = String(order.paymentStatus || '').toLowerCase().startsWith('paid');
+  const payActionHtml = isOrderPaid
+    ? `<span class="care-btn soft-green" style="cursor:default;"><i class="fas fa-check-circle"></i> ${sanitizeHTML(order.paymentStatus || 'Paid')}</span>`
+    : (Number(order.total) > 0 && window._pdcPaymentConfig?.upiEnabled !== false && window._pdcPaymentConfig?.upiVpa
+        ? `<button class="care-btn primary" onclick="event.stopPropagation(); openOrderUpiModal('${orderRef}')"><i class="fas fa-qrcode"></i> Pay ₹${formatMoney(order.total)}</button>`
+        : '');
+
   let actionBtnHtml = `
+    ${payActionHtml}
     <button class="care-btn soft-blue" onclick="event.stopPropagation(); downloadInvoice('${orderRef}')"><i class="fas fa-file-invoice"></i> Invoice</button>
     <a class="care-btn soft-green" href="${waLink}" target="_blank" onclick="event.stopPropagation();"><i class="fab fa-whatsapp"></i> Support</a>
   `;
@@ -4306,7 +4349,11 @@ function renderOrderHistoryList() {
     const createdTime = o.createdAt || Date.now();
     const isWithin2Hours = (Date.now() - createdTime) < (2 * 60 * 60 * 1000);
     
-    let actionBtnHtml = `<button class="care-btn soft-blue" onclick="downloadInvoice('${orderRef}')"><i class="fas fa-file-invoice"></i> Invoice</button>
+    const isOrderPaid = String(o.paymentStatus || '').toLowerCase().startsWith('paid');
+    const payBtnHist = (!isOrderPaid && o.status !== 'cancelled' && Number(o.total) > 0 && window._pdcPaymentConfig?.upiEnabled !== false && window._pdcPaymentConfig?.upiVpa)
+      ? `<button class="care-btn primary" onclick="openOrderUpiModal('${orderRef}')"><i class="fas fa-qrcode"></i> Pay ₹${formatMoney(o.total)}</button>`
+      : (isOrderPaid ? `<span class="care-btn soft-green" style="cursor:default;"><i class="fas fa-check-circle"></i> Paid</span>` : '');
+    let actionBtnHtml = `${payBtnHist}<button class="care-btn soft-blue" onclick="downloadInvoice('${orderRef}')"><i class="fas fa-file-invoice"></i> Invoice</button>
                          <a href="booking.html" class="care-btn soft-green"><i class="fas fa-redo"></i> Book Again</a>`;
                          
     if (o.status === 'pending' && isWithin2Hours) {
@@ -4934,6 +4981,37 @@ ${lines.join('\n')}
 `;
   }
 
+  // Auto-register WhatsApp booking in Firebase so it gets a real PDC-XXXXXX Order ID & appears in Admin Panel
+  let createdDispId = '';
+  try {
+    const bagItemsPayload = Object.entries(HOME_BAG).map(([id, qty]) => {
+      const it = findHomeCatalogItem(id);
+      return it ? { id: it.id, name: it.name, qty: Number(qty) || 1, rate: Number(it.price) || 0 } : null;
+    }).filter(Boolean);
+    const resp = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/createWhatsAppOrder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        phone,
+        address: addr,
+        pickupDate: date,
+        timeSlot: slot,
+        serviceType,
+        gpsUrl,
+        uid: auth.currentUser ? auth.currentUser.uid : '',
+        items: bagItemsPayload
+      })
+    });
+    const rData = await resp.json().catch(() => ({}));
+    if (resp.ok && rData.ok && rData.displayOrderId) {
+      createdDispId = rData.displayOrderId;
+      msg = `🆔 *Order ID:* *${createdDispId}*\n` + msg;
+    }
+  } catch (err) {
+    console.warn('WhatsApp auto-order queue fallback to direct chat:', err);
+  }
+
   closeModal('waBookingModal');
   window.open(`https://wa.me/${_activeWaNumber}?text=${encodeURIComponent(msg)}`, '_blank');
 };
@@ -4970,6 +5048,7 @@ auth.onAuthStateChanged(user => {
     attachActiveOrderListener(user.uid);
     attachCustomerNotificationsListener(user.uid);
     syncFCMTokenForUser(user);
+    syncPriorWhatsAppPhoneOrders(user);
     if (window.location.hash === '#ordersModal') {
       setTimeout(() => { openModal('ordersModal', true); loadOrderHistory(); }, 120);
     } else if (window.location.hash === '#profileModal') {
@@ -5203,6 +5282,114 @@ if (topBanner) {
     }
   });
 }
+
+
+// ===== PHASE 2: PHONE-TO-ACCOUNT AUTO-LINKING & ZERO-CLICK PAYTM/UPI AUTO-CONFIRM =====
+window._pdcPaymentConfig = { upiEnabled: true, upiVpa: '', merchantName: 'Parth Dry Clean', paytmMid: '' };
+db.ref('settings/payment').on('value', snap => {
+  if (snap.exists()) window._pdcPaymentConfig = { ...window._pdcPaymentConfig, ...(snap.val() || {}) };
+});
+
+async function syncPriorWhatsAppPhoneOrders(user) {
+  if (!user) return;
+  try {
+    const token = await user.getIdToken();
+    await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/syncCustomerPhoneOrders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({})
+    });
+  } catch (_) {}
+}
+
+let _activeUpiOrderRef = null;
+let _activeUpiPollInterval = null;
+
+window.closeUpiPaymentModal = function() {
+  if (_activeUpiOrderRef) { _activeUpiOrderRef.off(); _activeUpiOrderRef = null; }
+  if (_activeUpiPollInterval) { clearInterval(_activeUpiPollInterval); _activeUpiPollInterval = null; }
+  closeModal('upiPaymentModal');
+};
+
+window.openOrderUpiModal = async function(orderKey) {
+  const cleanKey = String(orderKey || '').trim();
+  if (!cleanKey) return;
+  const snap = await db.ref('orders/' + cleanKey).once('value').catch(() => null);
+  const o = snap && snap.exists() ? snap.val() : null;
+  if (!o) return showToast('Order details not found', 'error');
+  const total = Number(o.total || 0);
+  if (total <= 0) return showToast('Bill amount will be updated after garment counting', 'info');
+  const vpa = String(window._pdcPaymentConfig?.upiVpa || '').trim();
+  if (!vpa) return showToast('Online UPI QR is being configured — please pay on delivery', 'info');
+  const merchantName = String(window._pdcPaymentConfig?.merchantName || 'Parth Dry Clean').trim();
+  const dispId = formatOrderDisplayId(o.orderId || cleanKey);
+
+  document.getElementById('upiModalActiveView').style.display = 'block';
+  document.getElementById('upiModalSuccessView').style.display = 'none';
+  document.getElementById('upiModalOrderSub').textContent = `Order ${dispId} • Auto-Confirm Locked`;
+  document.getElementById('upiModalAmountText').textContent = `₹${formatMoney(total)}`;
+  document.getElementById('upiModalVpaText').textContent = `Merchant UPI: ${vpa}`;
+
+  const upiUri = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(merchantName)}&am=${total}&cu=INR&tr=${encodeURIComponent(dispId)}&tn=${encodeURIComponent('Order ' + dispId)}`;
+  const qrImg = document.getElementById('upiModalQrImg');
+  if (qrImg) {
+    qrImg.onerror = function() {
+      this.onerror = null;
+      this.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(upiUri)}`;
+    };
+    qrImg.src = `https://quickchart.io/qr?size=240&margin=1&text=${encodeURIComponent(upiUri)}`;
+  }
+  const intentBtn = document.getElementById('upiModalIntentBtn');
+  if (intentBtn) intentBtn.href = upiUri;
+
+  openModal('upiPaymentModal');
+
+  // 1. Register active UPI session in backend
+  if (auth.currentUser) {
+    auth.currentUser.getIdToken().then(token => {
+      fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/startOrderUpiSession', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ orderKey: cleanKey })
+      }).catch(() => {});
+    }).catch(() => {});
+  }
+
+  const onPaymentConfirmed = (payLabel) => {
+    if (_activeUpiOrderRef) { _activeUpiOrderRef.off(); _activeUpiOrderRef = null; }
+    if (_activeUpiPollInterval) { clearInterval(_activeUpiPollInterval); _activeUpiPollInterval = null; }
+    if (navigator.vibrate) navigator.vibrate([100, 50, 120]);
+    document.getElementById('upiModalActiveView').style.display = 'none';
+    document.getElementById('upiModalSuccessView').style.display = 'block';
+    document.getElementById('upiModalSuccessSub').textContent = `Order ${dispId} (₹${formatMoney(total)}) marked as ${payLabel || 'Paid (UPI)'}!`;
+    showToast(`🎉 Payment of ₹${formatMoney(total)} confirmed automatically!`, 'success');
+    if (document.getElementById('ordersModal')?.classList.contains('active')) loadOrderHistory();
+  };
+
+  // 2. Live RTDB listener for instant Webhook / Forwarder confirmation
+  if (_activeUpiOrderRef) _activeUpiOrderRef.off();
+  _activeUpiOrderRef = db.ref('orders/' + cleanKey + '/paymentStatus');
+  _activeUpiOrderRef.on('value', s => {
+    const val = String(s.val() || '');
+    if (val.toLowerCase().startsWith('paid')) {
+      onPaymentConfirmed(val);
+    }
+  });
+
+  // 3. Poll verifyPaytmOrderStatus every 4 seconds
+  if (_activeUpiPollInterval) clearInterval(_activeUpiPollInterval);
+  _activeUpiPollInterval = setInterval(async () => {
+    try {
+      const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/verifyPaytmOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderKey: cleanKey })
+      });
+      const d = await r.json().catch(() => ({}));
+      if (d && d.paid) onPaymentConfirmed('Paid (UPI)');
+    } catch (_) {}
+  }, 4000);
+};
 
 renderPricing();
 enableListSwipe();
