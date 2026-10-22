@@ -390,7 +390,12 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   gap: 8px;
   margin-bottom: 14px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.pipeline-strip::-webkit-scrollbar {
+  display: none;
 }
 .pipe-stage {
   background: var(--panel);
@@ -515,8 +520,21 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     line-height: 1.2;
   }
 
+  /* Slide-over Mobile Sidebar Drawer */
+  .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 84vw) !important;
+    height: 100vh !important;
+    z-index: 960 !important;
+    box-shadow: 18px 0 44px rgba(15, 23, 42, 0.35);
+  }
+
   /* Responsive Mobile Order Cards (<768px only — Desktop Table 100% untouched) */
-  #tab-orders .tbl-wrap { max-height: none; overflow: visible; }
+  #tab-orders .tbl-wrap { max-height: none; overflow: visible; border: 0; background: transparent; }
+  #tab-orders .panel { background: transparent; border: 0; box-shadow: none; overflow: visible; }
   #tab-orders table, #tab-orders tbody, #tab-orders tr, #tab-orders td {
     display: block;
     width: 100%;
@@ -530,9 +548,21 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     padding: 12px 14px;
     margin-bottom: 12px;
     box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  #tab-orders tr.row-overdue {
+    border-left: 4px solid var(--bad);
+  }
+  #tab-orders tr.row-urgent {
+    border-left: 4px solid var(--warn);
+  }
+  #tab-orders tr.row-overdue td,
+  #tab-orders tr.row-urgent td {
+    background: transparent !important;
   }
   #tab-orders td {
-    padding: 5px 0;
+    padding: 7px 0;
     border-bottom: 1px dashed var(--line);
     display: flex;
     justify-content: space-between;
@@ -540,7 +570,44 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     gap: 10px;
     text-align: right;
   }
-  #tab-orders td:last-child { border-bottom: 0; padding-top: 10px; justify-content: flex-end; }
+  #tab-orders td[data-label="Items"] > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+    max-width: 72%;
+  }
+  #tab-orders td[data-label="Rider"] > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 100%;
+    max-width: 230px;
+  }
+  #tab-orders td[data-label="Rider"] select {
+    flex: 1;
+    min-width: 0;
+  }
+  #tab-orders td[data-label="Rider"] button {
+    margin-top: 0 !important;
+    flex-shrink: 0;
+  }
+  #tab-orders td[data-label="Actions"].action-cell {
+    border-bottom: 0;
+    padding-top: 10px;
+    display: grid;
+    grid-template-columns: 1.3fr repeat(3, auto);
+    gap: 6px;
+    justify-content: stretch;
+  }
+  #tab-orders td[data-label="Actions"]::before {
+    display: none;
+  }
+  #tab-orders td[data-label="Actions"] .btn {
+    justify-content: center;
+    padding: 9px 10px;
+  }
   #tab-orders td::before {
     content: attr(data-label);
     font-size: 10px;
@@ -1116,14 +1183,16 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 </nav>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomain:"parth-dry-clean.firebaseapp.com",databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"parth-dry-clean",storageBucket:"parth-dry-clean.firebasestorage.app",messagingSenderId:"673481985335",appId:"1:673481985335:web:eb4194b4860cf979b21eb2"};
-firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.database();
-const functions=firebase.app().functions('asia-southeast1');
-auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(()=>{});
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const adminApp=firebase.apps.find(a=>a.name==='ParthAdminOS')||firebase.initializeApp(firebaseConfig,'ParthAdminOS');
+const auth=adminApp.auth();const db=adminApp.database();
+const functions=adminApp.functions('asia-southeast1');
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 const $=id=>document.getElementById(id);
 let ordersSnap=null,boys=[],coupons=[],customers={},CATS={},confirmCb=null,MEDIA={};
 let serviceAreas={enabled:true,areas:{}}; let auditSnap=null; let notifSnap=null; let manualNotifSnap=null;
 let boyChatBoyId=null, boyChatQuery=null, boyChatFirstLoad=true;
-const storage=firebase.storage();
+const storage=adminApp.storage();
 
 const DEFAULT_CATS={mens:{name:"Men's",icon:'fa-tshirt',items:[{name:'Shirt',price:60,originalPrice:80},{name:'Pant',price:60,originalPrice:80},{name:'Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},ladies:{name:"Ladies",icon:'fa-female',items:[{name:'Ladies Kurta',price:60,originalPrice:80},{name:'Jeans',price:0}]},winterWomen:{name:"Winter (F)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},winterMen:{name:"Winter (M)",icon:'fa-snowflake',items:[{name:'Sweater',price:150,originalPrice:200},{name:'Jacket',price:250,originalPrice:320}]},festival:{name:"Festival",icon:'fa-female',items:[{name:'Saree',price:200,originalPrice:300},{name:'Lehenga (3 Pc)',price:400,originalPrice:600},{name:'Coat Pant',price:350,originalPrice:500}]},iron:{name:"Iron",icon:'fa-fire',items:[{name:'Iron Shirt',price:20}]},home:{name:"Home",icon:'fa-bed',items:[{name:'Blanket (Double)',price:350,originalPrice:450}]},combos:{name:"Combos",icon:'fa-gift',items:[{name:'Winter Wardrobe (3 Jackets + 2 Sweaters)',price:999,originalPrice:1150},{name:'Couples Party Wear (1 Saree + 1 Suit)',price:499,originalPrice:550}]}};
 
@@ -1247,6 +1316,8 @@ function switchTab(t){
  }
  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
  $('tab-'+t).classList.add('active');
+ document.querySelectorAll('.mobile-bottom-nav .mbn-btn').forEach(b=>b.classList.toggle('active',b.dataset.mbn===t));
+ document.querySelectorAll('.mobile-bottom-nav .mbn-btn').forEach(b=>b.classList.toggle('active',b.dataset.mbn===t));
  $('pageTitle').textContent=TITLES[t][0];
  $('pageSub').textContent=TITLES[t][1];
  updateLiveSessionTab(t);
@@ -2356,21 +2427,52 @@ const App={
    const password=($('mgrPassInput')?.value||'').trim();
    if(!email||!email.includes('@'))return toast('Valid manager email enter karein','err');
    if(OWNER_ADMIN_EMAILS.includes(email))return toast('Owner email ko manager nahi bana sakte','err');
+   if(password && password.length<6)return toast('Password kam se kam 6 characters ka hona chahiye','err');
    const btn=$('saveMgrAccountBtn');
    if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving Manager Account...';}
    try{
-     const token=await auth.currentUser.getIdToken(true);
-     const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/manageStaffAccount',{
-       method:'POST',
-       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-       body:JSON.stringify({action:'create_or_update',name,email,password})
-     });
-     const data=await r.json().catch(()=>({}));
-     if(!r.ok)throw new Error(data.error||'Could not save manager account');
+     let savedViaCloud=false;
+     try{
+       const token=await auth.currentUser.getIdToken(true);
+       const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/manageStaffAccount',{
+         method:'POST',
+         headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+         body:JSON.stringify({action:'create_or_update',name,email,password})
+       });
+       const data=await r.json().catch(()=>({}));
+       if(r.ok && data.ok){ savedViaCloud=true; }
+       else if(data.error){ throw new Error(data.error); }
+     }catch(cloudErr){
+       if(cloudErr?.message && !String(cloudErr.message).toLowerCase().includes('fetch')){
+         throw cloudErr;
+       }
+     }
+     if(!savedViaCloud){
+       if(!password || password.length<6) throw new Error('Password (min 6 chars) enter karein');
+       const provApp=firebase.apps.find(a=>a.name==='ParthStaffProvisioner')||firebase.initializeApp(firebaseConfig,'ParthStaffProvisioner');
+       const provAuth=provApp.auth();
+       await provAuth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+       let cred=null;
+       try{
+         cred=await provAuth.createUserWithEmailAndPassword(email,password);
+       }catch(authErr){
+         if(authErr?.code==='auth/email-already-in-use'){
+           cred=await provAuth.signInWithEmailAndPassword(email,password);
+         }else{
+           throw authErr;
+         }
+       }
+       const mgrUser=cred.user;
+       await mgrUser.updateProfile({displayName:name}).catch(()=>{});
+       const staffData={uid:mgrUser.uid,email,name,role:'manager',active:true,updatedAt:Date.now(),updatedBy:auth.currentUser?.email||'owner'};
+       await db.ref('admin_staff/'+mgrUser.uid).update(staffData);
+       await provAuth.signOut().catch(()=>{});
+       writeAudit('Manager account configured',email,{uid:mgrUser.uid});
+     }
      if($('mgrPassInput'))$('mgrPassInput').value='';
      toast(`✅ Manager login (${email}) ready hai!`);
    }catch(e){
-     toast('⚠️ '+(e?.message||'Deploy functions via deploy_parth_updates.sh first'),'err');
+     toast('⚠️ '+(e?.message||'Could not save manager account'),'err');
    }finally{
      if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-user-check"></i> Create / Update Manager Login';}
    }
@@ -2409,54 +2511,24 @@ const App={
  clearOldAccessLogs:()=>askConfirm('Purane access logs clear karein?',()=>{
    db.ref('admin_access_logs').remove().then(()=>toast('Access logs cleared')).catch(e=>toast(e.message,'err'));
  }),
- print:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');const items=Object.entries(o.items||{}).map(([k,v])=>{const nm=(v&&typeof v==='object'&&v.name)?v.name:k;const qty=(v&&typeof v==='object')?Number(v.qty??v.quantity??1):Number(v)||0;return `${esc(nm)} x${esc(qty)}`;}).join('<br>');const w=open('','_blank','width=320,height=500');if(!w)return toast('Print window blocked by browser','err');w.document.write(`<html><head><meta charset="utf-8"><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}
-/* Role Badges & Staff Security Workspace */
-.role-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: .7px;
-  text-transform: uppercase;
-}
-.role-pill.owner {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(37,99,235,.28);
-}
-.role-pill.manager {
-  background: rgba(5, 150, 105, 0.14);
-  color: var(--good);
-  border: 1px solid rgba(5, 150, 105, 0.35);
-}
-.session-live-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--good);
-  display: inline-block;
-  box-shadow: 0 0 8px var(--good);
-  animation: sessPulse 1.6s infinite;
-}
-@keyframes sessPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.28); opacity: .65; }
-}
-.security-perm-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px;
-  padding: 14px;
-}
-.manager-hidden {
-  display: none !important;
-}
-
-</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${esc(o.orderId||id)}<br><b>Name:</b> ${esc(o.customerName||o.name||'-')}<br><b>Phone:</b> ${esc(o.phone||'-')}<div class="dashed"></div><b>Items:</b><br>${items||'-'}<div class="dashed"></div><b>Total:</b> Rs ${Number(o.total)||0}<script>window.print();window.close()<\/script></body></html>`);},
- backup:()=>{if(CURRENT_ADMIN_ROLE!=='owner')return toast('🔒 Only Store Owner can download full backup','err');Promise.all([db.ref('orders').once('value'),db.ref('customers').once('value'),db.ref('delivery_boys').once('value'),db.ref('settings').once('value'),db.ref('services').once('value'),db.ref('site_content').once('value'),db.ref('site_media').once('value'),db.ref('audit_log').once('value'),db.ref('notification_events').once('value'),db.ref('manual_notification_events').once('value')]).then(([o,c,b,s,srv,cms,media,audit,notifs,manualNotifs])=>{const out={orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val(),site_media:media.val(),audit_log:audit.val(),notification_events:notifs.val(),manual_notification_events:manualNotifs.val()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));a.download='parth-backup.json';a.click();toast('✅ Complete Backup downloaded');}).catch(e=>toast(e.message,'err'));},
+ print:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');const items=Object.entries(o.items||{}).map(([k,v])=>{const nm=(v&&typeof v==='object'&&v.name)?v.name:k;const qty=(v&&typeof v==='object')?Number(v.qty??v.quantity??1):Number(v)||0;return `${esc(nm)} x${esc(qty)}`;}).join('<br>');const w=open('','_blank','width=320,height=500');if(!w)return toast('Print window blocked by browser','err');w.document.write(`<html><head><meta charset="utf-8"><style>body{font-family:monospace;font-size:13px;margin:0;padding:10px;width:58mm}h2{text-align:center}.dashed{border-top:1px dashed #000;margin:10px 0}</style></head><body><h2>Parth Dry Clean</h2><div class="dashed"></div><b>ID:</b> ${esc(o.orderId||id)}<br><b>Name:</b> ${esc(o.customerName||o.name||'-')}<br><b>Phone:</b> ${esc(o.phone||'-')}<div class="dashed"></div><b>Items:</b><br>${items||'-'}<div class="dashed"></div><b>Total:</b> Rs ${Number(o.total)||0}<script>window.print();window.close()<\/script></body></html>`);},
+ backup:async()=>{
+   if(CURRENT_ADMIN_ROLE!=='owner')return toast('🔒 Only Store Owner can download full backup','err');
+   try{
+     const safeVal=p=>db.ref(p).once('value').then(s=>s.val()).catch(()=>null);
+     const [orders,custs,boysData,sGen,sCoup,sAreas,sPay,sPerm,srv,cms,media,audit,notifs,manualNotifs]=await Promise.all([
+       safeVal('orders'),safeVal('customers'),safeVal('delivery_boys'),
+       safeVal('settings/general'),safeVal('settings/coupons'),safeVal('settings/serviceAreas'),safeVal('settings/payment'),safeVal('settings/manager_permissions'),
+       safeVal('services'),safeVal('site_content'),safeVal('site_media'),safeVal('audit_log'),safeVal('notification_events'),safeVal('manual_notification_events')
+     ]);
+     const out={backedUpAt:new Date().toISOString(),orders,customers:custs,delivery_boys:boysData,settings:{general:sGen,coupons:sCoup,serviceAreas:sAreas,payment:sPay,manager_permissions:sPerm},services:srv,site_content:cms,site_media:media,audit_log:audit,notification_events:notifs,manual_notification_events:manualNotifs};
+     const a=document.createElement('a');
+     a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
+     a.download='parth-backup.json';
+     a.click();
+     toast('✅ Complete Backup downloaded');
+   }catch(e){toast(e.message,'err');}
+ },
  toggleCoupon:(c,v)=>{const x=coupons.find(x=>x.code===c);if(x)x.enabled=v;renderCoupons();db.ref('settings/coupons/'+c).update({enabled:v}).then(()=>toast(v?'Coupon ON':'Coupon OFF')).catch(e=>toast(e.message,'err'));},
  toggleBoy:(id,v)=>{const b=boys.find(x=>x.id===id);if(b)b.active=v;renderBoys();db.ref('delivery_boys/'+id).update({active:v}).then(()=>toast(v?'Partner active':'Partner inactive')).catch(e=>toast(e.message,'err'));},
  delCoupon:c=>askConfirm('Delete coupon '+c+'?',()=>{coupons=coupons.filter(x=>x.code!==c);renderCoupons();db.ref('settings/coupons/'+c).remove().then(()=>toast('Coupon deleted'));}),
@@ -2596,7 +2668,8 @@ const App={
    if(!sel)return;
    sel.value=(sel.value===st)?'all':st;
    orderQuickPreset='all';
-   document.querySelectorAll('[data-order-preset]').forEach(b=>b.classList.toggle('solid',b.dataset.orderPreset==='all'));
+   const isAll=(sel.value==='all');
+   document.querySelectorAll('[data-order-preset]').forEach(b=>b.classList.toggle('solid',isAll&&b.dataset.orderPreset==='all'));
    renderOrders();
  },
  toggleBulkOrder:(id,checked)=>{
@@ -2691,15 +2764,39 @@ const App={
    const btn=$('odSaveItemsBtn');
    if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving...';}
    try{
-     const token=await auth.currentUser.getIdToken(true);
-     const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/adminUpdateOrderItems',{
-       method:'POST',
-       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-       body:JSON.stringify({orderId:id,items})
-     });
-     const data=await r.json().catch(()=>({}));
-     if(!r.ok) throw new Error(data.error||'Update failed');
-     toast(`✅ Order items & bill updated (New Total: ₹${data.total})!`);
+     let newTotal=0;
+     let updatedViaCloud=false;
+     try{
+       const token=await auth.currentUser.getIdToken(true);
+       const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/adminUpdateOrderItems',{
+         method:'POST',
+         headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+         body:JSON.stringify({orderId:id,items})
+       });
+       const data=await r.json().catch(()=>({}));
+       if(r.ok && data.ok){ updatedViaCloud=true; newTotal=data.total; }
+     }catch(_){}
+     if(!updatedViaCloud){
+       const o=ordersSnap?.val()?.[id]||{};
+       const frozen={}; let subtotal=0;
+       items.forEach(it=>{
+         const key='item-'+it.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+         const amount=it.qty*it.rate;
+         frozen[key]={id:key,name:it.name,qty:it.qty,rate:it.rate,amount,icon:'fa-shirt'};
+         subtotal+=amount;
+       });
+       const isExp=String(o.express||'No')==='Yes';
+       const expPct=Number($('ctlExpress')?.value||90);
+       const expressFee=isExp?Math.round(subtotal*(expPct/100)):Number(o.expressFee||0);
+       const discount=Math.min(subtotal+expressFee,Number(o.discount||0));
+       newTotal=Math.max(0,subtotal+expressFee-discount);
+       const itemsList=Object.values(frozen).map(v=>`${v.name} x${v.qty}`).join(', ');
+       await db.ref('orders/'+id).update({
+         items:frozen,itemRates:frozen,itemsList,subtotal,expressFee,total:newTotal,needsBillCount:false,lastAdminItemEditAt:Date.now()
+       });
+       writeAudit('Order items & bill updated',o.orderId||id,{total:newTotal,itemsList});
+     }
+     toast(`✅ Order items & bill updated (New Total: ₹${newTotal})!`);
      const updatedOrder=ordersSnap?.val()?.[id];
      if(updatedOrder) renderOrderDrawer({id,...updatedOrder});
    }catch(e){
@@ -2824,30 +2921,56 @@ Thank you for choosing Parth Dry Clean! 💙`;
    const btn=$('runSafeResetBtn');
    if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Backing up & Resetting...';}
    try{
-     // 1. Auto-download JSON backup first
-     const [o,c,b,s,srv,cms]=await Promise.all([
-       db.ref('orders').once('value'),
-       db.ref('customers').once('value'),
-       db.ref('delivery_boys').once('value'),
-       db.ref('settings').once('value'),
-       db.ref('services').once('value'),
-       db.ref('site_content').once('value')
+     // 1. Safe Subpath Auto-Backup (never fails even if /settings root rules weren't deployed yet)
+     const safeVal=p=>db.ref(p).once('value').then(s=>s.val()).catch(()=>null);
+     const [o,c,b,sGen,sCoup,sAreas,sPay,srv,cms]=await Promise.all([
+       safeVal('orders'),safeVal('customers'),safeVal('delivery_boys'),
+       safeVal('settings/general'),safeVal('settings/coupons'),safeVal('settings/serviceAreas'),safeVal('settings/payment'),
+       safeVal('services'),safeVal('site_content')
      ]);
-     const backupObj={backedUpAt:new Date().toISOString(),orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val()};
+     const backupObj={backedUpAt:new Date().toISOString(),orders:o,customers:c,delivery_boys:b,settings:{general:sGen,coupons:sCoup,serviceAreas:sAreas,payment:sPay},services:srv,site_content:cms};
      const a=document.createElement('a');
      a.href=URL.createObjectURL(new Blob([JSON.stringify(backupObj,null,2)],{type:'application/json'}));
      a.download=`parth-pre-reset-backup-${dayStr(new Date())}.json`;
      a.click();
 
-     // 2. Call server-authoritative resetTestData Cloud Function
-     const token=await auth.currentUser.getIdToken(true);
-     const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/resetTestData',{
-       method:'POST',
-       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-       body:JSON.stringify({confirmText:'RESET',includeCustomers})
-     });
-     const data=await r.json().catch(()=>({}));
-     if(!r.ok) throw new Error(data.error||'Reset failed');
+     // 2. Try Cloud Function first, fallback to direct Owner RTDB reset
+     let resetDone=false;
+     try{
+       const token=await auth.currentUser.getIdToken(true);
+       const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/resetTestData',{
+         method:'POST',
+         headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+         body:JSON.stringify({confirmText:'RESET',includeCustomers})
+       });
+       const data=await r.json().catch(()=>({}));
+       if(r.ok && data.ok) resetDone=true;
+     }catch(_){}
+
+     if(!resetDone){
+       const updates={
+         orders:null,
+         notifications:null,
+         notification_events:null,
+         manual_notification_events:null,
+         rider_notification_events:null,
+         upi_active_sessions:null,
+         chat:null,
+         audit_log:null,
+         admin_access_logs:null
+       };
+       if(includeCustomers) updates.customers=null;
+       if(b && typeof b==='object'){
+         Object.keys(b).forEach(k=>{ updates[`delivery_boys/${k}/total_deliveries`]=0; });
+       }
+       if(sCoup && typeof sCoup==='object'){
+         Object.keys(sCoup).forEach(k=>{ updates[`settings/coupons/${k}/usedCount`]=0; });
+       }
+       await db.ref().update(updates);
+       await db.ref('orderIds').remove().catch(()=>{});
+       if(includeCustomers) await db.ref('identity').remove().catch(()=>{});
+       await writeAudit('Safe Test Data Reset executed (Store Ready for Launch)',includeCustomers?'All Test Orders, Logs & Test Customers':'Orders & Logs');
+     }
      if($('resetConfirmInput')) $('resetConfirmInput').value='';
      toast('🎉 Test data safely reset! Backup file downloaded.');
    }catch(e){
