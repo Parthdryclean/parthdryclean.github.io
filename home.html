@@ -114,26 +114,6 @@ button, a, input, textarea { -webkit-tap-highlight-color: transparent; outline: 
   .care-btn:hover { transform: translateY(-1px); }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .top-banner { background: var(--accent-light); color: var(--primary-dark); text-align:center; padding:10px 20px; font-size:13px; font-weight:700; position:relative; }
 .top-banner span { color: var(--primary); font-weight:800; font-size:14px; letter-spacing:0.5px; margin:0 4px; }
 .close-banner { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:currentColor; font-size:20px; cursor:pointer; transition:0.2s; opacity: 0.6; }
@@ -373,19 +353,6 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .fabric-content-card .trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:15px;font-size:12px;font-weight:800;color:var(--text-secondary);background:transparent!important;padding:4px 0!important;border:none!important;box-shadow:none!important;width:fit-content;}
 .trust-badge-small{display:inline-flex;align-items:center;gap:8px;margin-top:4px;font-size:12.5px;font-weight:800;color:var(--text-secondary);background:transparent!important;border:none!important;padding:4px 0!important;box-shadow:none!important;}
 [data-theme="dark"] .trust-badge-small{background:transparent!important;border:none!important;color:var(--text-secondary);}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @keyframes float-stain { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 @keyframes gentle-swing { 0% { transform: rotate(0deg); } 100% { transform: rotate(8deg); } }
@@ -936,24 +903,6 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
 
 /* dark-mode guarantee: every redesigned component uses the shared night palette */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @media(max-width:768px){
   .booking-ui-home .service-card{min-height:0;padding:19px;border-radius:20px;}
   .booking-ui-home .service-card-top{margin-bottom:14px;}
@@ -1409,33 +1358,35 @@ nav ul.active { max-height: 500px; opacity: 1; padding: 20px 5%; pointer-events:
   position: fixed;
   bottom: 16px;
   left: 50%;
-  transform: translateX(-50%) translateY(140%);
+  transform: translate3d(-50%, 140%, 0);
   width: min(92vw, 560px);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 22px;
-  padding: 10px 12px 10px 18px;
+  padding: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  box-shadow: 0 16px 40px -8px rgba(37, 99, 235, 0.22), 0 4px 16px rgba(15, 23, 42, 0.06);
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 0;
+  overflow: hidden;
+  box-shadow: 0 14px 34px -6px rgba(37, 99, 235, 0.20), 0 4px 14px rgba(15, 23, 42, 0.06);
   z-index: 9990;
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease, background 0.2s ease, border-color 0.2s ease;
+  will-change: transform, opacity;
+  contain: layout style;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
 }
 [data-theme="dark"] .home-floating-cart {
-  background: rgba(17, 24, 39, 0.96);
+  background: #111827;
   color: #f8fafc;
   border-color: rgba(59, 130, 246, 0.32);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
 }
 .home-floating-cart.visible {
-  transform: translateX(-50%) translateY(0);
+  transform: translate3d(-50%, 0, 0);
   opacity: 1;
   pointer-events: auto;
 }
@@ -2593,6 +2544,7 @@ document.addEventListener('keydown', (e) => {
 const firebaseConfig = { apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w", authDomain: "parth-dry-clean.firebaseapp.com", databaseURL: "https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "parth-dry-clean", storageBucket: "parth-dry-clean.firebasestorage.app", messagingSenderId: "673481985335", appId: "1:673481985335:web:eb4194b4860cf979b21eb2" };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth(); const db = firebase.database();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
 
 const VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 const PROFILE_UPDATE_FUNCTION_URL = 'https://asia-southeast1-parth-dry-clean.cloudfunctions.net/updateCustomerProfile';
@@ -2924,30 +2876,14 @@ function renderComboSpotlight() {
   }).join('');
 }
 
-window.toggleHomeBagDock = function(force) {
-  const bar = document.getElementById('homeFloatingCartBar');
-  const toggleBtn = document.getElementById('hfcBagToggle');
-  if (!bar) return;
-  const nextState = typeof force === 'boolean' ? force : !bar.classList.contains('bag-expanded');
-  bar.classList.toggle('bag-expanded', nextState);
-  if (toggleBtn) toggleBtn.setAttribute('aria-expanded', nextState ? 'true' : 'false');
-};
-
-function syncHomeFloatingCartBar() {
-  HOME_BAG = getHomeBag();
-  const bar = document.getElementById('homeFloatingCartBar');
+function renderHomeBagItemsList() {
   const listEl = document.getElementById('hfcBagItemsList');
-  const toggleText = document.getElementById('hfcBagToggleText');
-  if (!bar) return;
-  let totalItems = 0;
-  let subtotal = 0;
+  if (!listEl) return;
   let rowsHtml = '';
   for (const [id, qty] of Object.entries(HOME_BAG)) {
     const item = findHomeCatalogItem(id);
     if (item && Number(item.price) > 0) {
-      totalItems += qty;
       const lineTotal = Number(item.price) * qty;
-      subtotal += lineTotal;
       rowsHtml += `<div class="hfc-bag-row">
         <div class="hfc-bag-row-info">
           <strong>${sanitizeHTML(item.name)}</strong>
@@ -2957,7 +2893,36 @@ function syncHomeFloatingCartBar() {
       </div>`;
     }
   }
-  if (listEl) listEl.innerHTML = rowsHtml;
+  listEl.innerHTML = rowsHtml;
+}
+
+window.toggleHomeBagDock = function(force) {
+  const bar = document.getElementById('homeFloatingCartBar');
+  const toggleBtn = document.getElementById('hfcBagToggle');
+  if (!bar) return;
+  const nextState = typeof force === 'boolean' ? force : !bar.classList.contains('bag-expanded');
+  if (nextState) renderHomeBagItemsList();
+  bar.classList.toggle('bag-expanded', nextState);
+  if (toggleBtn) toggleBtn.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+};
+
+function syncHomeFloatingCartBar() {
+  HOME_BAG = getHomeBag();
+  const bar = document.getElementById('homeFloatingCartBar');
+  const toggleText = document.getElementById('hfcBagToggleText');
+  if (!bar) return;
+  let totalItems = 0;
+  let subtotal = 0;
+  for (const [id, qty] of Object.entries(HOME_BAG)) {
+    const item = findHomeCatalogItem(id);
+    if (item && Number(item.price) > 0) {
+      totalItems += qty;
+      subtotal += Number(item.price) * qty;
+    }
+  }
+  if (bar.classList.contains('bag-expanded')) {
+    renderHomeBagItemsList();
+  }
   if (toggleText) toggleText.textContent = `Your Bag (${totalItems} item${totalItems === 1 ? '' : 's'}) — Tap to review`;
   const anyOverlayOpen = Boolean(
     document.querySelector('.modal-overlay.active') ||
