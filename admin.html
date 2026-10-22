@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- ParthadminGen26 : PARTH OS MODERN SAAS UI (Owner vs Manager RBAC + Live Session & Access Tracker + Payment Reminder) -->
+<!-- ParthadminGen27 : PARTH OS MODERN SAAS UI (Phase 2 Full-Stack: Mobile App UI, 5-Stage Pipeline, Bulk Assign, Item Editor, Paytm Auto-Verify, Anti-Fraud & Safe Reset) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Parth Dry Clean · Admin OS v26</title>
+<title>Parth Dry Clean · Admin OS v27</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Pacifico&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -382,6 +382,177 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   display: none !important;
 }
 
+
+/* ===== PHASE 2 UPGRADES: PIPELINE BAR, BULK BAR, MOBILE APP-STYLE CARDS & BOTTOM NAV ===== */
+.pipeline-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(115px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.pipe-stage {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: .18s;
+  box-shadow: var(--shadow-sm);
+}
+.pipe-stage:hover, .pipe-stage.active {
+  border-color: var(--pink);
+  background: rgba(37, 99, 235, 0.08);
+}
+.pipe-stage .ps-lbl {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pipe-stage .ps-lbl i { color: var(--pink); }
+.pipe-stage .ps-cnt {
+  background: var(--panel2);
+  color: var(--pink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+/* Bulk Assign Floating Bar */
+.bulk-assign-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(29,78,216,0.06));
+  border: 1.5px solid var(--pink);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.bulk-assign-bar.show { display: flex; }
+
+/* Trust Badges for Customers */
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  margin-left: 4px;
+}
+.trust-pill.verified { background: rgba(5,150,105,0.14); color: var(--good); }
+.trust-pill.repeat { background: rgba(37,99,235,0.14); color: var(--pink); }
+.trust-pill.warn { background: rgba(217,119,6,0.15); color: var(--warn); }
+.trust-pill.blocked { background: rgba(239,68,68,0.16); color: var(--bad); }
+
+/* Mobile Bottom Nav (Hidden on Desktop >768px) */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body { padding-bottom: 76px; }
+  .mobile-bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--panel);
+    border-top: 1px solid var(--line);
+    z-index: 850;
+    box-shadow: 0 -8px 24px rgba(15,23,42,0.12);
+    padding: 4px 6px calc(4px + env(safe-area-inset-bottom));
+  }
+  .mbn-btn {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+  }
+  .mbn-btn i { font-size: 16px; }
+  .mbn-btn.active {
+    color: var(--pink);
+    background: rgba(37,99,235,0.1);
+  }
+  .mbn-badge {
+    position: absolute;
+    top: 4px;
+    right: 16%;
+    background: var(--bad);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 999px;
+    line-height: 1.2;
+  }
+
+  /* Responsive Mobile Order Cards (<768px only — Desktop Table 100% untouched) */
+  #tab-orders .tbl-wrap { max-height: none; overflow: visible; }
+  #tab-orders table, #tab-orders tbody, #tab-orders tr, #tab-orders td {
+    display: block;
+    width: 100%;
+    min-width: 0 !important;
+  }
+  #tab-orders thead { display: none; }
+  #tab-orders tr {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  #tab-orders td {
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    text-align: right;
+  }
+  #tab-orders td:last-child { border-bottom: 0; padding-top: 10px; justify-content: flex-end; }
+  #tab-orders td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: .5px;
+    text-align: left;
+    flex-shrink: 0;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -472,6 +643,21 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    </div>
   </div>
   <div class="tab-content" id="tab-orders">
+   <div class="pipeline-strip" id="orderPipelineStrip">
+    <div class="pipe-stage" onclick="App.filterByStage('pending')"><span class="ps-lbl"><i class="fas fa-clock"></i> 1. Pending</span><span class="ps-cnt" id="ps_pending">0</span></div>
+    <div class="pipe-stage" onclick="App.filterByStage('picked_up')"><span class="ps-lbl"><i class="fas fa-box"></i> 2. Picked Up</span><span class="ps-cnt" id="ps_picked_up">0</span></div>
+    <div class="pipe-stage" onclick="App.filterByStage('processing')"><span class="ps-lbl"><i class="fas fa-soap"></i> 3. Cleaning</span><span class="ps-cnt" id="ps_processing">0</span></div>
+    <div class="pipe-stage" onclick="App.filterByStage('quality_check')"><span class="ps-lbl"><i class="fas fa-award"></i> 4. Quality</span><span class="ps-cnt" id="ps_quality_check">0</span></div>
+    <div class="pipe-stage" onclick="App.filterByStage('out_for_delivery')"><span class="ps-lbl"><i class="fas fa-truck-fast"></i> 5. Out</span><span class="ps-cnt" id="ps_out_for_delivery">0</span></div>
+   </div>
+   <div class="bulk-assign-bar" id="bulkAssignBar">
+    <div style="font-size:13px;font-weight:800;color:var(--pink)"><i class="fas fa-check-double"></i> <span id="bulkSelCount">0</span> Orders Selected</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <select id="bulkBoySelect" style="background:var(--panel);border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:10px;font-size:12.5px;font-weight:700"><option value="">— Select Rider —</option></select>
+     <button class="btn solid" onclick="App.bulkAssignSelected()"><i class="fas fa-motorcycle"></i> Assign Selected</button>
+     <button class="btn" onclick="App.clearBulkSelection()">Clear</button>
+    </div>
+   </div>
    <div class="toolbar">
     <input id="orderSearch" placeholder="🔍 Search order / customer / phone..."/>
     <select id="orderFilter"><option value="all">All statuses</option><option value="pending">Pending</option><option value="picked_up">Picked Up</option><option value="processing">Processing</option><option value="quality_check">Quality</option><option value="out_for_delivery">Out</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select>
@@ -483,7 +669,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     <button class="btn" id="exportOrders"><i class="fas fa-file-csv"></i> CSV</button>
     <button class="btn" onclick="App.backup()"><i class="fas fa-download"></i> Backup</button>
    </div>
-   <div class="panel"><div class="tbl-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Order Time</th><th>Pickup</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Assign</th><th>Actions</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
+   <div class="panel"><div class="tbl-wrap"><table><thead><tr><th style="width:32px"><input type="checkbox" id="selectAllOrdersCb" onchange="App.toggleSelectAllOrders(this.checked)" title="Select All"/></th><th>Order</th><th>Customer</th><th>Order Time</th><th>Pickup</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Assign</th><th>Actions</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
   </div>
   <div class="tab-content" id="tab-neworder">
    <div class="form-grid">
@@ -685,7 +871,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 
   <div class="tab-content" id="tab-customers">
    <div class="customer-stats"><div class="customer-stat"><div class="n" id="csTotal">0</div><div class="l">Total Customers</div></div><div class="customer-stat"><div class="n" id="csActive">0</div><div class="l">With Orders</div></div><div class="customer-stat"><div class="n" id="csRepeat">0</div><div class="l">Repeat Customers</div></div><div class="customer-stat"><div class="n" id="csRevenue">₹0</div><div class="l">Delivered Revenue</div></div></div>
-   <div class="panel"><div class="customer-toolbar"><input id="customerSearch" placeholder="🔍 Search name / phone / email..."/><select id="customerFilter"><option value="all">All Customers</option><option value="orders">Has Orders</option><option value="repeat">Repeat (2+)</option><option value="noorders">No Orders</option></select></div><div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Spent</th><th>Last Order</th><th>Action</th></tr></thead><tbody id="custBody"></tbody></table></div></div>
+   <div class="panel"><div class="customer-toolbar"><input id="customerSearch" placeholder="🔍 Search name / phone / email..."/><select id="customerFilter"><option value="all">All Customers</option><option value="orders">Has Orders</option><option value="repeat">Repeat (2+)</option><option value="noorders">No Orders (0 Orders)</option><option value="blocked">🚫 Blocked Only</option></select><button class="btn bad" id="cleanupFakeCustBtn" onclick="App.cleanupZeroOrderCustomers()"><i class="fas fa-user-slash"></i> Clean 0-Order Accounts</button></div><div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Orders</th><th>Spent</th><th>Last Order</th><th>Action</th></tr></thead><tbody id="custBody"></tbody></table></div></div>
   </div>
 
   <div class="tab-content" id="tab-control">
@@ -700,6 +886,36 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
      <div class="fg"><label>Store Message</label><input id="ctlMessage" maxlength="140" placeholder="e.g. Same-day pickup available"/></div>
      <div class="fg"><label>Working Hours</label><input id="ctlHours" maxlength="100" placeholder="10 AM – 8 PM"/></div>
      <button class="btn solid" onclick="App.saveControl()"><i class="fas fa-save"></i> Save Store Control</button>
+    </div>
+   </div>
+   <!-- OWNER-ONLY PAYTM BUSINESS UPI & AUTO-VERIFY SETUP -->
+   <div class="panel" id="paytmSetupPanel" style="margin-bottom:16px">
+    <div class="panel-head">
+     <h3><i class="fas fa-qrcode"></i> Paytm Business UPI &amp; 100% Auto-Confirm Setup (Owner Only)</h3>
+     <label class="switch" title="Enable/Disable Online UPI QR"><input type="checkbox" id="payUpiEnabled" checked><span class="sl"></span></label>
+    </div>
+    <div style="padding:16px">
+     <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.55">
+      Apna <b>Paytm Business Merchant UPI VPA</b> yahan save karein. Customer aur Rider screen par har order ka exact amount aur Order ID lock hokar Dynamic QR dikhega. <b>100% Zero-Click Auto-Confirm</b> ke liye apna Paytm Merchant ID (MID) dalein ya niche diya Webhook URL Paytm Dashboard / Paytm Business App Forwarder me paste karein.
+     </div>
+     <div class="form-grid" style="margin-bottom:12px">
+      <div class="fg"><label>Merchant UPI ID (VPA) *</label><input id="payUpiVpa" placeholder="e.g. parthdryclean@paytm"/></div>
+      <div class="fg"><label>Merchant Display Name</label><input id="payMerchantName" placeholder="Parth Dry Clean"/></div>
+      <div class="fg"><label>Paytm Merchant ID (MID - Optional)</label><input id="payPaytmMid" placeholder="e.g. PARTHD12345678"/></div>
+      <div class="fg"><label>Google Review Link (For 1-Tap Review Booster)</label><input id="payGoogleReviewUrl" placeholder="https://g.page/r/..."/></div>
+     </div>
+     <div class="form-grid" style="margin-bottom:12px">
+      <div class="fg"><label>Paytm Merchant Key (Secret - Optional for API Poll)</label><input id="payMerchantKey" type="password" placeholder="•••••••••••• (Leave blank to keep existing)"/></div>
+      <div class="fg"><label>Webhook Secret Key (For App Forwarder / Webhook)</label><input id="payWebhookSecret" placeholder="e.g. parth_secret_2026"/></div>
+      <div class="fg" style="flex:2">
+       <label>Auto-Confirm Webhook URL (Tap Copy)</label>
+       <div style="display:flex;gap:8px">
+        <input id="payWebhookUrlDisplay" readonly value="https://asia-southeast1-parth-dry-clean.cloudfunctions.net/paytmAutoVerifyWebhook"/>
+        <button type="button" class="btn" onclick="App.copyWebhookUrl()"><i class="fas fa-copy"></i> Copy</button>
+       </div>
+      </div>
+     </div>
+     <button class="btn solid" onclick="App.savePaymentSettings()"><i class="fas fa-save"></i> Save Paytm &amp; UPI Settings</button>
     </div>
    </div>
    <div class="card"><div class="ic v"><i class="fas fa-circle-info"></i></div><div class="lbl">V2 Data Contract</div><div style="margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5">Existing <b>settings/general</b> keys remain intact. New message/hours fields are additive only.</div></div>
@@ -861,9 +1077,43 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
      </table>
     </div>
    </div>
+
+   <!-- 4. OWNER-ONLY 1-CLICK SAFE TEST DATA RESET TOOL -->
+   <div class="panel" style="margin-top:18px;border-color:rgba(239,68,68,0.45)">
+    <div class="panel-head" style="background:rgba(239,68,68,0.06)">
+     <h3 style="color:var(--bad)"><i class="fas fa-Rotate-left" style="color:var(--bad)"></i> 1-Click Safe Test Data Reset (Launch Fresh from 0)</h3>
+     <span class="role-pill owner">OWNER ONLY</span>
+    </div>
+    <div style="padding:16px">
+     <div style="font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.55">
+      Testing puri hone ke baad jab aap real customers ke liye fresh start karna chahein, toh ye tool <b>pichhle saare test orders, notification logs, aur test customer records</b> ko clean kar dega (aur delivery boys ka counter 0 kar dega).<br>
+      <b style="color:var(--good)">✅ 100% Safe Preserved:</b> Aapki Services &amp; Price List, Website CMS Content, Coupons, Store Settings, Service Areas, aur Delivery Boy logins bilkul safe rahenge. Reset se pehle ek <b>Auto-Backup JSON</b> apne aap download hoga.
+     </div>
+     <div class="form-grid" style="margin-bottom:0;border-color:rgba(239,68,68,0.3)">
+      <div class="fg">
+       <label> Options</label>
+       <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text);text-transform:none;cursor:pointer;padding-top:8px">
+        <input type="checkbox" id="resetIncludeCustomers" checked style="width:16px;height:16px"/> Clear test customer profiles &amp; coupon claims too
+       </label>
+      </div>
+      <div class="fg">
+       <label>Type "RESET" to Confirm *</label>
+       <input id="resetConfirmInput" placeholder="Type RESET in capital letters" style="border-color:rgba(239,68,68,0.4)"/>
+      </div>
+      <button class="btn bad" id="runSafeResetBtn" onclick="App.runSafeTestDataReset()"><i class="fas fa-broom"></i> Auto-Backup &amp; Reset Test Data</button>
+     </div>
+    </div>
+   </div>
   </div>
  </div>
 </main>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Admin Navigation">
+ <button type="button" class="mbn-btn active" data-mbn="dashboard" onclick="App.mobileNavClick('dashboard')"><i class="fas fa-gauge-high"></i><span>Dash</span></button>
+ <button type="button" class="mbn-btn" data-mbn="orders" onclick="App.mobileNavClick('orders')"><i class="fas fa-box"></i><span>Orders</span><span class="mbn-badge" id="mbnOrderBadge" style="display:none">0</span></button>
+ <button type="button" class="mbn-btn" data-mbn="neworder" onclick="App.mobileNavClick('neworder')"><i class="fas fa-plus-circle"></i><span>New</span></button>
+ <button type="button" class="mbn-btn" data-mbn="boys" onclick="App.mobileNavClick('boys')"><i class="fas fa-motorcycle"></i><span>Riders</span></button>
+ <button type="button" class="mbn-btn" data-mbn="more" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i><span>More</span></button>
+</nav>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomain:"parth-dry-clean.firebaseapp.com",databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"parth-dry-clean",storageBucket:"parth-dry-clean.firebasestorage.app",messagingSenderId:"673481985335",appId:"1:673481985335:web:eb4194b4860cf979b21eb2"};
 firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.database();
@@ -1342,6 +1592,11 @@ function applyRolePermissionsUI() {
   if ($('permAllowControl')) $('permAllowControl').checked = !!MANAGER_PERMS.allowControl;
   if ($('permAllowCsv')) $('permAllowCsv').checked = !!MANAGER_PERMS.allowCsv;
 
+  const payPanel = $('paytmSetupPanel');
+  if (payPanel) payPanel.classList.toggle('manager-hidden', !isOwner);
+  const cleanCustBtn = $('cleanupFakeCustBtn');
+  if (cleanCustBtn) cleanCustBtn.classList.toggle('manager-hidden', !isOwner);
+
   renderDashboard();
   if ($('tab-boys').classList.contains('active')) renderBoys();
 }
@@ -1480,6 +1735,22 @@ function start(){
  });
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();renderManualNotificationCustomers();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;$('ctlMessage').value=v.storeMessage||'';$('ctlHours').value=v.workingHours||'';App.updateControlState();});
+ db.ref('settings/payment').on('value',s=>{
+   const p=s.val()||{};
+   window.PAYMENT_SETTINGS=p;
+   if($('payUpiEnabled')) $('payUpiEnabled').checked=p.upiEnabled!==false;
+   if($('payUpiVpa')) $('payUpiVpa').value=p.upiVpa||'';
+   if($('payMerchantName')) $('payMerchantName').value=p.merchantName||'Parth Dry Clean';
+   if($('payPaytmMid')) $('payPaytmMid').value=p.paytmMid||'';
+   if($('payGoogleReviewUrl')) $('payGoogleReviewUrl').value=p.googleReviewUrl||'';
+ });
+ if(CURRENT_ADMIN_ROLE==='owner'){
+   db.ref('settings/payment_secrets').on('value',s=>{
+     const sec=s.val()||{};
+     if($('payWebhookSecret') && sec.webhookSecret) $('payWebhookSecret').value=sec.webhookSecret;
+     if($('payMerchantKey') && sec.paytmMerchantKey) $('payMerchantKey').placeholder='•••••••• (Saved! Enter new to change)';
+   });
+ }
  db.ref('services/categories').on('value',s=>{CATS=s.exists()?s.val():JSON.parse(JSON.stringify(DEFAULT_CATS));renderServices();});
  db.ref('site_media').on('value',s=>{MEDIA=s.val()||{};renderMedia();});
  db.ref('settings/serviceAreas').on('value',s=>{serviceAreas=s.val()||{enabled:true,areas:{}};serviceAreas.areas=serviceAreas.areas||{};renderServiceAreas();renderIntelligence();});
@@ -1615,7 +1886,7 @@ function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date()
     if(qty>0) itemCount[itemName]=(itemCount[itemName]||0)+qty;
   }});
  const canSeeRev = (CURRENT_ADMIN_ROLE === 'owner') || !!MANAGER_PERMS.showRevenue;
- $('dToday').textContent=tT;$('dRevToday').textContent=canSeeRev?('₹'+rT.toLocaleString('en-IN')):'🔒 Owner';$('dPending').textContent=pend;$('dActive').textContent=act;$('dDelivered').textContent=del;$('dCustomers').textContent=Object.keys(customers).length;$('orderBadge').textContent=pend;
+ $('dToday').textContent=tT;$('dRevToday').textContent=canSeeRev?('₹'+rT.toLocaleString('en-IN')):'🔒 Owner';$('dPending').textContent=pend;$('dActive').textContent=act;$('dDelivered').textContent=del;$('dCustomers').textContent=Object.keys(customers).length;$('orderBadge').textContent=pend; const mbnB=$('mbnOrderBadge'); if(mbnB){mbnB.textContent=pend;mbnB.style.display=pend>0?'inline-block':'none';}
  $('dTodayDelta').innerHTML=tT>=yT?`<span class="delta up">▲ ${tT-yT} vs kal</span>`:`<span class="delta dn">▼ ${yT-tT} vs kal</span>`;
  $('dRevDelta').innerHTML=canSeeRev?(rT>=rY?`<span class="delta up">▲ ₹${rT-rY} vs kal</span>`:`<span class="delta dn">▼ ₹${rY-rT} vs kal</span>`):'<span class="delta">Protected</span>';
  const top=Object.entries(itemCount).sort((a,b)=>b[1]-a[1]).slice(0,5);const max=top.length?Math.max(top[0][1],1):1;
@@ -1623,13 +1894,34 @@ function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date()
 
 let orderQuickPreset='all';
 function setOrderPreset(preset){orderQuickPreset=preset;$('orderFilter').value='all';document.querySelectorAll('[data-order-preset]').forEach(b=>{b.classList.toggle('solid',b.dataset.orderPreset===preset);});renderOrders();}
+let selectedBulkOrderIds = new Set();
 function renderOrders(){
  if(!ordersSnap)return;
  const q=String($('orderSearch').value||'').trim().toLowerCase();
- const f=$('orderFilter').value;let list=[];
- ordersSnap.forEach(c=>{const o=c.val();if(o)list.push({id:c.key,...o});});
+ const f=$('orderFilter').value;let allOrders=[],list=[];
+ const stageCounts={pending:0,picked_up:0,processing:0,quality_check:0,out_for_delivery:0};
+ ordersSnap.forEach(c=>{
+  const o=c.val();
+  if(o){
+   const st=o.status||'pending';
+   if(stageCounts[st]!==undefined) stageCounts[st]++;
+   allOrders.push({id:c.key,...o});
+  }
+ });
+ Object.keys(stageCounts).forEach(k=>{
+  const el=$('ps_'+k); if(el) el.textContent=stageCounts[k];
+ });
+ document.querySelectorAll('#orderPipelineStrip .pipe-stage').forEach(el=>{
+  el.classList.toggle('active', el.getAttribute('onclick')?.includes(`'${f}'`));
+ });
+ const bulkBoySel=$('bulkBoySelect');
+ if(bulkBoySel){
+  const curVal=bulkBoySel.value;
+  bulkBoySel.innerHTML='<option value="">— Select Rider —</option>'+boys.filter(b=>b.active!==false).map(b=>`<option value="${esc(b.phone)}">${esc(b.name)} (${esc(b.phone)})</option>`).join('');
+  bulkBoySel.value=curVal;
+ }
  const activeStatuses=['picked_up','processing','quality_check','out_for_delivery'];
- list=list.filter(o=>{
+ list=allOrders.filter(o=>{
   const status=o.status||'pending';
   const hay=[o.orderId,o.customerName,o.name,o.phone,o.id].map(v=>String(v||'').toLowerCase()).join(' ');
   const matchesSearch=!q||hay.includes(q);
@@ -1661,8 +1953,12 @@ function renderOrders(){
   const created=o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-';
   const pickup=esc(o.pickupDate||'-');const total=Number(o.total)||0;
   const pay=String(o.paymentStatus||'');
-  return `<tr class="${rc}"><td style="color:var(--pink);font-weight:700">${orderLabel}${source}</td><td><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></td><td style="font-size:12px">${esc(created)}</td><td>${pickup}</td><td>${items||'-'}</td><td><b>₹${total}</b></td><td><select onchange="App.setPay('${id}',this.value)"><option ${pay==='Paid'?'selected':''}>Paid</option><option ${(!pay||pay!=='Paid')?'selected':''}>Pay on Delivery</option></select></td><td><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select></td><td><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${o.assigned_to===b.phone?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')"><i class="fas fa-user-check"></i></button></td><td class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')"><i class="fas fa-print"></i></button></td></tr>`;
- }).join(''):'<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';
+  const isPaid=pay.toLowerCase().startsWith('paid');
+  const nextSt=ORDER_NEXT[st];
+  const nextBtn=nextSt?`<button class="btn good" title="1-Tap Move to ${esc(ORDER_LABELS[nextSt])}" onclick="App.setStatus('${id}','${nextSt}')"><i class="fas fa-forward-step"></i> ${esc(ORDER_LABELS[nextSt])}</button>`:'';
+  const checked=selectedBulkOrderIds.has(id)?'checked':'';
+  return `<tr class="${rc}"><td data-label="Select"><input type="checkbox" class="order-bulk-cb" data-id="${id}" ${checked} onchange="App.toggleBulkOrder('${id}',this.checked)"/></td><td data-label="Order" style="color:var(--pink);font-weight:700">${orderLabel}${source}</td><td data-label="Customer"><div><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></div></td><td data-label="Booked" style="font-size:12px">${esc(created)}</td><td data-label="Pickup">${pickup}</td><td data-label="Items"><div>${items||'-'}</div></td><td data-label="Total"><b>₹${total}</b></td><td data-label="Payment"><select onchange="App.setPay('${id}',this.value)"><option value="Paid" ${isPaid?'selected':''}>${isPaid?esc(pay):'Paid'}</option><option value="Pay on Delivery" ${!isPaid?'selected':''}>Pay on Delivery</option></select></td><td data-label="Status"><div style="display:flex;flex-direction:column;gap:4px"><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select>${nextBtn}</div></td><td data-label="Rider"><div><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${o.assigned_to===b.phone?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')"><i class="fas fa-user-check"></i></button></div></td><td data-label="Actions" class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')" title="Print Invoice"><i class="fas fa-print"></i></button><button class="btn" onclick="App.printTags('${id}')" title="Print Garment Tags"><i class="fas fa-tag"></i></button></td></tr>`;
+ }).join(''):'<tr><td colspan="11"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';
 }
 $('orderSearch').oninput=renderOrders;
 $('orderFilter').onchange=()=>{orderQuickPreset='all';document.querySelectorAll('[data-order-preset]').forEach(b=>b.classList.toggle('solid',b.dataset.orderPreset==='all'));renderOrders();};
@@ -1781,9 +2077,18 @@ function pdcPhone10(v){return String(v||'').replace(/\D/g,'').slice(-10);}
 
 function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const bp=pdcPhone10(b.phone);const a=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&o.status==='delivered').length;const active=b.active!==false;return `<div class="list-item"><div><span class="name">${esc(b.name)}</span> <span class="type-badge ${active?'general':'first_order'}">${active?'Active':'Inactive'}</span><div class="sub">${esc(b.phone)} · ${a} active orders · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="switch"><input type="checkbox" ${active?'checked':''} onchange="App.toggleBoy('${b.id}',this.checked)"><span class="sl"></span></label><button class="btn" onclick="App.openBoyChat('${b.id}')"><i class="fas fa-comments"></i> Chat</button><button class="btn" onclick="App.setBoyPin('${b.id}','${esc(b.name||'Partner')}')"><i class="fas fa-key"></i> PIN</button>${CURRENT_ADMIN_ROLE==='owner'?`<button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button>`:''}</div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>'; }
 
-function customerRows(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const q=($('customerSearch')?.value||'').trim().toLowerCase();const filter=$('customerFilter')?.value||'all';return Object.entries(customers).map(([uid,c])=>{const co=orders.filter(o=>o.uid===uid);const spent=co.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);const last=co.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0];return{uid,...c,orders:co.length,spent,lastOrder:last||null};}).filter(c=>{const hay=[c.name,c.phone,c.email,c.address,c.uid].join(' ').toLowerCase();if(q&&!hay.includes(q))return false;if(filter==='orders'&&c.orders<1)return false;if(filter==='repeat'&&c.orders<2)return false;if(filter==='noorders'&&c.orders!==0)return false;return true;});}
-function renderCustomers(){const rows=customerRows();const all=Object.entries(customers).map(([uid,c])=>({uid,...c}));const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const stats=all.map(c=>orders.filter(o=>o.uid===c.uid));$('csTotal').textContent=all.length;$('csActive').textContent=stats.filter(x=>x.length>0).length;$('csRepeat').textContent=stats.filter(x=>x.length>=2).length;$('csRevenue').textContent='₹'+orders.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);$('custBody').innerHTML=rows.length?rows.map(c=>`<tr><td><b>${esc(c.name||'Unnamed')}</b><br><span style="font-size:10px;color:var(--muted)">${esc(c.uid)}</span></td><td>${esc(c.phone||'-')}</td><td>${esc(c.email||'-')}</td><td><b>${c.orders}</b></td><td><b>₹${c.spent}</b></td><td style="font-size:11px">${c.lastOrder?.createdAt?new Date(c.lastOrder.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'-'}</td><td class="customer-table-action"><button class="btn solid" onclick="App.openCustomer('${esc(c.uid)}')"><i class="fas fa-eye"></i> View</button></td></tr>`).join(''):'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i>Koi matching customer nahi</div></td></tr>';}
-function renderCustomerModal(uid){const c=customers[uid]||{};const orders=ordersSnap?Object.values(ordersSnap.val()||{}).filter(o=>o.uid===uid).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)):[];const delivered=orders.filter(o=>o.status==='delivered');$('cmTitle').textContent=c.name||'Customer';$('cmMeta').textContent=(c.phone||'No phone')+' · '+(c.email||'No email')+' · UID '+uid;const addrList=Array.isArray(c.addresses)?c.addresses:((c.addresses&&typeof c.addresses==='object')?Object.values(c.addresses).filter(Boolean).map(a=>({label:String(a.type||'home').toUpperCase()+(a.isDefault?' (Default)':''),address:[a.house,a.floor?'Floor '+a.floor:'',a.landmark,a.area,a.pincode].filter(Boolean).join(', ')||a.address||'-'})):(c.address?[{label:'Primary',address:c.address}]:[]));$('cmBody').innerHTML=`<div class="customer-profile-grid"><div class="customer-field"><label>Name</label><input id="cmName" value="${esc(c.name||'')}"/></div><div class="customer-field"><label>Phone (identity)</label><input value="${esc(c.phone||'-')}" disabled/></div><div class="customer-field"><label>Email (identity)</label><input value="${esc(c.email||'-')}" disabled/></div><div class="customer-field"><label>Created</label><div style="font-size:13px;font-weight:700;padding:9px 0">${c.createdAt?new Date(c.createdAt).toLocaleString('en-IN'):'-'}</div></div><div class="customer-field full"><label>Primary Address</label><textarea id="cmAddress" rows="2">${esc(c.address||'')}</textarea></div><div class="customer-field full"><label>Saved Addresses</label><div style="font-size:12px;line-height:1.6">${addrList.length?addrList.map((a,i)=>`<div><b>${esc(a.label||('Address '+(i+1)))}</b> — ${esc(a.address||a.fullAddress||'-')}</div>`).join(''):'No saved addresses'}</div></div></div><div class="od-actions" style="margin-top:12px"><button class="btn good" onclick="App.saveCustomerProfile('${esc(uid)}')"><i class="fas fa-save"></i> Save Profile</button>${c.phone?`<button class="btn" onclick="App.customerWhatsApp('${esc(c.phone)}','${esc(c.name||'')}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>`:''}</div><div class="od-section" style="margin-top:14px"><div class="od-section-head"><strong>Order History</strong><span class="status-pill">${orders.length} orders · ₹${delivered.reduce((x,o)=>x+(+o.total||0),0)} delivered</span></div><div class="od-section-body">${orders.length?orders.map(o=>`<div class="customer-order-row"><div><b>${esc(o.orderId||o.id||'-')}</b><br><span style="color:var(--muted)">${esc(o.pickupDate||'-')} · ${esc(o.status||'pending')}</span></div><b>₹${+o.total||0}</b></div>`).join(''):'<div class="empty-state" style="padding:20px">No orders found</div>'}</div></div>`;}
+function customerRows(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const q=($('customerSearch')?.value||'').trim().toLowerCase();const filter=$('customerFilter')?.value||'all';return Object.entries(customers).map(([uid,c])=>{const p10=pdcPhone10(c.phone);const co=orders.filter(o=>o.uid===uid||(p10&&pdcPhone10(o.phone)===p10));const cancelledCount=co.filter(o=>o.status==='cancelled').length;const spent=co.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);const last=co.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0];return{uid,...c,orders:co.length,cancelledCount,spent,lastOrder:last||null};}).filter(c=>{const hay=[c.name,c.phone,c.email,c.address,c.uid].join(' ').toLowerCase();if(q&&!hay.includes(q))return false;if(filter==='orders'&&c.orders<1)return false;if(filter==='repeat'&&c.orders<2)return false;if(filter==='noorders'&&c.orders!==0)return false;if(filter==='blocked'&&!c.blocked)return false;return true;});}
+function renderCustomers(){const rows=customerRows();const all=Object.entries(customers).map(([uid,c])=>({uid,...c}));const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const stats=all.map(c=>orders.filter(o=>o.uid===c.uid));$('csTotal').textContent=all.length;$('csActive').textContent=stats.filter(x=>x.length>0).length;$('csRepeat').textContent=stats.filter(x=>x.length>=2).length;$('csRevenue').textContent='₹'+orders.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);$('custBody').innerHTML=rows.length?rows.map(c=>{
+ let badges='';
+ if(c.blocked) badges+=`<span class="trust-pill blocked"><i class="fas fa-ban"></i> Blocked</span>`;
+ else {
+   if(c.orders>=2) badges+=`<span class="trust-pill repeat"><i class="fas fa-star"></i> Repeat</span>`;
+   else if(c.orders===1) badges+=`<span class="trust-pill verified"><i class="fas fa-check"></i> Active</span>`;
+   if(c.cancelledCount>=2) badges+=`<span class="trust-pill warn"><i class="fas fa-triangle-exclamation"></i> ${c.cancelledCount} Cancelled</span>`;
+ }
+ return `<tr class="${c.blocked?'row-overdue':''}"><td><b>${esc(c.name||'Unnamed')}</b> ${badges}<br><span style="font-size:10px;color:var(--muted)">${esc(c.uid)}</span></td><td>${esc(c.phone||'-')}</td><td>${esc(c.email||'-')}</td><td><b>${c.orders}</b></td><td><b>₹${c.spent}</b></td><td style="font-size:11px">${c.lastOrder?.createdAt?new Date(c.lastOrder.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'-'}</td><td class="customer-table-action" style="display:flex;gap:6px"><button class="btn solid" onclick="App.openCustomer('${esc(c.uid)}')"><i class="fas fa-eye"></i> View</button><button class="btn ${c.blocked?'good':'bad'}" title="${c.blocked?'Unblock Customer':'Block Fake/Spam Customer'}" onclick="App.toggleBlockCustomer('${esc(c.uid)}',${!c.blocked})"><i class="fas ${c.blocked?'fa-unlock':'fa-ban'}"></i></button></td></tr>`;
+}).join(''):'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i>Koi matching customer nahi</div></td></tr>';}
+function renderCustomerModal(uid){const c=customers[uid]||{};const orders=ordersSnap?Object.values(ordersSnap.val()||{}).filter(o=>o.uid===uid).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)):[];const delivered=orders.filter(o=>o.status==='delivered');$('cmTitle').textContent=c.name||'Customer';$('cmMeta').textContent=(c.phone||'No phone')+' · '+(c.email||'No email')+' · UID '+uid;const addrList=Array.isArray(c.addresses)?c.addresses:((c.addresses&&typeof c.addresses==='object')?Object.values(c.addresses).filter(Boolean).map(a=>({label:String(a.type||'home').toUpperCase()+(a.isDefault?' (Default)':''),address:[a.house,a.floor?'Floor '+a.floor:'',a.landmark,a.area,a.pincode].filter(Boolean).join(', ')||a.address||'-'})):(c.address?[{label:'Primary',address:c.address}]:[]));$('cmBody').innerHTML=`<div class="customer-profile-grid"><div class="customer-field"><label>Name</label><input id="cmName" value="${esc(c.name||'')}"/></div><div class="customer-field"><label>Phone (identity)</label><input value="${esc(c.phone||'-')}" disabled/></div><div class="customer-field"><label>Email (identity)</label><input value="${esc(c.email||'-')}" disabled/></div><div class="customer-field"><label>Created</label><div style="font-size:13px;font-weight:700;padding:9px 0">${c.createdAt?new Date(c.createdAt).toLocaleString('en-IN'):'-'}</div></div><div class="customer-field full"><label>Primary Address</label><textarea id="cmAddress" rows="2">${esc(c.address||'')}</textarea></div><div class="customer-field full"><label>Saved Addresses</label><div style="font-size:12px;line-height:1.6">${addrList.length?addrList.map((a,i)=>`<div><b>${esc(a.label||('Address '+(i+1)))}</b> — ${esc(a.address||a.fullAddress||'-')}</div>`).join(''):'No saved addresses'}</div></div></div><div class="od-actions" style="margin-top:12px"><button class="btn good" onclick="App.saveCustomerProfile('${esc(uid)}')"><i class="fas fa-save"></i> Save Profile</button>${c.phone?`<button class="btn" onclick="App.customerWhatsApp('${esc(c.phone)}','${esc(c.name||'')}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>`:''}<button class="btn ${c.blocked?'good':'bad'}" onclick="App.toggleBlockCustomer('${esc(uid)}',${!c.blocked})"><i class="fas ${c.blocked?'fa-unlock':'fa-ban'}"></i> ${c.blocked?'Unblock Account':'Block Account'}</button></div><div class="od-section" style="margin-top:14px"><div class="od-section-head"><strong>Order History</strong><span class="status-pill">${orders.length} orders · ₹${delivered.reduce((x,o)=>x+(+o.total||0),0)} delivered</span></div><div class="od-section-body">${orders.length?orders.map(o=>`<div class="customer-order-row"><div><b>${esc(o.orderId||o.id||'-')}</b><br><span style="color:var(--muted)">${esc(o.pickupDate||'-')} · ${esc(o.status||'pending')}</span></div><b>₹${+o.total||0}</b></div>`).join(''):'<div class="empty-state" style="padding:20px">No orders found</div>'}</div></div>`;}
 function renderMedia(){const list=Object.entries(MEDIA).sort((a,b)=>(b[1]?.createdAt||0)-(a[1]?.createdAt||0));$('cmsMediaList').innerHTML=list.length?list.map(([id,m])=>{const type=m.type||'';const isImg=type.startsWith('image/');const isVid=type.startsWith('video/');return `<div class="media-card"><div class="media-thumb">${isImg?`<img src="${esc(m.url)}" alt="${esc(m.name||'media')}" loading="lazy">`:isVid?`<video src="${esc(m.url)}" muted controls preload="metadata"></video>`:`<i class="fas fa-file-lines"></i>`}</div><div class="media-info"><div class="media-name">${esc(m.label||m.name||id)}</div><div class="media-meta">${esc(type||'file')} · ${Math.round((+m.size||0)/1024)} KB</div><div class="media-actions"><button class="btn" onclick="App.copyMediaUrl('${esc(m.url)}')"><i class="fas fa-link"></i> Copy URL</button><button class="btn bad" onclick="App.deleteMedia('${esc(id)}')"><i class="fas fa-trash"></i> Delete</button></div></div></div>`}).join(''):'<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-photo-film"></i>No media uploaded yet</div>';}
 function renderReports(){
  if(!ordersSnap)return;
@@ -1840,7 +2145,16 @@ function renderOrderDrawer(o){
    <div class="od-field"><div class="od-label">Est. Delivery</div><div class="od-value">${esc(o.estd||o.estdTime||o.estimatedDelivery||o.deliveryDate||o.ESTD||'—')}</div></div>
    <div class="od-field full"><div class="od-label">Address</div><div class="od-value">${esc(o.address||'—')}</div></div>
   </div></div></section>
-  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-shirt"></i> Items · Frozen Order Rates</strong></div><div class="od-section-body"><table class="od-items"><thead><tr><th>Item</th><th>Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead><tbody>${items.rows}</tbody></table></div></section>
+  <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-shirt"></i> Items &amp; Doorstep Bill Editor</strong><button class="btn" onclick="App.toggleDrawerItemEditor('${o.id}')"><i class="fas fa-pen-to-square"></i> Edit Items / Bill</button></div><div class="od-section-body"><table class="od-items"><thead><tr><th>Item</th><th>Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead><tbody>${items.rows}</tbody></table>
+   <div id="odItemEditorBox" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:700">Customer ke kapde count karne ke baad yahan item add/edit karein (Total bill automatically recalculate hoga):</div>
+    <div id="odEditRowsWrap"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+     <button type="button" class="btn" onclick="App.addDrawerEditRow()"><i class="fas fa-plus"></i> Add Garment Row</button>
+     <button type="button" class="btn good" id="odSaveItemsBtn" onclick="App.saveDrawerItems('${o.id}')"><i class="fas fa-check"></i> Save Updated Items &amp; Bill</button>
+    </div>
+   </div>
+  </div></section>
   <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-receipt"></i> Billing</strong></div><div class="od-section-body">
    <div class="od-grid">
     <div class="od-field"><div class="od-label">Subtotal</div><div class="od-value">₹${Number(o.subtotal||items.computedSubtotal||0)}</div></div>
@@ -1852,7 +2166,7 @@ function renderOrderDrawer(o){
   <section class="od-section"><div class="od-section-head"><strong><i class="fas fa-sliders"></i> Operations</strong></div><div class="od-section-body">
    <div class="od-status-row"><div><div class="od-label">Order Status</div><select id="odStatusSelect"><option value="pending">Pending</option><option value="picked_up">Picked Up</option><option value="processing">Processing</option><option value="quality_check">Quality Check</option><option value="out_for_delivery">Out for Delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select><div class="od-status-note">Normal flow: Pending → Picked Up → Processing → Quality Check → Out for Delivery → Delivered.</div></div><div><div class="od-label">Payment Status</div><select id="odPaySelect"><option>Pay on Delivery</option><option>Paid</option></select></div></div>
    <div style="margin-top:12px"><div class="od-label">Delivery Boy</div><select id="odBoySelect" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:11px;font-weight:700"><option value="">— Unassigned —</option>${boys.filter(b=>b.active!==false).map(b=>`<option value="${esc(b.phone)}">${esc(b.name)} · ${esc(b.phone)}</option>`).join('')}</select></div>
-   <div class="od-actions" style="margin-top:12px"><button class="btn solid" onclick="App.saveOrderOps('${o.id}')"><i class="fas fa-save"></i> Save Changes</button><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="btn" onclick="App.waBillReminder('${o.id}')" title="Send Bill & Payment Reminder"><i class="fas fa-indian-rupee-sign"></i> Bill Alert</button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i> Print</button></div>
+   <div class="od-actions" style="margin-top:12px"><button class="btn solid" onclick="App.saveOrderOps('${o.id}')"><i class="fas fa-save"></i> Save Changes</button><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="btn" onclick="App.waBillReminder('${o.id}')" title="Send Bill & Payment Reminder"><i class="fas fa-indian-rupee-sign"></i> Bill Alert</button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i> Invoice</button><button class="btn" onclick="App.printTags('${o.id}')"><i class="fas fa-tag"></i> Print Tags</button>${st==='delivered'?`<button class="btn good" onclick="App.waReviewRequest('${o.id}')"><i class="fas fa-star"></i> Ask Google Review</button>`:''}</div>
   </div></section>
   ${o.issue&&o.issue.type?`<section class="od-section" style="border-color:var(--bad)"><div class="od-section-head" style="background:rgba(239,68,68,.1)"><strong style="color:var(--bad)"><i class="fas fa-triangle-exclamation"></i> Rider Issue Reported</strong><span class="status-pill" style="color:var(--bad);border-color:var(--bad)">${esc(o.issue.boyName||'Partner')}</span></div><div class="od-section-body"><div class="od-value" style="color:var(--bad)">${esc(o.issue.type)}</div>${o.issue.note?`<div class="od-value subtle" style="margin-top:4px">${esc(o.issue.note)}</div>`:''}</div></section>`:''}
   ${o.extra_items?`<section class="od-section"><div class="od-section-head"><strong><i class="fas fa-basket-shopping"></i> Extra Items Added at Pickup</strong></div><div class="od-section-body">${Object.values(o.extra_items||{}).map(log=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:12px"><b>+₹${Number(log.amount||0)} by ${esc(log.boyName||'Partner')}</b> · <span style="color:var(--muted)">${log.at?new Date(log.at).toLocaleString('en-IN'):''}</span><div style="margin-top:4px;color:var(--muted)">${(log.items||[]).map(it=>`${esc(it.name)} x${Number(it.qty||1)} (₹${Number(it.amount||0)})`).join(', ')}</div></div>`).join('')}</div></section>`:''}
@@ -2270,7 +2584,278 @@ const App={
  copyMediaUrl:url=>{if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>toast('Media URL copied'));else toast(url);},
  refreshMedia:()=>db.ref('site_media').once('value').then(s=>{MEDIA=s.val()||{};renderMedia();toast('Media refreshed');}),
  uploadMedia:async()=>{const f=$('mediaFile').files[0];if(!f)return toast('File select karo','err');if(f.size>25*1024*1024)return toast('Max file size 25 MB','err');const btn=$('mediaUploadBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading…';try{const safe=f.name.replace(/[^a-zA-Z0-9._-]+/g,'-').slice(-100);const id=Date.now()+'_'+Math.random().toString(36).slice(2,8);const path='site_media/'+id+'_'+safe;const ref=storage.ref(path);const snap=await ref.put(f,{contentType:f.type||'application/octet-stream'});const url=await snap.ref.getDownloadURL();await db.ref('site_media/'+id).set({name:f.name,label:($('mediaLabel').value||'').trim(),type:f.type||'application/octet-stream',size:f.size,url,path,createdAt:firebase.database.ServerValue.TIMESTAMP});$('mediaFile').value='';$('mediaLabel').value='';toast('✅ Media uploaded');}catch(e){console.error(e);toast('Upload failed: '+(e.message||e),'err');}finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-cloud-arrow-up"></i> Upload';}},
- deleteMedia:id=>{const m=MEDIA[id];if(!m)return;askConfirm('Delete this media?',async()=>{try{if(m.path)await storage.ref(m.path).delete().catch(()=>{});await db.ref('site_media/'+id).remove();toast('Media deleted');}catch(e){toast(e.message||'Delete failed','err');}})}
+ deleteMedia:id=>{const m=MEDIA[id];if(!m)return;askConfirm('Delete this media?',async()=>{try{if(m.path)await storage.ref(m.path).delete().catch(()=>{});await db.ref('site_media/'+id).remove();toast('Media deleted');}catch(e){toast(e.message||'Delete failed','err');}})},
+ mobileNavClick:t=>{
+   document.querySelectorAll('.mobile-bottom-nav .mbn-btn').forEach(b=>b.classList.toggle('active',b.dataset.mbn===t));
+   document.querySelectorAll('.sidebar .nav-item').forEach(n=>n.classList.toggle('active',n.dataset.tab===t));
+   switchTab(t);
+   $('sidebar').classList.remove('open');
+ },
+ filterByStage:st=>{
+   const sel=$('orderFilter');
+   if(!sel)return;
+   sel.value=(sel.value===st)?'all':st;
+   orderQuickPreset='all';
+   document.querySelectorAll('[data-order-preset]').forEach(b=>b.classList.toggle('solid',b.dataset.orderPreset==='all'));
+   renderOrders();
+ },
+ toggleBulkOrder:(id,checked)=>{
+   if(checked) selectedBulkOrderIds.add(id);
+   else selectedBulkOrderIds.delete(id);
+   const bar=$('bulkAssignBar');
+   const cnt=$('bulkSelCount');
+   if(cnt) cnt.textContent=selectedBulkOrderIds.size;
+   if(bar) bar.classList.toggle('show',selectedBulkOrderIds.size>0);
+ },
+ toggleSelectAllOrders:checked=>{
+   document.querySelectorAll('.order-bulk-cb').forEach(cb=>{
+     cb.checked=checked;
+     const id=cb.dataset.id;
+     if(id){
+       if(checked) selectedBulkOrderIds.add(id);
+       else selectedBulkOrderIds.delete(id);
+     }
+   });
+   const bar=$('bulkAssignBar');
+   const cnt=$('bulkSelCount');
+   if(cnt) cnt.textContent=selectedBulkOrderIds.size;
+   if(bar) bar.classList.toggle('show',selectedBulkOrderIds.size>0);
+ },
+ clearBulkSelection:()=>{
+   selectedBulkOrderIds.clear();
+   const allCb=$('selectAllOrdersCb'); if(allCb) allCb.checked=false;
+   document.querySelectorAll('.order-bulk-cb').forEach(cb=>cb.checked=false);
+   const bar=$('bulkAssignBar'); if(bar) bar.classList.remove('show');
+ },
+ bulkAssignSelected:async()=>{
+   const phone=$('bulkBoySelect')?.value||'';
+   if(!phone) return toast('Pehle Rider select karein','err');
+   if(!selectedBulkOrderIds.size) return toast('Orders select karein','err');
+   const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(phone));
+   const ids=Array.from(selectedBulkOrderIds);
+   try{
+     for(const id of ids){
+       const o=ordersSnap?.val()?.[id]||{};
+       await db.ref('orders/'+id).update({
+         assigned_to:phone,
+         assigned_to_e164:'+91'+pdcPhone10(phone),
+         assignedBoyName:boyObj?.name||'',
+         deliveryBoyId:boyObj?.id||''
+       });
+       App.queueRiderNotification(id,o,boyObj,'assigned');
+     }
+     writeAudit('Bulk rider assigned',boyObj?.name||phone,{count:ids.length});
+     toast(`✅ ${ids.length} orders assigned to ${boyObj?.name||phone}!`);
+     App.clearBulkSelection();
+   }catch(e){toast(e.message,'err');}
+ },
+ toggleDrawerItemEditor:id=>{
+   const box=$('odItemEditorBox');
+   if(!box)return;
+   const open=box.style.display==='none';
+   box.style.display=open?'block':'none';
+   if(!open)return;
+   const o=ordersSnap?.val()?.[id]||{};
+   const wrap=$('odEditRowsWrap');
+   wrap.innerHTML='';
+   const entries=Object.entries(o.items||{});
+   if(entries.length){
+     entries.forEach(([k,v])=>{
+       const nm=(v&&typeof v==='object')?(v.name||k):k;
+       const qty=(v&&typeof v==='object')?(Number(v.qty??v.quantity)||1):(Number(v)||1);
+       const rate=(v&&typeof v==='object'&&Number.isFinite(Number(v.rate)))?Number(v.rate):0;
+       if(nm!=='Doorstep Garment Count & Inspection') App.addDrawerEditRow(nm,qty,rate);
+     });
+   }
+   if(!wrap.children.length) App.addDrawerEditRow('Shirt',1,60);
+ },
+ addDrawerEditRow:(name='',qty=1,rate=60)=>{
+   const wrap=$('odEditRowsWrap');
+   if(!wrap)return;
+   const row=document.createElement('div');
+   row.className='od-edit-row';
+   row.style.cssText='display:grid;grid-template-columns:1.6fr 0.7fr 0.9fr auto;gap:6px;margin-bottom:6px;align-items:center';
+   row.innerHTML=`<input class="ode-name" placeholder="Item name" value="${esc(name)}" style="background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:8px;border-radius:8px;font-size:12px;font-weight:700"/><input class="ode-qty" type="number" min="1" max="200" value="${Number(qty)||1}" placeholder="Qty" style="background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:8px;border-radius:8px;font-size:12px;font-weight:700"/><input class="ode-rate" type="number" min="0" max="50000" value="${Number(rate)||0}" placeholder="Rate ₹" style="background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:8px;border-radius:8px;font-size:12px;font-weight:700"/><button type="button" class="item-del-btn" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+   wrap.appendChild(row);
+ },
+ saveDrawerItems:async id=>{
+   const rows=Array.from(document.querySelectorAll('#odEditRowsWrap .od-edit-row'));
+   const items=[];
+   rows.forEach(r=>{
+     const name=(r.querySelector('.ode-name')?.value||'').trim();
+     const qty=parseInt(r.querySelector('.ode-qty')?.value,10)||0;
+     const rate=Number(r.querySelector('.ode-rate')?.value)||0;
+     if(name&&qty>0) items.push({name,qty,rate});
+   });
+   if(!items.length) return toast('At least 1 valid item add karein','err');
+   const btn=$('odSaveItemsBtn');
+   if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving...';}
+   try{
+     const token=await auth.currentUser.getIdToken(true);
+     const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/adminUpdateOrderItems',{
+       method:'POST',
+       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+       body:JSON.stringify({orderId:id,items})
+     });
+     const data=await r.json().catch(()=>({}));
+     if(!r.ok) throw new Error(data.error||'Update failed');
+     toast(`✅ Order items & bill updated (New Total: ₹${data.total})!`);
+     const updatedOrder=ordersSnap?.val()?.[id];
+     if(updatedOrder) renderOrderDrawer({id,...updatedOrder});
+   }catch(e){
+     toast(e.message||'Could not update items','err');
+   }finally{
+     if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> Save Updated Items & Bill';}
+   }
+ },
+ printTags:id=>{
+   const o=ordersSnap?.val()?.[id];
+   if(!o) return toast('Order not found','err');
+   const rawId=String(o.orderId||id);
+   const dispId=rawId.startsWith('PDC-')?rawId:'PDC-'+rawId;
+   const cust=esc(o.customerName||o.name||'Customer');
+   const pDate=esc(o.pickupDate||dayStr(new Date()));
+   const entries=[];
+   Object.entries(o.items||{}).forEach(([k,v])=>{
+     const nm=(v&&typeof v==='object'&&v.name)?v.name:k;
+     const q=(v&&typeof v==='object')?(Number(v.qty??v.quantity)||1):(Number(v)||1);
+     for(let i=0;i<Math.min(q,40);i++) entries.push(nm);
+   });
+   if(!entries.length) entries.push('Garment Bag');
+   const totalPcs=entries.length;
+   const tagsHtml=entries.map((nm,idx)=>`<div style="border:1.5px solid #000;border-radius:6px;padding:7px 9px;margin-bottom:7px;page-break-inside:avoid;font-family:monospace"><div style="display:flex;justify-content:space-between;font-weight:900;font-size:14px"><span>${esc(dispId)}</span><span>[${idx+1}/${totalPcs}]</span></div><div style="font-size:12px;font-weight:700;margin:3px 0">${cust}</div><div style="font-size:12px;border-top:1px dashed #000;padding-top:3px;display:flex;justify-content:space-between"><b>${esc(nm)}</b><span>${pDate}</span></div></div>`).join('');
+   const w=open('','_blank','width=340,height=600');
+   if(!w) return toast('Popup blocked by browser','err');
+   w.document.write(`<html><head><meta charset="utf-8"><title>Tags ${esc(dispId)}</title><style>body{margin:0;padding:8px;width:58mm;background:#fff}</style></head><body>${tagsHtml}<script>window.onload=function(){window.print();window.close();}<\/script></body></html>`);
+   w.document.close();
+ },
+ waReviewRequest:id=>{
+   const o=ordersSnap?.val()?.[id];
+   if(!o) return toast('Order not found','err');
+   const num=pdcPhone10(o.phone);
+   if(!num) return toast('Customer phone unavailable','err');
+   const dispId=String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id);
+   const revUrl=(window.PAYMENT_SETTINGS&&window.PAYMENT_SETTINGS.googleReviewUrl)||'https://parthdryclean.in/#reviews-section';
+   const msg=`Namaste *${o.customerName||o.name||'Ji'}* 🙏
+
+Aapka *Parth Dry Clean* order (*${dispId}*) safely deliver ho gaya hai! 🧺✨
+
+Hume umeed hai ki aapko hamari finishing aur service pasand aayi hogi. Kripya 30 second nikal kar hume Google par 5-Star ⭐ review dein — isse hamari Lucknow team ko bahut motivation milta hai:
+👉 ${revUrl}
+
+Thank you for choosing Parth Dry Clean! 💙`;
+   open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');
+ },
+ toggleBlockCustomer:async(uid,blockState)=>{
+   const c=customers[uid]||{};
+   const phone10=pdcPhone10(c.phone);
+   const msg=blockState?`Block customer "${c.name||uid}" (${phone10||'no phone'}) from placing new orders?`:`Unblock customer "${c.name||uid}"?`;
+   askConfirm(msg,async()=>{
+     try{
+       await db.ref('customers/'+uid).update({blocked:blockState,blockedAt:blockState?Date.now():null});
+       if(phone10 && phone10.length===10){
+         if(blockState) await db.ref('blocked_phones/'+phone10).set({uid,name:c.name||'',blockedAt:Date.now()});
+         else await db.ref('blocked_phones/'+phone10).remove();
+       }
+       writeAudit(blockState?'Customer blocked':'Customer unblocked',uid,{phone:phone10});
+       toast(blockState?'🚫 Customer blocked':'✅ Customer unblocked');
+       if($('customerModal').classList.contains('open')) renderCustomerModal(uid);
+     }catch(e){toast(e.message,'err');}
+   });
+ },
+ cleanupZeroOrderCustomers:()=>{
+   if(CURRENT_ADMIN_ROLE!=='owner') return toast('🔒 Only Store Owner can clean accounts','err');
+   const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];
+   const toDelete=[];
+   Object.entries(customers||{}).forEach(([uid,c])=>{
+     const p10=pdcPhone10(c?.phone);
+     const hasOrders=orders.some(o=>o&&(o.uid===uid||(p10&&pdcPhone10(o.phone)===p10)));
+     if(!hasOrders) toDelete.push(uid);
+   });
+   if(!toDelete.length) return toast('✨ Koi 0-order fake account nahi hai!');
+   askConfirm(`Delete ${toDelete.length} customer account(s) that have 0 orders?`,async()=>{
+     try{
+       const updates={};
+       toDelete.forEach(uid=>{ updates['customers/'+uid]=null; });
+       await db.ref().update(updates);
+       writeAudit('Cleaned 0-order customer accounts','customers',{deletedCount:toDelete.length});
+       toast(`🧹 ${toDelete.length} zero-order accounts removed!`);
+     }catch(e){toast(e.message,'err');}
+   });
+ },
+ copyWebhookUrl:()=>{
+   const url=$('payWebhookUrlDisplay')?.value||'https://asia-southeast1-parth-dry-clean.cloudfunctions.net/paytmAutoVerifyWebhook';
+   if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>toast('📋 Webhook URL copied!'));
+   else toast(url);
+ },
+ savePaymentSettings:async()=>{
+   if(CURRENT_ADMIN_ROLE!=='owner') return toast('🔒 Only Store Owner can change payment settings','err');
+   const upiEnabled=!!$('payUpiEnabled')?.checked;
+   const upiVpa=($('payUpiVpa')?.value||'').trim();
+   const merchantName=($('payMerchantName')?.value||'Parth Dry Clean').trim();
+   const paytmMid=($('payPaytmMid')?.value||'').trim();
+   const googleReviewUrl=($('payGoogleReviewUrl')?.value||'').trim();
+   const merchantKey=($('payMerchantKey')?.value||'').trim();
+   const webhookSecret=($('payWebhookSecret')?.value||'').trim();
+   if(upiEnabled && !upiVpa.includes('@')) return toast('Valid Merchant UPI ID (e.g. name@paytm) enter karein','err');
+   try{
+     await db.ref('settings/payment').update({
+       upiEnabled,
+       upiVpa,
+       merchantName,
+       paytmMid,
+       googleReviewUrl,
+       updatedAt:firebase.database.ServerValue.TIMESTAMP
+     });
+     const secUpdates={updatedAt:firebase.database.ServerValue.TIMESTAMP};
+     if(merchantKey) secUpdates.paytmMerchantKey=merchantKey;
+     if(webhookSecret) secUpdates.webhookSecret=webhookSecret;
+     await db.ref('settings/payment_secrets').update(secUpdates);
+     if($('payMerchantKey')) $('payMerchantKey').value='';
+     writeAudit('Payment & Paytm settings updated','settings/payment',{upiVpa,paytmMid});
+     toast('✅ Paytm Business UPI & Auto-Verify settings saved!');
+   }catch(e){toast(e.message,'err');}
+ },
+ runSafeTestDataReset:async()=>{
+   if(CURRENT_ADMIN_ROLE!=='owner') return toast('🔒 Only Store Owner can reset test data','err');
+   const confirmTxt=($('resetConfirmInput')?.value||'').trim();
+   if(confirmTxt!=='RESET') return toast('Confirm karne ke liye box me capital me RESET likhein','err');
+   const includeCustomers=!!$('resetIncludeCustomers')?.checked;
+   const btn=$('runSafeResetBtn');
+   if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Backing up & Resetting...';}
+   try{
+     // 1. Auto-download JSON backup first
+     const [o,c,b,s,srv,cms]=await Promise.all([
+       db.ref('orders').once('value'),
+       db.ref('customers').once('value'),
+       db.ref('delivery_boys').once('value'),
+       db.ref('settings').once('value'),
+       db.ref('services').once('value'),
+       db.ref('site_content').once('value')
+     ]);
+     const backupObj={backedUpAt:new Date().toISOString(),orders:o.val(),customers:c.val(),delivery_boys:b.val(),settings:s.val(),services:srv.val(),site_content:cms.val()};
+     const a=document.createElement('a');
+     a.href=URL.createObjectURL(new Blob([JSON.stringify(backupObj,null,2)],{type:'application/json'}));
+     a.download=`parth-pre-reset-backup-${dayStr(new Date())}.json`;
+     a.click();
+
+     // 2. Call server-authoritative resetTestData Cloud Function
+     const token=await auth.currentUser.getIdToken(true);
+     const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/resetTestData',{
+       method:'POST',
+       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+       body:JSON.stringify({confirmText:'RESET',includeCustomers})
+     });
+     const data=await r.json().catch(()=>({}));
+     if(!r.ok) throw new Error(data.error||'Reset failed');
+     if($('resetConfirmInput')) $('resetConfirmInput').value='';
+     toast('🎉 Test data safely reset! Backup file downloaded.');
+   }catch(e){
+     toast('⚠️ '+(e.message||'Reset failed'),'err');
+   }finally{
+     if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-broom"></i> Auto-Backup & Reset Test Data';}
+   }
+ }
 };
 
 $('addCp').onclick=()=>{const code=($('cpCode').value||'').trim().toUpperCase();const p=+$('cpPercent').value||0;const m=Math.max(0,+$('cpMax').value||0);const minOrder=Math.max(0,+$('cpMinOrder').value||0);const usageLimit=Math.max(0,+$('cpUsageLimit').value||0);const t=$('cpType').value;if(!/^[A-Z0-9_-]{3,20}$/.test(code))return toast('Code: 3–20 letters/numbers/_/-','err');if(p<1||p>100)return toast('Discount 1–100%','err');if(coupons.some(c=>String(c.code).toUpperCase()===code))return toast('Coupon already exists','err');const data={code,percent:p,max:m,minOrder,type:t,usageLimit,usedCount:0,enabled:true};coupons.push(data);renderCoupons();db.ref('settings/coupons/'+code).set(data).then(()=>{$('cpCode').value='';$('cpPercent').value='';$('cpMax').value='';$('cpMinOrder').value='';$('cpUsageLimit').value='';toast('✅ Coupon added');}).catch(e=>{coupons=coupons.filter(c=>c.code!==code);renderCoupons();toast(e.message,'err');});};
