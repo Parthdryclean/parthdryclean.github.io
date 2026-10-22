@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen9 : Phase 2 Rider HUD (Dynamic Order-Locked Paytm/UPI QR + Live Auto-Confirm + Cash/UPI Modes) -->
+<!-- ParthdeliveryGen10 : Personal Rider App Master Build (Outfit High-Contrast UI, 4-Queue Filters, GPS Distance Sort, Fast Doorstep Stepper Counter, Pickup+Delivery Payment & Daily Cash/UPI Hisab, 1-Tap WhatsApp Templates & Digital Receipt) -->
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-<meta name="theme-color" content="#0a0e1a"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#2563eb"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<title>Parth Rider | Delivery Partner HUD</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Pacifico&display=swap" rel="stylesheet"/>
+<title>Parth Rider | Personal Delivery Partner App</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&family=Pacifico&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -16,206 +17,291 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#f4f7fb;--bg2:#ffffff;--card:#ffffff;--card2:#f7f9fc;
-  --line:#e2e8f0;--line2:#bfdbfe;--text:#0f172a;--muted:#64748b;
-  --primary:#2563eb;--primary2:#1d4ed8;--good:#059669;--warn:#d97706;--bad:#dc2626;
-  --soft:#eff6ff;--shadow:0 8px 28px rgba(15,23,42,.08);--grad:linear-gradient(135deg,#2563eb,#1d4ed8)
+  --bg:#f4f7fb;--bg2:#ffffff;--card:#ffffff;--card2:#f8fafc;
+  --line:#e2e8f0;--line2:#93c5fd;--text:#0f172a;--sub:#334155;--muted:#64748b;
+  --primary:#2563eb;--primary2:#1d4ed8;--good:#059669;--warn:#d97706;--bad:#dc2626;--pink:#db2777;
+  --soft:#eff6ff;--good-soft:#ecfdf5;--warn-soft:#fffbeb;--bad-soft:#fef2f2;--pink-soft:#fdf2f8;
+  --shadow:0 8px 26px -6px rgba(15,23,42,.08);--grad:linear-gradient(135deg,#2563eb,#1d4ed8)
 }
 [data-theme="dark"]{
-  --bg:#0b1220;--bg2:#111827;--card:#111827;--card2:#172033;
-  --line:#263449;--line2:#3b82f6;--text:#f8fafc;--muted:#94a3b8;
-  --primary:#60a5fa;--primary2:#3b82f6;--good:#34d399;--warn:#fbbf24;--bad:#f87171;
-  --soft:rgba(59,130,246,.13);--shadow:0 10px 34px rgba(0,0,0,.28);--grad:linear-gradient(135deg,#3b82f6,#2563eb)
+  --bg:#090d16;--bg2:#111827;--card:#111827;--card2:#1e293b;
+  --line:#263244;--line2:#3b82f6;--text:#f8fafc;--sub:#cbd5e1;--muted:#94a3b8;
+  --primary:#60a5fa;--primary2:#3b82f6;--good:#34d399;--warn:#fbbf24;--bad:#f87171;--pink:#f472b6;
+  --soft:rgba(59,130,246,.16);--good-soft:rgba(16,185,129,.15);--warn-soft:rgba(245,158,11,.15);--bad-soft:rgba(239,68,68,.15);--pink-soft:rgba(236,72,153,.15);
+  --shadow:0 12px 32px rgba(0,0,0,.42);--grad:linear-gradient(135deg,#2563eb,#1d4ed8)
 }
 html{background:var(--bg)}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:36px;overflow-x:hidden}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:92px;overflow-x:hidden;line-height:1.45}
 button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highlight-color:transparent}
-button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,select:focus-visible,textarea:focus,textarea:focus-visible{outline:none!important;box-shadow:none!important}
 .num{font-family:'JetBrains Mono',monospace}
 
 /* TOPBAR */
-.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);border-bottom:1px solid var(--line);padding:11px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;backdrop-filter:blur(18px)}
-[data-theme="dark"] .top{background:rgba(17,24,39,.9)}
+.top{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+[data-theme="dark"] .top{background:rgba(17,24,39,.92)}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-ic{width:38px;height:38px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font:700 22px Pacifico;box-shadow:0 6px 18px rgba(37,99,235,.25)}
-.brand-text{font:700 19px Pacifico;color:var(--primary)}
-.brand-sub{font-size:9px;color:var(--muted);letter-spacing:1.7px;text-transform:uppercase;margin-top:2px;font-weight:700}
+.brand-ic{width:40px;height:40px;border-radius:13px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font:400 22px Pacifico;box-shadow:0 6px 16px rgba(37,99,235,.28)}
+.brand-text{font:400 21px Pacifico;color:var(--primary);line-height:1}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-top:2px;font-weight:800}
 .top-actions{display:flex;gap:7px;align-items:center}
-.conn-dot{width:8px;height:8px;border-radius:50%;background:var(--good);margin-right:4px}
-.conn-dot.off{background:var(--bad)}
-.icon-btn{width:38px;height:38px;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;cursor:pointer}
-.icon-btn:hover{color:var(--primary);border-color:var(--line2)}
+.conn-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--good-soft);color:var(--good);font-size:11px;font-weight:800;border:1px solid rgba(5,150,105,.25)}
+.conn-pill.off{background:var(--bad-soft);color:var(--bad);border-color:rgba(220,38,38,.25)}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.icon-btn{width:40px;height:40px;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:15px;transition:.18s}
+.icon-btn:active{transform:scale(.93)}
 
-.wrap{max-width:680px;margin:auto;padding:14px;position:relative;z-index:1}
-.hello{background:var(--grad);border-radius:22px;color:#fff;padding:21px;margin-bottom:15px;position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(37,99,235,.2)}
-.hello:after{content:'';position:absolute;width:170px;height:170px;border-radius:50%;right:-70px;top:-80px;background:rgba(255,255,255,.1)}
-.hello h2{font-size:21px}
-.hello p{font-size:12px;opacity:.86;margin-top:3px}
+.wrap{max-width:660px;margin:auto;padding:14px;position:relative;z-index:1}
 
-/* TABS */
-.tab-nav{display:flex;gap:5px;margin-bottom:15px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:4px;box-shadow:var(--shadow)}
-.tab-btn{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 7px;border-radius:11px;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
-.tab-btn.active{background:var(--soft);color:var(--primary);box-shadow:inset 0 0 0 1px var(--line2)}
-.tab-content{display:none;animation:up .22s ease}
+/* COMPACT RIDER HERO & LIVE SUMMARY */
+.hello{background:var(--grad);border-radius:22px;color:#fff;padding:18px 18px 16px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 12px 28px rgba(37,99,235,.24)}
+.hello:after{content:'';position:absolute;width:160px;height:160px;border-radius:50%;right:-60px;top:-70px;background:rgba(255,255,255,.12);pointer-events:none}
+.hello-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hello h2{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.hello p{font-size:12.5px;opacity:.9;margin-top:2px;font-weight:500}
+.hello-shift-pill{background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:5px 11px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;border:1px solid rgba(255,255,255,.25)}
+.hello-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18)}
+.hkpi{text-align:center;background:rgba(15,23,42,.18);padding:8px 4px;border-radius:13px}
+.hkpi .n{font:800 17px 'JetBrains Mono',monospace;color:#fff;display:block;line-height:1.15}
+.hkpi .l{font-size:10px;font-weight:700;opacity:.88;text-transform:uppercase;letter-spacing:.4px;margin-top:2px;display:block}
+
+/* SEARCH, SLOT FILTER & GPS NEAREST BAR */
+.rider-Subbar{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.search-row{display:flex;gap:8px;align-items:center}
+.search-box-wrap{position:relative;flex:1}
+.search-box-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+.search-input{width:100%;padding:11px 34px 11px 36px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:13.5px;font-weight:600;box-shadow:var(--shadow)}
+.search-input:focus{border-color:var(--primary)}
+.search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;border:0;background:var(--card2);color:var(--muted);font-size:11px;display:none;align-items:center;justify-content:center;cursor:pointer}
+.gps-sort-btn{padding:0 13px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;box-shadow:var(--shadow);transition:.18s}
+.gps-sort-btn.active{background:var(--soft);color:var(--primary);border-color:var(--primary)}
+
+.filter-pills-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.filter-pills-row::-webkit-scrollbar{display:none}
+.q-pill{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.18s}
+.q-pill .cnt{background:var(--card2);color:var(--text);padding:1px 7px;border-radius:999px;font:800 11px 'JetBrains Mono',monospace}
+.q-pill.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(37,99,235,.25)}
+.q-pill.active .cnt{background:rgba(255,255,255,.22);color:#fff}
+
+.slot-pills-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.slot-pills-row::-webkit-scrollbar{display:none}
+.s-pill{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--muted);font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
+.s-pill.active{background:var(--soft);color:var(--primary);border-color:var(--primary);font-weight:800}
+
+/* TAB CONTENT */
+.tab-content{display:none;animation:up .2s ease}
 .tab-content.active{display:block}
 @keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 7px;text-align:center;box-shadow:var(--shadow)}
-.stat .n{font:700 19px JetBrains Mono;color:var(--primary)}
-.stat.cash .n{color:var(--good)}
-.stat.earn .n{color:var(--warn)}
-.stat.streak .n{color:#db2777}
-.stat .l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:5px;font-weight:800}
-
-/* SECTION LABELS */
-.sec{font-size:12px;color:var(--muted);font-weight:800;display:flex;align-items:center;gap:8px;margin:19px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:1px}
-.sec .count{margin-left:auto;background:var(--soft);color:var(--primary);padding:3px 9px;border-radius:20px;font:800 10px JetBrains Mono}
-.sec.green{color:var(--good)}
-.sec.green .count{color:var(--good)}
-.sec.pink{color:#db2777}
-.sec.pink .count{color:#db2777}
+/* SECTION HEADERS */
+.sec{font-size:13px;color:var(--sub);font-weight:800;display:flex;align-items:center;gap:8px;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.6px}
+.sec .count{margin-left:auto;background:var(--soft);color:var(--primary);padding:3px 10px;border-radius:999px;font:800 11px 'JetBrains Mono',monospace}
+.sec.green{color:var(--good)}.sec.green .count{background:var(--good-soft);color:var(--good)}
+.sec.pink{color:var(--pink)}.sec.pink .count{background:var(--pink-soft);color:var(--pink)}
+.sec.warn{color:var(--warn)}.sec.warn .count{background:var(--warn-soft);color:var(--warn)}
 
 /* ORDER CARDS */
-.order-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .2s}
-.order-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad)}
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .18s}
+.order-card:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--grad)}
+.order-card.card-delivery:before{background:linear-gradient(180deg,#ec4899,#be185d)}
+.order-card.card-done:before{background:linear-gradient(180deg,#10b981,#059669)}
 .order-card.selected{border-color:var(--primary);background:var(--soft)}
-.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.4)!important;animation:pulseCard 1.8s ease}
-@keyframes pulseCard{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
-.oc-check{position:absolute;right:14px;top:14px;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;background:var(--card2);z-index:5;cursor:pointer}
-.order-card.selected .oc-check{background:var(--primary);border-color:var(--primary);color:#fff}
-.oc-top{display:flex;justify-content:space-between;gap:7px;flex-wrap:wrap;padding-right:30px;margin-bottom:9px}
-.oc-id{font:700 13px JetBrains Mono;color:var(--primary)}
-.badge{padding:4px 9px;border-radius:20px;font-size:9px;font-weight:800;text-transform:uppercase}
-.badge.pending{background:#fff7ed;color:#c2410c}
-.badge.picked_up{background:#eff6ff;color:#1d4ed8}
-.badge.out_for_delivery{background:#fdf2f8;color:#be185d}
-.badge.delivered{background:#ecfdf5;color:#047857}
-.badge.express{background:#fffbeb;color:#b45309}
-.badge.cod{background:#ecfdf5;color:#047857;margin-left:3px}
-.badge.paid{background:#eff6ff;color:#1d4ed8;margin-left:3px}
-.oc-name{font-weight:800;font-size:15px}
-.oc-addr{font-size:11px;color:var(--muted);line-height:1.45;margin:4px 0 10px}
-.oc-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
-.chip{background:var(--card2);border:1px solid var(--line);padding:4px 8px;border-radius:8px;font-size:10px;color:var(--text)}
+.order-card.highlight-card{border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(37,99,235,.38)!important;animation:pulseCard 1.6s ease}
+@keyframes pulseCard{0%,100%{transform:scale(1)}50%{transform:scale(1.015)}}
 
-/* TIMELINE */
-.timeline{display:flex;align-items:center;margin:10px 0 13px;padding:9px;background:var(--card2);border:1px solid var(--line);border-radius:12px}
+.oc-check{position:absolute;right:14px;top:14px;width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;background:var(--card2);z-index:5;cursor:pointer;font-size:12px}
+.order-card.selected .oc-check{background:var(--primary);border-color:var(--primary);color:#fff}
+
+.oc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.oc-top.with-check{padding-right:34px}
+.oc-id-wrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.oc-id{font:800 14.5px 'JetBrains Mono',monospace;color:var(--primary)}
+.dist-pill{background:var(--soft);color:var(--primary);border:1px solid rgba(37,99,235,.22);padding:2px 8px;border-radius:999px;font:800 10.5px 'JetBrains Mono',monospace;display:inline-flex;align-items:center;gap:4px}
+
+.badge{padding:4px 10px;border-radius:999px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;display:inline-flex;align-items:center;gap:4px}
+.badge.pending{background:var(--warn-soft);color:var(--warn)}
+.badge.picked_up,.badge.processing,.badge.quality_check{background:var(--soft);color:var(--primary)}
+.badge.out_for_delivery{background:var(--pink-soft);color:var(--pink)}
+.badge.delivered{background:var(--good-soft);color:var(--good)}
+.badge.express{background:var(--warn-soft);color:var(--warn);border:1px solid rgba(217,119,6,.3)}
+.badge.cod{background:var(--warn-soft);color:var(--warn);border:1px solid rgba(217,119,6,.28)}
+.badge.paid{background:var(--good-soft);color:var(--good);border:1px solid rgba(5,150,105,.28)}
+.badge.needs-count{background:var(--bad-soft);color:var(--bad);border:1px solid rgba(220,38,38,.3)}
+
+.oc-cust-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.oc-name{font-weight:800;font-size:16.5px;color:var(--text);line-height:1.25}
+.oc-phone{font-size:12px;color:var(--muted);font-weight:700;margin-top:1px}
+.oc-amount-box{text-align:right;flex-shrink:0}
+.oc-amount-box strong{display:block;font:800 17px 'JetBrains Mono',monospace;color:var(--text);line-height:1.1}
+.oc-amount-box small{font-size:10.5px;font-weight:800;color:var(--muted)}
+
+.oc-addr{font-size:13px;color:var(--sub);line-height:1.45;margin:6px 0 10px;padding:9px 11px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-weight:600;display:flex;gap:8px;align-items:flex-start}
+.oc-addr i{color:var(--primary);margin-top:3px;flex-shrink:0}
+
+.oc-slot-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.slot-tag{background:var(--soft);color:var(--primary);padding:4px 10px;border-radius:8px;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:5px}
+
+/* GARMENT CHIPS */
+.oc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{background:var(--card2);border:1px solid var(--line);padding:5px 10px;border-radius:9px;font-size:12px;font-weight:700;color:var(--text)}
+.chip.highlight{background:var(--good-soft);color:var(--good);border-color:rgba(5,150,105,.3)}
+
+/* TIMELINE (HIGH-CONTRAST LIGHT & DARK) */
+.timeline{display:flex;align-items:center;margin:10px 0 13px;padding:10px 8px;background:var(--card2);border:1px solid var(--line);border-radius:13px}
 .tl-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1}
-.tl-dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--muted)}
+.tl-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);transition:.2s}
 .tl-step.done .tl-dot{background:var(--primary);border-color:var(--primary);color:#fff}
-.tl-step.current .tl-dot{background:#dbeafe;border-color:var(--primary);color:var(--primary)}
-.tl-label{font-size:7px;color:var(--muted);font-weight:800;text-transform:uppercase}
+.tl-step.current .tl-dot{background:var(--soft);border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 3px var(--soft)}
+.tl-label{font-size:9.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.2px}
 .tl-step.done .tl-label,.tl-step.current .tl-label{color:var(--text)}
 .tl-line{flex:1;height:2px;background:var(--line);margin-top:-14px}
 .tl-line.done{background:var(--primary)}
 
-/* ACTIONS */
-.oc-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:7px}
-.oc-actions a,.oc-actions button{min-height:40px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:10px;font-size:10px;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer}
-.oc-actions a.call{color:var(--good)}
-.oc-actions a.wa{color:#16a34a}
-.oc-actions a.gps{color:var(--primary)}
-.oc-actions button.report{color:var(--bad)}
-.oc-actions button.additem{color:var(--warn)}
-.oc-actions button.collect{color:var(--good)}
+/* ACTION GRIDS */
+.oc-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px}
+.oc-actions a,.oc-actions button{min-height:42px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:12px;font-size:12px;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:6px 8px;transition:.15s}
+.oc-actions a:active,.oc-actions button:active{transform:scale(.96)}
+.oc-actions a.call{color:var(--good);border-color:rgba(5,150,105,.25);background:var(--good-soft)}
+.oc-actions button.wa{color:#16a34a;border-color:rgba(22,163,74,.25);background:rgba(22,163,74,.08)}
+[data-theme="dark"] .oc-actions button.wa{color:#4ade80;background:rgba(34,197,94,.14)}
+.oc-actions a.gps{color:var(--primary);border-color:rgba(37,99,235,.25);background:var(--soft)}
+.oc-actions button.additem{color:var(--warn);border-color:rgba(217,119,6,.28);background:var(--warn-soft)}
+.oc-actions button.report{color:var(--bad);border-color:rgba(220,38,38,.25);background:var(--bad-soft)}
+.oc-actions button.collect{color:var(--good);border-color:rgba(5,150,105,.3);background:var(--good-soft)}
 .oc-actions button.collect.done{background:var(--good);color:#fff;border-color:var(--good)}
-.btn-main{width:100%;padding:13px;border:0;border-radius:12px;background:var(--grad);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer}
-.btn-main.done{background:var(--good)}
-.empty{text-align:center;padding:38px 18px;color:var(--muted)}
-.empty i{display:block;font-size:34px;margin-bottom:9px;opacity:.45;color:var(--primary)}
 
-/* DASHBOARD */
-.dash-grid{display:grid;gap:11px}
-.dash-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
-.dash-card h4{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.dash-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px}
+.btn-main{width:100%;min-height:46px;padding:12px 16px;border:0;border-radius:13px;background:var(--grad);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 6px 18px rgba(37,99,235,.25);transition:.18s}
+.btn-main:active{transform:scale(.98)}
+.btn-main.done{background:linear-gradient(135deg,#059669,#047857);box-shadow:0 6px 18px rgba(5,150,105,.25)}
+.btn-main:disabled{opacity:.65;cursor:not-allowed;box-shadow:none}
+
+.empty{text-align:center;padding:36px 18px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:18px;font-size:13.5px;font-weight:600}
+.empty i{display:block;font-size:32px;margin-bottom:8px;opacity:.5;color:var(--primary)}
+
+/* HISAB & DASHBOARD CARDS */
+.dash-grid{display:grid;gap:12px}
+.dash-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.dash-card h4{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;font-weight:800;display:flex;align-items:center;gap:7px}
+.dash-card h4 i{color:var(--primary)}
+.hisab-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.hisab-box{padding:14px;border-radius:15px;border:1px solid var(--line);background:var(--card2)}
+.hisab-box.cash{background:var(--good-soft);border-color:rgba(5,150,105,.3)}
+.hisab-box.upi{background:var(--soft);border-color:rgba(37,99,235,.28)}
+.hisab-box small{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;color:var(--muted)}
+.hisab-box strong{display:block;font:800 22px 'JetBrains Mono',monospace;margin-top:4px;color:var(--text)}
+.hisab-box.cash strong{color:var(--good)}
+.hisab-box.upi strong{color:var(--primary)}
+.dash-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;font-weight:600}
 .dash-row:last-child{border:0}
-.dash-row .label{color:var(--muted)}
-.dash-row .value{font-weight:800;color:var(--primary)}
-.streak-badge{display:inline-flex;gap:6px;background:var(--soft);color:var(--primary);padding:8px 15px;border-radius:20px;font-weight:800}
+.dash-row .label{color:var(--sub)}
+.dash-row .value{font-weight:800;color:var(--primary);font-size:14.5px}
+.streak-badge{display:inline-flex;align-items:center;gap:8px;background:var(--warn-soft);color:var(--warn);border:1px solid rgba(217,119,6,.3);padding:9px 18px;border-radius:999px;font-weight:800;font-size:14px}
 
 /* CHAT */
-.chat-container{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:12px;box-shadow:var(--shadow);height:calc(100vh - 190px);min-height:430px;display:flex;flex-direction:column}
-.chat-messages{flex:1;overflow:auto;padding:5px}
+.chat-container{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);height:calc(100vh - 210px);min-height:420px;display:flex;flex-direction:column}
+.chat-messages{flex:1;overflow:auto;padding:6px}
 .chat-msg{display:flex;gap:8px;margin-bottom:10px}
 .chat-msg.sent{flex-direction:row-reverse}
-.chat-msg .avatar{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--soft);color:var(--primary);display:flex;align-items:center;justify-content:center}
+.chat-msg .avatar{width:32px;height:32px;flex:0 0 32px;border-radius:50%;background:var(--soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:14px}
 .chat-msg.sent .avatar{background:var(--primary);color:#fff}
-.chat-msg .bubble{max-width:78%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.4;word-break:break-word}
+.chat-msg .bubble{max-width:78%;padding:10px 13px;border-radius:15px;font-size:13.5px;font-weight:600;line-height:1.45;word-break:break-word}
 .chat-msg.received .bubble{background:var(--card2);border:1px solid var(--line);color:var(--text)}
 .chat-msg.sent .bubble{background:var(--primary);color:#fff}
-.chat-msg .time{font-size:9px;color:var(--muted);margin-top:3px;text-align:right}
-.chat-input-row{display:flex;gap:7px;margin-top:7px}
-.chat-input-row input{flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px}
-.chat-input-row button{width:46px;border:0;border-radius:12px;background:var(--grad);color:#fff;cursor:pointer}
+.chat-msg .time{font-size:10px;color:var(--muted);margin-top:3px;text-align:right;font-weight:600}
+.chat-quick-Chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 2px}
+.chat-quick-Chips::-webkit-scrollbar{display:none}
+.chat-qchip{padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--sub);font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
+.chat-input-row{display:flex;gap:8px;margin-top:6px}
+.chat-input-row input{flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:13px;font-size:14px;font-weight:600}
+.chat-input-row button{width:48px;border:0;border-radius:13px;background:var(--grad);color:#fff;cursor:pointer;font-size:15px}
+
+/* STICKY BOTTOM NAVIGATION BAR */
+.rider-bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 8px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px rgba(15,23,42,.08)}
+[data-theme="dark"] .rider-bottom-nav{background:rgba(17,24,39,.95)}
+.rbn-btn{border:0;background:transparent;color:var(--muted);padding:7px 4px;border-radius:12px;font-size:11px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;position:relative;transition:.18s}
+.rbn-btn i{font-size:16px}
+.rbn-btn.active{color:var(--primary);background:var(--soft)}
+.rbn-badge{position:absolute;top:3px;right:20%;background:var(--bad);color:#fff;font:800 9.5px 'JetBrains Mono',monospace;padding:1px 5px;border-radius:999px;min-width:17px;text-align:center}
 
 /* LOGIN */
 .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-.login-box{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:34px 24px;max-width:390px;width:100%;text-align:center;box-shadow:var(--shadow)}
-.login-box .lg{font:700 31px Pacifico;color:var(--primary)}
-.login-box .sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:5px 0 23px}
-.login-box input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:15px;border-radius:13px;margin-bottom:12px;text-align:center;letter-spacing:2px;font:700 15px JetBrains Mono}
+.login-box{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:34px 24px;max-width:390px;width:100%;text-align:center;box-shadow:var(--shadow)}
+.login-box .lg{font:400 32px Pacifico;color:var(--primary)}
+.login-box .sub{font-size:11px;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;margin:5px 0 22px;font-weight:800}
+.login-box input{width:100%;background:var(--card2);border:1.5px solid var(--line);color:var(--text);padding:14px 16px;border-radius:14px;margin-bottom:12px;text-align:center;letter-spacing:1.5px;font:700 15px 'JetBrains Mono',monospace}
 .login-box input:focus{border-color:var(--primary)}
-#loginErr{color:var(--bad);font-size:12px;margin-top:12px;display:none;line-height:1.4;font-weight:700;word-break:break-word}
+#loginErr{color:var(--bad);font-size:12.5px;margin-top:12px;display:none;line-height:1.4;font-weight:700}
 
 /* BATCH BAR */
-.batch-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:var(--shadow);z-index:45}
+.batch-bar{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:var(--card);border:1.5px solid var(--primary);border-radius:16px;padding:10px 16px;display:none;align-items:center;gap:12px;box-shadow:0 12px 30px rgba(37,99,235,.28);z-index:85;width:min(92vw,420px);justify-content:space-between}
 .batch-bar.show{display:flex}
-.batch-bar .batch-count{font-weight:800;color:var(--primary)}
-.batch-bar button{border:0;background:var(--grad);color:#fff;padding:9px 14px;border-radius:10px;font-weight:800;font-size:10px;cursor:pointer}
+.batch-bar .batch-count{font-weight:800;color:var(--primary);font-size:13.5px}
+.batch-bar button{border:0;background:var(--grad);color:#fff;padding:10px 16px;border-radius:11px;font-weight:800;font-size:12px;cursor:pointer}
 
-/* MODALS */
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(7px);z-index:100;display:none;align-items:center;justify-content:center;padding:15px}
+/* MODALS & DOORSTEP COUNTER */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.68);backdrop-filter:blur(6px);z-index:120;display:none;align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:560px){.modal{align-items:center;padding:16px}}
 .modal.show{display:flex}
-.modal-box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;width:min(560px,100%);max-height:88vh;overflow:auto;box-shadow:var(--shadow)}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.modal-head h3{font-size:16px}
-.modal-close{border:1px solid var(--line);background:var(--card2);color:var(--muted);width:34px;height:34px;border-radius:10px;cursor:pointer}
-.item-row{display:flex;gap:6px;margin-bottom:7px}
-.item-row input,.item-row select{min-width:0;flex:1;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:9px;border-radius:8px}
-.item-row button.rm{background:rgba(220,38,38,.12);border:1px solid var(--bad);color:var(--bad);width:32px;border-radius:8px;cursor:pointer}
-.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:10px 0}
-.issue-type button{padding:10px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:9px;cursor:pointer}
-.issue-type button.sel{border-color:var(--primary);background:var(--soft);color:var(--primary)}
-#issueNote{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;min-height:80px}
-.btn-secondary{padding:12px;border-radius:11px;font-weight:800;border:1px solid var(--line);background:var(--card2);color:var(--text);cursor:pointer}
+.modal-box{background:var(--card);border:1px solid var(--line);border-radius:24px 24px 0 0;padding:18px;width:min(560px,100%);max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+@media(min-width:560px){.modal-box{border-radius:22px}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.modal-head h3{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
+.modal-close{border:1px solid var(--line);background:var(--card2);color:var(--muted);width:36px;height:36px;border-radius:11px;cursor:pointer;font-size:15px}
+
+/* FAST DOORSTEP COUNTER STEPPERS */
+.counter-mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--card2);padding:4px;border-radius:12px;border:1px solid var(--line);margin-bottom:10px}
+.cm-tab{border:0;background:transparent;color:var(--muted);padding:8px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer}
+.cm-tab.active{background:var(--card);color:var(--primary);box-shadow:var(--shadow)}
+.counter-cat-rail{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px 0 8px}
+.counter-cat-rail::-webkit-scrollbar{display:none}
+.cc-pill{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--muted);font-size:11.5px;font-weight:800;white-space:nowrap;cursor:pointer}
+.cc-pill.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.counter-items-list{max-height:42vh;overflow-y:auto;border:1px solid var(--line);border-radius:14px;padding:6px 10px;background:var(--card2);margin-bottom:10px}
+.c-item-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.c-item-row:last-child{border-bottom:0}
+.c-item-info strong{display:block;font-size:13.5px;font-weight:800;color:var(--text)}
+.c-item-info small{font-size:11.5px;font-weight:700;color:var(--primary)}
+.c-stepper{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:3px 6px}
+.c-stepper.has-qty{border-color:var(--primary);background:var(--soft)}
+.c-step-btn{width:28px;height:28px;border-radius:50%;border:0;background:var(--card2);color:var(--text);font-weight:900;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.c-stepper.has-qty .c-step-btn{background:var(--primary);color:#fff}
+.c-step-qty{min-width:20px;text-align:center;font:800 13.5px 'JetBrains Mono',monospace;color:var(--text)}
+.counter-summary-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:var(--soft);border:1px solid rgba(37,99,235,.24);margin-bottom:12px;font-size:13px;font-weight:800;color:var(--primary)}
+
+.issue-type{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.issue-type button{padding:11px;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:11px;cursor:pointer;font-size:12.5px;font-weight:700}
+.issue-type button.sel{border-color:var(--primary);background:var(--soft);color:var(--primary);font-weight:800}
+#issueNote{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:11px;min-height:80px;font-size:13.5px;font-weight:600}
+.btn-secondary{padding:12px 16px;border-radius:13px;font-weight:800;font-size:13.5px;border:1px solid var(--line);background:var(--card2);color:var(--text);cursor:pointer}
+
+/* WHATSAPP QUICK DRAWER BUTTONS */
+.wa-tpl-list{display:grid;gap:8px;margin-top:8px}
+.wa-tpl-btn{width:100%;text-align:left;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;transition:.15s}
+.wa-tpl-btn:hover,.wa-tpl-btn:active{border-color:#22c55e;background:var(--good-soft)}
+.wa-tpl-btn i.fa-whatsapp{color:#16a34a;font-size:18px}
 
 /* TOAST */
-#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:none}
-#toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 20px;border-radius:12px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
+#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:none;width:max-content;max-width:92vw}
+#toast .t{background:var(--card);border:1px solid var(--line2);border-left:4px solid var(--good);color:var(--text);padding:11px 18px;border-radius:13px;font-weight:800;box-shadow:var(--shadow);display:flex;gap:9px;align-items:center;font-size:13px}
 #toast .t.err{border-left-color:var(--bad)}
 
-/* ===== ZOMATO/SWIGGY STYLE BOTTOM FLOATING ALERT HUD ===== */
+/* ZOMATO/SWIGGY STYLE BOTTOM FLOATING ALERT HUD */
 .new-order-alert{
-  position:fixed;bottom:20px;left:16px;right:16px;max-width:520px;margin:0 auto;z-index:950;
-  background:var(--card);border:1.5px solid var(--primary);border-radius:20px;
-  padding:14px 16px;box-shadow:0 16px 40px rgba(37,99,235,.3);
+  position:fixed;bottom:82px;left:14px;right:14px;max-width:520px;margin:0 auto;z-index:950;
+  background:var(--card);border:2px solid var(--primary);border-radius:20px;
+  padding:14px 16px;box-shadow:0 16px 40px rgba(37,99,235,.32);
   display:flex;flex-direction:column;gap:10px;
-  transform:translateY(160%);opacity:0;pointer-events:none;
-  transition:transform .34s cubic-bezier(.175,.885,.32,1.275),opacity .3s ease;
+  transform:translateY(170%);opacity:0;pointer-events:none;
+  transition:transform .34s cubic-bezier(.175,.885,.32,1.275),opacity .28s ease;
 }
-.new-order-alert.show{
-  transform:translateY(0);opacity:1;pointer-events:auto;
-}
+.new-order-alert.show{transform:translateY(0);opacity:1;pointer-events:auto}
 .noa-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.noa-badge{display:inline-flex;align-items:center;gap:6px;background:var(--soft);color:var(--primary);font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:20px}
-.noa-pulse{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary);animation:noaBlink .8s infinite alternate}
+.noa-badge{display:inline-flex;align-items:center;gap:6px;background:var(--soft);color:var(--primary);font-size:10.5px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;padding:5px 10px;border-radius:999px}
+.noa-pulse{width:8px;height:8px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary);animation:noaBlink .8s infinite alternate}
 @keyframes noaBlink{from{opacity:.3}to{opacity:1}}
 .noa-close{background:transparent;border:0;color:var(--muted);font-size:16px;cursor:pointer;padding:4px}
 .noa-body{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.noa-title{font-size:15px;font-weight:800}
-.noa-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.noa-btn{border:0;background:var(--grad);color:#fff;padding:10px 18px;border-radius:12px;font-weight:800;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
-
-@media(max-width:390px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .tab-btn{font-size:9px}
-  .hello{padding:18px}
-  .hello h2{font-size:19px}
-  .new-order-alert{bottom:12px;left:10px;right:10px;padding:12px 14px}
-}
+.noa-title{font-size:15.5px;font-weight:800}
+.noa-sub{font-size:12px;color:var(--muted);margin-top:2px;font-weight:600}
+.noa-btn{border:0;background:var(--grad);color:#fff;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;box-shadow:0 4px 14px rgba(37,99,235,.28)}
 </style>
 </head>
 <body>
@@ -237,16 +323,16 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <!-- APP CONFIRM MODAL -->
-<div class="modal" id="appConfirmModal"><div class="modal-box" style="max-width:390px"><div class="modal-head"><h3 id="appConfirmTitle">Confirm</h3><button class="modal-close" onclick="closeAppConfirm()"><i class="fas fa-xmark"></i></button></div><p id="appConfirmText" style="font-size:13px;line-height:1.5;color:var(--muted)"></p><div style="display:flex;gap:8px;margin-top:15px"><button class="btn-secondary" style="flex:1" onclick="closeAppConfirm()">Cancel</button><button class="btn-main" style="flex:1" id="appConfirmYes">Confirm</button></div></div></div>
+<div class="modal" id="appConfirmModal"><div class="modal-box" style="max-width:390px"><div class="modal-head"><h3 id="appConfirmTitle">Confirm</h3><button class="modal-close" onclick="closeAppConfirm()"><i class="fas fa-xmark"></i></button></div><p id="appConfirmText" style="font-size:13.5px;line-height:1.5;color:var(--sub);font-weight:600"></p><div style="display:flex;gap:8px;margin-top:15px"><button class="btn-secondary" style="flex:1" onclick="closeAppConfirm()">Cancel</button><button class="btn-main" style="flex:1" id="appConfirmYes">Confirm</button></div></div></div>
 
 <!-- LOGIN SCREEN -->
 <div class="login" id="loginScreen">
  <div class="login-box">
   <div class="lg">Parth Rider</div>
-  <div class="sub">Delivery Partner HUD</div>
-  <input id="phoneInput" inputmode="numeric" autocomplete="tel" placeholder="Registered mobile number" maxlength="10"/>
-  <input id="pinInput" inputmode="numeric" autocomplete="current-password" type="password" placeholder="6-digit PIN" maxlength="6"/>
-  <button class="btn-main" id="loginBtn" type="button" onclick="handleLogin()"><i class="fas fa-fingerprint"></i> Secure Login</button>
+  <div class="sub">Personal Delivery Partner App</div>
+  <input id="phoneInput" inputmode="numeric" autocomplete="tel" placeholder="10-Digit Mobile Number" maxlength="10"/>
+  <input id="pinInput" inputmode="numeric" autocomplete="current-password" type="password" placeholder="6-Digit Secret PIN" maxlength="6"/>
+  <button class="btn-main" id="loginBtn" type="button" onclick="handleLogin()"><i class="fas fa-fingerprint"></i> Secure Rider Login</button>
   <p id="loginErr"></p>
  </div>
 </div>
@@ -258,11 +344,11 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
    <div class="brand-ic">P</div>
    <div>
     <div class="brand-text">Parth</div>
-    <div class="brand-sub">Rider HUD</div>
+    <div class="brand-sub">Rider App v10</div>
    </div>
   </div>
   <div class="top-actions">
-   <div class="conn-dot" id="connDot" title="Online"></div>
+   <div class="conn-pill" id="connPill"><span class="conn-dot" id="connDot"></span><span id="connText">Online</span></div>
    <button class="icon-btn" id="riderPushBtn" title="Enable Push Alerts" onclick="enableRiderPushManual()"><i class="fas fa-bell"></i></button>
    <button class="icon-btn" id="themeBtn" title="Theme"><i class="fas fa-moon"></i></button>
    <button class="icon-btn" id="logoutBtn" title="Logout"><i class="fas fa-power-off"></i></button>
@@ -271,55 +357,120 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
  
  <div class="wrap">
   <div class="hello">
-   <h2 id="helloName">Hello 👋</h2>
-   <p>Aaj ki rides neeche listed hain</p>
-  </div>
-  
-  <!-- TAB NAV -->
-  <div class="tab-nav">
-   <button class="tab-btn active" data-tab="orders"><i class="fas fa-box"></i> Orders</button>
-   <button class="tab-btn" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
-   <button class="tab-btn" data-tab="chat"><i class="fas fa-comments"></i> Chat</button>
+   <div class="hello-top">
+    <div>
+     <h2 id="helloName">Hello 👋</h2>
+     <p id="helloSub">Aaj ke pickups aur deliveries</p>
+    </div>
+    <span class="hello-shift-pill" id="helloDatePill">Today</span>
+   </div>
+   <div class="hello-kpis">
+    <div class="hkpi" onclick="setOrderQueueFilter('pickup')" style="cursor:pointer"><span class="n" id="sPickup">0</span><span class="l">To Pick Up</span></div>
+    <div class="hkpi" onclick="setOrderQueueFilter('delivery')" style="cursor:pointer"><span class="n" id="sDelivery">0</span><span class="l">To Deliver</span></div>
+    <div class="hkpi" onclick="setOrderQueueFilter('done')" style="cursor:pointer"><span class="n" id="sToday">0</span><span class="l">Done Today</span></div>
+    <div class="hkpi" onclick="switchRiderTab('hisab')" style="cursor:pointer"><span class="n" id="sCash">₹0</span><span class="l">COD Due</span></div>
+   </div>
   </div>
   
   <!-- ORDERS TAB -->
   <div class="tab-content active" id="tab-orders">
-   <div class="stats">
-    <div class="stat"><div class="n num" id="sPickup">0</div><div class="l">Pickups</div></div>
-    <div class="stat"><div class="n num" id="sDelivery">0</div><div class="l">Deliveries</div></div>
-    <div class="stat"><div class="n num" id="sToday">0</div><div class="l">Aaj Done</div></div>
-    <div class="stat cash"><div class="n num" id="sCash">₹0</div><div class="l">Cash Due</div></div>
+   <div class="rider-Subbar">
+    <div class="search-row">
+     <div class="search-box-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" class="search-input" id="riderSearchInput" placeholder="Search Order ID, Name, Phone, Area..." oninput="onRiderSearchInput(this.value)"/>
+      <button type="button" class="search-clear" id="riderSearchClear" onclick="clearRiderSearch()"><i class="fas fa-times"></i></button>
+     </div>
+     <button type="button" class="gps-sort-btn" id="gpsSortBtn" onclick="toggleNearestSort()"><i class="fas fa-location-crosshairs"></i> Nearest</button>
+    </div>
+    <div class="filter-pills-row" id="queueFilterRow">
+     <button type="button" class="q-pill active" data-q="all" onclick="setOrderQueueFilter('all')">All Active <span class="cnt" id="qfAll">0</span></button>
+     <button type="button" class="q-pill" data-q="pickup" onclick="setOrderQueueFilter('pickup')">📥 Pickups <span class="cnt" id="qfPickup">0</span></button>
+     <button type="button" class="q-pill" data-q="delivery" onclick="setOrderQueueFilter('delivery')">🚚 Deliveries <span class="cnt" id="qfDelivery">0</span></button>
+     <button type="button" class="q-pill" data-q="store" onclick="setOrderQueueFilter('store')">🏭 In Store <span class="cnt" id="qfStore">0</span></button>
+     <button type="button" class="q-pill" data-q="done" onclick="setOrderQueueFilter('done')">✅ Done <span class="cnt" id="qfDone">0</span></button>
+    </div>
+    <div class="slot-pills-row" id="slotFilterRow">
+     <button type="button" class="s-pill active" data-slot="all" onclick="setSlotFilter('all')">All Slots</button>
+     <button type="button" class="s-pill" data-slot="morning" onclick="setSlotFilter('morning')">🌅 Morning (9-12)</button>
+     <button type="button" class="s-pill" data-slot="afternoon" onclick="setSlotFilter('afternoon')">☀️ Afternoon (1-5)</button>
+     <button type="button" class="s-pill" data-slot="evening" onclick="setSlotFilter('evening')">🌙 Evening (6-9)</button>
+    </div>
    </div>
-   <div class="sec">📥 Pickups Scheduled <span class="count num" id="cPickup">0</span></div>
-   <div id="pickupList"></div>
-   <div class="sec pink">🚚 Out for Delivery <span class="count num" id="cDelivery">0</span></div>
-   <div id="deliveryList"></div>
-   <div class="sec green">✅ Delivered Today <span class="count num" id="cDone">0</span></div>
-   <div id="doneList"></div>
+
+   <div id="secPickupWrap">
+    <div class="sec">📥 Doorstep Pickups Remaining <span class="count num" id="cPickup">0</span></div>
+    <div id="pickupList"></div>
+   </div>
+
+   <div id="secDeliveryWrap">
+    <div class="sec pink">🚚 Out for Delivery <span class="count num" id="cDelivery">0</span></div>
+    <div id="deliveryList"></div>
+   </div>
+
+   <div id="secStoreWrap">
+    <div class="sec warn">🏭 Collected · In Store Processing <span class="count num" id="cStore">0</span></div>
+    <div id="storeList"></div>
+   </div>
+
+   <div id="secDoneWrap">
+    <div class="sec green">✅ Delivered Today <span class="count num" id="cDone">0</span></div>
+    <div id="doneList"></div>
+   </div>
   </div>
   
-  <!-- DASHBOARD TAB -->
+  <!-- HISAB / CASH HANDOVER TAB -->
+  <div class="tab-content" id="tab-hisab">
+   <div class="dash-grid">
+    <div class="dash-card">
+     <h4><i class="fas fa-wallet"></i> Aaj Ka Cash &amp; UPI Hisab (Today's Collection)</h4>
+     <div class="hisab-hero-grid">
+      <div class="hisab-box cash">
+       <small>💵 Cash in Hand (Galla)</small>
+       <strong id="hisabCashToday">₹0</strong>
+       <span style="font-size:11px;font-weight:700;color:var(--good)" id="hisabCashCount">0 Cash orders</span>
+      </div>
+      <div class="hisab-box upi">
+       <small>📱 UPI QR Verified</small>
+       <strong id="hisabUpiToday">₹0</strong>
+       <span style="font-size:11px;font-weight:700;color:var(--primary)" id="hisabUpiCount">0 UPI orders</span>
+      </div>
+     </div>
+     <div class="dash-row"><span class="label">Total Collected Today (Cash + UPI)</span><span class="value num" id="hisabTotalCollected">₹0</span></div>
+     <div class="dash-row"><span class="label">Pending COD on Route (To Collect)</span><span class="value num" style="color:var(--warn)" id="hisabPendingCod">₹0</span></div>
+     <div style="margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:12px;color:var(--sub);font-weight:600">
+      💡 <b>Store Handover Tip:</b> Sham ko store par sirf <b>Cash in Hand</b> jama karna hota hai. UPI payments seedhe Owner ke Paytm Business bank account me settle hote hain.
+     </div>
+    </div>
+    <div class="dash-card">
+     <h4><i class="fas fa-receipt"></i> Today's Paid Orders Breakdown</h4>
+     <div id="hisabOrdersList"></div>
+    </div>
+   </div>
+  </div>
+
+  <!-- DASHBOARD / PERFORMANCE TAB -->
   <div class="tab-content" id="tab-dashboard">
    <div class="dash-grid">
     <div class="dash-card">
-     <h4>🏆 This Week</h4>
+     <h4><i class="fas fa-trophy"></i> This Week Performance</h4>
      <div class="dash-row"><span class="label">Total Deliveries</span><span class="value num" id="weekDeliveries">0</span></div>
-     <div class="dash-row"><span class="label">Total Volume</span><span class="value num" id="weekEarnings">₹0</span></div>
-     <div class="dash-row"><span class="label">Avg Time/Delivery</span><span class="value num" id="weekAvgTime">2.5h</span></div>
+     <div class="dash-row"><span class="label">Order Volume Handled</span><span class="value num" id="weekEarnings">₹0</span></div>
+     <div class="dash-row"><span class="label">On-Time Turnaround</span><span class="value num" id="weekAvgTime">98%</span></div>
     </div>
     <div class="dash-card">
-     <h4>📊 This Month</h4>
+     <h4><i class="fas fa-calendar-check"></i> This Month</h4>
      <div class="dash-row"><span class="label">Total Deliveries</span><span class="value num" id="monthDeliveries">0</span></div>
-     <div class="dash-row"><span class="label">Total Volume</span><span class="value num" id="monthEarnings">₹0</span></div>
+     <div class="dash-row"><span class="label">Order Volume Handled</span><span class="value num" id="monthEarnings">₹0</span></div>
      <div class="dash-row"><span class="label">Best Active Day</span><span class="value num" id="bestDay">—</span></div>
     </div>
     <div class="dash-card">
-     <h4>🔥 Streak & Performance</h4>
-     <div style="text-align:center;padding:16px 0">
-      <div class="streak-badge"><i class="fas fa-fire"></i> <span id="streakCount">0</span> Day Streak</div>
+     <h4><i class="fas fa-fire"></i> Streak &amp; All-Time Record</h4>
+     <div style="text-align:center;padding:12px 0">
+      <div class="streak-badge"><i class="fas fa-fire"></i> <span id="streakCount">0</span> Day Active Streak</div>
      </div>
-     <div class="dash-row"><span class="label">All Time Deliveries</span><span class="value num" id="totalDeliveries">0</span></div>
-     <div class="dash-row"><span class="label">All Time Volume</span><span class="value num" id="totalEarnings">₹0</span></div>
+     <div class="dash-row"><span class="label">All-Time Deliveries</span><span class="value num" id="totalDeliveries">0</span></div>
+     <div class="dash-row"><span class="label">All-Time Order Volume</span><span class="value num" id="totalEarnings">₹0</span></div>
     </div>
    </div>
   </div>
@@ -330,35 +481,79 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
     <div class="chat-messages" id="chatMessages">
      <div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>
     </div>
+    <div class="chat-quick-Chips">
+     <button type="button" class="chat-qchip" onclick="sendQuickChat('📍 Main pickup location par pahunch gaya hu')">📍 Reached Pickup</button>
+     <button type="button" class="chat-qchip" onclick="sendQuickChat('📞 Customer call nahi utha rahe hain')">📞 Customer No Answer</button>
+     <button type="button" class="chat-qchip" onclick="sendQuickChat('🧺 Extra kapde add kar diye hain, bill updated')">🧺 Extra Items Added</button>
+     <button type="button" class="chat-qchip" onclick="sendQuickChat('✅ Aaj ki saari rides complete ho gayi')">✅ Rides Done</button>
+    </div>
     <div class="chat-input-row">
-     <input type="text" id="chatInput" placeholder="Type a message to admin..." onkeydown="if(event.key==='Enter')sendChat()"/>
+     <input type="text" id="chatInput" placeholder="Message Store Admin..." onkeydown="if(event.key==='Enter')sendChat()"/>
      <button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
     </div>
    </div>
   </div>
  </div>
+
+ <!-- STICKY BOTTOM NAVIGATION -->
+ <nav class="rider-bottom-nav" aria-label="Rider Navigation">
+  <button type="button" class="rbn-btn active" data-tab="orders" onclick="switchRiderTab('orders')">
+   <i class="fas fa-route"></i><span>Orders</span>
+   <span class="rbn-badge" id="navOrdersBadge" style="display:none">0</span>
+  </button>
+  <button type="button" class="rbn-btn" data-tab="hisab" onclick="switchRiderTab('hisab')">
+   <i class="fas fa-indian-rupee-sign"></i><span>Hisab</span>
+  </button>
+  <button type="button" class="rbn-btn" data-tab="dashboard" onclick="switchRiderTab('dashboard')">
+   <i class="fas fa-chart-Simple"></i><span>Stats</span>
+  </button>
+  <button type="button" class="rbn-btn" data-tab="chat" onclick="switchRiderTab('chat')">
+   <i class="fas fa-comments"></i><span>Admin Chat</span>
+   <span class="rbn-badge" id="navChatBadge" style="display:none">!</span>
+  </button>
+ </nav>
 </div>
 
 <!-- BATCH BAR -->
 <div class="batch-bar" id="batchBar">
- <span class="batch-count num" id="batchCount">0</span> selected
- <button onclick="batchStartPickup()">Batch Pickup</button>
+ <span class="batch-count num"><span id="batchCount">0</span> Pickups Selected</span>
+ <button onclick="batchStartPickup()"><i class="fas fa-check-double"></i> Mark Picked Up</button>
 </div>
 
-<!-- MODAL: ADD EXTRA ITEM -->
+<!-- MODAL: FAST DOORSTEP GARMENT COUNTER & BILL BUILDER -->
 <div class="modal" id="addItemModal">
  <div class="modal-box">
   <div class="modal-head">
-   <h3><i class="fas fa-plus-circle"></i> Add Doorstep Items <span style="color:var(--muted);font-size:11px;font-family:'JetBrains Mono'" id="addItemOrderId"></span></h3>
+   <h3><i class="fas fa-basket-shopping" style="color:var(--primary)"></i> Doorstep Garment Counter <span class="num" style="color:var(--primary);font-size:12px" id="addItemOrderId"></span></h3>
    <button class="modal-close" onclick="closeModal('addItemModal')"><i class="fas fa-xmark"></i></button>
   </div>
-  <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Customer ne extra kapde diye hain? Item list me se add karein.</p>
-  <div id="extraItems"></div>
-  <button class="btn-main" onclick="addExtraItemRow()" style="padding:11px;font-size:12px;margin:8px 0 12px"><i class="fas fa-plus"></i> Add Item</button>
+  <div class="counter-mode-tabs">
+   <button type="button" class="cm-tab active" id="cmTabReplace" onclick="setCounterMode('replace')">🧺 Full Bag Count (Edit All)</button>
+   <button type="button" class="cm-tab" id="cmTabAdd" onclick="setCounterMode('add')">➕ Add Extra Items Only</button>
+  </div>
+  <input type="text" class="search-input" id="counterSearchInput" placeholder="🔍 Search garment (Shirt, Saree, Blanket...)" style="margin-bottom:8px;padding:9px 12px" oninput="renderCounterCatalog()"/>
+  <div class="counter-cat-rail" id="counterCatRail"></div>
+  <div class="counter-items-list" id="counterItemsList"></div>
+  <div class="counter-summary-bar">
+   <span id="counterSummaryQty">0 garments selected</span>
+   <span class="num" id="counterSummaryTotal">₹0</span>
+  </div>
   <div style="display:flex;gap:8px">
    <button class="btn-secondary" style="flex:1" onclick="closeModal('addItemModal')">Cancel</button>
-   <button class="btn-main" style="flex:1" onclick="saveExtraItems()"><i class="fas fa-save"></i> Save</button>
+   <button class="btn-main" style="flex:1.4" id="saveCounterBtn" onclick="saveExtraItems()"><i class="fas fa-check-circle"></i> Save &amp; Update Bill</button>
   </div>
+ </div>
+</div>
+
+<!-- MODAL: 1-TAP WHATSAPP QUICK TEMPLATES & DIGITAL SLIP -->
+<div class="modal" id="waQuickModal">
+ <div class="modal-box" style="max-width:420px">
+  <div class="modal-head">
+   <h3><i class="fab fa-whatsapp" style="color:#16a34a"></i> Customer WhatsApp <span class="num" style="font-size:12px;color:var(--primary)" id="waQuickOrderId"></span></h3>
+   <button class="modal-close" onclick="closeModal('waQuickModal')"><i class="fas fa-xmark"></i></button>
+  </div>
+  <p style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:8px">1-Tap me customer ko professional update ya digital pickup receipt bhejein:</p>
+  <div class="wa-tpl-list" id="waQuickList"></div>
  </div>
 </div>
 
@@ -370,16 +565,16 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
    <button class="modal-close" onclick="closeRiderPayModal()"><i class="fas fa-xmark"></i></button>
   </div>
   <div id="rpmQrSection" style="margin-bottom:12px">
-   <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:700">Customer ko QR dikhayein — Payment hote hi screen apne aap confirm ho jayegi!</div>
-   <div style="background:#fff;border:2px solid var(--primary);border-radius:18px;padding:12px;display:inline-block;margin-bottom:8px">
+   <div style="font-size:12px;color:var(--sub);margin-bottom:8px;font-weight:700">Customer ko QR scan karayein — Payment hote hi screen apne aap confirm ho jayegi!</div>
+   <div style="background:#fff;border:2px solid var(--primary);border-radius:18px;padding:12px;display:inline-block;margin-bottom:8px;box-shadow:var(--shadow)">
     <img id="rpmQrImg" src="" alt="Order UPI QR" style="width:200px;height:200px;display:block;border-radius:8px"/>
    </div>
-   <div class="num" style="font-size:26px;font-weight:800;color:var(--good)" id="rpmAmountText">₹0</div>
-   <div style="font-size:10.5px;color:var(--muted);margin-top:3px" id="rpmStatusHint"><i class="fas fa-spinner fa-spin" style="color:var(--primary)"></i> Listening for automatic UPI confirmation…</div>
+   <div class="num" style="font-size:28px;font-weight:800;color:var(--good)" id="rpmAmountText">₹0</div>
+   <div style="font-size:11.5px;color:var(--muted);margin-top:3px;font-weight:700" id="rpmStatusHint"><i class="fas fa-spinner fa-spin" style="color:var(--primary)"></i> Listening for automatic UPI confirmation…</div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
-   <button class="btn-main" style="background:var(--good);padding:12px;font-size:12px" id="rpmCashBtn" onclick="confirmRiderPaymentMode('cash')"><i class="fas fa-money-bill-wave"></i> Cash Collected</button>
-   <button class="btn-main" style="padding:12px;font-size:12px" id="rpmUpiBtn" onclick="confirmRiderPaymentMode('upi')"><i class="fas fa-qrcode"></i> Mark UPI Paid</button>
+   <button class="btn-main" style="background:var(--good);padding:12px;font-size:13px" id="rpmCashBtn" onclick="confirmRiderPaymentMode('cash')"><i class="fas fa-money-bill-wave"></i> Cash Collected</button>
+   <button class="btn-main" style="padding:12px;font-size:13px" id="rpmUpiBtn" onclick="confirmRiderPaymentMode('upi')"><i class="fas fa-qrcode"></i> Mark UPI Paid</button>
   </div>
  </div>
 </div>
@@ -388,16 +583,16 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 <div class="modal" id="issueModal">
  <div class="modal-box">
   <div class="modal-head">
-   <h3><i class="fas fa-exclamation-triangle"></i> Report Issue</h3>
+   <h3><i class="fas fa-exclamation-triangle" style="color:var(--bad)"></i> Report Doorstep Issue</h3>
    <button class="modal-close" onclick="closeModal('issueModal')"><i class="fas fa-xmark"></i></button>
   </div>
   <div class="issue-type">
-   <button onclick="selIssue(this,'wrong_address')">Address Galat</button>
-   <button onclick="selIssue(this,'not_home')">Ghar Pe Nahi</button>
-   <button onclick="selIssue(this,'refused')">Customer Cancel</button>
-   <button onclick="selIssue(this,'other')">Other Issue</button>
+   <button onclick="selIssue(this,'Customer Not Home')">🚪 Ghar Pe Nahi Hain</button>
+   <button onclick="selIssue(this,'Phone Switched Off / Unreachable')">📵 Phone Band / No Pick</button>
+   <button onclick="selIssue(this,'Wrong / Incomplete Address')">📍 Address Galat Hai</button>
+   <button onclick="selIssue(this,'Customer Asked to Reschedule')">⏰ Baad Me Bulaya Hai</button>
   </div>
-  <textarea id="issueNote" rows="3" placeholder="Details likhein (optional)"></textarea>
+  <textarea id="issueNote" rows="3" placeholder="Extra note likhein (optional)..."></textarea>
   <div style="display:flex;gap:8px;margin-top:12px">
    <button class="btn-secondary" style="flex:1" onclick="closeModal('issueModal')">Cancel</button>
    <button class="btn-main" style="flex:1;background:var(--bad)" onclick="submitIssue()"><i class="fas fa-paper-plane"></i> Send to Admin</button>
@@ -406,13 +601,9 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
 </div>
 
 <script>
-// 1. GLOBAL ERROR LOGGER
-window.onerror = function(msg, url, line) {
-  console.error("Rider App Notice:", msg, line);
-};
-
-// 2. REGISTER SERVICE WORKER FOR BACKGROUND RIDER PUSH
+// 1. REGISTER SERVICE WORKER FOR RIDER PUSH
 let riderSWReg = null;
+let riderFgPushBound = false;
 const RIDER_VAPID_KEY = "BLWGe8oYGTWCce3oxyc35WeWG-rhevDkA9c4eXNhjRd8AfEuYkQxwGkAFu3INSMXeRIuQGyzNpnd89EDBZNMH9w";
 try {
   if ('serviceWorker' in navigator) {
@@ -422,7 +613,7 @@ try {
   }
 } catch(_) {}
 
-// 3. FIREBASE INITIALIZATION
+// 2. FIREBASE INITIALIZATION
 const firebaseConfig = {
   apiKey: "AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",
   authDomain: "parth-dry-clean.firebaseapp.com",
@@ -435,11 +626,7 @@ const firebaseConfig = {
 
 let app, riderApp, auth, db;
 try {
-  if (!firebase.apps.length) {
-    app = firebase.initializeApp(firebaseConfig);
-  } else {
-    app = firebase.app();
-  }
+  app = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
   riderApp = firebase.apps.find(a => a.name === 'ParthRiderHUD') || firebase.initializeApp(firebaseConfig, 'ParthRiderHUD');
   auth = riderApp.auth();
   db = riderApp.database();
@@ -450,19 +637,16 @@ try {
 
 const $ = id => document.getElementById(id);
 
-// 4. PARSE SAVED BOY DATA
+// 3. PARSE SAVED RIDER SESSION
 let BOY = null;
 try {
   const raw = localStorage.getItem('pdc_boy');
-  if (raw && raw !== 'undefined' && raw !== 'null') {
-    BOY = JSON.parse(raw);
-  }
+  if (raw && raw !== 'undefined' && raw !== 'null') BOY = JSON.parse(raw);
 } catch(_) {
   localStorage.removeItem('pdc_boy');
   BOY = null;
 }
 
-// 5. INSTANT RESUME (ZERO FLICKER)
 if (BOY && BOY.id) {
   const ls = $('loginScreen'); if(ls) ls.style.display = 'none';
   const ap = $('app'); if(ap) ap.style.display = 'block';
@@ -471,13 +655,21 @@ if (BOY && BOY.id) {
 
 let ordersRef = null, prevOrderIds = new Set(), prevStatuses = {}, issueCtx = { orderId: null, type: null }, selectedOrders = new Set();
 let latestAssignedOrderId = null, alertTimer = null;
+let ALL_MY_ORDERS = [];
+let ORDER_MAP = new Map();
+let activeQueueFilter = 'all'; // 'all' | 'pickup' | 'delivery' | 'store' | 'done'
+let activeSlotFilter = 'all';  // 'all' | 'morning' | 'afternoon' | 'evening'
+let riderSearchQuery = '';
+let nearestSortActive = false;
+let riderCoords = null; // { lat, lng }
+
 const LABEL = {
   pending: 'Pickup Scheduled',
-  picked_up: 'Garments Collected',
-  processing: 'Expert Cleaning',
+  picked_up: 'Picked Up (In Store)',
+  processing: 'Cleaning in Store',
   quality_check: 'Quality Check',
-  out_for_delivery: 'Fresh Clothes on the Way',
-  delivered: 'Delivered Successfully',
+  out_for_delivery: 'Out for Delivery',
+  delivered: 'Delivered',
   cancelled: 'Cancelled'
 };
 
@@ -490,14 +682,13 @@ function safeUrl(v, fallback = '') {
   } catch(e){}
   return fallback;
 }
-
-// Standard PDC-XXXXXX format helper
 function formatOrderId(val) {
   let s = String(val || '').trim().replace(/^#/, '');
   if (!s) return 'PDC-000000';
   let clean = s.replace(/^PDC[-_]?/i, '').replace(/[^A-Za-z0-9-]/g, '').toUpperCase();
   return 'PDC-' + (clean || '000000');
 }
+function dayStr(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 
 function toast(m, t) {
   const el = $('toast');
@@ -521,17 +712,32 @@ function beep() {
 }
 function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch(e) {} }
 
-// 6. FAST NON-BLOCKING LOGIN
+// Helper to verify Rider Firebase Auth token or prompt clean re-login if expired
+async function getValidRiderToken() {
+  let user = auth.currentUser;
+  if (!user) {
+    await new Promise(r => setTimeout(r, 450));
+    user = auth.currentUser;
+  }
+  if (!user) {
+    localStorage.removeItem('pdc_boy');
+    BOY = null;
+    $('app').style.display = 'none';
+    $('loginScreen').style.display = 'flex';
+    throw new Error('Session expired — kripya apna 6-digit PIN daal kar dobara login karein');
+  }
+  return user.getIdToken(true);
+}
+
+// 4. LOGIN HANDLER
 window.handleLogin = async function() {
   const phoneInput = $('phoneInput');
   const pinInput = $('pinInput');
   const errEl = $('loginErr');
   const btn = $('loginBtn');
 
-  const rawPhone = phoneInput ? phoneInput.value : '';
-  const rawPin = pinInput ? pinInput.value : '';
-  const phone = last10Digits(rawPhone);
-  const pin = String(rawPin || '').trim();
+  const phone = last10Digits(phoneInput ? phoneInput.value : '');
+  const pin = String(pinInput ? pinInput.value : '').trim();
 
   if (!/^[0-9]{10}$/.test(phone) || !/^[0-9]{6}$/.test(pin)) {
     if (errEl) {
@@ -544,7 +750,7 @@ window.handleLogin = async function() {
   if (errEl) errEl.style.display = 'none';
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Secure login…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying PIN…';
   }
 
   try {
@@ -564,7 +770,7 @@ window.handleLogin = async function() {
     const boyIdSafe = data.boyId || (data.boy && data.boy.id) || data.id || '';
     const boyNameSafe = (data.boy && data.boy.name) || data.name || 'Partner';
 
-    const boyObj = {
+    BOY = {
       id: boyIdSafe,
       ...(data.boy || {}),
       name: boyNameSafe,
@@ -572,8 +778,6 @@ window.handleLogin = async function() {
       phoneE164: '+91' + phone,
       authUid: uid
     };
-
-    BOY = boyObj;
     localStorage.setItem('pdc_boy', JSON.stringify(BOY));
 
     if (uid && boyIdSafe) {
@@ -588,16 +792,16 @@ window.handleLogin = async function() {
 
     enterApp();
   } catch(err) {
-    console.error("Login call error:", err);
     if (errEl) {
       errEl.textContent = '❌ ' + (err.message || 'Mobile number ya PIN galat hai.');
       errEl.style.display = 'block';
     }
+    if (pinInput) pinInput.value = '';
+  } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-fingerprint"></i> Secure Login';
+      btn.innerHTML = '<i class="fas fa-fingerprint"></i> Secure Rider Login';
     }
-    if (pinInput) pinInput.value = '';
   }
 };
 
@@ -613,6 +817,8 @@ function enterApp() {
   if (appEl) appEl.style.display = 'block';
   const nameEl = $('helloName');
   if (nameEl) nameEl.textContent = 'Hello, ' + (BOY?.name || 'Partner') + ' 👋';
+  const dp = $('helloDatePill');
+  if (dp) dp.textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' });
 
   listen();
   startChatListener();
@@ -643,6 +849,21 @@ async function syncRiderFCMToken() {
     const messaging = firebase.messaging();
     const reg = riderSWReg || await navigator.serviceWorker.register('/firebase-messaging-sw.js');
     riderSWReg = reg;
+    if (!riderFgPushBound) {
+      riderFgPushBound = true;
+      messaging.onMessage(payload => {
+        const title = payload.notification?.title || payload.data?.title || 'Parth Rider Alert';
+        const body = payload.notification?.body || payload.data?.body || 'New order update';
+        const oid = payload.data?.orderId || '';
+        beep();
+        vibrate([150, 80, 150]);
+        toast(`🔔 ${title}: ${body}`);
+        if (oid) {
+          const o = ORDER_MAP.get(oid);
+          triggerNewOrderAlert(oid, formatOrderId(o?.orderId || oid), o?.customerName || 'Customer', o?.address || body, 'new');
+        }
+      });
+    }
     const token = await messaging.getToken({ vapidKey: RIDER_VAPID_KEY, serviceWorkerRegistration: reg });
     if (token) {
       const uid = auth.currentUser ? auth.currentUser.uid : (BOY && BOY.authUid);
@@ -657,7 +878,7 @@ async function syncRiderFCMToken() {
 window.enableRiderPushManual = async function() {
   if (!('Notification' in window)) return toast('Browser notifications supported nahi hain', 'err');
   if (Notification.permission === 'denied') {
-    return toast('Browser settings me जाकर Notifications Allow karein', 'err');
+    return toast('Browser URL bar ke Lock (🔒) icon se Notifications Allow karein', 'err');
   }
   const p = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
   syncRiderPushButtonUI();
@@ -672,9 +893,8 @@ window.enableRiderPushManual = async function() {
 function requestNotificationPermission() {
   syncRiderPushButtonUI();
   if ('Notification' in window) {
-    if (Notification.permission === 'granted') {
-      syncRiderFCMToken();
-    } else if (Notification.permission === 'default') {
+    if (Notification.permission === 'granted') syncRiderFCMToken();
+    else if (Notification.permission === 'default') {
       Notification.requestPermission().then(p => {
         syncRiderPushButtonUI();
         if (p === 'granted') {
@@ -707,7 +927,7 @@ function showRiderSystemNotification(title, body, orderKey) {
   } catch (_) {}
 }
 
-// 7. BOTTOM ORDER HUD ALERT (Shows PDC-XXXXXX for both New Pickup & Out for Delivery)
+// 5. BOTTOM ORDER HUD ALERT
 function triggerNewOrderAlert(orderKey, displayId, customerName, address, alertType = 'new') {
   latestAssignedOrderId = orderKey;
   beep();
@@ -721,7 +941,7 @@ function triggerNewOrderAlert(orderKey, displayId, customerName, address, alertT
   if (badgeEl) badgeEl.textContent = badgeTitle;
   if (tEl) tEl.textContent = displayId;
   const cleanAddr = cleanAddress(address || '');
-  if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${cleanAddr ? cleanAddr.slice(0, 34) + (cleanAddr.length > 34 ? '…' : '') : (isDelivery ? 'Out for Delivery' : 'Doorstep Pickup')}`;
+  if (sEl) sEl.textContent = `${customerName || 'Customer'} · ${cleanAddr ? cleanAddr.slice(0, 36) + (cleanAddr.length > 36 ? '…' : '') : (isDelivery ? 'Out for Delivery' : 'Doorstep Pickup')}`;
 
   const alertEl = $('newOrderAlert');
   if (alertEl) alertEl.classList.add('show');
@@ -745,31 +965,16 @@ function dismissOrderAlert() {
 function viewAssignedOrder() {
   dismissOrderAlert();
   if (!latestAssignedOrderId) return;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  const btn = document.querySelector('.tab-btn[data-tab="orders"]');
-  if (btn) btn.classList.add('active');
-  const tOrders = $('tab-orders');
-  if (tOrders) tOrders.classList.add('active');
-
+  switchRiderTab('orders');
+  setOrderQueueFilter('all');
   setTimeout(() => {
     const card = document.querySelector(`.order-card[data-id="${latestAssignedOrderId}"]`);
     if (card) {
       card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       card.classList.add('highlight-card');
-      setTimeout(()=>card.classList.remove('highlight-card'), 2500);
+      setTimeout(() => card.classList.remove('highlight-card'), 2500);
     }
-  }, 200);
-}
-
-function notifyAdmin(type, data) {
-  const n = {
-    type, boy: BOY?.name || '?', boyPhone: BOY?.phone || '?',
-    orderId: data.orderId || '', customer: data.customer || '',
-    status: data.status || '', note: data.note || '',
-    at: firebase.database.ServerValue.TIMESTAMP, read: false
-  };
-  return db.ref('notifications').push(n);
+  }, 180);
 }
 
 function openModal(id) { const el = $(id); if (el) el.classList.add('show'); }
@@ -790,68 +995,154 @@ if (btnConfirmYes) {
 function extractGPS(addr) { const m = (addr || '').match(/\(GPS:\s*(https?:\/\/[^\)]+)\)/i); return m ? m[1] : null; }
 function cleanAddress(addr) { return (addr || '').replace(/\s*\(GPS:[^\)]*\)/i, '').trim(); }
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    const tabEl = $('tab-' + btn.dataset.tab);
-    if (tabEl) tabEl.classList.add('active');
-    if (btn.dataset.tab === 'dashboard') loadDashboard();
-    if (btn.dataset.tab === 'chat') {
-      const dot = btn.querySelector('.chat-unread-dot');
-      if (dot) dot.style.display = 'none';
-      loadChat();
-    }
-  };
-});
+// 6. BOTTOM TAB NAVIGATION
+window.switchRiderTab = function(tabName) {
+  document.querySelectorAll('.rbn-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const target = $('tab-' + tabName);
+  if (target) target.classList.add('active');
+  if (tabName === 'dashboard') loadDashboard();
+  if (tabName === 'hisab') render(ALL_MY_ORDERS);
+  if (tabName === 'chat') {
+    const badge = $('navChatBadge');
+    if (badge) badge.style.display = 'none';
+    loadChat();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
+// 7. THEME & CONNECTION STATUS
 const themeBtn = $('themeBtn');
 if (themeBtn) {
-  themeBtn.onclick = () => {
-    const l = document.documentElement.getAttribute('data-theme') === 'dark';
-    document.documentElement.setAttribute('data-theme', l ? 'light' : 'dark');
-    themeBtn.innerHTML = l ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-    localStorage.setItem('pdc_dtheme', l ? 'light' : 'dark');
-  };
-  if (localStorage.getItem('pdc_dtheme') === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-    themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
-  } else {
+  const savedTheme = localStorage.getItem('pdc_dtheme') || 'light';
+  if (savedTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
     themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
   }
+  themeBtn.onclick = () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+      localStorage.setItem('pdc_dtheme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+      localStorage.setItem('pdc_dtheme', 'dark');
+    }
+  };
 }
 
 function updateConn() {
-  const dot = $('connDot');
-  if (!dot) return;
-  dot.classList.toggle('off', !navigator.onLine);
-  dot.title = navigator.onLine ? 'Online' : 'Offline';
+  const pill = $('connPill');
+  const txt = $('connText');
+  if (!pill || !txt) return;
+  pill.classList.toggle('off', !navigator.onLine);
+  txt.textContent = navigator.onLine ? 'Online' : 'Offline';
 }
 window.addEventListener('online', updateConn);
 window.addEventListener('offline', updateConn);
 updateConn();
 
-// 8. LOGOUT ACTION
+// 8. LOGOUT
 const logoutBtn = $('logoutBtn');
 if (logoutBtn) {
   logoutBtn.onclick = () => {
-    if (chatRefActive) chatRefActive.off();
-    chatRefActive = null;
-    chatFirstLoad = true;
-    const uid = auth.currentUser ? auth.currentUser.uid : null;
-    localStorage.removeItem('pdc_boy');
-    BOY = null;
-    const done = () => { location.reload(); };
-    if (uid) db.ref('boy_sessions/' + uid).remove().finally(() => auth.signOut().finally(done));
-    else auth.signOut().finally(done);
+    openAppConfirm('Kya aap Rider App se logout karna chahte hain?', () => {
+      if (chatRefActive) chatRefActive.off();
+      chatRefActive = null;
+      chatFirstLoad = true;
+      const uid = auth.currentUser ? auth.currentUser.uid : null;
+      localStorage.removeItem('pdc_boy');
+      BOY = null;
+      const done = () => { location.reload(); };
+      if (uid) db.ref('boy_sessions/' + uid).remove().finally(() => auth.signOut().finally(done));
+      else auth.signOut().finally(done);
+    }, 'Logout Rider App');
   };
 }
 
+// 9. SEARCH, QUEUE FILTERS & GPS DISTANCE SORT
+window.onRiderSearchInput = function(val) {
+  riderSearchQuery = String(val || '').trim().toLowerCase();
+  const clr = $('riderSearchClear');
+  if (clr) clr.style.display = riderSearchQuery ? 'inline-flex' : 'none';
+  render(ALL_MY_ORDERS);
+};
+window.clearRiderSearch = function() {
+  const inp = $('riderSearchInput');
+  if (inp) inp.value = '';
+  riderSearchQuery = '';
+  const clr = $('riderSearchClear');
+  if (clr) clr.style.display = 'none';
+  render(ALL_MY_ORDERS);
+};
+window.setOrderQueueFilter = function(q) {
+  activeQueueFilter = q || 'all';
+  document.querySelectorAll('#queueFilterRow .q-pill').forEach(b => b.classList.toggle('active', b.dataset.q === activeQueueFilter));
+  switchRiderTab('orders');
+  render(ALL_MY_ORDERS);
+};
+window.setSlotFilter = function(slot) {
+  activeSlotFilter = slot || 'all';
+  document.querySelectorAll('#slotFilterRow .s-pill').forEach(b => b.classList.toggle('active', b.dataset.slot === activeSlotFilter));
+  render(ALL_MY_ORDERS);
+};
+
+function calcDistanceKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(Math.max(0, Math.min(1, a))));
+}
+
+function getOrderCoords(o) {
+  const lat = Number(o.latitude ?? o.lat ?? o.location?.latitude ?? NaN);
+  const lng = Number(o.longitude ?? o.lng ?? o.location?.longitude ?? NaN);
+  if (Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0)) return { lat, lng };
+  const gps = extractGPS(o.address);
+  if (gps) {
+    const m = gps.match(/([+-]?\d+\.\d+)\s*,\s*([+-]?\d+\.\d+)/);
+    if (m) return { lat: Number(m[1]), lng: Number(m[2]) };
+  }
+  return null;
+}
+
+window.toggleNearestSort = function() {
+  const btn = $('gpsSortBtn');
+  if (nearestSortActive) {
+    nearestSortActive = false;
+    if (btn) btn.classList.remove('active');
+    render(ALL_MY_ORDERS);
+    return;
+  }
+  if (!navigator.geolocation) {
+    return toast('Is browser me GPS available nahi hai', 'err');
+  }
+  if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GPS…';
+  navigator.geolocation.getCurrentPosition(pos => {
+    riderCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    nearestSortActive = true;
+    if (btn) {
+      btn.classList.add('active');
+      btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Nearest ON';
+    }
+    toast('📍 Sorted by nearest distance from your location!');
+    render(ALL_MY_ORDERS);
+  }, () => {
+    if (btn) btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Nearest';
+    toast('GPS permission allow karein taaki nearest orders sort ho sakein', 'err');
+  }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
+};
+
 function toggleSelect(id) {
-  if (selectedOrders.has(id)) { selectedOrders.delete(id); }
-  else { selectedOrders.add(id); }
+  if (selectedOrders.has(id)) selectedOrders.delete(id);
+  else selectedOrders.add(id);
   document.querySelectorAll('.order-card').forEach(c => {
     c.classList.toggle('selected', selectedOrders.has(c.dataset.id));
   });
@@ -864,8 +1155,7 @@ function toggleSelect(id) {
 window.batchStartPickup = async () => {
   if (selectedOrders.size === 0) return;
   try {
-    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
-    const token = await user.getIdToken(true);
+    const token = await getValidRiderToken();
     const ids = Array.from(selectedOrders);
     for (const id of ids) {
       const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus', {
@@ -873,17 +1163,17 @@ window.batchStartPickup = async () => {
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ orderId: id, status: 'picked_up' })
       });
-      const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Pickup update failed');
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || 'Pickup update failed');
     }
     toast(`✅ ${ids.length} orders marked as Picked Up!`);
     selectedOrders.clear();
     const bBar = $('batchBar');
     if (bBar) bBar.classList.remove('show');
-    document.querySelectorAll('.order-card.selected').forEach(c => c.classList.remove('selected'));
   } catch(e) { toast(e?.message || 'Pickup update failed', 'err'); }
 };
 
-// 9. REALTIME ORDERS LISTENER (Zero-False-Positive Baseline + First-Order & Out-for-Delivery Alerts)
+// 10. REALTIME ORDERS LISTENER
 function listen() {
   if (ordersRef && ordersRef.refs) { ordersRef.refs.forEach((r, i) => r.off('value', ordersRef.cbs[i])); }
   const phone10 = last10Digits(BOY?.phone);
@@ -901,16 +1191,23 @@ function listen() {
     const merged = new Map();
     buckets.forEach(bucket => bucket.forEach((o, id) => merged.set(id, o)));
     const curIds = new Set(); const curStatuses = {}; const myOrders = [];
+    ORDER_MAP.clear();
     merged.forEach((o, id) => {
       if (!o) return;
       const assigned = (o.assigned_to_e164 || o.assigned_to || '');
       const matchesBoy = (last10Digits(assigned) === phone10) || (BOY?.id && (o.deliveryBoyId === BOY.id || o.assignedTo === BOY.id));
-      if (matchesBoy) { curIds.add(id); curStatuses[id] = o.status || 'pending'; myOrders.push({ _id: id, ...o }); }
+      if (matchesBoy) {
+        curIds.add(id);
+        curStatuses[id] = o.status || 'pending';
+        const fullObj = { _id: id, ...o };
+        myOrders.push(fullObj);
+        ORDER_MAP.set(id, fullObj);
+      }
     });
 
     if (baselineLoaded) {
       curIds.forEach(id => {
-        const o = myOrders.find(x => x._id === id);
+        const o = ORDER_MAP.get(id);
         if (!o || o.status === 'cancelled' || o.status === 'delivered') return;
         const displayId = formatOrderId(o.orderId || id);
         if (!prevOrderIds.has(id)) {
@@ -927,6 +1224,7 @@ function listen() {
       prevOrderIds = curIds;
       prevStatuses = curStatuses;
     }
+    ALL_MY_ORDERS = myOrders;
     render(myOrders);
   };
 
@@ -943,51 +1241,149 @@ function listen() {
   ordersRef = { refs: queries, cbs };
 }
 
-function dayStr(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function matchesSearchAndSlot(o) {
+  if (riderSearchQuery) {
+    const hay = [
+      formatOrderId(o.orderId || o._id),
+      o.orderId,
+      o.customerName,
+      o.name,
+      o.phone,
+      o.address,
+      o.itemsList
+    ].map(x => String(x || '').toLowerCase()).join(' ');
+    if (!hay.includes(riderSearchQuery)) return false;
+  }
+  if (activeSlotFilter !== 'all') {
+    const sl = String(o.timeSlot || '').toLowerCase();
+    if (!sl.includes(activeSlotFilter)) return false;
+  }
+  return true;
+}
+
+function sortOrderList(arr) {
+  if (nearestSortActive && riderCoords) {
+    return arr.slice().sort((a, b) => {
+      const ca = getOrderCoords(a);
+      const cb = getOrderCoords(b);
+      const da = ca ? calcDistanceKm(riderCoords.lat, riderCoords.lng, ca.lat, ca.lng) : 9999;
+      const dbDist = cb ? calcDistanceKm(riderCoords.lat, riderCoords.lng, cb.lat, cb.lng) : 9999;
+      return da - dbDist;
+    });
+  }
+  return arr.slice().sort((a, b) => {
+    const expA = a.express === 'Yes' ? 1 : 0;
+    const expB = b.express === 'Yes' ? 1 : 0;
+    if (expA !== expB) return expB - expA;
+    return (a.createdAt || 0) - (b.createdAt || 0);
+  });
+}
 
 function render(myOrders) {
-  const today = dayStr(new Date()); let pickup = [], delivery = [], done = [];
-  let cashDue = 0;
+  const today = dayStr(new Date());
+  let pickup = [], delivery = [], inStore = [], done = [];
+  let codDue = 0;
+  let cashCollectedToday = 0, cashCountToday = 0;
+  let upiCollectedToday = 0, upiCountToday = 0;
+  const todayPaidOrders = [];
 
-  myOrders.forEach(o => {
-    const isPaid = String(o.paymentStatus || '').toLowerCase().startsWith('paid');
-    if (o.status === 'delivered') {
+  (myOrders || []).forEach(o => {
+    if (!o || o.status === 'cancelled') return;
+    const st = o.status || 'pending';
+    const payStr = String(o.paymentStatus || '');
+    const isPaid = payStr.toLowerCase().startsWith('paid');
+    const amt = Number(o.total) || 0;
+
+    // Track Today's Cash vs UPI Hisab
+    const paidTimestamp = o.collectedAt || o.paidAt || o.deliveredAt || 0;
+    const isPaidToday = isPaid && paidTimestamp && dayStr(new Date(paidTimestamp)) === today;
+    if (isPaidToday) {
+      const isUpi = payStr.toLowerCase().includes('upi') || String(o.paymentMethod || '').toLowerCase() === 'upi';
+      if (isUpi) { upiCollectedToday += amt; upiCountToday++; }
+      else { cashCollectedToday += amt; cashCountToday++; }
+      todayPaidOrders.push({ ...o, _isUpi: isUpi });
+    }
+
+    if (st === 'delivered') {
       if ((o.deliveredAt ? dayStr(new Date(o.deliveredAt)) : '') === today) done.push(o);
-    } else if (o.status === 'out_for_delivery') {
+    } else if (st === 'out_for_delivery') {
       delivery.push(o);
-      if (!isPaid) cashDue += (+o.total || 0);
-    } else if (['pending', 'picked_up', 'processing', 'quality_check'].includes(o.status)) {
+      if (!isPaid) codDue += amt;
+    } else if (st === 'pending') {
+      // ONLY 'pending' is an uncollected doorstep pickup!
       pickup.push(o);
-      if (!isPaid && ['pending', 'picked_up', 'out_for_delivery'].includes(o.status)) cashDue += (+o.total || 0);
+      if (!isPaid) codDue += amt;
+    } else if (['picked_up', 'processing', 'quality_check'].includes(st)) {
+      inStore.push(o);
     }
   });
 
-  pickup.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-  delivery.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-
+  // Update Top Hero KPIs & Filter Counts (Unfiltered totals so Rider always knows exact workload)
   $('sPickup').textContent = pickup.length;
   $('sDelivery').textContent = delivery.length;
   $('sToday').textContent = done.length;
-  $('sCash').textContent = '₹' + cashDue;
-  $('cPickup').textContent = pickup.length;
-  $('cDelivery').textContent = delivery.length;
-  $('cDone').textContent = done.length;
+  $('sCash').textContent = '₹' + codDue;
 
-  $('pickupList').innerHTML = pickup.length ? pickup.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-inbox"></i>Koi pickup pending nahi</div>';
-  $('deliveryList').innerHTML = delivery.length ? delivery.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-truck"></i>Koi delivery out nahi</div>';
-  $('doneList').innerHTML = done.length ? done.map(o => {
+  $('qfAll').textContent = pickup.length + delivery.length;
+  $('qfPickup').textContent = pickup.length;
+  $('qfDelivery').textContent = delivery.length;
+  $('qfStore').textContent = inStore.length;
+  $('qfDone').textContent = done.length;
+
+  const navBadge = $('navOrdersBadge');
+  const actionableCount = pickup.length + delivery.length;
+  if (navBadge) {
+    navBadge.textContent = actionableCount;
+    navBadge.style.display = actionableCount > 0 ? 'inline-block' : 'none';
+  }
+
+  // Update Hisab Tab
+  if ($('hisabCashToday')) $('hisabCashToday').textContent = '₹' + cashCollectedToday;
+  if ($('hisabCashCount')) $('hisabCashCount').textContent = `${cashCountToday} Cash order${cashCountToday === 1 ? '' : 's'} (Handover to Store)`;
+  if ($('hisabUpiToday')) $('hisabUpiToday').textContent = '₹' + upiCollectedToday;
+  if ($('hisabUpiCount')) $('hisabUpiCount').textContent = `${upiCountToday} UPI QR order${upiCountToday === 1 ? '' : 's'}`;
+  if ($('hisabTotalCollected')) $('hisabTotalCollected').textContent = '₹' + (cashCollectedToday + upiCollectedToday);
+  if ($('hisabPendingCod')) $('hisabPendingCod').textContent = '₹' + codDue;
+  const hisabListEl = $('hisabOrdersList');
+  if (hisabListEl) {
+    hisabListEl.innerHTML = todayPaidOrders.length
+      ? todayPaidOrders.map(o => `<div class="dash-row"><span><b>${esc(formatOrderId(o.orderId || o._id))}</b> · ${esc(o.customerName || o.name || 'Customer')}</span><span class="badge ${o._isUpi ? 'picked_up' : 'delivered'}">${o._isUpi ? '📱 UPI' : '💵 CASH'} · ₹${Number(o.total) || 0}</span></div>`).join('')
+      : '<div style="font-size:12.5px;color:var(--muted);padding:12px 0;text-align:center">Aaj abhi tak koi payment collect nahi hua hai.</div>';
+  }
+
+  // Apply Search, Slot & GPS Sort
+  const fPickup = sortOrderList(pickup.filter(matchesSearchAndSlot));
+  const fDelivery = sortOrderList(delivery.filter(matchesSearchAndSlot));
+  const fStore = sortOrderList(inStore.filter(matchesSearchAndSlot));
+  const fDone = sortOrderList(done.filter(matchesSearchAndSlot));
+
+  $('cPickup').textContent = fPickup.length;
+  $('cDelivery').textContent = fDelivery.length;
+  $('cStore').textContent = fStore.length;
+  $('cDone').textContent = fDone.length;
+
+  $('secPickupWrap').style.display = (activeQueueFilter === 'all' || activeQueueFilter === 'pickup') ? 'block' : 'none';
+  $('secDeliveryWrap').style.display = (activeQueueFilter === 'all' || activeQueueFilter === 'delivery') ? 'block' : 'none';
+  $('secStoreWrap').style.display = (activeQueueFilter === 'all' || activeQueueFilter === 'store') ? 'block' : 'none';
+  $('secDoneWrap').style.display = (activeQueueFilter === 'all' || activeQueueFilter === 'done') ? 'block' : 'none';
+
+  $('pickupList').innerHTML = fPickup.length ? fPickup.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-box-open"></i>Koi doorstep pickup pending nahi hai</div>';
+  $('deliveryList').innerHTML = fDelivery.length ? fDelivery.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-truck-fast"></i>Koi order out for delivery nahi hai</div>';
+  $('storeList').innerHTML = fStore.length ? fStore.map(o => renderCard(o)).join('') : '<div class="empty"><i class="fas fa-store"></i>Store processing me koi order nahi hai</div>';
+  $('doneList').innerHTML = fDone.length ? fDone.map(o => {
     const displayId = formatOrderId(o.orderId || o._id);
-    return `<div class="order-card" style="padding:12px 16px;opacity:.85"><div class="oc-top"><span class="oc-id">${displayId}</span><span class="badge delivered">✅ Delivered</span></div><div class="oc-name" style="font-size:13px">${esc(o.customerName || o.name || '-')}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">₹${Number(o.total) || 0} · ${esc(o.timeSlot || '')}</div></div>`;
-  }).join('') : '<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi</div>';
+    const payLabel = String(o.paymentStatus || 'Paid');
+    return `<div class="order-card card-done" style="padding:13px 16px"><div class="oc-top"><span class="oc-id">${displayId}</span><span class="badge delivered">✅ Delivered · ${esc(payLabel)}</span></div><div class="oc-cust-row"><div class="oc-name" style="font-size:15px">${esc(o.customerName || o.name || '-')}</div><div class="oc-amount-box"><strong>₹${Number(o.total) || 0}</strong></div></div><div style="font-size:12px;color:var(--muted);font-weight:600">${esc(cleanAddress(o.address || ''))}</div></div>`;
+  }).join('') : '<div class="empty"><i class="fas fa-circle-check"></i>Aaj abhi koi delivery complete nahi hui</div>';
 }
 
 function timelineHTML(st) {
   const steps = [
     { k: 'pending', l: 'Pickup', i: 'fa-calendar' },
     { k: 'picked_up', l: 'Collected', i: 'fa-box' },
-    { k: 'processing', l: 'Cleaning', i: 'fa-tshirt' },
-    { k: 'quality_check', l: 'Quality', i: 'fa-circle-check' },
-    { k: 'out_for_delivery', l: 'On Way', i: 'fa-truck' },
+    { k: 'processing', l: 'Cleaning', i: 'fa-soap' },
+    { k: 'quality_check', l: 'Quality', i: 'fa-award' },
+    { k: 'out_for_delivery', l: 'On Way', i: 'fa-truck-fast' },
     { k: 'delivered', l: 'Done', i: 'fa-check' }
   ];
   const idx = steps.findIndex(x => x.k === st);
@@ -1003,71 +1399,190 @@ function timelineHTML(st) {
 function renderCard(o) {
   const st = o.status || 'pending';
   const displayId = formatOrderId(o.orderId || o._id);
+  const needsCount = o.needsBillCount === true || Boolean(o.items && o.items['doorstep-pickup-count']) || Number(o.total || 0) === 0;
+
+  let totalPieces = 0;
   const items = Object.entries(o.items || {}).map(([k, v]) => {
-    const qty = (v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 1) : v;
+    if (k === 'doorstep-pickup-count') return `<span class="chip" style="border-color:var(--bad);color:var(--bad)">🧺 Count Clothes at Doorstep</span>`;
+    const qty = Number((v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 1) : v) || 0;
     const name = (v && typeof v === 'object') ? (v.name ?? k) : k;
-    return `<span class="chip">${esc(name)} x${esc(qty)}</span>`;
+    totalPieces += qty;
+    return `<span class="chip">${esc(name)} <b>×${qty}</b></span>`;
   }).join('');
-  const gps = extractGPS(o.address); const addr = cleanAddress(o.address);
+
+  const gps = extractGPS(o.address);
+  const addr = cleanAddress(o.address);
   const isPaid = String(o.paymentStatus || '').toLowerCase().startsWith('paid');
-  const payBadge = isPaid ? '<span class="badge paid">PAID</span>' : '<span class="badge cod">COD ₹' + esc(o.total || 0) + '</span>';
+  const payBadge = isPaid
+    ? `<span class="badge paid"><i class="fas fa-check-circle"></i> ${esc(o.paymentStatus)}</span>`
+    : `<span class="badge cod">COD ₹${Number(o.total) || 0}</span>`;
   const isSelected = selectedOrders.has(o._id);
 
-  let btn = '';
-  if (st === 'pending') btn = `<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box"></i> Mark Picked Up</button>`;
-  else if (st === 'picked_up') btn = `<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-check"></i> Collected · Waiting for Cleaning</button>`;
-  else if (st === 'processing') btn = `<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-tshirt"></i> Expert Cleaning</button>`;
-  else if (st === 'quality_check') btn = `<button class="btn-main done" style="opacity:0.8;" disabled><i class="fas fa-circle-check"></i> Quality Check</button>`;
-  else if (st === 'out_for_delivery') btn = `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Delivered</button>`;
-  else if (st === 'cancelled') btn = `<button class="btn-main done" style="opacity:0.65;" disabled><i class="fas fa-ban"></i> Cancelled</button>`;
+  // Distance badge if rider GPS is active
+  let distBadge = '';
+  if (riderCoords) {
+    const oc = getOrderCoords(o);
+    if (oc) {
+      const km = calcDistanceKm(riderCoords.lat, riderCoords.lng, oc.lat, oc.lng);
+      distBadge = `<span class="dist-pill"><i class="fas fa-route"></i> ${km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(1) + ' km'}</span>`;
+    }
+  }
 
-  const waMsg = encodeURIComponent(`Hi ${o.customerName || ''}! Parth Rider (${BOY?.name || ''}) aapke order ${displayId} ke liye raah me hu. 🛵`);
-  const latRaw = o.latitude ?? o.lat ?? o.location?.latitude ?? o.location?.lat ?? null;
-  const lngRaw = o.longitude ?? o.lng ?? o.location?.longitude ?? o.location?.lng ?? null;
-  const lat = Number(latRaw); const lng = Number(lngRaw);
-  const exactMapUrl = (Number.isFinite(lat) && Number.isFinite(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : null;
-  const mapUrl = safeUrl(exactMapUrl || gps || `https://maps.google.com/?q=${encodeURIComponent(addr)}`, `https://maps.google.com/?q=${encodeURIComponent(addr)}`);
+  let btn = '';
+  if (st === 'pending') {
+    btn = `<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box-Check"></i> Mark Garments Picked Up</button>`;
+  } else if (st === 'picked_up' || st === 'processing' || st === 'quality_check') {
+    btn = `<button class="btn-main" style="background:var(--card2);color:var(--sub);border:1px solid var(--line);box-shadow:none" disabled><i class="fas fa-store"></i> In Store (${esc(LABEL[st] || st)})</button>`;
+  } else if (st === 'out_for_delivery') {
+    btn = `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Order Delivered</button>`;
+  }
+
+  const coords = getOrderCoords(o);
+  const exactMapUrl = coords ? `https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}` : null;
+  const mapUrl = safeUrl(exactMapUrl || gps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`);
   const phone = last10Digits(o.phone);
-  const collectBtn = (!isPaid && st === 'out_for_delivery') ? `<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total) || 0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total) || 0}</button>` : (isPaid ? `<button class="collect done" disabled><i class="fas fa-check"></i> Paid</button>` : '');
+
+  // Allow collecting payment at Pickup OR Delivery whenever total > 0
+  const collectBtn = (!isPaid && Number(o.total) > 0)
+    ? `<button class="collect" onclick="collectPayment('${esc(o._id)}',${Number(o.total) || 0})"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total) || 0}</button>`
+    : (isPaid
+        ? `<button class="collect done" disabled><i class="fas fa-check"></i> ${esc(o.paymentStatus || 'Paid')}</button>`
+        : `<button class="additem" onclick="openAddItem('${esc(o._id)}')"><i class="fas fa-calculator"></i> Make Bill</button>`);
+
   const checkBtn = (st === 'pending') ? `<div class="oc-check" onclick="toggleSelect('${esc(o._id)}')"><i class="fas fa-check"></i></div>` : '';
 
-  return `<div class="order-card ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}">
+  return `<div class="order-card ${st === 'out_for_delivery' ? 'card-delivery' : ''} ${isSelected ? 'selected' : ''}" data-id="${esc(o._id)}">
     ${checkBtn}
-    <div class="oc-top"><span class="oc-id">${displayId}</span><span>${o.express === 'Yes' ? '<span class="badge express">⚡ Express</span>' : ''}<span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span>${payBadge}</span></div>
-    <div class="oc-name">${esc(o.customerName || o.name || '-')}</div>
-    <div class="oc-addr"><i class="fas fa-location-dot" style="color:var(--primary)"></i> ${esc(addr)}</div>
-    ${o.specialInst ? `<div class="oc-addr" style="margin-top:6px;padding:8px 10px;border-radius:10px;background:rgba(37,99,235,.08);border-left:3px solid var(--primary);color:var(--text)"><i class="fas fa-comment-dots" style="color:var(--primary)"></i> <b>Customer Note:</b> ${esc(o.specialInst)}</div>` : ''}
+    <div class="oc-top ${st === 'pending' ? 'with-check' : ''}">
+     <div class="oc-id-wrap">
+      <span class="oc-id">${displayId}</span>
+      ${distBadge}
+      ${o.express === 'Yes' ? '<span class="badge express">⚡ 24h Express</span>' : ''}
+      ${needsCount ? '<span class="badge needs-count">🧺 Doorstep Count</span>' : ''}
+     </div>
+     <span><span class="badge ${esc(st)}">${esc(LABEL[st] || st)}</span> ${payBadge}</span>
+    </div>
+    <div class="oc-cust-row">
+     <div>
+      <div class="oc-name">${esc(o.customerName || o.name || 'Customer')}</div>
+      <div class="oc-phone"><i class="fas fa-phone" style="font-size:10px"></i> +91 ${esc(phone)} ${totalPieces > 0 ? `· <b>${totalPieces} pcs</b>` : ''}</div>
+     </div>
+     <div class="oc-amount-box">
+      <strong>${Number(o.total) > 0 ? '₹' + Number(o.total) : '₹ TBD'}</strong>
+      <small>${isPaid ? 'PAID' : 'TO COLLECT'}</small>
+     </div>
+    </div>
+    <div class="oc-addr"><i class="fas fa-location-dot"></i> <span>${esc(addr || 'Lucknow')}</span></div>
+    ${o.specialInst ? `<div class="oc-addr" style="margin-top:-4px;background:var(--soft);border-color:rgba(37,99,235,.25);color:var(--text)"><i class="fas fa-comment-dots"></i> <span><b>Note:</b> ${esc(o.specialInst)}</span></div>` : ''}
+    <div class="oc-slot-row">
+     ${o.pickupDate ? `<span class="slot-tag"><i class="fas fa-calendar-day"></i> ${esc(o.pickupDate)}</span>` : ''}
+     ${o.timeSlot ? `<span class="slot-tag"><i class="fas fa-clock"></i> ${esc(o.timeSlot)}</span>` : ''}
+     ${o.hasExtraItems ? `<span class="chip highlight">🧺 Bill Updated</span>` : ''}
+    </div>
     ${timelineHTML(st)}
-    <div class="oc-meta">${items}<span class="chip">Total: ₹${Number(o.total) || 0}</span>${o.pickupDate ? `<span class="chip"><i class="fas fa-calendar-day"></i> ${esc(o.pickupDate)}</span>` : ''}<span class="chip">${esc(o.timeSlot || '')}</span>${o.hasExtraItems ? `<span class="chip" style="color:var(--good);border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.08)">🧺 +Extra Added</span>` : ''}</div>
+    <div class="oc-meta">${items}</div>
     <div class="oc-actions">
      <a class="call" href="tel:+91${phone}"><i class="fas fa-phone"></i> Call</a>
-     <a class="wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/91${phone}?text=${waMsg}"><i class="fab fa-whatsapp"></i> Chat</a>
-     <a class="gps" target="_blank" rel="noopener noreferrer" href="${mapUrl}"><i class="fas fa-location-arrow"></i> Map</a>
+     <button type="button" class="wa" onclick="openWaQuickModal('${esc(o._id)}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+     <a class="gps" target="_blank" rel="noopener noreferrer" href="${mapUrl}"><i class="fas fa-diamond-turn-right"></i> Navigate</a>
     </div>
     <div class="oc-actions">
-     <button class="additem" onclick="openAddItem('${esc(o._id)}')"><i class="fas fa-plus"></i> Extra Item</button>
-     <button class="report" onclick="openIssue('${esc(o._id)}')"><i class="fas fa-flag"></i> Issue</button>
+     <button type="button" class="additem" onclick="openAddItem('${esc(o._id)}')"><i class="fas fa-shirt"></i> ${needsCount ? 'Count Clothes' : 'Edit / Extra'}</button>
+     <button type="button" class="report" onclick="openIssue('${esc(o._id)}')"><i class="fas fa-triangle-exclamation"></i> Issue</button>
      ${collectBtn}
     </div>
     ${btn}
    </div>`;
 }
 
+// 11. 1-TAP WHATSAPP QUICK TEMPLATES & DIGITAL RECEIPT
+window.openWaQuickModal = function(orderKey) {
+  const o = ORDER_MAP.get(orderKey);
+  if (!o) return toast('Order not found', 'err');
+  const phone = last10Digits(o.phone);
+  if (phone.length !== 10) return toast('Customer phone number valid nahi hai', 'err');
+  const dispId = formatOrderId(o.orderId || orderKey);
+  const custName = o.customerName || o.name || 'Sir/Ma\'am';
+  const riderName = BOY?.name || 'Parth Delivery Partner';
+  const total = Number(o.total) || 0;
+  $('waQuickOrderId').textContent = dispId;
+
+  const itemLines = Object.entries(o.items || {})
+    .filter(([k]) => k !== 'doorstep-pickup-count')
+    .map(([k, v]) => {
+      const nm = (v && typeof v === 'object') ? (v.name || k) : k;
+      const q = (v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 1) : v;
+      return `• ${nm} x${q}`;
+    }).join('\n');
+
+  const templates = [
+    {
+      label: '🛵 On the Way (10–15 mins)',
+      sub: 'Customer ko batayein ki aap raah me hain',
+      msg: `Namaste *${custName}* ji! 🙏\nMain *${riderName}* (*Parth Dry Clean*) aapke order *${dispId}* ke liye nikal chuka hu aur agle *10–15 minute* me aapke doorstep par pahunch raha hu. 🛵`
+    },
+    {
+      label: '📍 Reached Doorstep / Gate',
+      sub: 'Main gate ya building ke bahar pahunchne par',
+      msg: `Namaste *${custName}* ji! Main *${riderName}* (*Parth Dry Clean*) aapke order *${dispId}* ke liye aapke gate/location par pahunch gaya hu. 📍`
+    },
+    {
+      label: '📵 Call Not Connecting + Ask Location',
+      sub: 'Jab phone na lage ya exact GPS pin chahiye ho',
+      msg: `Namaste *${custName}* ji! Main *${riderName}* (*Parth Dry Clean*) aapke order *${dispId}* ke liye call kar raha hu par call connect nahi ho pa raha hai. Kripya is WhatsApp par apni *📍 Current Location* ya callback bhej dein.`
+    },
+    {
+      label: '🧾 Send Digital Pickup Slip & Bill',
+      sub: 'Kapde count karne ke baad customer ko digital parchi bhejein',
+      msg: `*🧾 Digital Pickup Receipt — Parth Dry Clean* 🧺\n\n🆔 *Order ID:* ${dispId}\n👤 *Customer:* ${custName}\n🛵 *Picked Up By:* ${riderName}\n\n🧺 *Counted Garments:*\n${itemLines || '• Standard Garment Bag'}\n\n💰 *Total Bill:* ₹${total} (${o.paymentStatus || 'Pay on Delivery'})\n🗓️ *Est. Delivery:* ${o.estd || '48–72 Hours'}\n\nThank you for choosing Parth Dry Clean! ✨`
+    }
+  ];
+
+  $('waQuickList').innerHTML = templates.map((t, idx) => `
+    <button type="button" class="wa-tpl-btn" onclick="sendWaTemplate('${phone}', ${idx})">
+      <div>
+        <div>${esc(t.label)}</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-top:2px">${esc(t.sub)}</div>
+      </div>
+      <i class="fab fa-whatsapp"></i>
+    </button>
+  `).join('');
+
+  window._currentWaTemplates = templates;
+  openModal('waQuickModal');
+};
+
+window.sendWaTemplate = function(phone, idx) {
+  const tpl = window._currentWaTemplates && window._currentWaTemplates[idx];
+  if (!tpl) return;
+  closeModal('waQuickModal');
+  window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(tpl.msg)}`, '_blank');
+};
+
+// 12. ORDER STATUS UPDATE
 window.adv = async (id, next) => {
+  const o = ORDER_MAP.get(id);
+  if (next === 'picked_up' && o && (o.needsBillCount || (o.items && o.items['doorstep-pickup-count']))) {
+    openAppConfirm('Is WhatsApp order me abhi kapde count nahi hue hain (₹0). Kya aap pehle kapde count karke bill banana chahte hain?', () => {
+      openAddItem(id);
+    }, 'Count Garments First?');
+    return;
+  }
   try {
-    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
-    const token = await user.getIdToken(true);
+    const token = await getValidRiderToken();
     const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ orderId: id, status: next })
     });
-    const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Status update failed');
-    toast(next === 'delivered' ? '🎉 Order Delivered!' : '✓ ' + LABEL[next]);
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Status update failed');
+    toast(next === 'delivered' ? '🎉 Order Delivered Successfully!' : '✓ ' + LABEL[next]);
     if (next === 'delivered') vibrate([80, 40, 80]);
   } catch(e) { toast(e?.message || 'Status update failed', 'err'); }
 };
 
+// 13. COLLECT PAYMENT (DYNAMIC UPI QR + AUTO-CONFIRM + CASH)
 let _riderPayConfig = { upiEnabled: true, upiVpa: '', merchantName: 'Parth Dry Clean' };
 db.ref('settings/payment').on('value', s => { if (s.exists()) _riderPayConfig = { ..._riderPayConfig, ...(s.val() || {}) }; });
 
@@ -1086,7 +1601,8 @@ window.closeRiderPayModal = function() {
 window.collectPayment = async (id, total) => {
   _rpmCurrentOrderId = id;
   _rpmCurrentTotal = Number(total) || 0;
-  const dispId = formatOrderId(id);
+  const o = ORDER_MAP.get(id);
+  const dispId = formatOrderId(o?.orderId || id);
   $('rpmOrderId').textContent = dispId;
   $('rpmAmountText').textContent = '₹' + _rpmCurrentTotal;
 
@@ -1108,7 +1624,6 @@ window.collectPayment = async (id, total) => {
 
   openModal('riderPayModal');
 
-  // Start backend UPI session
   if (auth.currentUser) {
     auth.currentUser.getIdToken().then(token => {
       fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/startOrderUpiSession', {
@@ -1119,7 +1634,6 @@ window.collectPayment = async (id, total) => {
     }).catch(() => {});
   }
 
-  // Live RTDB listener for instant auto-confirmation
   if (_rpmOrderRef) _rpmOrderRef.off();
   _rpmOrderRef = db.ref('orders/' + id + '/paymentStatus');
   _rpmOrderRef.on('value', s => {
@@ -1132,7 +1646,6 @@ window.collectPayment = async (id, total) => {
     }
   });
 
-  // Poll Paytm status API every 4s
   if (_rpmPollTimer) clearInterval(_rpmPollTimer);
   _rpmPollTimer = setInterval(async () => {
     try {
@@ -1160,8 +1673,7 @@ window.confirmRiderPaymentMode = async function(mode) {
   if (cashBtn) cashBtn.disabled = true;
   if (upiBtn) upiBtn.disabled = true;
   try {
-    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
-    const token = await user.getIdToken(true);
+    const token = await getValidRiderToken();
     const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
@@ -1180,146 +1692,279 @@ window.confirmRiderPaymentMode = async function(mode) {
   }
 };
 
+// 14. FAST DOORSTEP GARMENT COUNTER & BILL BUILDER
 let EXTRA_CATALOG = null;
+let counterMode = 'replace'; // 'replace' (Full Bag Count) | 'add' (Add Extra Only)
+let counterActiveCat = 'all';
+let counterDraft = {}; // { 'categoryKey::itemKey': { categoryKey, itemKey, name, price, qty } }
+
 function catalogItemKey(v) { return String(v || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
 async function loadExtraCatalog() {
+  if (EXTRA_CATALOG && EXTRA_CATALOG.length) return EXTRA_CATALOG;
   const snap = await db.ref('services/categories').once('value');
   const data = snap.val() || {};
   EXTRA_CATALOG = Object.entries(data)
     .filter(([, cat]) => cat && cat.active !== false)
     .map(([key, cat]) => ({
-      key, name: cat?.name || key,
+      key,
+      name: cat?.name || key,
       items: Array.isArray(cat?.items)
         ? cat.items
             .filter(it => it && it.active !== false)
-            .map(it => ({ key: catalogItemKey(it?.name), name: String(it?.name || ''), price: Number(it?.price) || 0 }))
-            .filter(it => it.key && it.name && Number.isFinite(it.price) && it.price > 0)
+            .map(it => ({
+              categoryKey: key,
+              itemKey: catalogItemKey(it?.name),
+              fullId: `${key}-${catalogItemKey(it?.name)}`,
+              name: String(it?.name || '').trim(),
+              price: Number(it?.price) || 0
+            }))
+            .filter(it => it.itemKey && it.name && Number.isFinite(it.price) && it.price > 0)
         : []
     }))
     .filter(c => c.items.length);
   return EXTRA_CATALOG;
 }
-function updateExtraItemsSummary() {
-  let sum = 0;
-  document.querySelectorAll('#extraItems .item-row').forEach(r => {
-    const q = Math.max(0, parseInt(r.querySelector('.ei-qty')?.value, 10) || 0);
-    let picked = null;
-    try { picked = JSON.parse(r.querySelector('.ei-item')?.value || 'null'); } catch(_) {}
-    if (picked && q > 0 && Number.isFinite(Number(picked.price))) {
-      sum += Number(picked.price) * q;
+
+function findCatalogMatchByOrderEntry(entryKey, entryVal) {
+  const targetName = String((entryVal && typeof entryVal === 'object' ? entryVal.name : '') || entryKey || '').trim().toLowerCase();
+  const targetId = String((entryVal && typeof entryVal === 'object' ? entryVal.id : '') || entryKey || '').trim().toLowerCase();
+  for (const cat of (EXTRA_CATALOG || [])) {
+    for (const it of cat.items) {
+      if (it.fullId.toLowerCase() === targetId || it.name.toLowerCase() === targetName) {
+        return it;
+      }
+    }
+  }
+  return null;
+}
+
+function populateCounterDraftFromOrder(orderId) {
+  counterDraft = {};
+  if (counterMode !== 'replace') return;
+  const o = ORDER_MAP.get(orderId);
+  if (!o || !o.items) return;
+  Object.entries(o.items).forEach(([k, v]) => {
+    if (k === 'doorstep-pickup-count') return;
+    const qty = Number((v && typeof v === 'object') ? (v.qty ?? v.quantity ?? 0) : v) || 0;
+    if (qty <= 0) return;
+    const match = findCatalogMatchByOrderEntry(k, v);
+    if (match) {
+      const cKey = `${match.categoryKey}::${match.itemKey}`;
+      counterDraft[cKey] = {
+        categoryKey: match.categoryKey,
+        itemKey: match.itemKey,
+        name: match.name,
+        price: match.price,
+        qty: (counterDraft[cKey]?.qty || 0) + qty
+      };
     }
   });
-  const saveBtn = document.querySelector('#addItemModal .btn.good');
-  if (saveBtn) saveBtn.textContent = sum > 0 ? `Save (+₹${sum})` : 'Save';
 }
-window.openAddItem = async id => {
-  issueCtx.orderId = id; $('addItemOrderId').textContent = formatOrderId(id); $('extraItems').innerHTML = '';
-  try { await loadExtraCatalog(); addExtraItemRow(); updateExtraItemsSummary(); openModal('addItemModal'); } catch(e) { toast('Service list load nahi hui', 'err'); }
+
+window.setCounterMode = function(mode) {
+  counterMode = mode === 'add' ? 'add' : 'replace';
+  $('cmTabReplace').classList.toggle('active', counterMode === 'replace');
+  $('cmTabAdd').classList.toggle('active', counterMode === 'add');
+  populateCounterDraftFromOrder(issueCtx.orderId);
+  renderCounterCatalog();
+  updateCounterSummary();
 };
-function addExtraItemRow() {
-  const row = document.createElement('div'); row.className = 'item-row';
-  row.innerHTML = `<select class="ei-item"></select><input class="ei-qty" type="number" min="1" max="50" value="1" style="width:60px"/><button class="rm" onclick="this.parentElement.remove();updateExtraItemsSummary()">×</button>`;
-  const sel = row.querySelector('.ei-item');
-  const qtyInp = row.querySelector('.ei-qty');
-  (EXTRA_CATALOG || []).forEach(cat => {
-    const group = document.createElement('optgroup'); group.label = cat.name;
-    cat.items.forEach(it => {
-      const o = document.createElement('option');
-      o.value = JSON.stringify({ categoryKey: cat.key, itemKey: it.key, name: it.name, price: it.price });
-      o.textContent = `${it.name} · ₹${it.price}`;
-      group.appendChild(o);
-    });
-    sel.appendChild(group);
+
+window.setCounterCat = function(catKey) {
+  counterActiveCat = catKey || 'all';
+  document.querySelectorAll('#counterCatRail .cc-pill').forEach(b => b.classList.toggle('active', b.dataset.cat === counterActiveCat));
+  renderCounterCatalog();
+};
+
+window.stepCounterItem = function(catKey, itemKey, delta) {
+  const cKey = `${catKey}::${itemKey}`;
+  let found = null;
+  for (const c of (EXTRA_CATALOG || [])) {
+    if (c.key === catKey) {
+      found = c.items.find(x => x.itemKey === itemKey);
+      if (found) break;
+    }
+  }
+  if (!found) return;
+  const cur = counterDraft[cKey]?.qty || 0;
+  const next = Math.max(0, Math.min(50, cur + delta));
+  if (next <= 0) delete counterDraft[cKey];
+  else counterDraft[cKey] = { categoryKey: catKey, itemKey, name: found.name, price: found.price, qty: next };
+  if (delta > 0 && navigator.vibrate) vibrate(15);
+  renderCounterCatalog();
+  updateCounterSummary();
+};
+
+function updateCounterSummary() {
+  let totalQty = 0, totalAmt = 0;
+  Object.values(counterDraft).forEach(it => {
+    totalQty += it.qty;
+    totalAmt += it.qty * it.price;
   });
-  sel.onchange = updateExtraItemsSummary;
-  qtyInp.oninput = updateExtraItemsSummary;
-  $('extraItems').appendChild(row);
-  updateExtraItemsSummary();
+  $('counterSummaryQty').textContent = `${totalQty} garment${totalQty === 1 ? '' : 's'} ${counterMode === 'replace' ? 'in bag' : 'to add'}`;
+  $('counterSummaryTotal').textContent = `₹${totalAmt}`;
+  const saveBtn = $('saveCounterBtn');
+  if (saveBtn) {
+    saveBtn.innerHTML = totalAmt > 0
+      ? `<i class="fas fa-check-circle"></i> ${counterMode === 'replace' ? `Save Final Bill (₹${totalAmt})` : `Add Extra (+₹${totalAmt})`}`
+      : `<i class="fas fa-check-circle"></i> Save & Update Bill`;
+  }
 }
-window.addExtraItemRow = addExtraItemRow;
+
+window.renderCounterCatalog = function() {
+  const q = String($('counterSearchInput')?.value || '').trim().toLowerCase();
+  const listEl = $('counterItemsList');
+  if (!listEl) return;
+  const rows = [];
+  (EXTRA_CATALOG || []).forEach(cat => {
+    if (!q && counterActiveCat !== 'all' && counterActiveCat !== cat.key) return;
+    cat.items.forEach(it => {
+      if (q && !it.name.toLowerCase().includes(q) && !cat.name.toLowerCase().includes(q)) return;
+      const cKey = `${it.categoryKey}::${it.itemKey}`;
+      const qty = counterDraft[cKey]?.qty || 0;
+      rows.push(`<div class="c-item-row">
+        <div class="c-item-info">
+          <strong>${esc(it.name)} <span style="font-size:10.5px;color:var(--muted);font-weight:600">(${esc(cat.name)})</span></strong>
+          <small>₹${it.price} / pc ${qty > 0 ? `· <b>₹${it.price * qty}</b>` : ''}</small>
+        </div>
+        <div class="c-stepper ${qty > 0 ? 'has-qty' : ''}">
+          <button type="button" class="c-step-btn" onclick="stepCounterItem('${esc(it.categoryKey)}','${esc(it.itemKey)}',-1)">−</button>
+          <span class="c-step-qty">${qty}</span>
+          <button type="button" class="c-step-btn" onclick="stepCounterItem('${esc(it.categoryKey)}','${esc(it.itemKey)}',1)">+</button>
+        </div>
+      </div>`);
+    });
+  });
+  listEl.innerHTML = rows.length ? rows.join('') : '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12.5px">No matching garment found</div>';
+};
+
+window.openAddItem = async id => {
+  issueCtx.orderId = id;
+  const o = ORDER_MAP.get(id);
+  $('addItemOrderId').textContent = formatOrderId(o?.orderId || id);
+  if ($('counterSearchInput')) $('counterSearchInput').value = '';
+  try {
+    await loadExtraCatalog();
+    // Build category pills
+    const rail = $('counterCatRail');
+    if (rail) {
+      rail.innerHTML = `<button type="button" class="cc-pill active" data-cat="all" onclick="setCounterCat('all')">All</button>` +
+        (EXTRA_CATALOG || []).map(c => `<button type="button" class="cc-pill" data-cat="${esc(c.key)}" onclick="setCounterCat('${esc(c.key)}')">${esc(c.name)}</button>`).join('');
+    }
+    counterActiveCat = 'all';
+    setCounterMode('replace');
+    openModal('addItemModal');
+  } catch(e) {
+    toast('Service catalog load nahi hua', 'err');
+  }
+};
 
 window.saveExtraItems = async () => {
-  const rows = $('extraItems').querySelectorAll('.item-row');
-  const items = [];
-  rows.forEach(r => {
-    const q = parseInt(r.querySelector('.ei-qty').value, 10) || 0;
-    let picked = null; try { picked = JSON.parse(r.querySelector('.ei-item').value || 'null'); } catch(_) {}
-    if (picked && q > 0) items.push({ ...picked, qty: q });
-  });
-  if (!items.length) return toast('Item select karein', 'err');
+  const items = Object.values(counterDraft).filter(it => it.qty > 0);
+  if (!items.length) return toast('Kam se kam 1 kapda (+) se select karein', 'err');
   const id = issueCtx.orderId;
+  const btn = $('saveCounterBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating Bill…'; }
   try {
-    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
-    const token = await user.getIdToken(true);
+    const token = await getValidRiderToken();
     const response = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/addRiderExtraItems', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ orderId: id, items })
+      body: JSON.stringify({
+        orderId: id,
+        items,
+        replaceItems: counterMode === 'replace'
+      })
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || 'Extra item update failed');
-    toast(`✅ ${items.length} item(s) added, +₹${Number(data.extraTotal || 0)}`);
+    if (!response.ok) throw new Error(data.error || 'Bill update failed');
+    toast(`✅ Bill updated! New Total: ₹${Number(data.total || 0)}`);
+    vibrate([60, 40, 80]);
     closeModal('addItemModal');
-  } catch(e) { toast(e?.message || 'Extra item update failed', 'err'); }
+  } catch(e) {
+    toast(e?.message || 'Bill update failed', 'err');
+  } finally {
+    if (btn) btn.disabled = false;
+    updateCounterSummary();
+  }
 };
 
-function selIssue(btn, type) { document.querySelectorAll('#issueModal .issue-type button').forEach(b => b.classList.remove('sel')); btn.classList.add('sel'); issueCtx.type = type; }
+// 15. ISSUE REPORTING
+function selIssue(btn, type) {
+  document.querySelectorAll('#issueModal .issue-type button').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  issueCtx.type = type;
+}
 window.selIssue = selIssue;
-window.openIssue = id => { issueCtx.orderId = id; issueCtx.type = null; document.querySelectorAll('#issueModal .issue-type button').forEach(b => b.classList.remove('sel')); $('issueNote').value = ''; openModal('issueModal'); };
+window.openIssue = id => {
+  issueCtx.orderId = id;
+  issueCtx.type = null;
+  document.querySelectorAll('#issueModal .issue-type button').forEach(b => b.classList.remove('sel'));
+  $('issueNote').value = '';
+  openModal('issueModal');
+};
 window.submitIssue = async () => {
   if (!issueCtx.type) return toast('Issue type select karein', 'err');
   const note = $('issueNote').value.trim();
   try {
-    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
-    const token = await user.getIdToken(true);
+    const token = await getValidRiderToken();
     const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderReportIssue', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ orderId: issueCtx.orderId, type: issueCtx.type, note })
     });
-    const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Issue report failed');
-    toast('⚠️ Issue admin ko bhej diya gaya hai'); closeModal('issueModal');
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Issue report failed');
+    toast('⚠️ Issue Store Admin ko bhej diya gaya hai');
+    closeModal('issueModal');
   } catch(e) { toast(e?.message || 'Issue report failed', 'err'); }
 };
 
-// 10. CRASH-FREE DASHBOARD (FIXED .once('value') ON ALL 3 QUERIES)
+// 16. DASHBOARD PERFORMANCE
 function loadDashboard() {
   if (!BOY) return;
   const phone10 = last10Digits(BOY.phone);
-  const phoneE164 = BOY.phoneE164 || ('+91' + phone10);
+  const now = new Date();
+  const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay()); weekStart.setHours(0,0,0,0);
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0;
+  const dayCounts = {};
 
-  Promise.all([
-    db.ref('orders').orderByChild('assigned_to_e164').equalTo(phoneE164).once('value'),
-    db.ref('orders').orderByChild('assigned_to').equalTo(phone10).once('value'),
-    db.ref('orders').orderByChild('assigned_to').equalTo('+91' + phone10).once('value')
-  ]).then(snaps => {
-    const merged = new Map();
-    snaps.forEach(s => {
-      if (s && typeof s.forEach === 'function') {
-        s.forEach(c => merged.set(c.key, c.val()));
-      }
-    });
-
-    const now = new Date();
-    const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    let weekDel = 0, weekEarn = 0, monthDel = 0, monthEarn = 0, totalDel = 0, totalEarn = 0; const dayCounts = {};
-    merged.forEach(o => {
-      if (!o || o.status !== 'delivered') return;
-      if (last10Digits(o.assigned_to_e164 || o.assigned_to) !== phone10) return;
-      const delDate = o.deliveredAt ? new Date(o.deliveredAt) : null; if (!delDate) return;
-      const amt = +o.total || 0; totalDel++; totalEarn += amt; const dayKey = dayStr(delDate); dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
-      if (delDate >= weekStart) { weekDel++; weekEarn += amt; } if (delDate >= monthStart) { monthDel++; monthEarn += amt; }
-    });
-    let streak = 0, checkDate = new Date(now); while (true) { const key = dayStr(checkDate); if (dayCounts[key] && dayCounts[key] > 0) { streak++; checkDate.setDate(checkDate.getDate() - 1); } else break; }
-    let bestDay = '—', maxCount = 0; for (const day in dayCounts) { if (dayCounts[day] > maxCount) { maxCount = dayCounts[day]; bestDay = day; } }
-    $('weekDeliveries').textContent = weekDel; $('weekEarnings').textContent = '₹' + weekEarn; $('monthDeliveries').textContent = monthDel; $('monthEarnings').textContent = '₹' + monthEarn; $('bestDay').textContent = bestDay; $('streakCount').textContent = streak; $('totalDeliveries').textContent = totalDel; $('totalEarnings').textContent = '₹' + totalEarn;
-  }).catch(e => {
-    console.warn('Dashboard load note:', e);
+  (ALL_MY_ORDERS || []).forEach(o => {
+    if (!o || o.status !== 'delivered') return;
+    if (last10Digits(o.assigned_to_e164 || o.assigned_to) !== phone10 && o.deliveryBoyId !== BOY.id) return;
+    const delDate = o.deliveredAt ? new Date(o.deliveredAt) : (o.createdAt ? new Date(o.createdAt) : null);
+    if (!delDate) return;
+    const amt = +o.total || 0;
+    totalDel++; totalEarn += amt;
+    const dayKey = dayStr(delDate);
+    dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
+    if (delDate >= weekStart) { weekDel++; weekEarn += amt; }
+    if (delDate >= monthStart) { monthDel++; monthEarn += amt; }
   });
+
+  let streak = 0, checkDate = new Date(now);
+  while (true) {
+    const key = dayStr(checkDate);
+    if (dayCounts[key] && dayCounts[key] > 0) { streak++; checkDate.setDate(checkDate.getDate() - 1); }
+    else break;
+  }
+  let bestDay = '—', maxCount = 0;
+  for (const day in dayCounts) {
+    if (dayCounts[day] > maxCount) { maxCount = dayCounts[day]; bestDay = `${day} (${maxCount})`; }
+  }
+  $('weekDeliveries').textContent = weekDel;
+  $('weekEarnings').textContent = '₹' + weekEarn;
+  $('monthDeliveries').textContent = monthDel;
+  $('monthEarnings').textContent = '₹' + monthEarn;
+  $('bestDay').textContent = bestDay;
+  $('streakCount').textContent = streak;
+  $('totalDeliveries').textContent = totalDel;
+  $('totalEarnings').textContent = '₹' + totalEarn;
 }
 
-// 11. REALTIME CHAT
+// 17. REALTIME ADMIN CHAT
 let chatRefActive = null;
 let chatFirstLoad = true;
 function startChatListener() {
@@ -1340,6 +1985,7 @@ function startChatListener() {
 
     if (msgs.length === 0) {
       box.innerHTML = '<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
+      chatFirstLoad = false;
       return;
     }
 
@@ -1362,17 +2008,9 @@ function startChatListener() {
         toast('💬 Admin ka naya message aaya');
         beep();
         vibrate([100, 50, 100]);
-        const chatTabBtn = document.querySelector('.tab-btn[data-tab="chat"]');
-        if (chatTabBtn && !chatTabBtn.classList.contains('active')) {
-          let dot = chatTabBtn.querySelector('.chat-unread-dot');
-          if (!dot) {
-            dot = document.createElement('span');
-            dot.className = 'chat-unread-dot';
-            dot.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--bad);margin-left:6px;vertical-align:middle;box-shadow:0 0 8px var(--bad)';
-            chatTabBtn.appendChild(dot);
-          }
-          dot.style.display = 'inline-block';
-        }
+        const chatTabActive = $('tab-chat')?.classList.contains('active');
+        const badge = $('navChatBadge');
+        if (!chatTabActive && badge) badge.style.display = 'inline-block';
       }
     }
     chatFirstLoad = false;
@@ -1383,9 +2021,9 @@ function startChatListener() {
 }
 function loadChat() { startChatListener(); }
 
-window.sendChat = () => {
+window.sendChat = (overrideText) => {
   const input = $('chatInput');
-  const text = (input?.value || '').trim();
+  const text = String(overrideText || (input?.value || '')).trim();
   if (!text || !BOY || !BOY.id) return;
 
   db.ref('chat/' + BOY.id).push({
@@ -1395,13 +2033,14 @@ window.sendChat = () => {
     boyPhone: BOY.phone || '',
     at: firebase.database.ServerValue.TIMESTAMP
   }).then(() => {
-    input.value = '';
+    if (!overrideText && input) input.value = '';
     const box = $('chatMessages');
     if (box) box.scrollTop = box.scrollHeight;
   }).catch(e => toast(e.message, 'err'));
 };
+window.sendQuickChat = function(txt) { window.sendChat(txt); };
 
-// 12. PASSIVE AUTH LISTENER
+// 18. AUTH STATE GUARD
 auth.onAuthStateChanged(async u => {
   if (u) {
     if (BOY && BOY.id) {
@@ -1420,14 +2059,17 @@ auth.onAuthStateChanged(async u => {
       }
     }
   } else {
-    if (!BOY || !BOY.id) {
-      const lScreen = $('loginScreen'); if (lScreen) lScreen.style.display = 'flex';
-      const appEl = $('app'); if (appEl) appEl.style.display = 'none';
+    // If Firebase Auth session is signed out, clear stale localStorage so rider doesn't hit 401 errors
+    if (BOY) {
+      localStorage.removeItem('pdc_boy');
+      BOY = null;
     }
+    const lScreen = $('loginScreen'); if (lScreen) lScreen.style.display = 'flex';
+    const appEl = $('app'); if (appEl) appEl.style.display = 'none';
   }
 });
 
-console.log('🛵 Parth Delivery Gen8 HUD Live — Standard PDC IDs & Error-Free Dashboard');
+console.log('🛵 Parth Rider Gen10 Personal App Live');
 </script>
 </body>
 </html>
