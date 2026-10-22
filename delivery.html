@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthdeliveryGen8 : Stable Direct Auth + PDC-XXXXXX Format + Dashboard Error Fix + Bottom HUD Alert -->
+<!-- ParthdeliveryGen9 : Phase 2 Rider HUD (Dynamic Order-Locked Paytm/UPI QR + Live Auto-Confirm + Cash/UPI Modes) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -358,6 +358,28 @@ button:focus,button:focus-visible,input:focus,input:focus-visible,select:focus,s
   <div style="display:flex;gap:8px">
    <button class="btn-secondary" style="flex:1" onclick="closeModal('addItemModal')">Cancel</button>
    <button class="btn-main" style="flex:1" onclick="saveExtraItems()"><i class="fas fa-save"></i> Save</button>
+  </div>
+ </div>
+</div>
+
+<!-- MODAL: RIDER COLLECT PAYMENT (DYNAMIC UPI QR + AUTO-CONFIRM + CASH) -->
+<div class="modal" id="riderPayModal">
+ <div class="modal-box" style="max-width:410px;text-align:center">
+  <div class="modal-head">
+   <h3><i class="fas fa-indian-rupee-sign" style="color:var(--good)"></i> Collect Payment <span id="rpmOrderId" class="num" style="color:var(--primary);font-size:12px"></span></h3>
+   <button class="modal-close" onclick="closeRiderPayModal()"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div id="rpmQrSection" style="margin-bottom:12px">
+   <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:700">Customer ko QR dikhayein — Payment hote hi screen apne aap confirm ho jayegi!</div>
+   <div style="background:#fff;border:2px solid var(--primary);border-radius:18px;padding:12px;display:inline-block;margin-bottom:8px">
+    <img id="rpmQrImg" src="" alt="Order UPI QR" style="width:200px;height:200px;display:block;border-radius:8px"/>
+   </div>
+   <div class="num" style="font-size:26px;font-weight:800;color:var(--good)" id="rpmAmountText">₹0</div>
+   <div style="font-size:10.5px;color:var(--muted);margin-top:3px" id="rpmStatusHint"><i class="fas fa-spinner fa-spin" style="color:var(--primary)"></i> Listening for automatic UPI confirmation…</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+   <button class="btn-main" style="background:var(--good);padding:12px;font-size:12px" id="rpmCashBtn" onclick="confirmRiderPaymentMode('cash')"><i class="fas fa-money-bill-wave"></i> Cash Collected</button>
+   <button class="btn-main" style="padding:12px;font-size:12px" id="rpmUpiBtn" onclick="confirmRiderPaymentMode('upi')"><i class="fas fa-qrcode"></i> Mark UPI Paid</button>
   </div>
  </div>
 </div>
@@ -927,7 +949,7 @@ function render(myOrders) {
   let cashDue = 0;
 
   myOrders.forEach(o => {
-    const isPaid = (o.paymentStatus || '') === 'Paid';
+    const isPaid = String(o.paymentStatus || '').toLowerCase().startsWith('paid');
     if (o.status === 'delivered') {
       if ((o.deliveredAt ? dayStr(new Date(o.deliveredAt)) : '') === today) done.push(o);
     } else if (o.status === 'out_for_delivery') {
@@ -986,7 +1008,7 @@ function renderCard(o) {
     return `<span class="chip">${esc(name)} x${esc(qty)}</span>`;
   }).join('');
   const gps = extractGPS(o.address); const addr = cleanAddress(o.address);
-  const isPaid = (o.paymentStatus || '') === 'Paid';
+  const isPaid = String(o.paymentStatus || '').toLowerCase().startsWith('paid');
   const payBadge = isPaid ? '<span class="badge paid">PAID</span>' : '<span class="badge cod">COD ₹' + esc(o.total || 0) + '</span>';
   const isSelected = selectedOrders.has(o._id);
 
@@ -1045,21 +1067,116 @@ window.adv = async (id, next) => {
   } catch(e) { toast(e?.message || 'Status update failed', 'err'); }
 };
 
-window.collectPayment = (id, total) => {
-  openAppConfirm(`Customer se ₹${total} collect kiya?`, async () => {
-    try {
-      const user = auth.currentUser; if (!user) throw new Error('Rider login required');
-      const token = await user.getIdToken(true);
-      const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment', {
+let _riderPayConfig = { upiEnabled: true, upiVpa: '', merchantName: 'Parth Dry Clean' };
+db.ref('settings/payment').on('value', s => { if (s.exists()) _riderPayConfig = { ..._riderPayConfig, ...(s.val() || {}) }; });
+
+let _rpmCurrentOrderId = null;
+let _rpmCurrentTotal = 0;
+let _rpmOrderRef = null;
+let _rpmPollTimer = null;
+
+window.closeRiderPayModal = function() {
+  if (_rpmOrderRef) { _rpmOrderRef.off(); _rpmOrderRef = null; }
+  if (_rpmPollTimer) { clearInterval(_rpmPollTimer); _rpmPollTimer = null; }
+  _rpmCurrentOrderId = null;
+  closeModal('riderPayModal');
+};
+
+window.collectPayment = async (id, total) => {
+  _rpmCurrentOrderId = id;
+  _rpmCurrentTotal = Number(total) || 0;
+  const dispId = formatOrderId(id);
+  $('rpmOrderId').textContent = dispId;
+  $('rpmAmountText').textContent = '₹' + _rpmCurrentTotal;
+
+  const vpa = String(_riderPayConfig.upiVpa || '').trim();
+  const merchantName = String(_riderPayConfig.merchantName || 'Parth Dry Clean').trim();
+  const qrSec = $('rpmQrSection');
+  const qrImg = $('rpmQrImg');
+  if (vpa && _riderPayConfig.upiEnabled !== false) {
+    qrSec.style.display = 'block';
+    const upiUri = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(merchantName)}&am=${_rpmCurrentTotal}&cu=INR&tr=${encodeURIComponent(dispId)}&tn=${encodeURIComponent('Order ' + dispId)}`;
+    qrImg.onerror = function() {
+      this.onerror = null;
+      this.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiUri)}`;
+    };
+    qrImg.src = `https://quickchart.io/qr?size=220&margin=1&text=${encodeURIComponent(upiUri)}`;
+  } else {
+    qrSec.style.display = 'none';
+  }
+
+  openModal('riderPayModal');
+
+  // Start backend UPI session
+  if (auth.currentUser) {
+    auth.currentUser.getIdToken().then(token => {
+      fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/startOrderUpiSession', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ orderId: id })
+        body: JSON.stringify({ orderKey: id })
+      }).catch(() => {});
+    }).catch(() => {});
+  }
+
+  // Live RTDB listener for instant auto-confirmation
+  if (_rpmOrderRef) _rpmOrderRef.off();
+  _rpmOrderRef = db.ref('orders/' + id + '/paymentStatus');
+  _rpmOrderRef.on('value', s => {
+    const val = String(s.val() || '');
+    if (val.toLowerCase().startsWith('paid')) {
+      beep();
+      vibrate([100, 50, 150]);
+      toast(`🎉 ₹${_rpmCurrentTotal} Payment Confirmed (${val})!`);
+      closeRiderPayModal();
+    }
+  });
+
+  // Poll Paytm status API every 4s
+  if (_rpmPollTimer) clearInterval(_rpmPollTimer);
+  _rpmPollTimer = setInterval(async () => {
+    try {
+      const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/verifyPaytmOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderKey: id })
       });
-      const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Payment update failed');
-      toast('💰 ₹' + Number(d.total || total) + ' cash collected!');
-      vibrate([60]);
-    } catch(e) { toast(e?.message || 'Payment update failed', 'err'); }
-  }, 'Payment Confirmation');
+      const d = await r.json().catch(() => ({}));
+      if (d && d.paid) {
+        beep();
+        vibrate([100, 50, 150]);
+        toast(`🎉 ₹${_rpmCurrentTotal} UPI Payment Auto-Verified!`);
+        closeRiderPayModal();
+      }
+    } catch (_) {}
+  }, 4000);
+};
+
+window.confirmRiderPaymentMode = async function(mode) {
+  if (!_rpmCurrentOrderId) return;
+  const id = _rpmCurrentOrderId;
+  const total = _rpmCurrentTotal;
+  const cashBtn = $('rpmCashBtn'), upiBtn = $('rpmUpiBtn');
+  if (cashBtn) cashBtn.disabled = true;
+  if (upiBtn) upiBtn.disabled = true;
+  try {
+    const user = auth.currentUser; if (!user) throw new Error('Rider login required');
+    const token = await user.getIdToken(true);
+    const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ orderId: id, mode })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Payment update failed');
+    toast(`💰 ₹${Number(d.total || total)} marked as ${d.paymentStatus || (mode === 'upi' ? 'Paid (UPI)' : 'Paid (Cash)')}!`);
+    vibrate([60]);
+    closeRiderPayModal();
+  } catch (e) {
+    toast(e?.message || 'Payment update failed', 'err');
+  } finally {
+    if (cashBtn) cashBtn.disabled = false;
+    if (upiBtn) upiBtn.disabled = false;
+  }
 };
 
 let EXTRA_CATALOG = null;
