@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <meta content="#2563EB" name="theme-color"/>
-<meta content="ParthbookGen51.0-40MinCutoff-WaLocation" name="app-version"/>
+<meta content="ParthbookGen52.0-Phase2-AutoUpiQr-PhoneLink" name="app-version"/>
 <meta content="Book premium dry cleaning pickup with Parth Dry Clean. Free doorstep pickup &amp; delivery in Lucknow." name="description"/>
 <title>Book Pickup | Parth Dry Clean</title>
 <!-- Fonts & Icons -->
@@ -1040,6 +1040,9 @@ body:not(.has-booking-dock) {
 </div>
 <div id="successDetails" class="success-details-card"></div>
 <div style="display:grid;gap:8px;margin:0 18px 18px;">
+<button class="btn-dock-pill success-invoice-btn" id="successPayUpiBtn" style="width:100%;margin:0;background:linear-gradient(135deg,#0284c7,#2563eb);display:none;" onclick="App.Order.openUpiPayModal()" type="button">
+<i class="fas fa-qrcode"></i><span id="successPayUpiBtnText">Pay Now via Paytm / UPI (Auto-Confirm)</span>
+</button>
 <button class="btn-dock-pill success-invoice-btn" style="width:100%;margin:0;background:#25d366;box-shadow:0 8px 20px rgba(37,211,102,0.28);" onclick="App.Order.shareOrderOnWhatsApp()" type="button">
 <i class="fab fa-whatsapp"></i><span>Send Order &amp; Current Location on WhatsApp</span>
 </button>
@@ -1048,6 +1051,37 @@ body:not(.has-booking-dock) {
 </button>
 </div>
 </div>
+</div>
+
+<!-- ZERO-CLICK PAYTM / UPI DYNAMIC QR MODAL -->
+<div class="modal-overlay" id="bookingUpiModal">
+  <div class="modal-box" style="max-width:400px;text-align:center;">
+    <button class="close-modal-btn" onclick="App.Order.closeUpiPayModal()" type="button" aria-label="Close">×</button>
+    <div id="bkUpiActiveView">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:var(--royal-blue-soft);color:var(--royal-blue);padding:5px 12px;border-radius:999px;font-size:10.5px;font-weight:800;margin-bottom:8px;">
+        <i class="fas fa-bolt"></i> 100% AUTO-CONFIRM UPI
+      </div>
+      <h2 style="font-size:19px;font-weight:800;color:var(--ink);margin-bottom:2px;">Scan or Tap to Pay</h2>
+      <p style="font-size:11.5px;color:var(--ink-muted);font-weight:600;margin-bottom:12px;" id="bkUpiOrderSub">Order PDC-000000</p>
+      <div style="background:#fff;border:2px solid var(--royal-blue);border-radius:20px;padding:12px;display:inline-block;margin-bottom:10px;box-shadow:var(--shadow-card);">
+        <img id="bkUpiQrImg" src="" alt="UPI QR" style="width:205px;height:205px;display:block;border-radius:10px;" />
+      </div>
+      <div style="font-size:25px;font-weight:900;color:var(--royal-blue);margin-bottom:4px;" id="bkUpiAmount">₹0</div>
+      <div style="font-size:11px;color:var(--ink-muted);font-weight:700;margin-bottom:12px;" id="bkUpiVpa">UPI ID: —</div>
+      <a id="bkUpiIntentLink" href="#" class="btn-dock-pill" style="width:100%;justify-content:center;text-decoration:none;margin-bottom:10px;">
+        <i class="fas fa-mobile-screen-button"></i><span>Pay via Paytm / GPay / PhonePe</span>
+      </a>
+      <div style="background:var(--surface-soft);border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-size:11px;color:var(--ink-sub);font-weight:700;">
+        <i class="fas fa-spinner fa-spin" style="color:var(--royal-blue);margin-right:6px;"></i>Waiting for payment… Auto-verifying in real time
+      </div>
+    </div>
+    <div id="bkUpiSuccessView" style="display:none;padding:16px 4px;">
+      <div class="success-badge-wrap"><i class="fas fa-check success-badge-icon"></i></div>
+      <h3 style="font-size:21px;font-weight:900;color:var(--ink);margin-bottom:6px;">Payment Confirmed! 🎉</h3>
+      <p style="font-size:12.5px;color:var(--ink-muted);font-weight:600;margin-bottom:16px;" id="bkUpiSuccessSub">Verified automatically.</p>
+      <button type="button" class="btn-dock-pill" style="width:100%;justify-content:center;background:var(--emerald);" onclick="App.Order.closeUpiPayModal()">Done</button>
+    </div>
+  </div>
 </div>
 
 <!-- INVOICE PREVIEW & DOWNLOAD MODAL -->
@@ -2017,6 +2051,23 @@ UI: {
     const id=document.getElementById('successOrderId'); if(id) id.textContent=formatOrderDisplayId(order?.orderId||'000000');
     const details=document.getElementById('successDetails');
     if(details) details.innerHTML=`<div class="success-detail-row"><span><i class="fas fa-calendar-day"></i> Pickup Date</span><strong>${sanitizeHTML(pickupDate)}</strong></div><div class="success-detail-row"><span><i class="fas fa-clock"></i> Time Slot</span><strong>${sanitizeHTML(order?.timeSlot||'—')}</strong></div><div class="success-detail-row"><span><i class="fas fa-truck"></i> Est. Delivery</span><strong>${sanitizeHTML(deliveryDate)}</strong></div><div class="success-detail-row"><span><i class="fas fa-wallet"></i> Total</span><strong>₹${Number(order?.total||0)}</strong></div>`;
+    const payBtn = document.getElementById('successPayUpiBtn');
+    const payBtnTxt = document.getElementById('successPayUpiBtnText');
+    const isPaid = String(order?.paymentStatus || '').toLowerCase().startsWith('paid');
+    if (payBtn) {
+      if (!isPaid && Number(order?.total) > 0 && window._bkPaymentConfig?.upiEnabled !== false && window._bkPaymentConfig?.upiVpa) {
+        payBtn.style.display = 'flex';
+        payBtn.disabled = false;
+        if (payBtnTxt) payBtnTxt.textContent = `Pay ₹${Number(order.total)} Now via Paytm / UPI`;
+      } else if (isPaid) {
+        payBtn.style.display = 'flex';
+        payBtn.disabled = true;
+        payBtn.style.background = 'var(--emerald)';
+        if (payBtnTxt) payBtnTxt.textContent = `✅ Payment Verified (${order.paymentStatus})`;
+      } else {
+        payBtn.style.display = 'none';
+      }
+    }
     const tc = document.getElementById('toastContainer'); if (tc) tc.innerHTML = '';
     this.openModal('successOverlay');
   },
@@ -3294,7 +3345,9 @@ App.UI.renderCategories(); App.UI.renderItems(); App.Cart.updateSummary();
 }).catch(err => {});
 },
 
-loadSettings: function(){ db.ref('settings/general').on('value',s=>{ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; const msg=v.storeMessage||v.announcement||''; SETTINGS.announcement=msg; SETTINGS.couponEnabled=v.couponEnabled!==false;
+loadSettings: function(){
+window._bkPaymentConfig = window._bkPaymentConfig || { upiEnabled: true, upiVpa: '', merchantName: 'Parth Dry Clean' };
+db.ref('settings/payment').on('value', s => { if (s.exists()) window._bkPaymentConfig = { ...window._bkPaymentConfig, ...(s.val() || {}) }; }); db.ref('settings/general').on('value',s=>{ const v=s.val()||{}; SETTINGS.minOrder=Number(v.minOrder)||300; SETTINGS.expressPercent=Number(v.expressPercent)||90; const msg=v.storeMessage||v.announcement||''; SETTINGS.announcement=msg; SETTINGS.couponEnabled=v.couponEnabled!==false;
 const bm = document.getElementById('bannerMin'); if(bm) bm.textContent=SETTINGS.minOrder; 
 const el = document.getElementById('expressLabel'); if(el) el.innerHTML=`<i class="fas fa-bolt" style="color:var(--gold);"></i> 24-Hr Express (+${SETTINGS.expressPercent}%)`;
 const banner = document.getElementById('topBanner');
@@ -3464,6 +3517,84 @@ submit: async function(e){
   }
 },
 
+_upiRef: null,
+_upiPoll: null,
+openUpiPayModal: function(){
+  const o = STATE.lastCreatedOrder;
+  if(!o) return App.showToast('Order details not found','error');
+  const orderKey = o.firebaseKey || o.orderId;
+  const total = Number(o.total || 0);
+  const vpa = String(window._bkPaymentConfig?.upiVpa || '').trim();
+  if(!vpa) return App.showToast('UPI QR not configured yet — Pay on Delivery is active','info');
+  const merchantName = String(window._bkPaymentConfig?.merchantName || 'Parth Dry Clean').trim();
+  const dispId = formatOrderDisplayId(o.orderId || '000000');
+
+  document.getElementById('bkUpiActiveView').style.display = 'block';
+  document.getElementById('bkUpiSuccessView').style.display = 'none';
+  document.getElementById('bkUpiOrderSub').textContent = `Order ${dispId} • Locked Amount`;
+  document.getElementById('bkUpiAmount').textContent = `₹${total}`;
+  document.getElementById('bkUpiVpa').textContent = `Merchant UPI: ${vpa}`;
+
+  const upiUri = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(merchantName)}&am=${total}&cu=INR&tr=${encodeURIComponent(dispId)}&tn=${encodeURIComponent('Order ' + dispId)}`;
+  const qrImg = document.getElementById('bkUpiQrImg');
+  if (qrImg) {
+    qrImg.onerror = function(){ this.onerror = null; this.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(upiUri)}`; };
+    qrImg.src = `https://quickchart.io/qr?size=240&margin=1&text=${encodeURIComponent(upiUri)}`;
+  }
+  const intentLink = document.getElementById('bkUpiIntentLink');
+  if (intentLink) intentLink.href = upiUri;
+
+  App.UI.openModal('bookingUpiModal');
+
+  if (auth.currentUser && orderKey) {
+    auth.currentUser.getIdToken().then(token => {
+      fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/startOrderUpiSession', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ orderKey })
+      }).catch(()=>{});
+    }).catch(()=>{});
+  }
+
+  const onConfirmed = (payLabel) => {
+    if (this._upiRef) { this._upiRef.off(); this._upiRef = null; }
+    if (this._upiPoll) { clearInterval(this._upiPoll); this._upiPoll = null; }
+    STATE.lastCreatedOrder.paymentStatus = payLabel || 'Paid (UPI)';
+    document.getElementById('bkUpiActiveView').style.display = 'none';
+    document.getElementById('bkUpiSuccessView').style.display = 'block';
+    document.getElementById('bkUpiSuccessSub').textContent = `Order ${dispId} (₹${total}) marked as ${STATE.lastCreatedOrder.paymentStatus}!`;
+    const payBtn = document.getElementById('successPayUpiBtn');
+    const payBtnTxt = document.getElementById('successPayUpiBtnText');
+    if (payBtn) { payBtn.disabled = true; payBtn.style.background = 'var(--emerald)'; }
+    if (payBtnTxt) payBtnTxt.textContent = `✅ Payment Verified (${STATE.lastCreatedOrder.paymentStatus})`;
+  };
+
+  if (this._upiRef) this._upiRef.off();
+  if (orderKey) {
+    this._upiRef = db.ref('orders/' + orderKey + '/paymentStatus');
+    this._upiRef.on('value', s => {
+      const v = String(s.val() || '');
+      if (v.toLowerCase().startsWith('paid')) onConfirmed(v);
+    });
+  }
+  if (this._upiPoll) clearInterval(this._upiPoll);
+  this._upiPoll = setInterval(async () => {
+    try {
+      const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/verifyPaytmOrderStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderKey })
+      });
+      const d = await r.json().catch(()=>({}));
+      if (d && d.paid) onConfirmed('Paid (UPI)');
+    } catch(_){}
+  }, 4000);
+},
+closeUpiPayModal: function(){
+  if (this._upiRef) { this._upiRef.off(); this._upiRef = null; }
+  if (this._upiPoll) { clearInterval(this._upiPoll); this._upiPoll = null; }
+  App.UI.closeModal('bookingUpiModal');
+},
 shareOrderOnWhatsApp: function(){
 const o = STATE.lastCreatedOrder;
 if(!o) return App.showToast('Order details not found', 'error');
