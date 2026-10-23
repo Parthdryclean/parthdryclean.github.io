@@ -196,7 +196,11 @@ button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highli
 .streak-badge{display:inline-flex;align-items:center;gap:8px;background:var(--warn-soft);color:var(--warn);border:1px solid rgba(217,119,6,.3);padding:9px 18px;border-radius:999px;font-weight:800;font-size:14px}
 
 /* CHAT */
-.chat-container{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);height:calc(100vh - 210px);min-height:420px;display:flex;flex-direction:column}
+.chat-container{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);height:calc(100dvh - 220px);min-height:340px;max-height:620px;display:flex;flex-direction:column}
+.chat-head-bar{display:flex;justify-content:space-between;align-items:center;padding:6px 8px 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.chat-head-bar strong{font-size:13.5px;font-weight:800;display:flex;align-items:center;gap:7px;color:var(--text)}
+.chat-date-sep{text-align:center;margin:10px 0;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.chat-date-sep span{background:var(--card2);border:1px solid var(--line);padding:3px 10px;border-radius:999px}
 .chat-messages{flex:1;overflow:auto;padding:6px}
 .chat-msg{display:flex;gap:8px;margin-bottom:10px}
 .chat-msg.sent{flex-direction:row-reverse}
@@ -478,6 +482,10 @@ button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highli
   <!-- CHAT TAB -->
   <div class="tab-content" id="tab-chat">
    <div class="chat-container">
+    <div class="chat-head-bar">
+     <strong><span class="conn-dot" style="color:var(--good)"></span> Store Admin Support</strong>
+     <a href="tel:+919235601645" style="font-size:11.5px;font-weight:800;color:var(--primary);text-decoration:none;background:var(--soft);padding:5px 10px;border-radius:999px"><i class="fas fa-phone"></i> Call Store</a>
+    </div>
     <div class="chat-messages" id="chatMessages">
      <div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>
     </div>
@@ -505,7 +513,7 @@ button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highli
    <i class="fas fa-indian-rupee-sign"></i><span>Hisab</span>
   </button>
   <button type="button" class="rbn-btn" data-tab="dashboard" onclick="switchRiderTab('dashboard')">
-   <i class="fas fa-chart-Simple"></i><span>Stats</span>
+   <i class="fas fa-chart-simple"></i><span>Stats</span>
   </button>
   <button type="button" class="rbn-btn" data-tab="chat" onclick="switchRiderTab('chat')">
    <i class="fas fa-comments"></i><span>Admin Chat</span>
@@ -574,7 +582,7 @@ button,input,select,textarea{font-family:inherit;outline:none;-webkit-tap-highli
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
    <button class="btn-main" style="background:var(--good);padding:12px;font-size:13px" id="rpmCashBtn" onclick="confirmRiderPaymentMode('cash')"><i class="fas fa-money-bill-wave"></i> Cash Collected</button>
-   <button class="btn-main" style="padding:12px;font-size:13px" id="rpmUpiBtn" onclick="confirmRiderPaymentMode('upi')"><i class="fas fa-qrcode"></i> Mark UPI Paid</button>
+   <button class="btn-main" style="padding:12px;font-size:13px" id="rpmUpiBtn" onclick="checkRiderUpiNow()"><i class="fas fa-rotate"></i> Check UPI Status</button>
   </div>
  </div>
 </div>
@@ -654,7 +662,29 @@ if (BOY && BOY.id) {
 }
 
 let ordersRef = null, prevOrderIds = new Set(), prevStatuses = {}, issueCtx = { orderId: null, type: null }, selectedOrders = new Set();
-let latestAssignedOrderId = null, alertTimer = null;
+let latestAssignedOrderId = null, alertTimer = null, activeSessionBoyId = null;
+const recentAlertCooldown = new Map();
+
+function loadSeenOrderState(boyId) {
+  if (!boyId) return false;
+  try {
+    const raw = localStorage.getItem('pdc_rider_seen_' + boyId);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed.ids)) prevOrderIds = new Set(parsed.ids);
+    if (parsed.statuses && typeof parsed.statuses === 'object') prevStatuses = { ...parsed.statuses };
+    return prevOrderIds.size > 0;
+  } catch (_) { return false; }
+}
+function saveSeenOrderState(boyId) {
+  if (!boyId) return;
+  try {
+    localStorage.setItem('pdc_rider_seen_' + boyId, JSON.stringify({
+      ids: Array.from(prevOrderIds),
+      statuses: prevStatuses
+    }));
+  } catch (_) {}
+}
 let ALL_MY_ORDERS = [];
 let ORDER_MAP = new Map();
 let activeQueueFilter = 'all'; // 'all' | 'pickup' | 'delivery' | 'store' | 'done'
@@ -820,6 +850,8 @@ function enterApp() {
   const dp = $('helloDatePill');
   if (dp) dp.textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' });
 
+  if (BOY && BOY.id && activeSessionBoyId === BOY.id && ordersRef) return;
+  activeSessionBoyId = BOY ? BOY.id : null;
   listen();
   startChatListener();
   requestNotificationPermission();
@@ -855,12 +887,26 @@ async function syncRiderFCMToken() {
         const title = payload.notification?.title || payload.data?.title || 'Parth Rider Alert';
         const body = payload.notification?.body || payload.data?.body || 'New order update';
         const oid = payload.data?.orderId || '';
-        beep();
-        vibrate([150, 80, 150]);
-        toast(`🔔 ${title}: ${body}`);
+        const reason = payload.data?.reason || '';
+        if (reason === 'chat') {
+          const chatTabActive = $('tab-chat')?.classList.contains('active');
+          if (!chatTabActive) {
+            beep();
+            vibrate([100, 50, 100]);
+            toast(`💬 ${title}: ${body}`);
+            const badge = $('navChatBadge');
+            if (badge) badge.style.display = 'inline-block';
+          }
+          return;
+        }
         if (oid) {
           const o = ORDER_MAP.get(oid);
-          triggerNewOrderAlert(oid, formatOrderId(o?.orderId || oid), o?.customerName || 'Customer', o?.address || body, 'new');
+          const aType = reason === 'out_for_delivery' ? 'delivery' : 'new';
+          triggerNewOrderAlert(oid, formatOrderId(o?.orderId || oid), o?.customerName || 'Customer', o?.address || body, aType, true);
+        } else {
+          beep();
+          vibrate([150, 80, 150]);
+          toast(`🔔 ${title}: ${body}`);
         }
       });
     }
@@ -928,7 +974,11 @@ function showRiderSystemNotification(title, body, orderKey) {
 }
 
 // 5. BOTTOM ORDER HUD ALERT
-function triggerNewOrderAlert(orderKey, displayId, customerName, address, alertType = 'new') {
+function triggerNewOrderAlert(orderKey, displayId, customerName, address, alertType = 'new', skipSystemNotif = false) {
+  const dedupKey = `${orderKey || displayId}_${alertType}`;
+  const nowMs = Date.now();
+  if (recentAlertCooldown.has(dedupKey) && (nowMs - recentAlertCooldown.get(dedupKey) < 12000)) return;
+  recentAlertCooldown.set(dedupKey, nowMs);
   latestAssignedOrderId = orderKey;
   beep();
   vibrate([150, 80, 150, 80, 250]);
@@ -946,11 +996,13 @@ function triggerNewOrderAlert(orderKey, displayId, customerName, address, alertT
   const alertEl = $('newOrderAlert');
   if (alertEl) alertEl.classList.add('show');
 
-  showRiderSystemNotification(
-    `Parth Rider · ${badgeTitle}`,
-    `${displayId} — ${customerName || 'Customer'} (${cleanAddr || 'Lucknow'})`,
-    orderKey
-  );
+  if (!skipSystemNotif) {
+    showRiderSystemNotification(
+      `Parth Rider · ${badgeTitle}`,
+      `${displayId} — ${customerName || 'Customer'} (${cleanAddr || 'Lucknow'})`,
+      orderKey
+    );
+  }
 
   clearTimeout(alertTimer);
   alertTimer = setTimeout(() => { dismissOrderAlert(); }, 14000);
@@ -1006,7 +1058,8 @@ window.switchRiderTab = function(tabName) {
   if (tabName === 'chat') {
     const badge = $('navChatBadge');
     if (badge) badge.style.display = 'none';
-    loadChat();
+    if (!chatRefActive) startChatListener();
+    setTimeout(() => { const b = $('chatMessages'); if (b) b.scrollTop = b.scrollHeight; }, 60);
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
@@ -1154,9 +1207,17 @@ function toggleSelect(id) {
 
 window.batchStartPickup = async () => {
   if (selectedOrders.size === 0) return;
+  const ids = Array.from(selectedOrders);
+  for (const id of ids) {
+    const o = ORDER_MAP.get(id);
+    if (o && (o.needsBillCount || (o.items && o.items['doorstep-pickup-count']) || Number(o.total || 0) <= 0)) {
+      toast(`🧺 Order ${formatOrderId(o.orderId || id)} me pehle kapde count karke bill banayein!`, 'err');
+      openAddItem(id);
+      return;
+    }
+  }
   try {
     const token = await getValidRiderToken();
-    const ids = Array.from(selectedOrders);
     for (const id of ids) {
       const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderUpdateOrderStatus', {
         method: 'POST',
@@ -1185,7 +1246,7 @@ function listen() {
   ];
   const buckets = [new Map(), new Map(), new Map()];
   const readyBuckets = new Set();
-  let baselineLoaded = false;
+  let baselineLoaded = loadSeenOrderState(BOY?.id);
 
   const rebuild = () => {
     const merged = new Map();
@@ -1223,6 +1284,7 @@ function listen() {
       baselineLoaded = true;
       prevOrderIds = curIds;
       prevStatuses = curStatuses;
+      saveSeenOrderState(BOY?.id);
     }
     ALL_MY_ORDERS = myOrders;
     render(myOrders);
@@ -1430,17 +1492,20 @@ function renderCard(o) {
 
   let btn = '';
   if (st === 'pending') {
-    btn = `<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box-Check"></i> Mark Garments Picked Up</button>`;
+    btn = `<button class="btn-main" onclick="adv('${esc(o._id)}','picked_up')"><i class="fas fa-box-open"></i> Mark Garments Picked Up</button>`;
   } else if (st === 'picked_up' || st === 'processing' || st === 'quality_check') {
     btn = `<button class="btn-main" style="background:var(--card2);color:var(--sub);border:1px solid var(--line);box-shadow:none" disabled><i class="fas fa-store"></i> In Store (${esc(LABEL[st] || st)})</button>`;
   } else if (st === 'out_for_delivery') {
-    btn = `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Order Delivered</button>`;
+    btn = isPaid
+      ? `<button class="btn-main done" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-check-circle"></i> Mark Order Delivered</button>`
+      : `<button class="btn-main" style="background:linear-gradient(135deg,#d97706,#b45309)" onclick="adv('${esc(o._id)}','delivered')"><i class="fas fa-indian-rupee-sign"></i> Collect ₹${Number(o.total) || 0} &amp; Deliver</button>`;
   }
 
   const coords = getOrderCoords(o);
   const exactMapUrl = coords ? `https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}` : null;
   const mapUrl = safeUrl(exactMapUrl || gps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`);
   const phone = last10Digits(o.phone);
+  const canEditItems = (st === 'pending' && !isPaid);
 
   // Allow collecting payment at Pickup OR Delivery whenever total > 0
   const collectBtn = (!isPaid && Number(o.total) > 0)
@@ -1487,7 +1552,9 @@ function renderCard(o) {
      <a class="gps" target="_blank" rel="noopener noreferrer" href="${mapUrl}"><i class="fas fa-diamond-turn-right"></i> Navigate</a>
     </div>
     <div class="oc-actions">
-     <button type="button" class="additem" onclick="openAddItem('${esc(o._id)}')"><i class="fas fa-shirt"></i> ${needsCount ? 'Count Clothes' : 'Edit / Extra'}</button>
+     ${canEditItems
+       ? `<button type="button" class="additem" onclick="openAddItem('${esc(o._id)}')"><i class="fas fa-shirt"></i> ${needsCount ? 'Count Clothes' : 'Edit / Extra'}</button>`
+       : `<button type="button" disabled style="opacity:.55;cursor:not-allowed"><i class="fas fa-lock"></i> Bill Locked</button>`}
      <button type="button" class="report" onclick="openIssue('${esc(o._id)}')"><i class="fas fa-triangle-exclamation"></i> Issue</button>
      ${collectBtn}
     </div>
@@ -1562,11 +1629,18 @@ window.sendWaTemplate = function(phone, idx) {
 // 12. ORDER STATUS UPDATE
 window.adv = async (id, next) => {
   const o = ORDER_MAP.get(id);
-  if (next === 'picked_up' && o && (o.needsBillCount || (o.items && o.items['doorstep-pickup-count']))) {
-    openAppConfirm('Is WhatsApp order me abhi kapde count nahi hue hain (₹0). Kya aap pehle kapde count karke bill banana chahte hain?', () => {
-      openAddItem(id);
-    }, 'Count Garments First?');
+  if (next === 'picked_up' && o && (o.needsBillCount || (o.items && o.items['doorstep-pickup-count']) || Number(o.total || 0) <= 0)) {
+    toast('🧺 Pehle doorstep par kapde count karke bill save karein!', 'err');
+    openAddItem(id);
     return;
+  }
+  if (next === 'delivered' && o) {
+    const isPaid = String(o.paymentStatus || '').toLowerCase().startsWith('paid');
+    if (!isPaid && Number(o.total || 0) > 0) {
+      toast('💰 Delivery complete karne se pehle payment collect karein (Cash ya UPI QR)!', 'err');
+      collectPayment(id, Number(o.total || 0));
+      return;
+    }
   }
   try {
     const token = await getValidRiderToken();
@@ -1665,7 +1739,33 @@ window.collectPayment = async (id, total) => {
   }, 4000);
 };
 
-window.confirmRiderPaymentMode = async function(mode) {
+window.checkRiderUpiNow = async function() {
+  if (!_rpmCurrentOrderId) return;
+  const upiBtn = $('rpmUpiBtn');
+  if (upiBtn) { upiBtn.disabled = true; upiBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking…'; }
+  try {
+    const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/verifyPaytmOrderStatus', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderKey: _rpmCurrentOrderId })
+    });
+    const d = await r.json().catch(() => ({}));
+    if (d && d.paid) {
+      beep();
+      vibrate([100, 50, 150]);
+      toast(`🎉 ₹${_rpmCurrentTotal} UPI Payment Auto-Verified!`);
+      closeRiderPayModal();
+    } else {
+      toast('⏳ UPI payment abhi receive nahi hua. QR scan hote hi auto-confirm ho jayega.', 'err');
+    }
+  } catch (_) {
+    toast('UPI status check failed', 'err');
+  } finally {
+    if (upiBtn) { upiBtn.disabled = false; upiBtn.innerHTML = '<i class="fas fa-rotate"></i> Check UPI Status'; }
+  }
+};
+
+window.confirmRiderPaymentMode = async function() {
   if (!_rpmCurrentOrderId) return;
   const id = _rpmCurrentOrderId;
   const total = _rpmCurrentTotal;
@@ -1677,11 +1777,11 @@ window.confirmRiderPaymentMode = async function(mode) {
     const r = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/riderCollectPayment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ orderId: id, mode })
+      body: JSON.stringify({ orderId: id, mode: 'cash' })
     });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.error || 'Payment update failed');
-    toast(`💰 ₹${Number(d.total || total)} marked as ${d.paymentStatus || (mode === 'upi' ? 'Paid (UPI)' : 'Paid (Cash)')}!`);
+    toast(`💵 ₹${Number(d.total || total)} Cash Collected! (Added to your Cash Galla)`);
     vibrate([60]);
     closeRiderPayModal();
   } catch (e) {
@@ -1694,6 +1794,8 @@ window.confirmRiderPaymentMode = async function(mode) {
 
 // 14. FAST DOORSTEP GARMENT COUNTER & BILL BUILDER
 let EXTRA_CATALOG = null;
+let _riderGeneralSettings = { minOrder: 300, expressPercent: 90 };
+db.ref('settings/general').on('value', s => { if (s.exists()) _riderGeneralSettings = { ..._riderGeneralSettings, ...(s.val() || {}) }; });
 let counterMode = 'replace'; // 'replace' (Full Bag Count) | 'add' (Add Extra Only)
 let counterActiveCat = 'all';
 let counterDraft = {}; // { 'categoryKey::itemKey': { categoryKey, itemKey, name, price, qty } }
@@ -1797,17 +1899,38 @@ window.stepCounterItem = function(catKey, itemKey, delta) {
 };
 
 function updateCounterSummary() {
-  let totalQty = 0, totalAmt = 0;
+  let totalQty = 0, subtotalAmt = 0;
   Object.values(counterDraft).forEach(it => {
     totalQty += it.qty;
-    totalAmt += it.qty * it.price;
+    subtotalAmt += it.qty * it.price;
   });
-  $('counterSummaryQty').textContent = `${totalQty} garment${totalQty === 1 ? '' : 's'} ${counterMode === 'replace' ? 'in bag' : 'to add'}`;
-  $('counterSummaryTotal').textContent = `₹${totalAmt}`;
+  const o = ORDER_MAP.get(issueCtx.orderId) || {};
+  const isExpress = String(o.express || 'No') === 'Yes';
+  const expPct = Number(_riderGeneralSettings.expressPercent ?? 90);
+  const minOrd = Number(_riderGeneralSettings.minOrder || 300);
+  const discount = Number(o.discount || 0);
+  let finalPayable = subtotalAmt;
+  let breakdownNote = '';
+  if (counterMode === 'replace') {
+    const expFee = isExpress ? Math.round(subtotalAmt * (expPct / 100)) : 0;
+    const disc = Math.min(subtotalAmt + expFee, discount);
+    finalPayable = Math.max(0, subtotalAmt + expFee - disc);
+    const parts = [];
+    if (expFee > 0) parts.push(`+₹${expFee} Exp`);
+    if (disc > 0) parts.push(`-₹${disc} Off`);
+    if (subtotalAmt > 0 && finalPayable < minOrd) parts.push(`Min ₹${minOrd}`);
+    breakdownNote = parts.length ? ` (${parts.join(', ')})` : '';
+  } else {
+    const expAdd = isExpress ? Math.round(subtotalAmt * (expPct / 100)) : 0;
+    finalPayable = subtotalAmt + expAdd;
+    if (expAdd > 0) breakdownNote = ` (+₹${expAdd} Exp)`;
+  }
+  $('counterSummaryQty').textContent = `${totalQty} pc${totalQty === 1 ? '' : 's'}${breakdownNote}`;
+  $('counterSummaryTotal').textContent = `₹${finalPayable}`;
   const saveBtn = $('saveCounterBtn');
   if (saveBtn) {
-    saveBtn.innerHTML = totalAmt > 0
-      ? `<i class="fas fa-check-circle"></i> ${counterMode === 'replace' ? `Save Final Bill (₹${totalAmt})` : `Add Extra (+₹${totalAmt})`}`
+    saveBtn.innerHTML = finalPayable > 0
+      ? `<i class="fas fa-check-circle"></i> ${counterMode === 'replace' ? `Save Final Bill (₹${finalPayable})` : `Add Extra (+₹${finalPayable})`}`
       : `<i class="fas fa-check-circle"></i> Save & Update Bill`;
   }
 }
@@ -1840,8 +1963,15 @@ window.renderCounterCatalog = function() {
 };
 
 window.openAddItem = async id => {
-  issueCtx.orderId = id;
   const o = ORDER_MAP.get(id);
+  if (!o) return toast('Order not found', 'err');
+  if (String(o.paymentStatus || '').toLowerCase().startsWith('paid')) {
+    return toast('🔒 Paid order ka bill lock ho chuka hai', 'err');
+  }
+  if (String(o.status || 'pending') !== 'pending') {
+    return toast('🔒 Pickup ke baad bill sirf Store Admin change kar sakte hain', 'err');
+  }
+  issueCtx.orderId = id;
   $('addItemOrderId').textContent = formatOrderId(o?.orderId || id);
   if ($('counterSearchInput')) $('counterSearchInput').value = '';
   try {
@@ -1964,16 +2094,30 @@ function loadDashboard() {
   $('totalEarnings').textContent = '₹' + totalEarn;
 }
 
-// 17. REALTIME ADMIN CHAT
+// 17. REALTIME ADMIN CHAT (WITH DATE HEADERS & INSTANT ADMIN ALERT)
 let chatRefActive = null;
 let chatFirstLoad = true;
+let sendingRiderChat = false;
+
+function formatChatDayLabel(ts) {
+  if (!ts) return 'Today';
+  const d = new Date(Number(ts));
+  if (isNaN(d.getTime())) return 'Today';
+  const today = dayStr(new Date());
+  const yest = dayStr(new Date(Date.now() - 864e5));
+  const ds = dayStr(d);
+  if (ds === today) return 'Today';
+  if (ds === yest) return 'Yesterday';
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 function startChatListener() {
   if (!BOY || !BOY.id) return;
   if (chatRefActive) chatRefActive.off();
   chatFirstLoad = true;
 
   const chatRef = db.ref('chat/' + BOY.id);
-  chatRefActive = chatRef.limitToLast(60);
+  chatRefActive = chatRef.limitToLast(80);
 
   chatRefActive.on('value', s => {
     const msgs = [];
@@ -1984,33 +2128,44 @@ function startChatListener() {
     if (!box) return;
 
     if (msgs.length === 0) {
-      box.innerHTML = '<div class="empty"><i class="fas fa-comments"></i>Admin se direct yahan baat karein</div>';
+      box.innerHTML = '<div class="empty"><i class="fas fa-comments"></i>Store Admin se direct yahan baat karein</div>';
       chatFirstLoad = false;
       return;
     }
 
-    box.innerHTML = msgs.map(m => {
+    let lastDayLbl = '';
+    const htmlParts = [];
+    msgs.forEach(m => {
+      const dayLbl = formatChatDayLabel(m.at);
+      if (dayLbl !== lastDayLbl) {
+        lastDayLbl = dayLbl;
+        htmlParts.push(`<div class="chat-date-sep"><span>${esc(dayLbl)}</span></div>`);
+      }
       const isSent = m.from === 'boy';
       const time = m.at ? new Date(Number(m.at)).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : 'Just now';
-      return `<div class="chat-msg ${isSent ? 'sent' : 'received'}">
+      htmlParts.push(`<div class="chat-msg ${isSent ? 'sent' : 'received'}">
         <div class="avatar">${isSent ? '🛵' : '👤'}</div>
         <div>
           <div class="bubble">${esc(m.text || '')}</div>
-          <div class="time">${time}</div>
+          <div class="time">${isSent ? 'You' : 'Store Admin'} · ${time}</div>
         </div>
-      </div>`;
-    }).join('');
+      </div>`);
+    });
 
+    box.innerHTML = htmlParts.join('');
     box.scrollTop = box.scrollHeight;
+
     if (!chatFirstLoad) {
       const last = msgs[msgs.length - 1];
       if (last && last.from !== 'boy') {
-        toast('💬 Admin ka naya message aaya');
-        beep();
-        vibrate([100, 50, 100]);
         const chatTabActive = $('tab-chat')?.classList.contains('active');
-        const badge = $('navChatBadge');
-        if (!chatTabActive && badge) badge.style.display = 'inline-block';
+        if (!chatTabActive) {
+          toast('💬 Store Admin ka naya message aaya');
+          beep();
+          vibrate([100, 50, 100]);
+          const badge = $('navChatBadge');
+          if (badge) badge.style.display = 'inline-block';
+        }
       }
     }
     chatFirstLoad = false;
@@ -2019,13 +2174,14 @@ function startChatListener() {
     if (box) box.innerHTML = '<div class="empty"><i class="fas fa-triangle-exclamation"></i>Chat load failed: ' + esc(err?.message || 'Permission denied') + '</div>';
   });
 }
-function loadChat() { startChatListener(); }
 
 window.sendChat = (overrideText) => {
+  if (sendingRiderChat) return;
   const input = $('chatInput');
   const text = String(overrideText || (input?.value || '')).trim();
   if (!text || !BOY || !BOY.id) return;
 
+  sendingRiderChat = true;
   db.ref('chat/' + BOY.id).push({
     text,
     from: 'boy',
@@ -2036,7 +2192,18 @@ window.sendChat = (overrideText) => {
     if (!overrideText && input) input.value = '';
     const box = $('chatMessages');
     if (box) box.scrollTop = box.scrollHeight;
-  }).catch(e => toast(e.message, 'err'));
+    db.ref('notifications').push({
+      type: 'chat',
+      boyId: BOY.id,
+      boy: BOY.name || 'Partner',
+      boyPhone: String(BOY.phone || ''),
+      note: text.slice(0, 180),
+      at: Date.now(),
+      read: false
+    }).catch(() => {});
+  }).catch(e => toast(e.message, 'err')).finally(() => {
+    sendingRiderChat = false;
+  });
 };
 window.sendQuickChat = function(txt) { window.sendChat(txt); };
 
