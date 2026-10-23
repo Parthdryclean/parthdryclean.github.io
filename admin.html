@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ParthadminGen27 : PARTH OS MODERN SAAS UI (Phase 2 Full-Stack: Mobile App UI, 5-Stage Pipeline, Bulk Assign, Item Editor, Paytm Auto-Verify, Anti-Fraud & Safe Reset) -->
+<!-- ParthadminGen28 : PARTH OS MODERN SAAS UI (Phase 2 Full-Stack: Mobile App UI, 5-Stage Pipeline, Bulk Assign, Item Editor, Paytm Auto-Verify, Anti-Fraud & Safe Reset) -->
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -391,7 +391,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 /* ===== PHASE 2 UPGRADES: PIPELINE BAR, BULK BAR, MOBILE APP-STYLE CARDS & BOTTOM NAV ===== */
 .pipeline-strip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(115px, 1fr));
+  grid-template-columns: repeat(6, minmax(110px, 1fr));
   gap: 8px;
   margin-bottom: 14px;
   overflow-x: auto;
@@ -406,12 +406,12 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 13px;
-  padding: 10px 12px;
+  padding: 10px 11px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
   transition: .18s;
   box-shadow: var(--shadow-sm);
 }
@@ -419,24 +419,195 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   border-color: var(--pink);
   background: rgba(37, 99, 235, 0.08);
 }
+.pipe-stage.has-count {
+  border-color: rgba(37, 99, 235, 0.38);
+}
+.pipe-stage.has-count .ps-cnt {
+  background: var(--pink);
+  color: #fff;
+  border-color: var(--pink);
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+.pipe-stage[data-stage="delivered"].has-count {
+  border-color: rgba(5, 150, 105, 0.42);
+}
+.pipe-stage[data-stage="delivered"].has-count .ps-cnt {
+  background: var(--good);
+  color: #fff;
+  border-color: var(--good);
+  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
+}
 .pipe-stage .ps-lbl {
   font-size: 11px;
   font-weight: 800;
   color: var(--text);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
 }
 .pipe-stage .ps-lbl i { color: var(--pink); }
+.pipe-stage[data-stage="delivered"] .ps-lbl i { color: var(--good); }
 .pipe-stage .ps-cnt {
   background: var(--panel2);
-  color: var(--pink);
+  color: var(--muted);
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-weight: 800;
   padding: 2px 8px;
   border-radius: 999px;
   border: 1px solid var(--line);
+  transition: .18s;
+}
+
+/* Upgraded Admin Chat Studio Styles */
+#boyChatModal {
+  z-index: 1100;
+}
+.boy-chat-box {
+  max-width: 660px !important;
+  width: 95% !important;
+  height: min(85vh, 720px);
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 16px 18px !important;
+  border-radius: 22px !important;
+}
+.boy-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.boy-chat-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+.boy-chat-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+.boy-chat-avatar .status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--good);
+  border: 2px solid var(--panel);
+}
+.boy-chat-avatar .status-dot.offline {
+  background: var(--muted);
+}
+.boy-chat-rider-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.boy-chat-rider-tabs::-webkit-scrollbar { display: none; }
+.boy-rider-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--text);
+  font-size: 11.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: .16s;
+}
+.boy-rider-pill.active {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.24);
+}
+.boy-rider-pill .r-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--good);
+}
+.boy-rider-pill .r-dot.off { background: var(--muted); }
+.boy-chat-orders-strip {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 7px 10px;
+  background: rgba(37, 99, 235, 0.06);
+  border: 1px dashed rgba(37, 99, 235, 0.28);
+  border-radius: 11px;
+  margin-top: 8px;
+  font-size: 11px;
+  scrollbar-width: none;
+}
+.boy-chat-orders-strip.show { display: flex; }
+.boy-chat-orders-strip::-webkit-scrollbar { display: none; }
+.boy-order-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--pink);
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.boy-order-chip:hover {
+  border-color: var(--pink);
+}
+.boy-chat-composer {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  align-items: center;
+}
+.top-icon-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--bad);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--panel);
 }
 
 /* Bulk Assign Floating Bar */
@@ -537,7 +708,41 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     box-shadow: 18px 0 44px rgba(15, 23, 42, 0.35);
   }
 
+  /* Responsive 3x2 Pipeline Grid on Mobile (All 6 stages visible without clipping) */
+  .pipeline-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow-x: visible;
+    gap: 7px;
+  }
+  .pipe-stage {
+    padding: 8px 9px;
+    border-radius: 11px;
+  }
+  .pipe-stage .ps-lbl {
+    font-size: 10.5px;
+    gap: 4px;
+  }
+  .pipe-stage .ps-cnt {
+    font-size: 11px;
+    padding: 1px 7px;
+  }
+
+  /* Mobile Bottom-Sheet Chat Box */
+  #boyChatModal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .boy-chat-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 92dvh !important;
+    border-radius: 22px 22px 0 0 !important;
+    padding: 14px 12px calc(14px + env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+  }
+
   /* Responsive Mobile Order Cards (<768px only — Desktop Table 100% untouched) */
+  #tab-orders { padding-bottom: 86px; }
   #tab-orders .tbl-wrap { max-height: none; overflow: visible; border: 0; background: transparent; }
   #tab-orders .panel { background: transparent; border: 0; box-shadow: none; overflow: visible; }
   #tab-orders table, #tab-orders tbody, #tab-orders tr, #tab-orders td {
@@ -651,7 +856,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <div class="modal" id="pinModal"><div class="modal-box" style="max-width:390px;text-align:left"><div class="customer-modal-head"><div><h3 id="pinModalTitle">Set Rider PIN</h3><div id="pinModalMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="closePinModal()"><i class="fas fa-xmark"></i></button></div><input id="pinBoyId" type="hidden"/><input id="pinValue" inputmode="numeric" autocomplete="new-password" type="password" maxlength="6" placeholder="6-digit PIN" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px;text-align:center;letter-spacing:4px"><input id="pinConfirm" inputmode="numeric" autocomplete="new-password" type="password" maxlength="6" placeholder="Confirm PIN" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;text-align:center;letter-spacing:4px"><div id="pinModalError" style="display:none;color:var(--bad);font-size:11px;margin-top:8px"></div><button class="btn solid" id="savePinBtn" style="width:100%;justify-content:center;margin-top:14px"><i class="fas fa-key"></i> Save PIN Securely</button></div></div>
 <div class="modal" id="itemModal"><div class="modal-box" style="max-width:390px;text-align:left"><div class="customer-modal-head"><div><h3>Add Service Item</h3><div id="itemModalMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="closeItemModal()"><i class="fas fa-xmark"></i></button></div><input id="itemCatKey" type="hidden"/><input id="itemNameValue" placeholder="Item name" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px"><input id="itemPriceValue" inputmode="numeric" type="number" min="0" placeholder="Price" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px"><input id="itemOrigValue" inputmode="numeric" type="number" min="0" placeholder="Original price (optional)" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px"><div id="itemModalError" style="display:none;color:var(--bad);font-size:11px;margin-top:8px"></div><button class="btn solid" id="saveItemBtn" style="width:100%;justify-content:center;margin-top:14px"><i class="fas fa-plus"></i> Add Item</button></div></div>
-<div class="modal" id="boyChatModal"><div class="modal-box" style="max-width:640px;height:min(82vh,700px);display:flex;flex-direction:column;text-align:left"><div class="customer-modal-head" style="align-items:center;margin-bottom:10px"><div><h3 id="boyChatTitle" style="display:flex;align-items:center;gap:8px"><i class="fas fa-comments"></i> Delivery Partner Chat</h3><div id="boyChatMeta" style="font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:600"></div></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><select id="boyChatSwitcher" onchange="if(this.value)App.openBoyChat(this.value)" style="background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:7px 10px;border-radius:10px;font-size:12px;font-weight:700"></select><a id="boyChatCallBtn" href="#" class="btn good" style="padding:7px 10px;text-decoration:none" title="Call Rider"><i class="fas fa-phone"></i></a><button type="button" class="btn bad" id="boyChatClearBtn" onclick="App.clearBoyChat()" style="padding:7px 10px" title="Clear Chat History"><i class="fas fa-broom"></i></button><button class="order-drawer-close" onclick="App.closeBoyChat()" aria-label="Close"><i class="fas fa-xmark"></i></button></div></div><div id="boyChatMessages" style="flex:1;overflow:auto;padding:10px 4px;background:var(--bg);border:1px solid var(--line);border-radius:14px"></div><div class="boy-chat-qchips"><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📍 Pickup location par jaldi pahuncho')">📍 Pickup jaldi karo</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📞 Customer ko call karke confirm kar lo')">📞 Call Customer</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('🧺 Doorstep par kapde ginkar bill update kar dena')">🧺 Count &amp; Update Bill</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('💵 Sham ko Cash galla store par jama kar dena')">💵 Handover Cash</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('⚡ Express order hai, priority par pick/deliver karo')">⚡ Express Priority</button></div><div style="display:flex;gap:8px;margin-top:8px"><input id="boyChatInput" style="flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px 14px;border-radius:12px;font-size:13.5px;font-weight:600" placeholder="Type message to rider (Push alert bhi jayega)..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.sendBoyChat()}"/><button class="btn solid" id="boyChatSendBtn" onclick="App.sendBoyChat()" style="padding:0 18px"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>
+<div class="modal" id="boyChatModal" onclick="if(event.target===this)App.closeBoyChat()"><div class="modal-box boy-chat-box"><div class="boy-chat-head"><div class="boy-chat-identity"><div class="boy-chat-avatar" id="boyChatAvatar"><span id="boyChatAvatarInitials">🛵</span><span class="status-dot" id="boyChatStatusDot"></span></div><div style="min-width:0;flex:1"><h3 id="boyChatTitle" style="font-size:15.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Delivery Partner Chat</h3><div id="boyChatMeta" style="font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Select a rider to chat</div></div></div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0"><select id="boyChatSwitcher" onchange="if(this.value)App.openBoyChat(this.value)" style="display:none;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 9px;border-radius:10px;font-size:11.5px;font-weight:700"></select><a id="boyChatCallBtn" href="#" class="btn good" style="padding:7px 10px;text-decoration:none" title="Call Rider"><i class="fas fa-phone"></i></a><a id="boyChatWaBtn" href="#" target="_blank" rel="noopener" class="btn" style="padding:7px 10px;text-decoration:none;color:#16a34a;border-color:rgba(22,163,74,.3)" title="WhatsApp Rider"><i class="fab fa-whatsapp"></i></a><button type="button" class="btn bad" id="boyChatClearBtn" onclick="App.clearBoyChat()" style="padding:7px 10px" title="Clear Chat History"><i class="fas fa-broom"></i></button><button class="order-drawer-close" onclick="App.closeBoyChat()" aria-label="Close"><i class="fas fa-xmark"></i></button></div></div><div class="boy-chat-rider-tabs" id="boyChatRiderTabs"></div><div class="boy-chat-orders-strip" id="boyChatActiveOrdersBar"></div><div id="boyChatMessages" style="flex:1;overflow:auto;padding:10px 6px;margin-top:8px;background:var(--bg);border:1px solid var(--line);border-radius:14px"></div><div class="boy-chat-qchips"><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📍 Pickup location par jaldi pahuncho')">📍 Pickup jaldi karo</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📞 Customer ko call karke confirm kar lo')">📞 Call Customer</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('🧺 Doorstep par kapde ginkar bill update kar dena')">🧺 Count &amp; Update Bill</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('⚡ Express order hai, priority par pick/deliver karo')">⚡ Express Priority</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('✅ Customer se baat ho gayi hai, ab deliver/pickup kar lo')">✅ Issue Resolved</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('💵 Sham ko Cash galla store par jama kar dena')">💵 Handover Cash</button></div><div class="boy-chat-composer"><input id="boyChatInput" style="flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:600" placeholder="Rider ko message likhein (Instant Push Alert jayega)..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.sendBoyChat()}"/><button class="btn solid" id="boyChatSendBtn" onclick="App.sendBoyChat()" style="padding:11px 18px;border-radius:13px"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>
 <div class="modal" id="customerModal"><div class="modal-box customer-modal-box"><div class="customer-modal-head"><div><h3 id="cmTitle">Customer</h3><div id="cmMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="App.closeCustomer()" aria-label="Close"><i class="fas fa-xmark"></i></button></div><div id="cmBody"></div></div></div>
 <aside class="sidebar" id="sidebar">
  <div class="brand"><div><span class="os-logo">Parth</span><small>Dry Clean · Admin OS</small></div></div>
@@ -684,6 +889,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
  <div class="topbar">
   <div class="page-title"><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Live overview</p></div>
   <div class="top-actions">
+   <button class="icon-btn" id="topRiderChatBtn" title="Live Delivery Partner Chat" onclick="App.openBoyChat()" style="position:relative"><i class="fas fa-comments"></i><span class="top-icon-badge" id="topRiderChatBadge">0</span></button>
    <button class="icon-btn" id="adminPushBtn" title="Enable Order Push Alerts" onclick="App.enableAdminPush()"><i class="fas fa-bell"></i></button>
    <button class="icon-btn" id="themeBtn" title="Day/Night"><i class="fas fa-moon"></i></button>
    <button class="icon-btn menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
@@ -716,11 +922,12 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   </div>
   <div class="tab-content" id="tab-orders">
    <div class="pipeline-strip" id="orderPipelineStrip">
-    <div class="pipe-stage" onclick="App.filterByStage('pending')"><span class="ps-lbl"><i class="fas fa-clock"></i> 1. Pending</span><span class="ps-cnt" id="ps_pending">0</span></div>
-    <div class="pipe-stage" onclick="App.filterByStage('picked_up')"><span class="ps-lbl"><i class="fas fa-box"></i> 2. Picked Up</span><span class="ps-cnt" id="ps_picked_up">0</span></div>
-    <div class="pipe-stage" onclick="App.filterByStage('processing')"><span class="ps-lbl"><i class="fas fa-soap"></i> 3. Cleaning</span><span class="ps-cnt" id="ps_processing">0</span></div>
-    <div class="pipe-stage" onclick="App.filterByStage('quality_check')"><span class="ps-lbl"><i class="fas fa-award"></i> 4. Quality</span><span class="ps-cnt" id="ps_quality_check">0</span></div>
-    <div class="pipe-stage" onclick="App.filterByStage('out_for_delivery')"><span class="ps-lbl"><i class="fas fa-truck-fast"></i> 5. Out</span><span class="ps-cnt" id="ps_out_for_delivery">0</span></div>
+    <div class="pipe-stage" data-stage="pending" onclick="App.filterByStage('pending')"><span class="ps-lbl"><i class="fas fa-clock"></i> 1. Pending</span><span class="ps-cnt" id="ps_pending">0</span></div>
+    <div class="pipe-stage" data-stage="picked_up" onclick="App.filterByStage('picked_up')"><span class="ps-lbl"><i class="fas fa-box"></i> 2. Picked Up</span><span class="ps-cnt" id="ps_picked_up">0</span></div>
+    <div class="pipe-stage" data-stage="processing" onclick="App.filterByStage('processing')"><span class="ps-lbl"><i class="fas fa-soap"></i> 3. Cleaning</span><span class="ps-cnt" id="ps_processing">0</span></div>
+    <div class="pipe-stage" data-stage="quality_check" onclick="App.filterByStage('quality_check')"><span class="ps-lbl"><i class="fas fa-award"></i> 4. Quality</span><span class="ps-cnt" id="ps_quality_check">0</span></div>
+    <div class="pipe-stage" data-stage="out_for_delivery" onclick="App.filterByStage('out_for_delivery')"><span class="ps-lbl"><i class="fas fa-truck-fast"></i> 5. Out</span><span class="ps-cnt" id="ps_out_for_delivery">0</span></div>
+    <div class="pipe-stage" data-stage="delivered" onclick="App.filterByStage('delivered')"><span class="ps-lbl"><i class="fas fa-circle-check"></i> 6. Delivered</span><span class="ps-cnt" id="ps_delivered">0</span></div>
    </div>
    <div class="bulk-assign-bar" id="bulkAssignBar">
     <div style="font-size:13px;font-weight:800;color:var(--pink)"><i class="fas fa-check-double"></i> <span id="bulkSelCount">0</span> Orders Selected</div>
@@ -1803,7 +2010,7 @@ function start(){
    knownAdminOrderIds=new Set(currentKeys);
    adminOrdersBaselineLoaded=true;
    renderDashboard();
-   if($('tab-orders').classList.contains('active'))renderOrders();
+   renderOrders();
    if($('tab-reports').classList.contains('active'))renderReports();
    if($('tab-customers').classList.contains('active'))renderCustomers();
    if($('tab-boys').classList.contains('active'))renderBoys();
@@ -1962,18 +2169,95 @@ function renderRiderAlerts(snap){
  }).join(''):'<div class="empty-state" style="padding:24px">No partner alerts yet.</div>';
 }
 
+function normalizeOrderStatus(raw){
+ const s=String(raw||'pending').trim().toLowerCase().replace(/[\s-]+/g,'_');
+ if(s==='new'||s==='pending'||s==='placed'||s==='booked') return 'pending';
+ if(s==='picked_up'||s==='pickedup'||s==='pickup') return 'picked_up';
+ if(s==='processing'||s==='cleaning'||s==='washing'||s==='in_progress') return 'processing';
+ if(s==='quality_check'||s==='quality'||s==='qc'||s==='ironing') return 'quality_check';
+ if(s==='out_for_delivery'||s==='out'||s==='outfordelivery'||s==='dispatched') return 'out_for_delivery';
+ if(s==='delivered'||s==='completed'||s==='done') return 'delivered';
+ if(s==='cancelled'||s==='canceled'||s==='cancel') return 'cancelled';
+ return 'pending';
+}
+
+function updateOrderBadgesAndPipeline(){
+ if(!ordersSnap) return;
+ const stageCounts={pending:0,picked_up:0,processing:0,quality_check:0,out_for_delivery:0,delivered:0,cancelled:0};
+ let totalAll=0;
+ ordersSnap.forEach(c=>{
+  const o=c.val();
+  if(!o) return;
+  totalAll++;
+  const st=normalizeOrderStatus(o.status);
+  if(stageCounts[st]!==undefined) stageCounts[st]++;
+ });
+ ['pending','picked_up','processing','quality_check','out_for_delivery','delivered'].forEach(k=>{
+  const el=$('ps_'+k);
+  if(el){
+   el.textContent=stageCounts[k];
+   const card=el.closest('.pipe-stage');
+   if(card) card.classList.toggle('has-count', stageCounts[k]>0);
+  }
+ });
+ const activeOpen = stageCounts.pending + stageCounts.picked_up + stageCounts.processing + stageCounts.quality_check + stageCounts.out_for_delivery;
+ const ob=$('orderBadge');
+ if(ob){
+  if(activeOpen > 0){
+   ob.textContent = activeOpen;
+   ob.style.display = 'inline-block';
+   ob.style.background = stageCounts.pending > 0 ? 'var(--bad)' : 'var(--pink)';
+   ob.title = `${stageCounts.pending} Pending · ${activeOpen - stageCounts.pending} In Progress`;
+  } else if(totalAll > 0){
+   ob.textContent = totalAll;
+   ob.style.display = 'inline-block';
+   ob.style.background = 'var(--good)';
+   ob.title = `${totalAll} Total Orders (${stageCounts.delivered} Delivered)`;
+  } else {
+   ob.textContent = '0';
+   ob.style.display = 'none';
+  }
+ }
+ const mbnB=$('mbnOrderBadge');
+ if(mbnB){
+  if(activeOpen > 0){
+   mbnB.textContent = activeOpen;
+   mbnB.style.display = 'inline-block';
+   mbnB.style.background = stageCounts.pending > 0 ? 'var(--bad)' : 'var(--pink)';
+  } else if(totalAll > 0){
+   mbnB.textContent = totalAll;
+   mbnB.style.display = 'inline-block';
+   mbnB.style.background = 'var(--good)';
+  } else {
+   mbnB.style.display = 'none';
+  }
+ }
+ const presetLabels = {
+  all: `All Orders (${totalAll})`,
+  new: `New (${stageCounts.pending})`,
+  active: `In Progress (${stageCounts.picked_up + stageCounts.processing + stageCounts.quality_check + stageCounts.out_for_delivery})`,
+  completed: `Completed (${stageCounts.delivered})`,
+  cancelled: `Cancelled (${stageCounts.cancelled})`
+ };
+ document.querySelectorAll('[data-order-preset]').forEach(btn=>{
+  const k=btn.dataset.orderPreset;
+  if(presetLabels[k]) btn.textContent=presetLabels[k];
+ });
+}
+
 function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date());const yest=dayStr(new Date(Date.now()-864e5));let tT=0,yT=0,rT=0,rY=0,pend=0,act=0,del=0;const itemCount={};
- ordersSnap.forEach(c=>{const o=c.val();if(!o)return;const d=o.createdAt?dayStr(new Date(o.createdAt)):'';const rev=(o.status==='delivered')?(+o.total||0):0;
-  if(d===today){tT++;rT+=rev;} if(d===yest){yT++;rY+=rev;} const st=o.status||'pending'; if(st==='pending')pend++; if(['picked_up','processing','quality_check','out_for_delivery'].includes(st))act++; if(st==='delivered')del++;
+ ordersSnap.forEach(c=>{const o=c.val();if(!o)return;const st=normalizeOrderStatus(o.status);const d=o.createdAt?dayStr(new Date(o.createdAt)):'';const rev=(st==='delivered')?(+o.total||0):0;
+  if(d===today){tT++;rT+=rev;} if(d===yest){yT++;rY+=rev;} if(st==='pending')pend++; if(['picked_up','processing','quality_check','out_for_delivery'].includes(st))act++; if(st==='delivered')del++;
   for(const k in(o.items||{})){
-    if(o.status==='cancelled') continue;
+    if(st==='cancelled') continue;
     const raw=o.items[k];
     const itemName=(raw&&typeof raw==='object')?(raw.name||k):k;
     const qty=(raw&&typeof raw==='object')?(Number(raw.qty??raw.quantity)||0):(Number(raw)||0);
     if(qty>0) itemCount[itemName]=(itemCount[itemName]||0)+qty;
   }});
  const canSeeRev = (CURRENT_ADMIN_ROLE === 'owner') || !!MANAGER_PERMS.showRevenue;
- $('dToday').textContent=tT;$('dRevToday').textContent=canSeeRev?('₹'+rT.toLocaleString('en-IN')):'🔒 Owner';$('dPending').textContent=pend;$('dActive').textContent=act;$('dDelivered').textContent=del;$('dCustomers').textContent=Object.keys(customers).length;$('orderBadge').textContent=pend; const mbnB=$('mbnOrderBadge'); if(mbnB){mbnB.textContent=pend;mbnB.style.display=pend>0?'inline-block':'none';}
+ $('dToday').textContent=tT;$('dRevToday').textContent=canSeeRev?('₹'+rT.toLocaleString('en-IN')):'🔒 Owner';$('dPending').textContent=pend;$('dActive').textContent=act;$('dDelivered').textContent=del;$('dCustomers').textContent=Object.keys(customers).length;
+ updateOrderBadgesAndPipeline();
  $('dTodayDelta').innerHTML=tT>=yT?`<span class="delta up">▲ ${tT-yT} vs kal</span>`:`<span class="delta dn">▼ ${yT-tT} vs kal</span>`;
  $('dRevDelta').innerHTML=canSeeRev?(rT>=rY?`<span class="delta up">▲ ₹${rT-rY} vs kal</span>`:`<span class="delta dn">▼ ₹${rY-rT} vs kal</span>`):'<span class="delta">Protected</span>';
  const top=Object.entries(itemCount).sort((a,b)=>b[1]-a[1]).slice(0,5);const max=top.length?Math.max(top[0][1],1):1;
@@ -1984,22 +2268,17 @@ function setOrderPreset(preset){orderQuickPreset=preset;$('orderFilter').value='
 let selectedBulkOrderIds = new Set();
 function renderOrders(){
  if(!ordersSnap)return;
+ updateOrderBadgesAndPipeline();
  const q=String($('orderSearch').value||'').trim().toLowerCase();
  const f=$('orderFilter').value;let allOrders=[],list=[];
- const stageCounts={pending:0,picked_up:0,processing:0,quality_check:0,out_for_delivery:0};
  ordersSnap.forEach(c=>{
   const o=c.val();
   if(o){
-   const st=o.status||'pending';
-   if(stageCounts[st]!==undefined) stageCounts[st]++;
-   allOrders.push({id:c.key,...o});
+   allOrders.push({id:c.key,...o,status:normalizeOrderStatus(o.status)});
   }
  });
- Object.keys(stageCounts).forEach(k=>{
-  const el=$('ps_'+k); if(el) el.textContent=stageCounts[k];
- });
  document.querySelectorAll('#orderPipelineStrip .pipe-stage').forEach(el=>{
-  el.classList.toggle('active', el.getAttribute('onclick')?.includes(`'${f}'`));
+  el.classList.toggle('active', el.dataset.stage===f);
  });
  const bulkBoySel=$('bulkBoySelect');
  if(bulkBoySel){
@@ -2033,9 +2312,10 @@ function renderOrders(){
   const id=String(o.id||'');
   const rawOrderId=String(o.orderId||id);
   const orderLabel=esc(rawOrderId.startsWith('PDC-')?rawOrderId:'PDC-'+rawOrderId);
-  const extraBadge=(o.hasExtraItems||o.extra_items)?`<br><span class="item-badge extra">🧺 +Extra Added</span>`:'';
-  const issueBadge=(o.issue&&o.issue.type)?`<br><span class="item-badge issue">⚠️ ${esc(o.issue.type)}</span>`:'';
-  const source=(o.source?`<br><span class="item-badge">${esc(o.source)}</span>`:'')+extraBadge+issueBadge;
+  const extraBadge=(o.hasExtraItems||o.extra_items)?`<span class="item-badge extra">🧺 +Extra Added</span>`:'';
+  const issueBadge=(o.issue&&o.issue.type)?`<span class="item-badge issue" style="display:inline-flex;align-items:center;gap:5px">⚠️ ${esc(o.issue.type)} <button type="button" onclick="event.stopPropagation();App.clearOrderIssue('${id}')" title="Clear / Resolve Issue" style="border:0;background:rgba(239,68,68,.18);color:var(--bad);border-radius:99px;padding:1px 6px;font-size:10px;font-weight:900;cursor:pointer">✕</button></span>`:'';
+  const srcBadge=o.source?`<span class="item-badge">${esc(o.source)}</span>`:'';
+  const badgesWrap=(srcBadge||extraBadge||issueBadge)?`<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;margin-top:3px">${srcBadge}${extraBadge}${issueBadge}</div>`:'';
   const customer=esc(o.customerName||o.name||'-');const phone=esc(o.phone||'');
   const created=o.createdAt?new Date(o.createdAt).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-';
   const pickup=esc(o.pickupDate||'-');const total=Number(o.total)||0;
@@ -2044,7 +2324,7 @@ function renderOrders(){
   const nextSt=ORDER_NEXT[st];
   const nextBtn=nextSt?`<button class="btn good" title="1-Tap Move to ${esc(ORDER_LABELS[nextSt])}" onclick="App.setStatus('${id}','${nextSt}')"><i class="fas fa-forward-step"></i> ${esc(ORDER_LABELS[nextSt])}</button>`:'';
   const checked=selectedBulkOrderIds.has(id)?'checked':'';
-  return `<tr class="${rc}"><td data-label="Select"><input type="checkbox" class="order-bulk-cb" data-id="${id}" ${checked} onchange="App.toggleBulkOrder('${id}',this.checked)"/></td><td data-label="Order" style="color:var(--pink);font-weight:700">${orderLabel}${source}</td><td data-label="Customer"><div><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></div></td><td data-label="Booked" style="font-size:12px">${esc(created)}</td><td data-label="Pickup">${pickup}</td><td data-label="Items"><div>${items||'-'}</div></td><td data-label="Total"><b>₹${total}</b></td><td data-label="Payment"><select onchange="App.setPay('${id}',this.value)"><option value="Paid" ${isPaid?'selected':''}>${isPaid?esc(pay):'Paid'}</option><option value="Pay on Delivery" ${!isPaid?'selected':''}>Pay on Delivery</option></select></td><td data-label="Status"><div style="display:flex;flex-direction:column;gap:4px"><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select>${nextBtn}</div></td><td data-label="Rider"><div><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${o.assigned_to===b.phone?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')"><i class="fas fa-user-check"></i></button></div></td><td data-label="Actions" class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')" title="Print Invoice"><i class="fas fa-print"></i></button><button class="btn" onclick="App.printTags('${id}')" title="Print Garment Tags"><i class="fas fa-tag"></i></button></td></tr>`;
+  return `<tr class="${rc}"><td data-label="Select"><input type="checkbox" class="order-bulk-cb" data-id="${id}" ${checked} onchange="App.toggleBulkOrder('${id}',this.checked)"/></td><td data-label="Order" style="color:var(--pink);font-weight:700"><div style="display:flex;flex-direction:column;align-items:flex-end"><span>${orderLabel}</span>${badgesWrap}</div></td><td data-label="Customer"><div><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></div></td><td data-label="Booked" style="font-size:12px">${esc(created)}</td><td data-label="Pickup">${pickup}</td><td data-label="Items"><div>${items||'-'}</div></td><td data-label="Total"><b>₹${total}</b></td><td data-label="Payment"><select onchange="App.setPay('${id}',this.value)"><option value="Paid" ${isPaid?'selected':''}>${isPaid?esc(pay):'Paid'}</option><option value="Pay on Delivery" ${!isPaid?'selected':''}>Pay on Delivery</option></select></td><td data-label="Status"><div style="display:flex;flex-direction:column;gap:4px"><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select>${nextBtn}</div></td><td data-label="Rider"><div><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${pdcPhone10(o.assigned_to)===pdcPhone10(b.phone)?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')" title="Assign Rider"><i class="fas fa-user-check"></i></button></div></td><td data-label="Actions" class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')" title="Print Invoice"><i class="fas fa-print"></i></button><button class="btn" onclick="App.printTags('${id}')" title="Print Garment Tags"><i class="fas fa-tag"></i></button></td></tr>`;
  }).join(''):'<tr><td colspan="11"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';
 }
 $('orderSearch').oninput=renderOrders;
@@ -2166,6 +2446,30 @@ function getRiderChatStats(boyId) {
   const lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
   return { unread, lastMsg, total: msgs.length };
 }
+function renderBoyChatRiderTabs() {
+  const tabsEl = $('boyChatRiderTabs');
+  const switcher = $('boyChatSwitcher');
+  if (!boys.length) {
+    if (tabsEl) tabsEl.innerHTML = '<div style="font-size:11.5px;color:var(--muted);padding:4px">Koi delivery partner added nahi hai.</div>';
+    return;
+  }
+  if (tabsEl) {
+    tabsEl.innerHTML = boys.map(x => {
+      const st = getRiderChatStats(x.id);
+      const isAct = x.id === boyChatBoyId;
+      const isOnline = x.active !== false;
+      const badge = st.unread > 0 ? `<span class="boy-chat-unread">${st.unread}</span>` : '';
+      return `<button type="button" class="boy-rider-pill ${isAct ? 'active' : ''}" onclick="App.openBoyChat('${esc(x.id)}')"><span class="r-dot ${isOnline ? '' : 'off'}"></span><span>${esc(x.name || 'Rider')}</span>${badge}</button>`;
+    }).join('');
+  }
+  if (switcher) {
+    switcher.innerHTML = boys.map(x => {
+      const st = getRiderChatStats(x.id);
+      return `<option value="${esc(x.id)}" ${x.id === boyChatBoyId ? 'selected' : ''}>${esc(x.name)}${st.unread > 0 ? ' (' + st.unread + ' new)' : ''}</option>`;
+    }).join('');
+  }
+}
+
 function syncAdminChatUnreadUI() {
   let totalUnread = 0;
   boys.forEach(b => { totalUnread += getRiderChatStats(b.id).unread; });
@@ -2173,6 +2477,14 @@ function syncAdminChatUnreadUI() {
   if (navBadge) {
     navBadge.textContent = totalUnread;
     navBadge.style.display = totalUnread > 0 ? 'inline-block' : 'none';
+  }
+  const topBadge = $('topRiderChatBadge');
+  if (topBadge) {
+    topBadge.textContent = totalUnread;
+    topBadge.style.display = totalUnread > 0 ? 'inline-flex' : 'none';
+  }
+  if ($('boyChatModal')?.classList.contains('open')) {
+    renderBoyChatRiderTabs();
   }
 }
 function formatAdminChatDay(ts) {
@@ -2196,7 +2508,7 @@ function renderBoyChatMessages(snap){
  snap.forEach(c=>{ const v=c.val(); if(v) msgs.push({id:c.key,...v}); });
  msgs.sort((a,b)=>(Number(a.at)||0)-(Number(b.at)||0));
  if(!msgs.length){
-   box.innerHTML='<div class="empty-state" style="padding:40px 20px"><i class="fas fa-comments"></i>Abhi koi message nahi hai. Niche quick chip ya message box se rider ko message bhejein.</div>';
+   box.innerHTML='<div class="empty-state" style="padding:40px 20px"><i class="fas fa-comments"></i>Abhi is rider ke sath koi message nahi hai.<br>Niche 1-tap chip ya message box se instruction bhejein (Rider ke phone par turant Push Alert jayega).</div>';
    return;
  }
  let lastDay='';
@@ -2209,8 +2521,9 @@ function renderBoyChatMessages(snap){
    }
    const isAdmin=m.from==='admin';
    const t=m.at?new Date(Number(m.at)).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'Just now';
-   const sender=isAdmin?(m.adminName||'Store Admin'):(m.boyName||'Delivery Partner');
-   html.push(`<div class="boy-chat-msg ${isAdmin?'admin':''}"><div><div class="boy-chat-bubble">${esc(m.text||'')}</div><div class="boy-chat-time">${esc(sender)} · ${esc(t)}</div></div></div>`);
+   const sender=isAdmin?(m.adminName||'👑 Store Admin'):('🛵 '+(m.boyName||'Delivery Partner'));
+   const tick=isAdmin?' <span style="color:var(--pink);font-weight:900">✓✓</span>':'';
+   html.push(`<div class="boy-chat-msg ${isAdmin?'admin':''}"><div><div class="boy-chat-bubble">${esc(m.text||'')}</div><div class="boy-chat-time">${esc(sender)} · ${esc(t)}${tick}</div></div></div>`);
  });
  box.innerHTML=html.join('');
  box.scrollTop=box.scrollHeight;
@@ -2310,7 +2623,7 @@ function renderOrderDrawer(o){
    <div style="margin-top:12px"><div class="od-label">Delivery Boy</div><select id="odBoySelect" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:11px;font-weight:700"><option value="">— Unassigned —</option>${boys.filter(b=>b.active!==false).map(b=>`<option value="${esc(b.phone)}">${esc(b.name)} · ${esc(b.phone)}</option>`).join('')}</select></div>
    <div class="od-actions" style="margin-top:12px"><button class="btn solid" onclick="App.saveOrderOps('${o.id}')"><i class="fas fa-save"></i> Save Changes</button><button class="btn good" onclick="App.wa('${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="btn" onclick="App.waBillReminder('${o.id}')" title="Send Bill & Payment Reminder"><i class="fas fa-indian-rupee-sign"></i> Bill Alert</button><button class="btn" onclick="App.print('${o.id}')"><i class="fas fa-print"></i> Invoice</button><button class="btn" onclick="App.printTags('${o.id}')"><i class="fas fa-tag"></i> Print Tags</button>${st==='delivered'?`<button class="btn good" onclick="App.waReviewRequest('${o.id}')"><i class="fas fa-star"></i> Ask Google Review</button>`:''}</div>
   </div></section>
-  ${o.issue&&o.issue.type?`<section class="od-section" style="border-color:var(--bad)"><div class="od-section-head" style="background:rgba(239,68,68,.1)"><strong style="color:var(--bad)"><i class="fas fa-triangle-exclamation"></i> Rider Issue Reported</strong><span class="status-pill" style="color:var(--bad);border-color:var(--bad)">${esc(o.issue.boyName||'Partner')}</span></div><div class="od-section-body"><div class="od-value" style="color:var(--bad)">${esc(o.issue.type)}</div>${o.issue.note?`<div class="od-value subtle" style="margin-top:4px">${esc(o.issue.note)}</div>`:''}</div></section>`:''}
+  ${o.issue&&o.issue.type?`<section class="od-section" style="border-color:var(--bad)"><div class="od-section-head" style="background:rgba(239,68,68,.1)"><strong style="color:var(--bad)"><i class="fas fa-triangle-exclamation"></i> Rider Issue Reported</strong><div style="display:flex;gap:6px;align-items:center"><span class="status-pill" style="color:var(--bad);border-color:var(--bad)">${esc(o.issue.boyName||'Partner')}</span><button type="button" class="btn good" style="padding:4px 9px;font-size:11px" onclick="App.clearOrderIssue('${o.id}')"><i class="fas fa-check"></i> Resolve</button></div></div><div class="od-section-body"><div class="od-value" style="color:var(--bad)">${esc(o.issue.type)}</div>${o.issue.note?`<div class="od-value subtle" style="margin-top:4px">${esc(o.issue.note)}</div>`:''}</div></section>`:''}
   ${o.extra_items?`<section class="od-section"><div class="od-section-head"><strong><i class="fas fa-basket-shopping"></i> Extra Items Added at Pickup</strong></div><div class="od-section-body">${Object.values(o.extra_items||{}).map(log=>`<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:12px"><b>+₹${Number(log.amount||0)} by ${esc(log.boyName||'Partner')}</b> · <span style="color:var(--muted)">${log.at?new Date(log.at).toLocaleString('en-IN'):''}</span><div style="margin-top:4px;color:var(--muted)">${(log.items||[]).map(it=>`${esc(it.name)} x${Number(it.qty||1)} (₹${Number(it.amount||0)})`).join(', ')}</div></div>`).join('')}</div></section>`:''}
   ${o.specialInst?`<section class="od-section"><div class="od-section-head"><strong><i class="fas fa-note-sticky"></i> Special Instructions</strong></div><div class="od-section-body"><div class="od-value subtle">${esc(o.specialInst)}</div></div></section>`:''}
  `;
@@ -2318,30 +2631,75 @@ function renderOrderDrawer(o){
 }
 
 const App={
+ clearOrderIssue:async id=>{
+   if(!id)return;
+   try{
+     await db.ref('orders/'+id+'/issue').remove();
+     await writeAudit('Resolved rider issue on order', id);
+     toast('✅ Issue resolved & cleared from order');
+     if(App._openOrderId===id){
+       const updated=ordersSnap?.val()?.[id];
+       if(updated) renderOrderDrawer({id,...updated});
+     }
+   }catch(e){
+     toast(e.message||'Failed to clear issue','err');
+   }
+ },
+ insertOrderIntoChat:orderLabel=>{
+   const inp=$('boyChatInput');
+   if(!inp)return;
+   const prefix=`Order ${orderLabel}: `;
+   if(!inp.value.startsWith(prefix)) inp.value=prefix+inp.value;
+   inp.focus();
+ },
  openBoyChat:id=>{ 
-   const b=boys.find(x=>x.id===id); 
+   if(!boys.length){
+     switchTab('boys');
+     return toast('Pehle Delivery Boys tab me rider add karein','err');
+   }
+   let targetId=id;
+   if(!targetId){
+     const unreadBoy=boys.slice().sort((a,b)=>getRiderChatStats(b.id).unread-getRiderChatStats(a.id).unread)[0];
+     targetId=(unreadBoy && getRiderChatStats(unreadBoy.id).unread>0) ? unreadBoy.id : (boys.find(x=>x.active!==false)?.id || boys[0].id);
+   }
+   const b=boys.find(x=>x.id===targetId) || boys[0]; 
    if(!b)return toast('Partner nahi mila','err'); 
    closeBoyChatListener(); 
-   boyChatBoyId=id; 
+   boyChatBoyId=b.id; 
    boyChatFirstLoad=false; 
-   markRiderChatRead(id);
+   markRiderChatRead(b.id);
    const bp=pdcPhone10(b.phone);
-   $('boyChatTitle').innerHTML=`<i class="fas fa-comments" style="color:var(--pink)"></i> ${esc(b.name||'Delivery Partner')}`; 
-   $('boyChatMeta').textContent=`+91 ${bp} · Real-Time Chat + Push Alert`; 
+   const allOrd=ordersSnap?Object.entries(ordersSnap.val()||{}).map(([k,v])=>({id:k,...(v||{})})) : [];
+   const riderOrders=allOrd.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp && !['delivered','cancelled'].includes(normalizeOrderStatus(o.status)));
+   const initials=String(b.name||'R').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'🛵';
+   const avEl=$('boyChatAvatarInitials'); if(avEl) avEl.textContent=initials;
+   const dotEl=$('boyChatStatusDot'); if(dotEl) dotEl.classList.toggle('offline', b.active===false);
+   $('boyChatTitle').textContent=b.name||'Delivery Partner'; 
+   $('boyChatMeta').textContent=`+91 ${bp} · ${b.active!==false?'Active Partner':'Inactive'} · ${riderOrders.length} active order${riderOrders.length===1?'':'s'}`; 
    const callBtn=$('boyChatCallBtn');
    if(callBtn) callBtn.href=`tel:+91${bp}`;
+   const waBtn=$('boyChatWaBtn');
+   if(waBtn) waBtn.href=`https://wa.me/91${bp}?text=${encodeURIComponent('Namaste '+(b.name||'Partner')+' — Store Admin se message:')}`;
    const clrBtn=$('boyChatClearBtn');
    if(clrBtn) clrBtn.style.display=(CURRENT_ADMIN_ROLE==='owner')?'inline-flex':'none';
-   const switcher=$('boyChatSwitcher');
-   if(switcher){
-     switcher.innerHTML=boys.map(x=>{
-       const st=getRiderChatStats(x.id);
-       return `<option value="${esc(x.id)}" ${x.id===id?'selected':''}>${esc(x.name)}${st.unread>0?' ('+st.unread+' new)':''}</option>`;
-     }).join('');
+   renderBoyChatRiderTabs();
+   const strip=$('boyChatActiveOrdersBar');
+   if(strip){
+     if(riderOrders.length){
+       strip.classList.add('show');
+       strip.innerHTML=`<span style="font-weight:800;color:var(--muted);white-space:nowrap"><i class="fas fa-box"></i> Assigned:</span>`+riderOrders.slice(0,6).map(o=>{
+         const rawId=String(o.orderId||o.id);
+         const lbl=rawId.startsWith('PDC-')?rawId:'PDC-'+rawId;
+         return `<span class="boy-order-chip" onclick="App.insertOrderIntoChat('${esc(lbl)}')" title="Tap to mention in chat">${esc(lbl)} · ${esc(o.customerName||o.name||'Customer')}</span>`;
+       }).join('');
+     } else {
+       strip.classList.remove('show');
+       strip.innerHTML='';
+     }
    }
    $('boyChatMessages').innerHTML='<div class="empty-state" style="padding:35px"><i class="fas fa-spinner fa-spin"></i> Chat load ho rahi hai…</div>'; 
    $('boyChatModal').classList.add('open'); 
-   boyChatQuery=db.ref('chat/'+id).limitToLast(80); 
+   boyChatQuery=db.ref('chat/'+b.id).limitToLast(80); 
    boyChatQuery.on('value',renderBoyChatMessages,err=>{
      console.error('Chat error:',err);
      $('boyChatMessages').innerHTML=`<div class="empty-state" style="color:var(--bad)">⚠️ Chat load failed: ${esc(err?.message||'Permission denied')}</div>`;
