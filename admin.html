@@ -250,15 +250,20 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 .audit-row:last-child{border-bottom:0}.audit-meta{color:var(--muted);font-size:11px;margin-top:2px}
 .notice-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 14px 0;font-size:12px;color:var(--muted);line-height:1.5}
 
-/* Chat Styling */
-.boy-chat-list{display:flex;flex-direction:column;gap:8px}
-.boy-chat-msg{display:flex;gap:8px;margin:6px 10px}
+/* Chat Styling (Upgraded Live Partner Chat) */
+.boy-chat-msg{display:flex;gap:8px;margin:8px 12px}
 .boy-chat-msg.admin{justify-content:flex-end}
-.boy-chat-bubble{max-width:80%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.45;background:var(--panel2);border:1px solid var(--line);color:var(--text);word-break:break-word;font-weight:600}
-.boy-chat-msg.admin .boy-chat-bubble{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border-color:transparent;box-shadow:var(--glow)}
-.boy-chat-time{font-size:10px;color:var(--muted);margin-top:3px}
+.boy-chat-bubble{max-width:80%;padding:10px 14px;border-radius:15px 15px 15px 4px;font-size:13px;line-height:1.45;background:var(--panel2);border:1px solid var(--line);color:var(--text);word-break:break-word;font-weight:600;text-align:left}
+.boy-chat-msg.admin .boy-chat-bubble{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border-color:transparent;border-radius:15px 15px 4px 15px;box-shadow:var(--glow)}
+.boy-chat-time{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600;text-align:left}
 .boy-chat-msg.admin .boy-chat-time{text-align:right}
-.boy-chat-unread{display:inline-flex;min-width:20px;height:20px;padding:0 6px;border-radius:10px;align-items:center;justify-content:center;background:var(--bad);color:#fff;font-size:10px;font-weight:800}
+.boy-chat-date-sep{text-align:center;margin:10px 0;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.boy-chat-date-sep span{background:var(--panel2);border:1px solid var(--line);padding:3px 10px;border-radius:999px}
+.boy-chat-qchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 2px 2px}
+.boy-chat-qchips::-webkit-scrollbar{display:none}
+.boy-chat-qchip{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer;transition:.15s}
+.boy-chat-qchip:hover{border-color:var(--pink);color:var(--pink)}
+.boy-chat-unread{display:inline-flex;min-width:19px;height:19px;padding:0 6px;border-radius:999px;align-items:center;justify-content:center;background:var(--bad);color:#fff;font-size:10px;font-weight:800;margin-left:4px}
 
 @media(max-width:900px){.v4-subgrid{grid-template-columns:1fr}.area-edit{grid-template-columns:1fr 1fr}.area-edit .wide{grid-column:1/-1}}
 @media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;min-height:0;position:relative;display:none}.sidebar.open{display:flex}.menu-toggle{display:inline-flex}.main{padding:16px}.bento{grid-template-columns:repeat(2,1fr)}.customer-stats{grid-template-columns:repeat(2,1fr)}.customer-profile-grid{grid-template-columns:1fr}.customer-profile-grid .full{grid-column:auto}}
@@ -646,7 +651,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
 <div class="modal" id="pinModal"><div class="modal-box" style="max-width:390px;text-align:left"><div class="customer-modal-head"><div><h3 id="pinModalTitle">Set Rider PIN</h3><div id="pinModalMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="closePinModal()"><i class="fas fa-xmark"></i></button></div><input id="pinBoyId" type="hidden"/><input id="pinValue" inputmode="numeric" autocomplete="new-password" type="password" maxlength="6" placeholder="6-digit PIN" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px;text-align:center;letter-spacing:4px"><input id="pinConfirm" inputmode="numeric" autocomplete="new-password" type="password" maxlength="6" placeholder="Confirm PIN" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;text-align:center;letter-spacing:4px"><div id="pinModalError" style="display:none;color:var(--bad);font-size:11px;margin-top:8px"></div><button class="btn solid" id="savePinBtn" style="width:100%;justify-content:center;margin-top:14px"><i class="fas fa-key"></i> Save PIN Securely</button></div></div>
 <div class="modal" id="itemModal"><div class="modal-box" style="max-width:390px;text-align:left"><div class="customer-modal-head"><div><h3>Add Service Item</h3><div id="itemModalMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="closeItemModal()"><i class="fas fa-xmark"></i></button></div><input id="itemCatKey" type="hidden"/><input id="itemNameValue" placeholder="Item name" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px"><input id="itemPriceValue" inputmode="numeric" type="number" min="0" placeholder="Price" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px"><input id="itemOrigValue" inputmode="numeric" type="number" min="0" placeholder="Original price (optional)" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px"><div id="itemModalError" style="display:none;color:var(--bad);font-size:11px;margin-top:8px"></div><button class="btn solid" id="saveItemBtn" style="width:100%;justify-content:center;margin-top:14px"><i class="fas fa-plus"></i> Add Item</button></div></div>
-<div class="modal" id="boyChatModal"><div class="modal-box" style="max-width:620px;height:min(78vh,680px);display:flex;flex-direction:column"><div class="customer-modal-head"><div><h3 id="boyChatTitle">Delivery Partner Chat</h3><div id="boyChatMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="App.closeBoyChat()" aria-label="Close"><i class="fas fa-xmark"></i></button></div><div id="boyChatMessages" style="flex:1;overflow:auto;padding:10px 2px;background:var(--panel);border:1px solid var(--line);border-radius:14px"></div><div style="display:flex;gap:8px;margin-top:10px"><input id="boyChatInput" style="flex:1" placeholder="Message delivery partner..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.sendBoyChat()}"/><button class="btn solid" onclick="App.sendBoyChat()"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>
+<div class="modal" id="boyChatModal"><div class="modal-box" style="max-width:640px;height:min(82vh,700px);display:flex;flex-direction:column;text-align:left"><div class="customer-modal-head" style="align-items:center;margin-bottom:10px"><div><h3 id="boyChatTitle" style="display:flex;align-items:center;gap:8px"><i class="fas fa-comments"></i> Delivery Partner Chat</h3><div id="boyChatMeta" style="font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:600"></div></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><select id="boyChatSwitcher" onchange="if(this.value)App.openBoyChat(this.value)" style="background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:7px 10px;border-radius:10px;font-size:12px;font-weight:700"></select><a id="boyChatCallBtn" href="#" class="btn good" style="padding:7px 10px;text-decoration:none" title="Call Rider"><i class="fas fa-phone"></i></a><button type="button" class="btn bad" id="boyChatClearBtn" onclick="App.clearBoyChat()" style="padding:7px 10px" title="Clear Chat History"><i class="fas fa-broom"></i></button><button class="order-drawer-close" onclick="App.closeBoyChat()" aria-label="Close"><i class="fas fa-xmark"></i></button></div></div><div id="boyChatMessages" style="flex:1;overflow:auto;padding:10px 4px;background:var(--bg);border:1px solid var(--line);border-radius:14px"></div><div class="boy-chat-qchips"><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📍 Pickup location par jaldi pahuncho')">📍 Pickup jaldi karo</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📞 Customer ko call karke confirm kar lo')">📞 Call Customer</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('🧺 Doorstep par kapde ginkar bill update kar dena')">🧺 Count &amp; Update Bill</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('💵 Sham ko Cash galla store par jama kar dena')">💵 Handover Cash</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('⚡ Express order hai, priority par pick/deliver karo')">⚡ Express Priority</button></div><div style="display:flex;gap:8px;margin-top:8px"><input id="boyChatInput" style="flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px 14px;border-radius:12px;font-size:13.5px;font-weight:600" placeholder="Type message to rider (Push alert bhi jayega)..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.sendBoyChat()}"/><button class="btn solid" id="boyChatSendBtn" onclick="App.sendBoyChat()" style="padding:0 18px"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>
 <div class="modal" id="customerModal"><div class="modal-box customer-modal-box"><div class="customer-modal-head"><div><h3 id="cmTitle">Customer</h3><div id="cmMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="App.closeCustomer()" aria-label="Close"><i class="fas fa-xmark"></i></button></div><div id="cmBody"></div></div></div>
 <aside class="sidebar" id="sidebar">
  <div class="brand"><div><span class="os-logo">Parth</span><small>Dry Clean · Admin OS</small></div></div>
@@ -656,7 +661,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   <div class="nav-item" data-tab="neworder"><i class="fas fa-plus"></i> New Order</div>
   <div class="nav-item" data-tab="cms"><i class="fas fa-palette"></i> Site Content / CMS</div>
   <div class="nav-item" data-tab="coupons"><i class="fas fa-ticket"></i> Coupons</div>
-  <div class="nav-item" data-tab="boys"><i class="fas fa-truck"></i> Delivery Boys</div>
+  <div class="nav-item" data-tab="boys"><i class="fas fa-truck"></i> Delivery Boys <span class="badge" id="boysChatBadge" style="display:none">0</span></div>
   <div class="nav-item" data-tab="services"><i class="fas fa-tags"></i> Services</div>
   <div class="nav-item" data-tab="customers"><i class="fas fa-users"></i> Customers</div>
   <div class="nav-item" data-tab="control"><i class="fas fa-sliders"></i> Store Control</div>
@@ -1306,7 +1311,7 @@ $('loginBtn').onclick=()=>{
  });
 };
 $('adminPassInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
-$('logoutBtn').onclick=()=>{closeBoyChatListener();db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();db.ref('site_media').off();db.ref('settings/serviceAreas').off();db.ref('audit_log').off();db.ref('notification_events').off();db.ref('manual_notification_events').off();auth.signOut();};
+$('logoutBtn').onclick=()=>{closeBoyChatListener();db.ref('chat').off();db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();db.ref('site_media').off();db.ref('settings/serviceAreas').off();db.ref('audit_log').off();db.ref('notification_events').off();db.ref('manual_notification_events').off();auth.signOut();};
 
 document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
 function switchTab(t){
@@ -1853,7 +1858,13 @@ function start(){
    boys=[];
    if(s.exists()) s.forEach(c=>{ boys.push({id:c.key,...(c.val()||{})}); });
    renderBoys();
+   syncAdminChatUnreadUI();
    if($('tab-orders').classList.contains('active')) renderOrders();
+ });
+ db.ref('chat').on('value',s=>{
+   ALL_RIDER_CHATS = s.val() || {};
+   syncAdminChatUnreadUI();
+   if($('tab-boys').classList.contains('active')) renderBoys();
  });
  db.ref('settings/coupons').on('value',s=>{
    coupons=[];
@@ -1939,9 +1950,14 @@ function renderRiderAlerts(snap){
  if(list.length) lastRiderAlertKey=list[0].id;
  riderAlertsLoaded=true;
  el.innerHTML=list.length?list.slice(0,25).map(x=>{
-   const icon=x.type==='issue'?'⚠️':x.type==='extra_items'?'🧺':x.type==='new_order'?'🔔':'🛵';
+   if (x.type === 'chat') {
+     const bMatch = boys.find(b => b.id === x.boyId || pdcPhone10(b.phone) === pdcPhone10(x.boyPhone));
+     const replyBtn = bMatch ? `<button class="btn" style="padding:4px 9px;font-size:11px;margin-left:8px" onclick="App.openBoyChat('${esc(bMatch.id)}')"><i class="fas fa-reply"></i> Reply</button>` : '';
+     return `<div class="audit-row" style="${x.read?'opacity:.72':''}"><div><b>💬 Chat from ${esc(x.boy||'Rider')}</b> ${replyBtn}<div class="audit-meta">"${esc(x.note||'')}"</div></div><div class="audit-meta">${x.at?new Date(x.at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</div></div>`;
+   }
+   const icon=x.type==='issue'?'⚠️':x.type==='extra_items'?'🧺':x.type==='new_order'?'🔔':x.type==='payment'?'💰':'🛵';
    const cleanAlertId=String(x.orderId||'').startsWith('PDC-')?x.orderId:'PDC-'+(x.orderId||'');
-   const title=x.type==='issue'?`Issue on ${esc(cleanAlertId)}`:x.type==='extra_items'?`Extra Garments · ${esc(cleanAlertId)}`:x.type==='new_order'?`New Order Booked · ${esc(cleanAlertId)}`:`Status → ${esc(x.status||'updated')} · ${esc(cleanAlertId)}`;
+   const title=x.type==='issue'?`Issue on ${esc(cleanAlertId)}`:x.type==='extra_items'?`Extra Garments · ${esc(cleanAlertId)}`:x.type==='new_order'?`New Order Booked · ${esc(cleanAlertId)}`:x.type==='payment'?`Payment Collected · ${esc(cleanAlertId)}`:`Status → ${esc(x.status||'updated')} · ${esc(cleanAlertId)}`;
    return `<div class="audit-row" style="${x.read?'opacity:.72':''}"><div><b>${icon} ${title}</b><div class="audit-meta">${esc(x.boy||'Partner')} (${esc(x.boyPhone||'')}) · ${esc(x.customer||'')} ${x.note?'— '+esc(x.note):''}</div></div><div class="audit-meta">${x.at?new Date(x.at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-'}</div></div>`;
  }).join(''):'<div class="empty-state" style="padding:24px">No partner alerts yet.</div>';
 }
@@ -2129,24 +2145,79 @@ function renderCMS(){
 
 function renderCoupons(){const box=$('couponList');box.innerHTML=coupons.length?coupons.map(c=>`<div class="list-item"><div><span class="name" style="color:var(--pink)">${esc(c.code)}</span> <span class="type-badge ${c.type||'general'}">${c.type==='first_order'?'First Order':'General'}</span><div class="sub">${Number(c.percent)||0}% off · max ₹${Number(c.max)||0} · min ₹${Number(c.minOrder)||0} · ${Number(c.usageLimit)||0?('limit '+Number(c.usageLimit)):'unlimited'}</div></div><div style="display:flex;gap:10px;align-items:center"><label class="switch"><input type="checkbox" ${c.enabled!==false?'checked':''} onchange="App.toggleCoupon('${esc(c.code)}',this.checked)"><span class="sl"></span></label><button class="btn bad" onclick="App.delCoupon('${esc(c.code)}')"><i class="fas fa-trash"></i></button></div></div>`).join(''):'<div class="empty-state"><i class="fas fa-ticket"></i>Koi coupon nahi — upar se add karo</div>'; }
 
-// ===== CHAT FUNCTIONS (CLEAN LIVE SYNC) =====
+// ===== UPGRADED LIVE RIDER CHAT (UNREAD BADGES, QUICK REPLIES, RIDER SWITCHER & FCM PUSH) =====
+let ALL_RIDER_CHATS = {};
+let sendingAdminChat = false;
+
+function getRiderChatReadAt(boyId) {
+  try { return Number(localStorage.getItem('pdc_admin_chat_read_' + boyId) || 0); } catch (_) { return 0; }
+}
+function markRiderChatRead(boyId) {
+  if (!boyId) return;
+  try { localStorage.setItem('pdc_admin_chat_read_' + boyId, String(Date.now())); } catch (_) {}
+  syncAdminChatUnreadUI();
+  if ($('tab-boys')?.classList.contains('active')) renderBoys();
+}
+function getRiderChatStats(boyId) {
+  const raw = ALL_RIDER_CHATS[boyId] || {};
+  const msgs = Object.values(raw).filter(Boolean).sort((a, b) => (Number(a.at) || 0) - (Number(b.at) || 0));
+  const readAt = getRiderChatReadAt(boyId);
+  const unread = (boyChatBoyId === boyId) ? 0 : msgs.filter(m => m.from === 'boy' && (Number(m.at) || 0) > readAt).length;
+  const lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
+  return { unread, lastMsg, total: msgs.length };
+}
+function syncAdminChatUnreadUI() {
+  let totalUnread = 0;
+  boys.forEach(b => { totalUnread += getRiderChatStats(b.id).unread; });
+  const navBadge = $('boysChatBadge');
+  if (navBadge) {
+    navBadge.textContent = totalUnread;
+    navBadge.style.display = totalUnread > 0 ? 'inline-block' : 'none';
+  }
+}
+function formatAdminChatDay(ts) {
+  if (!ts) return 'Today';
+  const d = new Date(Number(ts));
+  if (isNaN(d.getTime())) return 'Today';
+  const today = dayStr(new Date());
+  const yest = dayStr(new Date(Date.now() - 864e5));
+  const ds = dayStr(d);
+  if (ds === today) return 'Today';
+  if (ds === yest) return 'Yesterday';
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 function closeBoyChatListener(){ if(boyChatQuery){boyChatQuery.off();boyChatQuery=null;} boyChatBoyId=null; boyChatFirstLoad=true; }
 function renderBoyChatMessages(snap){
  const box=$('boyChatMessages');
  if(!box)return;
+ if(boyChatBoyId) markRiderChatRead(boyChatBoyId);
  const msgs=[];
  snap.forEach(c=>{ const v=c.val(); if(v) msgs.push({id:c.key,...v}); });
  msgs.sort((a,b)=>(Number(a.at)||0)-(Number(b.at)||0));
- box.innerHTML=msgs.length?msgs.map(m=>{
-   const admin=m.from==='admin';
+ if(!msgs.length){
+   box.innerHTML='<div class="empty-state" style="padding:40px 20px"><i class="fas fa-comments"></i>Abhi koi message nahi hai. Niche quick chip ya message box se rider ko message bhejein.</div>';
+   return;
+ }
+ let lastDay='';
+ const html=[];
+ msgs.forEach(m=>{
+   const dayLbl=formatAdminChatDay(m.at);
+   if(dayLbl!==lastDay){
+     lastDay=dayLbl;
+     html.push(`<div class="boy-chat-date-sep"><span>${esc(dayLbl)}</span></div>`);
+   }
+   const isAdmin=m.from==='admin';
    const t=m.at?new Date(Number(m.at)).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'Just now';
-   return `<div class="boy-chat-msg ${admin?'admin':''}"><div><div class="boy-chat-bubble">${esc(m.text||'')}</div><div class="boy-chat-time">${admin?'You':'Delivery Partner'} · ${esc(t)}</div></div></div>`;
- }).join(''):'<div class="empty-state" style="padding:35px"><i class="fas fa-comments"></i>No messages yet. Start the conversation.</div>';
+   const sender=isAdmin?(m.adminName||'Store Admin'):(m.boyName||'Delivery Partner');
+   html.push(`<div class="boy-chat-msg ${isAdmin?'admin':''}"><div><div class="boy-chat-bubble">${esc(m.text||'')}</div><div class="boy-chat-time">${esc(sender)} · ${esc(t)}</div></div></div>`);
+ });
+ box.innerHTML=html.join('');
  box.scrollTop=box.scrollHeight;
 }
 function pdcPhone10(v){return String(v||'').replace(/\D/g,'').slice(-10);}
 
-function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const bp=pdcPhone10(b.phone);const a=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&o.status==='delivered').length;const active=b.active!==false;return `<div class="list-item"><div><span class="name">${esc(b.name)}</span> <span class="type-badge ${active?'general':'first_order'}">${active?'Active':'Inactive'}</span><div class="sub">${esc(b.phone)} · ${a} active orders · ${d} delivered</div></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="switch"><input type="checkbox" ${active?'checked':''} onchange="App.toggleBoy('${b.id}',this.checked)"><span class="sl"></span></label><button class="btn" onclick="App.openBoyChat('${b.id}')"><i class="fas fa-comments"></i> Chat</button><button class="btn" onclick="App.setBoyPin('${b.id}','${esc(b.name||'Partner')}')"><i class="fas fa-key"></i> PIN</button>${CURRENT_ADMIN_ROLE==='owner'?`<button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button>`:''}</div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>'; }
+function renderBoys(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];$('boyList').innerHTML=boys.length?boys.map(b=>{const bp=pdcPhone10(b.phone);const a=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&['pending','picked_up','processing','quality_check','out_for_delivery'].includes(o.status)).length;const d=orders.filter(o=>pdcPhone10(o.assigned_to_e164||o.assigned_to)===bp&&o.status==='delivered').length;const active=b.active!==false;const cStats=getRiderChatStats(b.id);const lastPreview=cStats.lastMsg?`<div style="font-size:11.5px;color:${cStats.unread>0?'var(--pink)':'var(--muted)'};margin-top:4px;font-weight:${cStats.unread>0?'800':'600'}"><i class="fas fa-comment-dots"></i> ${cStats.lastMsg.from==='admin'?'You: ':'Rider: '}"${esc(String(cStats.lastMsg.text||'').slice(0,55))}"</div>`:'';return `<div class="list-item"><div><span class="name">${esc(b.name)}</span> <span class="type-badge ${active?'general':'first_order'}">${active?'Active':'Inactive'}</span><div class="sub">+91 ${esc(bp)} · ${a} active orders · ${d} delivered</div>${lastPreview}</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="switch"><input type="checkbox" ${active?'checked':''} onchange="App.toggleBoy('${b.id}',this.checked)"><span class="sl"></span></label><button class="btn ${cStats.unread>0?'solid':''}" onclick="App.openBoyChat('${b.id}')"><i class="fas fa-comments"></i> Chat ${cStats.unread>0?`<span class="boy-chat-unread">${cStats.unread}</span>`:''}</button><button class="btn" onclick="App.setBoyPin('${b.id}','${esc(b.name||'Partner')}')"><i class="fas fa-key"></i> PIN</button>${CURRENT_ADMIN_ROLE==='owner'?`<button class="btn bad" onclick="App.delBoy('${b.id}')"><i class="fas fa-trash"></i></button>`:''}</div></div>`;}).join(''):'<div class="empty-state"><i class="fas fa-truck"></i>Koi delivery boy nahi — upar se add karo</div>'; }
 
 function customerRows(){const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const q=($('customerSearch')?.value||'').trim().toLowerCase();const filter=$('customerFilter')?.value||'all';return Object.entries(customers).map(([uid,c])=>{const p10=pdcPhone10(c.phone);const co=orders.filter(o=>o.uid===uid||(p10&&pdcPhone10(o.phone)===p10));const cancelledCount=co.filter(o=>o.status==='cancelled').length;const spent=co.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);const last=co.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0];return{uid,...c,orders:co.length,cancelledCount,spent,lastOrder:last||null};}).filter(c=>{const hay=[c.name,c.phone,c.email,c.address,c.uid].join(' ').toLowerCase();if(q&&!hay.includes(q))return false;if(filter==='orders'&&c.orders<1)return false;if(filter==='repeat'&&c.orders<2)return false;if(filter==='noorders'&&c.orders!==0)return false;if(filter==='blocked'&&!c.blocked)return false;return true;});}
 function renderCustomers(){const rows=customerRows();const all=Object.entries(customers).map(([uid,c])=>({uid,...c}));const orders=ordersSnap?Object.values(ordersSnap.val()||{}):[];const stats=all.map(c=>orders.filter(o=>o.uid===c.uid));$('csTotal').textContent=all.length;$('csActive').textContent=stats.filter(x=>x.length>0).length;$('csRepeat').textContent=stats.filter(x=>x.length>=2).length;$('csRevenue').textContent='₹'+orders.filter(o=>o.status==='delivered').reduce((x,o)=>x+(+o.total||0),0);$('custBody').innerHTML=rows.length?rows.map(c=>{
@@ -2253,11 +2324,24 @@ const App={
    closeBoyChatListener(); 
    boyChatBoyId=id; 
    boyChatFirstLoad=false; 
-   $('boyChatTitle').textContent=b.name||'Delivery Partner'; 
-   $('boyChatMeta').textContent=(b.phone||'')+' · Live Partner Chat'; 
+   markRiderChatRead(id);
+   const bp=pdcPhone10(b.phone);
+   $('boyChatTitle').innerHTML=`<i class="fas fa-comments" style="color:var(--pink)"></i> ${esc(b.name||'Delivery Partner')}`; 
+   $('boyChatMeta').textContent=`+91 ${bp} · Real-Time Chat + Push Alert`; 
+   const callBtn=$('boyChatCallBtn');
+   if(callBtn) callBtn.href=`tel:+91${bp}`;
+   const clrBtn=$('boyChatClearBtn');
+   if(clrBtn) clrBtn.style.display=(CURRENT_ADMIN_ROLE==='owner')?'inline-flex':'none';
+   const switcher=$('boyChatSwitcher');
+   if(switcher){
+     switcher.innerHTML=boys.map(x=>{
+       const st=getRiderChatStats(x.id);
+       return `<option value="${esc(x.id)}" ${x.id===id?'selected':''}>${esc(x.name)}${st.unread>0?' ('+st.unread+' new)':''}</option>`;
+     }).join('');
+   }
    $('boyChatMessages').innerHTML='<div class="empty-state" style="padding:35px"><i class="fas fa-spinner fa-spin"></i> Chat load ho rahi hai…</div>'; 
    $('boyChatModal').classList.add('open'); 
-   boyChatQuery=db.ref('chat/'+id).limitToLast(60); 
+   boyChatQuery=db.ref('chat/'+id).limitToLast(80); 
    boyChatQuery.on('value',renderBoyChatMessages,err=>{
      console.error('Chat error:',err);
      $('boyChatMessages').innerHTML=`<div class="empty-state" style="color:var(--bad)">⚠️ Chat load failed: ${esc(err?.message||'Permission denied')}</div>`;
@@ -2265,23 +2349,55 @@ const App={
    setTimeout(()=>$('boyChatInput')?.focus(),120); 
  },
  closeBoyChat:()=>{ closeBoyChatListener(); $('boyChatModal').classList.remove('open'); },
- sendBoyChat:()=>{ 
+ clearBoyChat:()=>{
+   if(CURRENT_ADMIN_ROLE!=='owner') return toast('Only Store Owner can clear chat history','err');
+   if(!boyChatBoyId) return;
+   const b=boys.find(x=>x.id===boyChatBoyId);
+   askConfirm(`Clear entire chat history with ${b?.name||'this rider'}?`,()=>{
+     db.ref('chat/'+boyChatBoyId).remove().then(()=>toast('🧹 Chat history cleared')).catch(e=>toast(e.message,'err'));
+   });
+ },
+ sendBoyChat:async(overrideText)=>{ 
+   if(sendingAdminChat) return;
    const input=$('boyChatInput'); 
-   const text=(input?.value||'').trim(); 
+   const text=String(overrideText||(input?.value||'')).trim(); 
    if(!text||!boyChatBoyId)return; 
    const b=boys.find(x=>x.id===boyChatBoyId); 
-   db.ref('chat/'+boyChatBoyId).push({
-     text,
-     from:'admin',
-     adminName:'Admin',
-     boyName:b?.name||'',
-     boyPhone:b?.phone||'',
-     at:firebase.database.ServerValue.TIMESTAMP
-   }).then(()=>{
-     input.value='';
+   const btn=$('boyChatSendBtn');
+   sendingAdminChat=true;
+   if(btn) btn.disabled=true;
+   try{
+     await db.ref('chat/'+boyChatBoyId).push({
+       text,
+       from:'admin',
+       adminName:CURRENT_ADMIN_ROLE==='owner'?'Store Owner':'Store Manager',
+       boyName:b?.name||'',
+       boyPhone:b?.phone||'',
+       at:firebase.database.ServerValue.TIMESTAMP
+     });
+     if(!overrideText && input) input.value='';
+     markRiderChatRead(boyChatBoyId);
      const box=$('boyChatMessages');
      if(box) box.scrollTop=box.scrollHeight;
-   }).catch(e=>toast(e.message,'err')); 
+     // Also send instant FCM Push Alert to Rider
+     const ref=await db.ref('rider_notification_events').push({
+       type:'rider_alert',
+       reason:'chat',
+       orderId:'',
+       boyId:boyChatBoyId,
+       boyPhone:pdcPhone10(b?.phone||''),
+       title:'💬 Store Admin Message',
+       body:text.slice(0,160),
+       status:'queued',
+       createdAt:firebase.database.ServerValue.TIMESTAMP
+     });
+     App.triggerNotificationDispatch(ref.key,'rider');
+   }catch(e){
+     toast(e.message,'err');
+   }finally{
+     sendingAdminChat=false;
+     if(btn) btn.disabled=false;
+   }
  },
  openOrder:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');App._openOrderId=id;renderOrderDrawer({id,...o});$('orderDrawerBackdrop').classList.add('open');$('orderDrawer').classList.add('open');$('orderDrawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';},
  closeOrder:()=>{$('orderDrawerBackdrop').classList.remove('open');$('orderDrawer').classList.remove('open');$('orderDrawer').setAttribute('aria-hidden','true');document.body.style.overflow='';App._openOrderId=null;},
@@ -2392,7 +2508,7 @@ const App={
      App.triggerNotificationDispatch(ref.key,'rider');
    }catch(e){console.warn('Rider push queue note:',e);}
  },
- assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+pdcPhone10(p):'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p){App.queueRiderNotification(id,o,boyObj,'assigned');}if(p&&o.uid){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${pdcPhone10(p)}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
+ assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};const prevPhone=pdcPhone10(o.assigned_to||o.assigned_to_e164||'');const newPhone=pdcPhone10(p);if(newPhone && newPhone===prevPhone)return toast(`Already assigned to ${boyObj?.name||p}`);try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+newPhone:'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p){App.queueRiderNotification(id,o,boyObj,'assigned');}if(p&&o.uid&&!String(o.uid).startsWith('manual_')){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${newPhone}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=pdcPhone10(bp||o.phone);if(!num)return toast('Number nahi','err');const dispId=String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id);const msg=`*Parth Dry Clean* 🧺\n*Order:* ${dispId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  waBillReminder:id=>{
    const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');
