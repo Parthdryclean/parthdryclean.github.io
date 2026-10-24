@@ -830,6 +830,16 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
   }
 }
 
+/* Fix 1: Ensure Confirm, PIN & Item Modals ALWAYS stack above Rider Chat Modal (z-index:1100) & Order Drawer */
+#confirmModal, #pinModal, #itemModal {
+  z-index: 2200 !important;
+}
+#confirmModal .modal-box {
+  position: relative;
+  z-index: 2201 !important;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.45);
+}
+
 </style>
 </head>
 <body>
@@ -1270,7 +1280,10 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
    <div class="panel" style="margin-bottom:18px">
     <div class="panel-head">
      <h3><i class="fas fa-tower-broadcast"></i> Live Active Admin Sessions (Abhi Kaun Kahan Se Khola Hai)</h3>
-     <button class="btn" onclick="App.refreshSecurity()"><i class="fas fa-rotate"></i> Refresh</button>
+     <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn" onclick="App.cleanupOfflineSessions()"><i class="fas fa-broom"></i> Clean Offline</button>
+      <button class="btn" onclick="App.refreshSecurity()"><i class="fas fa-rotate"></i> Refresh</button>
+     </div>
     </div>
     <div style="padding:14px" id="activeSessionsList">
      <div class="empty-state" style="padding:22px">Loading active sessions...</div>
@@ -1391,7 +1404,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
  <button type="button" class="mbn-btn" data-mbn="orders" onclick="App.mobileNavClick('orders')"><i class="fas fa-box"></i><span>Orders</span><span class="mbn-badge" id="mbnOrderBadge" style="display:none">0</span></button>
  <button type="button" class="mbn-btn" data-mbn="neworder" onclick="App.mobileNavClick('neworder')"><i class="fas fa-plus-circle"></i><span>New</span></button>
  <button type="button" class="mbn-btn" data-mbn="boys" onclick="App.mobileNavClick('boys')"><i class="fas fa-motorcycle"></i><span>Riders</span></button>
- <button type="button" class="mbn-btn" data-mbn="more" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fas fa-bars"></i><span>More</span></button>
+ <button type="button" class="mbn-btn" data-mbn="more" onclick="App.toggleMobileSidebar()"><i class="fas fa-bars"></i><span>More</span></button>
 </nav>
 <script>
 const firebaseConfig={apiKey:"AIzaSyCmVME9gp1a-jI_82knnJ-ZIkFZvTLzp2w",authDomain:"parth-dry-clean.firebaseapp.com",databaseURL:"https://parth-dry-clean-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"parth-dry-clean",storageBucket:"parth-dry-clean.firebasestorage.app",messagingSenderId:"673481985335",appId:"1:673481985335:web:eb4194b4860cf979b21eb2"};
@@ -1459,19 +1472,32 @@ let CMS = JSON.parse(JSON.stringify(DEFAULT_CMS));
 
 const TITLES={dashboard:['Dashboard','Live overview'],orders:['Orders','Manage & track'],neworder:['New Order','Manual entry'],cms:['Site Content & CMS','Edit dynamic website cards'],coupons:['Coupons','Discount codes'],boys:['Delivery Boys','Partners + secure PIN login'],services:['Services','Categories & prices'],customers:['Customers','All customers'],control:['Store Control','Open/close & settings'],reports:['Reports','Revenue & analytics'],intelligence:['Intelligence','Business signals + audit'],notifications:['Notifications','Manual customer messages'],areas:['Service Areas','Lucknow delivery coverage'],security:['Staff & Security','Manager access, permissions & live device tracker']};
 
-$('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
+let _adminHandlingPopState = false;
+let _adminCurrentTab = 'dashboard';
+let _adminLastBackExitToastAt = 0;
+
+function pushAdminOverlayHistory(overlayName) {
+  if (_adminHandlingPopState) return;
+  try {
+    const st = history.state || {};
+    if (st.adminOverlay === overlayName) return;
+    history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: overlayName }, '');
+  } catch (_) {}
+}
+
+$('menuToggle').onclick=()=>App.toggleMobileSidebar();
 function toast(msg,type){const el=$('toast');el.innerHTML=`<div class="t ${type==='err'?'err':''}"><i class="fas fa-${type==='err'?'circle-exclamation':'circle-check'}"></i>${msg}</div>`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',2600);}
-function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');}
-$('confirmNo').onclick=()=>$('confirmModal').classList.remove('open');
-$('confirmYes').onclick=()=>{$('confirmModal').classList.remove('open');if(confirmCb)confirmCb();};
+function askConfirm(msg,cb){$('confirmMsg').textContent=msg;confirmCb=cb;$('confirmModal').classList.add('open');pushAdminOverlayHistory('confirm');}
+$('confirmNo').onclick=()=>{$('confirmModal').classList.remove('open');confirmCb=null;};
+$('confirmYes').onclick=()=>{$('confirmModal').classList.remove('open');const fn=confirmCb;confirmCb=null;if(fn)fn();};
 
 let pinSaveBusy=false;
-function openPinModal(id,name){$('pinBoyId').value=id;$('pinModalTitle').textContent='Set Rider PIN';$('pinModalMeta').textContent=(name||'Delivery Partner')+' · Secure login';$('pinValue').value='';$('pinConfirm').value='';$('pinModalError').style.display='none';$('pinModal').classList.add('open');setTimeout(()=>$('pinValue').focus(),80);}
+function openPinModal(id,name){$('pinBoyId').value=id;$('pinModalTitle').textContent='Set Rider PIN';$('pinModalMeta').textContent=(name||'Delivery Partner')+' · Secure login';$('pinValue').value='';$('pinConfirm').value='';$('pinModalError').style.display='none';$('pinModal').classList.add('open');pushAdminOverlayHistory('pin');setTimeout(()=>$('pinValue').focus(),80);}
 function closePinModal(){$('pinModal').classList.remove('open');}
 $('savePinBtn').onclick=async()=>{if(pinSaveBusy)return;const id=$('pinBoyId').value,pin=$('pinValue').value.trim(),cp=$('pinConfirm').value.trim(),err=$('pinModalError');err.style.display='none';if(!/^\d{6}$/.test(pin)){err.textContent='PIN exactly 6 digits hona chahiye';err.style.display='block';return;}if(pin!==cp){err.textContent='PIN match nahi hua';err.style.display='block';return;}if(!auth.currentUser){err.textContent='Admin session expire ho gayi. Dobara login karein.';err.style.display='block';return;}pinSaveBusy=true;const btn=$('savePinBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';try{const token=await auth.currentUser.getIdToken(true);const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/setRiderPin',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({boyId:id,pin})});let data={};try{data=await r.json();}catch(_){ }if(!r.ok)throw new Error(data.error||('PIN update failed ('+r.status+')'));toast('✅ Rider PIN securely updated');closePinModal();}catch(e){err.textContent=e?.message||'PIN update failed';err.style.display='block';}finally{pinSaveBusy=false;btn.disabled=false;btn.innerHTML='<i class="fas fa-key"></i> Save PIN Securely';}};
 ['pinValue','pinConfirm'].forEach(id=>$(id).onkeydown=e=>{if(e.key==='Enter')$('savePinBtn').click();});
 
-function openItemModal(k){$('itemCatKey').value=k;$('itemModalMeta').textContent=CATS[k]?.name||'Service category';$('itemNameValue').value='';$('itemPriceValue').value='';$('itemOrigValue').value='';$('itemModalError').style.display='none';$('itemModal').classList.add('open');setTimeout(()=>$('itemNameValue').focus(),80);}
+function openItemModal(k){$('itemCatKey').value=k;$('itemModalMeta').textContent=CATS[k]?.name||'Service category';$('itemNameValue').value='';$('itemPriceValue').value='';$('itemOrigValue').value='';$('itemModalError').style.display='none';$('itemModal').classList.add('open');pushAdminOverlayHistory('item');setTimeout(()=>$('itemNameValue').focus(),80);}
 function closeItemModal(){$('itemModal').classList.remove('open');}
 $('saveItemBtn').onclick=()=>{const k=$('itemCatKey').value,name=$('itemNameValue').value.trim(),price=+$('itemPriceValue').value||0,orig=+$('itemOrigValue').value||0,err=$('itemModalError');err.style.display='none';if(!name){err.textContent='Item name required';err.style.display='block';return;}CATS[k].items=CATS[k].items||[];CATS[k].items.push({name,price,originalPrice:orig||undefined});renderServices();closeItemModal();toast('✅ Item added — Save All karo');};
 
@@ -1520,18 +1546,27 @@ $('loginBtn').onclick=()=>{
 $('adminPassInput').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click();};
 $('logoutBtn').onclick=()=>{closeBoyChatListener();db.ref('chat').off();db.ref('orders').off();db.ref('customers').off();db.ref('settings').off();db.ref('services').off();db.ref('site_content').off();db.ref('site_media').off();db.ref('settings/serviceAreas').off();db.ref('audit_log').off();db.ref('notification_events').off();db.ref('manual_notification_events').off();auth.signOut();};
 
-document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));n.classList.add('active');switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
-function switchTab(t){
+document.querySelectorAll('.nav-item').forEach(n=>n.onclick=()=>{switchTab(n.dataset.tab);if(innerWidth<=768)$('sidebar').classList.remove('open');});
+function switchTab(t, fromPopstate = false){
  if(!isTabAllowedForCurrentRole(t)){
    toast('🔒 Ye section sirf Store Owner ke liye hai','err');
    return;
  }
+ _adminCurrentTab = t;
+ document.querySelectorAll('.sidebar .nav-item').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));
  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
  $('tab-'+t).classList.add('active');
  document.querySelectorAll('.mobile-bottom-nav .mbn-btn').forEach(b=>b.classList.toggle('active',b.dataset.mbn===t));
- document.querySelectorAll('.mobile-bottom-nav .mbn-btn').forEach(b=>b.classList.toggle('active',b.dataset.mbn===t));
  $('pageTitle').textContent=TITLES[t][0];
  $('pageSub').textContent=TITLES[t][1];
+ if(!fromPopstate && !_adminHandlingPopState){
+   try {
+     const curSt = history.state || {};
+     if(curSt.adminTab !== t || curSt.adminOverlay){
+       history.pushState({ adminApp: true, adminTab: t, adminOverlay: null }, '');
+     }
+   } catch(_) {}
+ }
  updateLiveSessionTab(t);
  if(t==='orders')renderOrders();
  if(t==='reports')renderReports();
@@ -1545,6 +1580,88 @@ function switchTab(t){
  if(t==='areas')renderServiceAreas();
  if(t==='security')renderSecurityTab();
 }
+
+function initAdminBackHistoryGuard() {
+  try {
+    if (!history.state || !history.state.adminApp) {
+      history.replaceState({ adminApp: true, adminTab: _adminCurrentTab || 'dashboard', adminOverlay: null }, '');
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab || 'dashboard', adminOverlay: null }, '');
+    }
+  } catch (_) {}
+}
+initAdminBackHistoryGuard();
+
+window.addEventListener('popstate', (e) => {
+  if (!auth.currentUser) return;
+  _adminHandlingPopState = true;
+  try {
+    // 1. Close Confirm Modal if open
+    if ($('confirmModal')?.classList.contains('open')) {
+      $('confirmModal').classList.remove('open');
+      confirmCb = null;
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 2. Close PIN or Item Modal if open
+    if ($('pinModal')?.classList.contains('open')) {
+      closePinModal();
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    if ($('itemModal')?.classList.contains('open')) {
+      closeItemModal();
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 3. Close Rider Chat Modal if open
+    if ($('boyChatModal')?.classList.contains('open')) {
+      App.closeBoyChat(true);
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 4. Close Customer Modal if open
+    if ($('customerModal')?.classList.contains('open')) {
+      App.closeCustomer(true);
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 5. Close Order Drawer if open
+    if ($('orderDrawer')?.classList.contains('open')) {
+      App.closeOrder(true);
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 6. Close Mobile Sidebar Drawer if open
+    if ($('sidebar')?.classList.contains('open')) {
+      $('sidebar').classList.remove('open');
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 7. Clear Bulk Order Selection if active on Orders tab
+    if (selectedBulkOrderIds && selectedBulkOrderIds.size > 0) {
+      App.clearBulkSelection();
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
+    // 8. If on any non-Dashboard tab, return cleanly to Dashboard tab
+    if (_adminCurrentTab !== 'dashboard') {
+      switchTab('dashboard', true);
+      history.pushState({ adminApp: true, adminTab: 'dashboard', adminOverlay: null }, '');
+      return;
+    }
+    // 9. Already on Dashboard with no overlays open -> Double-Back Exit Protection
+    const now = Date.now();
+    if (now - _adminLastBackExitToastAt < 2600) {
+      history.back();
+      return;
+    }
+    _adminLastBackExitToastAt = now;
+    toast('👈 Admin se bahar jane ke liye dobara Back dabayein');
+    history.pushState({ adminApp: true, adminTab: 'dashboard', adminOverlay: null }, '');
+  } finally {
+    setTimeout(() => { _adminHandlingPopState = false; }, 60);
+  }
+});
 
 let adminOrdersBaselineLoaded = false;
 let knownAdminOrderIds = new Set();
@@ -1593,9 +1710,9 @@ function triggerAdminNewOrderAlert(orderKey, orderObj) {
       const title = `Parth Admin · Naya Order ${dispId}! 🧺`;
       const body = `${cust} booked pickup (${ orderObj.pickupDate || 'Today' } · ${slot}) — ₹${total}`;
       if (adminSWReg && typeof adminSWReg.showNotification === 'function') {
-        adminSWReg.showNotification(title, { body, icon: '/assets/icon-192.png', badge: '/assets/icon-192.png', tag: 'admin-new-order-' + orderKey, data: { targetUrl: '/admin.html' } }).catch(() => {});
+        adminSWReg.showNotification(title, { body, icon: '/assets/shirt.png', badge: '/assets/shirt.png', tag: 'admin-new-order-' + orderKey, data: { targetUrl: '/admin.html' } }).catch(() => {});
       } else {
-        new Notification(title, { body, icon: '/assets/icon-192.png' });
+        new Notification(title, { body, icon: '/assets/shirt.png' });
       }
     }
   } catch(_) {}
@@ -1659,8 +1776,20 @@ let MANAGER_PERMS = {
 let STAFF_ACCOUNTS = {};
 let ACTIVE_SESSIONS = {};
 let ACCESS_LOGS = [];
-let CURRENT_SESSION_ID = sessionStorage.getItem('pdc_admin_sess_id') || ('sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7));
-sessionStorage.setItem('pdc_admin_sess_id', CURRENT_SESSION_ID);
+function getOrCreateAdminDeviceId() {
+  try {
+    let devId = localStorage.getItem('pdc_admin_device_id');
+    if (!devId || !/^[a-zA-Z0-9_-]{6,40}$/.test(devId)) {
+      devId = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+      localStorage.setItem('pdc_admin_device_id', devId);
+    }
+    return devId;
+  } catch (_) {
+    return 'dev_default';
+  }
+}
+const ADMIN_DEVICE_ID = getOrCreateAdminDeviceId();
+let CURRENT_SESSION_ID = localStorage.getItem('pdc_admin_sess_id') || ('sess_' + ADMIN_DEVICE_ID);
 let _cachedClientMeta = null;
 
 function parseDeviceSummary() {
@@ -1758,12 +1887,44 @@ async function logAdminAccessEvent(eventType, emailOverride, roleOverride) {
 
 async function startAdminSessionPresence(user, role) {
   if (!user) return;
+  // Deterministic session ID per (User + Physical Browser/Device) so refreshing or opening new tabs never duplicates entries!
+  CURRENT_SESSION_ID = 'sess_' + String(user.uid || 'admin').slice(0, 12) + '_' + ADMIN_DEVICE_ID;
+  try {
+    localStorage.setItem('pdc_admin_sess_id', CURRENT_SESSION_ID);
+    sessionStorage.setItem('pdc_admin_sess_id', CURRENT_SESSION_ID);
+  } catch (_) {}
+
   const meta = await getClientLocationAndIpMeta();
   const locEl = $('sidebarSessionLoc');
   if (locEl) locEl.textContent = meta.city || meta.ip || 'Online';
+
+  // Auto-clean old/stale/duplicate sessions from Firebase so the list stays clean
+  try {
+    const allSessSnap = await db.ref('admin_active_sessions').once('value').catch(() => null);
+    if (allSessSnap && allSessSnap.exists()) {
+      const nowTs = Date.now();
+      const staleRemovals = {};
+      allSessSnap.forEach(ch => {
+        const k = ch.key;
+        const v = ch.val() || {};
+        if (k === CURRENT_SESSION_ID) return;
+        const lastSeen = Number(v.lastSeenAt || v.loginAt || 0);
+        const isOfflineOrStale = !v.online || (nowTs - lastSeen > 10 * 60 * 1000);
+        const isSameDeviceOldRandomKey = (v.uid === user.uid && v.device === meta.device);
+        if (isOfflineOrStale || isSameDeviceOldRandomKey) {
+          staleRemovals[k] = null;
+        }
+      });
+      if (Object.keys(staleRemovals).length) {
+        await db.ref('admin_active_sessions').update(staleRemovals).catch(() => {});
+      }
+    }
+  } catch (_) {}
+
   const sessionRef = db.ref('admin_active_sessions/' + CURRENT_SESSION_ID);
   const payload = {
     sessionId: CURRENT_SESSION_ID,
+    deviceId: ADMIN_DEVICE_ID,
     uid: user.uid,
     email: user.email || 'admin',
     role,
@@ -1773,7 +1934,7 @@ async function startAdminSessionPresence(user, role) {
     isp: meta.isp || '',
     lat: meta.lat,
     lng: meta.lng,
-    currentTab: 'dashboard',
+    currentTab: _adminCurrentTab || 'dashboard',
     online: true,
     loginAt: Date.now(),
     lastSeenAt: firebase.database.ServerValue.TIMESTAMP,
@@ -1781,10 +1942,7 @@ async function startAdminSessionPresence(user, role) {
   };
   await sessionRef.set(payload).catch(() => {});
   try {
-    sessionRef.onDisconnect().update({
-      online: false,
-      lastSeenAt: firebase.database.ServerValue.TIMESTAMP
-    });
+    sessionRef.onDisconnect().remove();
   } catch (_) {}
 
   // Try to refine coordinates with browser Geolocation if already granted
@@ -1901,10 +2059,24 @@ function renderSecurityTab() {
   if ($('secTodayLogins')) $('secTodayLogins').textContent = todayLogins;
   if ($('secFailedLogins')) $('secFailedLogins').textContent = failedLogins;
 
+  // Deduplicate by (email + device) and prioritize live sessions so the list never grows endlessly
+  const seenDeviceKeys = new Set();
+  const displaySessions = [];
+  sessEntries.forEach(s => {
+    if (!s) return;
+    const isMe = s.sessionId === CURRENT_SESSION_ID;
+    const isOnline = isMe || (s.online && (now - (Number(s.lastSeenAt) || 0) < 10 * 60 * 1000));
+    const devKey = `${s.email || 'admin'}|${s.deviceId || s.device || s.sessionId}`;
+    if (seenDeviceKeys.has(devKey)) return;
+    if (!isOnline && !isMe) return; // Only show genuinely active live sessions in the Live box (past logins are in History table below)
+    seenDeviceKeys.add(devKey);
+    displaySessions.push(s);
+  });
+
   // Render Live Sessions
   const sessBox = $('activeSessionsList');
   if (sessBox) {
-    sessBox.innerHTML = sessEntries.length ? sessEntries.slice(0, 15).map(s => {
+    sessBox.innerHTML = displaySessions.length ? displaySessions.slice(0, 15).map(s => {
       const isOnline = s.online && (now - (Number(s.lastSeenAt) || 0) < 10 * 60 * 1000);
       const isMe = s.sessionId === CURRENT_SESSION_ID;
       const roleClass = s.role === 'owner' ? 'owner' : 'manager';
@@ -2323,9 +2495,22 @@ function renderOrders(){
   const isPaid=pay.toLowerCase().startsWith('paid');
   const nextSt=ORDER_NEXT[st];
   const nextBtn=nextSt?`<button class="btn good" title="1-Tap Move to ${esc(ORDER_LABELS[nextSt])}" onclick="App.setStatus('${id}','${nextSt}')"><i class="fas fa-forward-step"></i> ${esc(ORDER_LABELS[nextSt])}</button>`:'';
-  const checked=selectedBulkOrderIds.has(id)?'checked':'';
-  return `<tr class="${rc}"><td data-label="Select"><input type="checkbox" class="order-bulk-cb" data-id="${id}" ${checked} onchange="App.toggleBulkOrder('${id}',this.checked)"/></td><td data-label="Order" style="color:var(--pink);font-weight:700"><div style="display:flex;flex-direction:column;align-items:flex-end"><span>${orderLabel}</span>${badgesWrap}</div></td><td data-label="Customer"><div><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></div></td><td data-label="Booked" style="font-size:12px">${esc(created)}</td><td data-label="Pickup">${pickup}</td><td data-label="Items"><div>${items||'-'}</div></td><td data-label="Total"><b>₹${total}</b></td><td data-label="Payment"><select onchange="App.setPay('${id}',this.value)"><option value="Paid" ${isPaid?'selected':''}>${isPaid?esc(pay):'Paid'}</option><option value="Pay on Delivery" ${!isPaid?'selected':''}>Pay on Delivery</option></select></td><td data-label="Status"><div style="display:flex;flex-direction:column;gap:4px"><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select>${nextBtn}</div></td><td data-label="Rider"><div><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${pdcPhone10(o.assigned_to)===pdcPhone10(b.phone)?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')" title="Assign Rider"><i class="fas fa-user-check"></i></button></div></td><td data-label="Actions" class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')" title="Print Invoice"><i class="fas fa-print"></i></button><button class="btn" onclick="App.printTags('${id}')" title="Print Garment Tags"><i class="fas fa-tag"></i></button></td></tr>`;
+  const assignedPhone10=pdcPhone10(o.assigned_to||o.assigned_to_e164||'');
+  const isAlreadyAssigned=Boolean(assignedPhone10);
+  const canBulkSelect=!isAlreadyAssigned && st!=='delivered' && st!=='cancelled';
+  if(!canBulkSelect && selectedBulkOrderIds.has(id)){
+   selectedBulkOrderIds.delete(id);
+  }
+  const checked=canBulkSelect && selectedBulkOrderIds.has(id)?'checked':'';
+  const selectCellHtml=canBulkSelect
+   ? `<td data-label="Select"><input type="checkbox" class="order-bulk-cb" data-id="${id}" ${checked} onchange="App.toggleBulkOrder('${id}',this.checked)"/></td>`
+   : `<td data-label="Select"><span class="type-badge general" style="font-size:10px;opacity:0.85"><i class="fas fa-${st==='delivered'?'circle-check':(st==='cancelled'?'ban':'user-check')}"></i> ${st==='delivered'?'Done':(st==='cancelled'?'Cancelled':'Assigned')}</span></td>`;
+  return `<tr class="${rc}">${selectCellHtml}<td data-label="Order" style="color:var(--pink);font-weight:700"><div style="display:flex;flex-direction:column;align-items:flex-end"><span>${orderLabel}</span>${badgesWrap}</div></td><td data-label="Customer"><div><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></div></td><td data-label="Booked" style="font-size:12px">${esc(created)}</td><td data-label="Pickup">${pickup}</td><td data-label="Items"><div>${items||'-'}</div></td><td data-label="Total"><b>₹${total}</b></td><td data-label="Payment"><select onchange="App.setPay('${id}',this.value)"><option value="Paid" ${isPaid?'selected':''}>${isPaid?esc(pay):'Paid'}</option><option value="Pay on Delivery" ${!isPaid?'selected':''}>Pay on Delivery</option></select></td><td data-label="Status"><div style="display:flex;flex-direction:column;gap:4px"><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select>${nextBtn}</div></td><td data-label="Rider"><div><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${pdcPhone10(o.assigned_to)===pdcPhone10(b.phone)?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')" title="Assign Rider"><i class="fas fa-user-check"></i></button></div></td><td data-label="Actions" class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')" title="Print Invoice"><i class="fas fa-print"></i></button><button class="btn" onclick="App.printTags('${id}')" title="Print Garment Tags"><i class="fas fa-tag"></i></button></td></tr>`;
  }).join(''):'<tr><td colspan="11"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';
+ const bar=$('bulkAssignBar');
+ const cnt=$('bulkSelCount');
+ if(cnt) cnt.textContent=selectedBulkOrderIds.size;
+ if(bar) bar.classList.toggle('show',selectedBulkOrderIds.size>0);
 }
 $('orderSearch').oninput=renderOrders;
 $('orderFilter').onchange=()=>{orderQuickPreset='all';document.querySelectorAll('[data-order-preset]').forEach(b=>b.classList.toggle('solid',b.dataset.orderPreset==='all'));renderOrders();};
@@ -2699,6 +2884,7 @@ const App={
    }
    $('boyChatMessages').innerHTML='<div class="empty-state" style="padding:35px"><i class="fas fa-spinner fa-spin"></i> Chat load ho rahi hai…</div>'; 
    $('boyChatModal').classList.add('open'); 
+   pushAdminOverlayHistory('boychat');
    boyChatQuery=db.ref('chat/'+b.id).limitToLast(80); 
    boyChatQuery.on('value',renderBoyChatMessages,err=>{
      console.error('Chat error:',err);
@@ -2706,13 +2892,29 @@ const App={
    }); 
    setTimeout(()=>$('boyChatInput')?.focus(),120); 
  },
- closeBoyChat:()=>{ closeBoyChatListener(); $('boyChatModal').classList.remove('open'); },
+ closeBoyChat:(fromPopstate=false)=>{ closeBoyChatListener(); $('boyChatModal').classList.remove('open'); },
  clearBoyChat:()=>{
    if(CURRENT_ADMIN_ROLE!=='owner') return toast('Only Store Owner can clear chat history','err');
-   if(!boyChatBoyId) return;
-   const b=boys.find(x=>x.id===boyChatBoyId);
-   askConfirm(`Clear entire chat history with ${b?.name||'this rider'}?`,()=>{
-     db.ref('chat/'+boyChatBoyId).remove().then(()=>toast('🧹 Chat history cleared')).catch(e=>toast(e.message,'err'));
+   const targetBoyId = boyChatBoyId;
+   if(!targetBoyId) return toast('Pehle rider select karein','err');
+   const b=boys.find(x=>x.id===targetBoyId);
+   const targetBoyName = b?.name || 'this rider';
+   askConfirm(`Clear entire chat history with ${targetBoyName}?`,async()=>{
+     if(!targetBoyId) return;
+     try {
+       await db.ref('chat/'+targetBoyId).remove();
+       if(ALL_RIDER_CHATS && ALL_RIDER_CHATS[targetBoyId]) delete ALL_RIDER_CHATS[targetBoyId];
+       if(boyChatBoyId===targetBoyId){
+         const box=$('boyChatMessages');
+         if(box) box.innerHTML='<div class="empty-state" style="padding:40px 20px"><i class="fas fa-comments"></i>Abhi is rider ke sath koi message nahi hai.<br>Niche 1-tap chip ya message box se instruction bhejein (Rider ke phone par turant Push Alert jayega).</div>';
+       }
+       syncAdminChatUnreadUI();
+       if($('tab-boys')?.classList.contains('active')) renderBoys();
+       writeAudit('Cleared rider chat history', targetBoyName, { boyId: targetBoyId });
+       toast(`🧹 Chat history cleared with ${targetBoyName}`);
+     } catch(e) {
+       toast(e?.message||'Could not clear chat history','err');
+     }
    });
  },
  sendBoyChat:async(overrideText)=>{ 
@@ -2757,8 +2959,8 @@ const App={
      if(btn) btn.disabled=false;
    }
  },
- openOrder:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');App._openOrderId=id;renderOrderDrawer({id,...o});$('orderDrawerBackdrop').classList.add('open');$('orderDrawer').classList.add('open');$('orderDrawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';},
- closeOrder:()=>{$('orderDrawerBackdrop').classList.remove('open');$('orderDrawer').classList.remove('open');$('orderDrawer').setAttribute('aria-hidden','true');document.body.style.overflow='';App._openOrderId=null;},
+ openOrder:id=>{const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');App._openOrderId=id;renderOrderDrawer({id,...o});$('orderDrawerBackdrop').classList.add('open');$('orderDrawer').classList.add('open');$('orderDrawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';pushAdminOverlayHistory('order');},
+ closeOrder:(fromPopstate=false)=>{$('orderDrawerBackdrop').classList.remove('open');$('orderDrawer').classList.remove('open');$('orderDrawer').setAttribute('aria-hidden','true');document.body.style.overflow='';App._openOrderId=null;},
  saveOrderOps:async id=>{
    const o=ordersSnap?.val()?.[id];if(!o)return;
    const next=$('odStatusSelect')?.value||o.status||'pending';const pay=$('odPaySelect')?.value||o.paymentStatus||'Pay on Delivery';const boy=$('odBoySelect')?.value||'';
@@ -2784,10 +2986,16 @@ const App={
      }else{
        toast('✅ Order updated');
      }
-     writeAudit('Order updated',id,{from:current,to:next,paymentStatus:pay,assigned_to:boy});
-     renderOrderDrawer({id,...o,...data});
-   }catch(e){toast(e.message,'err');}
- },
+      if(boy && selectedBulkOrderIds.has(id)){
+        selectedBulkOrderIds.delete(id);
+        const bar=$('bulkAssignBar'); const cnt=$('bulkSelCount');
+        if(cnt) cnt.textContent=selectedBulkOrderIds.size;
+        if(bar) bar.classList.toggle('show',selectedBulkOrderIds.size>0);
+      }
+      writeAudit('Order updated',id,{from:current,to:next,paymentStatus:pay,assigned_to:boy});
+      renderOrderDrawer({id,...o,...data});
+    }catch(e){toast(e.message,'err');}
+  },
  triggerNotificationDispatch:async(eventId='',kind='')=>{
    if(!auth.currentUser)return null;
    try{
@@ -2866,7 +3074,7 @@ const App={
      App.triggerNotificationDispatch(ref.key,'rider');
    }catch(e){console.warn('Rider push queue note:',e);}
  },
- assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};const prevPhone=pdcPhone10(o.assigned_to||o.assigned_to_e164||'');const newPhone=pdcPhone10(p);if(newPhone && newPhone===prevPhone)return toast(`Already assigned to ${boyObj?.name||p}`);try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+newPhone:'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p){App.queueRiderNotification(id,o,boyObj,'assigned');}if(p&&o.uid&&!String(o.uid).startsWith('manual_')){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${newPhone}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
+ assign:async id=>{const s=$('as_'+id);if(!s)return;const p=s.value;const boyObj=boys.find(b=>pdcPhone10(b.phone)===pdcPhone10(p));const o=ordersSnap?.val()?.[id]||{};const prevPhone=pdcPhone10(o.assigned_to||o.assigned_to_e164||'');const newPhone=pdcPhone10(p);if(newPhone && newPhone===prevPhone)return toast(`Already assigned to ${boyObj?.name||p}`);try{await db.ref('orders/'+id).update({assigned_to:p,assigned_to_e164:p?'+91'+newPhone:'',assignedBoyName:boyObj?.name||'',deliveryBoyId:boyObj?.id||''});if(p && selectedBulkOrderIds.has(id)){selectedBulkOrderIds.delete(id);const bar=$('bulkAssignBar');const cnt=$('bulkSelCount');if(cnt)cnt.textContent=selectedBulkOrderIds.size;if(bar)bar.classList.toggle('show',selectedBulkOrderIds.size>0);}toast(p?`✅ Assigned to ${boyObj?.name||p}`:'Partner unassigned');if(p){App.queueRiderNotification(id,o,boyObj,'assigned');}if(p&&o.uid&&!String(o.uid).startsWith('manual_')){const ref=await db.ref('notification_events').push({type:'order_status',orderId:id,uid:o.uid,title:'Parth Dry Clean · Partner Assigned 🛵',body:`Pickup/delivery partner ${boyObj?.name||'assigned'} (+91 ${newPhone}) has been assigned to your order ${String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id)}.`,status:'queued',fromStatus:o.status||'pending',toStatus:o.status||'pending',createdAt:firebase.database.ServerValue.TIMESTAMP});App.triggerNotificationDispatch(ref.key,'order_status');}}catch(e){toast(e.message,'err');}},
  wa:id=>{const o=ordersSnap.val()[id];const bp=$('as_'+id)?.value||o.assigned_to;const num=pdcPhone10(bp||o.phone);if(!num)return toast('Number nahi','err');const dispId=String(o.orderId||id).startsWith('PDC-')?(o.orderId||id):'PDC-'+(o.orderId||id);const msg=`*Parth Dry Clean* 🧺\n*Order:* ${dispId}\n*Name:* ${o.customerName||o.name}\n*Pickup:* ${o.pickupDate} (${o.timeSlot})\n*Bill:* ₹${o.total}\n*Map:* https://maps.google.com/?q=${encodeURIComponent(o.address)}`;open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');},
  waBillReminder:id=>{
    const o=ordersSnap?.val()?.[id];if(!o)return toast('Order not found','err');
@@ -2878,6 +3086,33 @@ const App={
    open(`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`,'_blank');
  },
  refreshSecurity:()=>{renderSecurityTab();toast('Security & live sessions refreshed');},
+ cleanupOfflineSessions:async()=>{
+   if(CURRENT_ADMIN_ROLE!=='owner') return;
+   try {
+     const snap = await db.ref('admin_active_sessions').once('value');
+     const nowTs = Date.now();
+     const removals = {};
+     let removedCount = 0;
+     snap.forEach(ch => {
+       const k = ch.key;
+       const v = ch.val() || {};
+       if (k === CURRENT_SESSION_ID) return;
+       const isLive = v.online && (nowTs - Number(v.lastSeenAt || 0) < 10 * 60 * 1000);
+       if (!isLive) {
+         removals[k] = null;
+         removedCount++;
+       }
+     });
+     if (removedCount > 0) {
+       await db.ref('admin_active_sessions').update(removals);
+       toast(`🧹 ${removedCount} offline session(s) cleaned!`);
+     } else {
+       toast('✨ Sabhi sessions clean hain (Sirf live sessions dikh rahe hain)');
+     }
+   } catch (e) {
+     toast(e.message || 'Cleanup failed', 'err');
+   }
+ },
  saveManagerPermissions:()=>{
    if(CURRENT_ADMIN_ROLE!=='owner')return toast('Only Owner can change permissions','err');
    const perms={
@@ -3122,8 +3357,15 @@ const App={
    CMS.reviewsRatingHeader = $('cmsReviewsRatingHeader').value.trim();
    db.ref('site_content').set(CMS).then(()=>toast('🎉 Complete CMS Sync Saved!')).catch(e=>toast(e.message,'err'));
  },
- openCustomer:uid=>{renderCustomerModal(uid);$('customerModal').classList.add('open');},
- closeCustomer:()=>{$('customerModal').classList.remove('open');},
+ openCustomer:uid=>{renderCustomerModal(uid);$('customerModal').classList.add('open');pushAdminOverlayHistory('customer');},
+ closeCustomer:(fromPopstate=false)=>{$('customerModal').classList.remove('open');},
+ toggleMobileSidebar:()=>{
+   const sb=$('sidebar');
+   if(!sb)return;
+   const willOpen=!sb.classList.contains('open');
+   sb.classList.toggle('open',willOpen);
+   if(willOpen) pushAdminOverlayHistory('sidebar');
+ },
  saveCustomerProfile:uid=>{const name=$('cmName').value.trim();const address=$('cmAddress').value.trim();if(!name)return toast('Name required','err');db.ref('customers/'+uid).update({name,address}).then(()=>toast('✅ Customer profile saved')).catch(e=>toast(e.message,'err'));},
  customerWhatsApp:(phone,name)=>{const p=String(phone||'').replace(/\D/g,'').slice(-10);if(p.length!==10)return toast('Valid phone unavailable','err');window.open('https://wa.me/91'+p+'?text='+encodeURIComponent('Hello '+(name||'')+', Parth Dry Clean se message hai.'),'_blank');},
  previewHome:()=>window.open('index.html','_blank','noopener'),
