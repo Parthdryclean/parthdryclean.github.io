@@ -2582,15 +2582,9 @@ function initFCM() {
       messaging.onMessage(payload => {
         const title = payload.notification?.title || payload.data?.title || 'Parth Dry Clean';
         const body = payload.notification?.body || payload.data?.body || 'Live order update';
+        const tag = payload.data?.eventId || (payload.data?.orderId ? ('order-status-' + payload.data.orderId + '-' + (payload.data?.toStatus || '')) : ('fcm-' + Date.now()));
         showToast(`${title}: ${body}`, 'info');
-        if (reg && typeof reg.showNotification === 'function' && Notification.permission === 'granted') {
-          reg.showNotification(title, {
-            body,
-            icon: '/assets/icon-192.png',
-            badge: '/assets/icon-192.png',
-            tag: payload.data?.orderId || payload.data?.eventId || 'parth-dc-foreground'
-          }).catch(() => {});
-        }
+        showCustomerBrowserNotification(title, body, tag, payload.data?.targetUrl || '/#active-orders');
       });
       return true;
     } catch(e) {
@@ -2734,6 +2728,81 @@ async function requestFCMPermission() {
       setNotificationButtonState('default');
       showToast('Could not enable notifications. Please try again', 'error');
     }
+  }
+}
+
+const _recentCustomerBrowserNotifTags = new Map();
+
+function playCustomerNotifChime() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.value = 587.33; // D5
+    g.gain.value = 0.12;
+    o.start();
+    setTimeout(() => { o.frequency.value = 880; }, 110); // A5
+    setTimeout(() => { o.stop(); ctx.close(); }, 280);
+  } catch (_) {}
+}
+
+async function showCustomerBrowserNotification(title, body, tag = '', targetUrl = '/#active-orders') {
+  try {
+    const cleanTag = String(tag || (title + '|' + body)).trim();
+    const now = Date.now();
+    // Deduplicate within 12 seconds so RTDB listener and FCM onMessage never double-fire the same alert
+    if (_recentCustomerBrowserNotifTags.has(cleanTag) && (now - _recentCustomerBrowserNotifTags.get(cleanTag) < 12000)) {
+      return false;
+    }
+    _recentCustomerBrowserNotifTags.set(cleanTag, now);
+
+    playCustomerNotifChime();
+    if (navigator.vibrate) {
+      try { navigator.vibrate([120, 60, 120]); } catch (_) {}
+    }
+
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+      return false;
+    }
+
+    const notifOptions = {
+      body: String(body || 'Tap to view your laundry order status'),
+      icon: '/assets/shirt.png',
+      badge: '/assets/shirt.png',
+      tag: cleanTag,
+      renotify: true,
+      vibrate: [120, 60, 120],
+      data: { targetUrl: targetUrl || '/#active-orders' }
+    };
+
+    let reg = fcmSWRegistration;
+    if (!reg && 'serviceWorker' in navigator) {
+      reg = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js').catch(() => null);
+      if (!reg) reg = await navigator.serviceWorker.getRegistration().catch(() => null);
+    }
+    if (reg && typeof reg.showNotification === 'function') {
+      await reg.showNotification(String(title || 'Parth Dry Clean'), notifOptions);
+      return true;
+    }
+    new Notification(String(title || 'Parth Dry Clean'), notifOptions);
+    return true;
+  } catch (e) {
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(String(title || 'Parth Dry Clean'), {
+          body: String(body || ''),
+          icon: '/assets/shirt.png',
+          tag: String(tag || 'pdc-notif')
+        });
+        return true;
+      }
+    } catch (_) {}
+    return false;
   }
 }
 
@@ -3348,6 +3417,12 @@ function attachActiveOrderListener(uid) {
         const dispId = formatOrderDisplayId(o.orderId || key);
         const stLabel = statusLabels[st] || 'Order Updated';
         showToast(`${dispId}: ${stLabel}`, st === 'delivered' ? 'success' : 'info');
+        showCustomerBrowserNotification(
+          `Parth Dry Clean · ${stLabel}`,
+          `Your order ${dispId} status is now "${stLabel}".`,
+          `order-status-${key}-${st}`,
+          '/#active-orders'
+        );
         if (document.getElementById('ordersModal')?.classList.contains('active')) {
           loadOrderHistory();
         }
@@ -4663,6 +4738,11 @@ window.openNotificationsModal = function() {
   if (!auth.currentUser) return openModal('authModal');
   renderCustomerNotificationsUI();
   openModal('notificationsModal');
+  if ('Notification' in window && Notification.permission === 'default') {
+    requestFCMPermission().catch(() => {});
+  } else if ('Notification' in window && Notification.permission === 'granted') {
+    syncFCMTokenForUser(auth.currentUser).catch(() => {});
+  }
 };
 
 window.markAllCustomerNotificationsRead = function() {
@@ -4693,6 +4773,11 @@ function attachCustomerNotificationsListener(uid) {
   customerNotifRefs = [];
   customerNotifMap = { order: {}, manual: {} };
   if (!uid) return;
+  let orderNotifsBaselineLoaded = false;
+  let manualNotifsBaselineLoaded = false;
+  const knownOrderNotifIds = new Set();
+  const knownManualNotifIds = new Set();
+
   const orderQuery = db.ref('notification_events').orderByChild('uid').equalTo(uid).limitToLast(30);
   const manualQuery = db.ref('manual_notification_events').orderByChild('uid').equalTo(uid).limitToLast(30);
 
@@ -4700,8 +4785,20 @@ function attachCustomerNotificationsListener(uid) {
     const next = {};
     snap.forEach(ch => {
       const v = ch.val();
-      if (v) next[ch.key] = { id: ch.key, kind: 'order', ...v };
+      if (!v) return;
+      next[ch.key] = { id: ch.key, kind: 'order', ...v };
+      if (orderNotifsBaselineLoaded && !knownOrderNotifIds.has(ch.key)) {
+        const dedupTag = v.orderId && v.toStatus ? `order-status-${v.orderId}-${v.toStatus}` : `order-notif-${ch.key}`;
+        showCustomerBrowserNotification(
+          v.title || 'Parth Dry Clean · Order Update',
+          v.body || 'Your laundry order status has been updated.',
+          dedupTag,
+          '/#active-orders'
+        );
+      }
+      knownOrderNotifIds.add(ch.key);
     });
+    orderNotifsBaselineLoaded = true;
     customerNotifMap.order = next;
     renderCustomerNotificationsUI();
   }, () => {});
@@ -4710,8 +4807,20 @@ function attachCustomerNotificationsListener(uid) {
     const next = {};
     snap.forEach(ch => {
       const v = ch.val();
-      if (v) next[ch.key] = { id: ch.key, kind: 'manual', ...v };
+      if (!v) return;
+      next[ch.key] = { id: ch.key, kind: 'manual', ...v };
+      if (manualNotifsBaselineLoaded && !knownManualNotifIds.has(ch.key)) {
+        showToast(`🔔 ${v.title || 'Parth Dry Clean'}: ${v.body || ''}`, 'info');
+        showCustomerBrowserNotification(
+          v.title || 'Parth Dry Clean',
+          v.body || 'New message from Parth Dry Clean',
+          `manual-notif-${ch.key}`,
+          '/#notificationsModal'
+        );
+      }
+      knownManualNotifIds.add(ch.key);
     });
+    manualNotifsBaselineLoaded = true;
     customerNotifMap.manual = next;
     renderCustomerNotificationsUI();
   }, () => {});
