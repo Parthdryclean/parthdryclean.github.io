@@ -23,7 +23,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- html2pdf is lazy-loaded on demand when downloading an invoice PDF -->
 
 <!-- SEO STRUCTURED DATA -->
 <script type="application/ld+json">
@@ -600,10 +600,42 @@ nav a { text-decoration:none; color:var(--text-muted); font-weight:700; font-siz
 .modal-grabber-wrapper { display: none; width: 100%; padding: 15px 0; margin: -25px auto 5px auto; cursor: grab; justify-content: center; touch-action: none; }
 .modal-grabber { width: 50px; height: 6px; background: #cbd5e1; border-radius: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); pointer-events: none; }
 
-/* MOBILE BOTTOM SHEET MODALS */
+/* PAUSE BACKGROUND INFINITE ANIMATIONS WHEN ANY DRAWER/MODAL IS OPEN */
+body.has-open-modal .trust-bar-track,
+body.has-open-modal .stain-main-img,
+body.has-open-modal .stain-saree-bg,
+body.has-open-modal .stain-blazer-bg,
+body.has-open-modal .stain-spray,
+body.has-open-modal .stain-hanger,
+body.has-open-modal .active-care-strip::after,
+body.has-open-modal .logo-row::after,
+body.has-open-modal .reviews-slider {
+  animation-play-state: paused !important;
+}
+
+/* MOBILE BOTTOM SHEET MODALS (ZERO GPU BLUR LAG) */
 @media (max-width: 768px) {
-  .modal-overlay { padding: 0; align-items: flex-end; }
-  .modal-box { margin: auto auto 0 auto; border-radius: 24px 24px 0 0; max-height: 85vh; width: 100%; transform: translate3d(0, 100%, 0); }
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(15, 23, 42, 0.76);
+    transition: opacity 0.2s ease;
+  }
+  [data-theme="dark"] .modal-overlay {
+    background: rgba(2, 6, 23, 0.84);
+  }
+  .modal-box {
+    margin: auto auto 0 auto;
+    border-radius: 24px 24px 0 0;
+    max-height: 85vh;
+    width: 100%;
+    transform: translate3d(0, 100%, 0);
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    contain: layout paint;
+    -webkit-overflow-scrolling: touch;
+  }
   .modal-overlay.active .modal-box { transform: translate3d(0, 0, 0); }
   .modal-overlay.closing .modal-box { transform: translate3d(0, 100%, 0); }
   .modal-grabber-wrapper { display: flex; }
@@ -2976,10 +3008,19 @@ window.toggleHomeBagDock = function(force) {
 };
 
 function syncHomeFloatingCartBar() {
-  HOME_BAG = getHomeBag();
   const bar = document.getElementById('homeFloatingCartBar');
-  const toggleText = document.getElementById('hfcBagToggleText');
   if (!bar) return;
+  const anyOverlayOpen = Boolean(
+    document.querySelector('.modal-overlay.active') ||
+    document.getElementById('activeOrderDropdown')?.classList.contains('open')
+  );
+  if (anyOverlayOpen) {
+    bar.classList.remove('visible', 'bag-expanded');
+    document.body.classList.remove('has-home-cart-bar');
+    return;
+  }
+  HOME_BAG = getHomeBag();
+  const toggleText = document.getElementById('hfcBagToggleText');
   let totalItems = 0;
   let subtotal = 0;
   for (const [id, qty] of Object.entries(HOME_BAG)) {
@@ -2993,11 +3034,7 @@ function syncHomeFloatingCartBar() {
     renderHomeBagItemsList();
   }
   if (toggleText) toggleText.textContent = `Your Bag (${totalItems} item${totalItems === 1 ? '' : 's'}) — Tap to review`;
-  const anyOverlayOpen = Boolean(
-    document.querySelector('.modal-overlay.active') ||
-    document.getElementById('activeOrderDropdown')?.classList.contains('open')
-  );
-  if (totalItems > 0 && !anyOverlayOpen) {
+  if (totalItems > 0) {
     document.getElementById('hfcMetaText').textContent = `${totalItems} item${totalItems === 1 ? '' : 's'} added · Tap to view list`;
     document.getElementById('hfcTotalText').textContent = `₹${formatMoney(subtotal)}`;
     bar.classList.add('visible');
@@ -3584,6 +3621,7 @@ function openModal(id, replaceHistory = false) {
     _savedModalScrollY = window.scrollY || window.pageYOffset || 0;
   }
   m.classList.add('active');
+  document.body.classList.add('has-open-modal');
   document.body.style.overflow = 'hidden';
   if (!isHandlingPopstate) {
     try {
@@ -3618,6 +3656,9 @@ function closeModal(id, fromPopstate = false, skipHistoryBack = false) {
     m.classList.remove('closing');
     const dropdownOpen = document.getElementById('activeOrderDropdown')?.classList.contains('open');
     const anyOtherActive = document.querySelector('.modal-overlay.active:not(.closing)');
+    if (!anyOtherActive) {
+      document.body.classList.remove('has-open-modal');
+    }
     if (!anyOtherActive && !dropdownOpen) {
       document.body.style.overflow = '';
       const wa = document.getElementById('floatingWhatsappBtn');
@@ -4623,10 +4664,33 @@ window.printCurrentInvoice = function() {
   w.document.close();
 };
 
-window.saveCurrentInvoicePDF = function() {
+let _html2PdfLoadPromise = null;
+function ensureHtml2PdfLoaded() {
+  if (typeof window.html2pdf === 'function') return Promise.resolve();
+  if (_html2PdfLoadPromise) return _html2PdfLoadPromise;
+  _html2PdfLoadPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => { _html2PdfLoadPromise = null; reject(new Error('Failed to load PDF library')); };
+    document.head.appendChild(s);
+  });
+  return _html2PdfLoadPromise;
+}
+
+window.saveCurrentInvoicePDF = async function() {
   if (!window._currentInvoiceHTML) return;
   const btn = document.getElementById('invoiceDownloadPdfBtn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving PDF...'; }
+  try {
+    await ensureHtml2PdfLoaded();
+  } catch (_) {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-download"></i> Download PDF'; }
+    showToast('Opening print view to save PDF...', 'info');
+    printCurrentInvoice();
+    return;
+  }
   const host = document.createElement('div');
   host.style.cssText = 'position:fixed;left:0;top:0;width:794px;background:#ffffff;z-index:-9999;opacity:1;pointer-events:none;overflow:hidden;';
   host.innerHTML = window._currentInvoiceHTML;
@@ -4986,19 +5050,7 @@ window.submitWhatsAppBooking = async function() {
     }
   }
 
-  // If user hasn't attached GPS yet, show the Current Location Alert prompt!
-  if (!gpsUrl) {
-    const wantAutoGps = await pdcConfirm(
-      '📍 Current Location Bhejein!',
-      'Tez doorstep pickup ke liye kya hum aapki Current GPS Location message me jod dein? (Ya aap WhatsApp khulne par wahan se bhi Current Location bhej sakte hain)',
-      { confirmText: '📍 Attach GPS & Send', cancelText: '📲 Send & Share on WhatsApp', danger: false }
-    );
-    if (wantAutoGps) {
-      gpsUrl = await window.attachWaCurrentLocation(false);
-    } else {
-      showToast('📍 Yaad se WhatsApp chat me apni Current Location zaroor bhej dein!', 'info');
-    }
-  }
+  // Use already-attached GPS URL or saved address coordinates without blocking on a second popup
 
   let msg = '';
   if (lines.length > 0) {
@@ -5055,36 +5107,31 @@ ${lines.join('\n')}
 `;
   }
 
-  // Auto-register WhatsApp booking in Firebase so it gets a real PDC-XXXXXX Order ID & appears in Admin Panel
-  let createdDispId = '';
+  // Non-blocking background order sync (keepalive ensures completion while opening WhatsApp in 0ms)
   try {
     const bagItemsPayload = Object.entries(HOME_BAG).map(([id, qty]) => {
       const it = findHomeCatalogItem(id);
       return it ? { id: it.id, name: it.name, qty: Number(qty) || 1, rate: Number(it.price) || 0 } : null;
     }).filter(Boolean);
-    const resp = await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/createWhatsAppOrder', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        phone,
-        address: addr,
-        pickupDate: date,
-        timeSlot: slot,
-        serviceType,
-        gpsUrl,
-        uid: auth.currentUser ? auth.currentUser.uid : '',
-        items: bagItemsPayload
-      })
-    });
-    const rData = await resp.json().catch(() => ({}));
-    if (resp.ok && rData.ok && rData.displayOrderId) {
-      createdDispId = rData.displayOrderId;
-      msg = `🆔 *Order ID:* *${createdDispId}*\n` + msg;
+    if (phone && /^\d{10}$/.test(phone)) {
+      fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/createWhatsAppOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({
+          name,
+          phone,
+          address: addr,
+          pickupDate: date,
+          timeSlot: slot,
+          serviceType,
+          gpsUrl,
+          uid: auth.currentUser ? auth.currentUser.uid : '',
+          items: bagItemsPayload
+        })
+      }).catch(() => {});
     }
-  } catch (err) {
-    console.warn('WhatsApp auto-order queue fallback to direct chat:', err);
-  }
+  } catch (_) {}
 
   closeModal('waBookingModal');
   window.open(`https://wa.me/${_activeWaNumber}?text=${encodeURIComponent(msg)}`, '_blank');
