@@ -2145,6 +2145,50 @@ function renderSecurityTab() {
   }
 }
 
+let adminOrdersLimit = 500;
+let adminOrdersRef = null;
+function attachAdminOrdersListener() {
+ if (adminOrdersRef) adminOrdersRef.off();
+ adminOrdersRef = adminOrdersLimit > 0 ? db.ref('orders').limitToLast(adminOrdersLimit) : db.ref('orders');
+ adminOrdersRef.on('value', s => {
+   ordersSnap = s;
+   const val = s.val() || {};
+   const currentKeys = Object.keys(val);
+   if (adminOrdersBaselineLoaded) {
+     currentKeys.forEach(k => {
+       if (!knownAdminOrderIds.has(k)) {
+         const o = val[k];
+         if (o && (o.status || 'pending') === 'pending') triggerAdminNewOrderAlert(k, o);
+       }
+     });
+   }
+   knownAdminOrderIds = new Set(currentKeys);
+   adminOrdersBaselineLoaded = true;
+   renderDashboard();
+   renderOrders();
+   if ($('tab-reports').classList.contains('active')) renderReports();
+   if ($('tab-customers').classList.contains('active')) renderCustomers();
+   if ($('tab-boys').classList.contains('active')) renderBoys();
+   if ($('tab-intelligence').classList.contains('active')) renderIntelligence();
+ });
+}
+window.loadMoreAdminOrders = function(loadAll = false) {
+ if (loadAll) {
+   adminOrdersLimit = 0;
+   ordersRenderLimit = 999999;
+   attachAdminOrdersListener();
+   toast('📦 Loading complete order archive...');
+ } else {
+   ordersRenderLimit += 100;
+   if (adminOrdersLimit > 0 && ordersRenderLimit > adminOrdersLimit) {
+     adminOrdersLimit += 500;
+     attachAdminOrdersListener();
+   } else {
+     renderOrders();
+   }
+ }
+};
+
 function start(){
  initAdminCollapsibleCards();
  syncAdminFCMToken(false);
@@ -2167,27 +2211,7 @@ function start(){
      renderSecurityTab();
    });
  }
- db.ref('orders').on('value',s=>{
-   ordersSnap=s;
-   const val=s.val()||{};
-   const currentKeys=Object.keys(val);
-   if(adminOrdersBaselineLoaded){
-     currentKeys.forEach(k=>{
-       if(!knownAdminOrderIds.has(k)){
-         const o=val[k];
-         if(o && (o.status||'pending')==='pending') triggerAdminNewOrderAlert(k,o);
-       }
-     });
-   }
-   knownAdminOrderIds=new Set(currentKeys);
-   adminOrdersBaselineLoaded=true;
-   renderDashboard();
-   renderOrders();
-   if($('tab-reports').classList.contains('active'))renderReports();
-   if($('tab-customers').classList.contains('active'))renderCustomers();
-   if($('tab-boys').classList.contains('active'))renderBoys();
-   if($('tab-intelligence').classList.contains('active'))renderIntelligence();
- });
+ attachAdminOrdersListener();
  db.ref('customers').on('value',s=>{customers=s.val()||{};renderCustomers();renderDashboard();renderManualNotificationCustomers();});
  db.ref('settings/general').on('value',s=>{const v=s.val()||{};$('ctlBookingOpen').checked=v.bookingOpen!==false;$('ctlCoupon').checked=v.couponEnabled!==false;$('ctlMin').value=v.minOrder??300;$('ctlExpress').value=v.expressPercent??90;$('ctlMessage').value=v.storeMessage||'';$('ctlHours').value=v.workingHours||'';App.updateControlState();});
  db.ref('settings/payment').on('value',s=>{
@@ -2436,7 +2460,8 @@ function renderDashboard(){ if(!ordersSnap)return; const today=dayStr(new Date()
  $('popularList').innerHTML=top.length?top.map(([k,v])=>`<div class="bar-row"><div class="bl">${esc(k)}</div><div class="track"><div class="fill" style="width:${Math.round((v/max)*100)}%"></div></div><div class="bv">${v} pcs</div></div>`).join(''):'<div class="empty-state"><i class="fas fa-chart-simple"></i>Abhi koi data nahi</div>';}
 
 let orderQuickPreset='all';
-function setOrderPreset(preset){orderQuickPreset=preset;$('orderFilter').value='all';document.querySelectorAll('[data-order-preset]').forEach(b=>{b.classList.toggle('solid',b.dataset.orderPreset===preset);});renderOrders();}
+let ordersRenderLimit = 100;
+function setOrderPreset(preset){orderQuickPreset=preset;ordersRenderLimit=100;$('orderFilter').value='all';document.querySelectorAll('[data-order-preset]').forEach(b=>{b.classList.toggle('solid',b.dataset.orderPreset===preset);});renderOrders();}
 let selectedBulkOrderIds = new Set();
 function renderOrders(){
  if(!ordersSnap)return;
@@ -2472,8 +2497,11 @@ function renderOrders(){
   return matchesSearch&&matchesStatus&&matchesPreset;
  });
  list.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
+ const totalMatched = list.length;
+ const visibleList = q ? list.slice(0, 200) : list.slice(0, ordersRenderLimit);
+ const remainingCount = Math.max(0, totalMatched - visibleList.length);
  const today=dayStr(new Date());
- $('ordersBody').innerHTML=list.length?list.map(o=>{
+ $('ordersBody').innerHTML=visibleList.length?(visibleList.map(o=>{
   const st=o.status||'pending';
   const rc=(st!=='delivered'&&st!=='cancelled')?(o.pickupDate<today?'row-overdue':o.pickupDate===today?'row-urgent':''):'';
   const items=Object.entries(o.items||{}).map(([k,v])=>{
@@ -2506,13 +2534,14 @@ function renderOrders(){
    ? `<td data-label="Select"><input type="checkbox" class="order-bulk-cb" data-id="${id}" ${checked} onchange="App.toggleBulkOrder('${id}',this.checked)"/></td>`
    : `<td data-label="Select"><span class="type-badge general" style="font-size:10px;opacity:0.85"><i class="fas fa-${st==='delivered'?'circle-check':(st==='cancelled'?'ban':'user-check')}"></i> ${st==='delivered'?'Done':(st==='cancelled'?'Cancelled':'Assigned')}</span></td>`;
   return `<tr class="${rc}">${selectCellHtml}<td data-label="Order" style="color:var(--pink);font-weight:700"><div style="display:flex;flex-direction:column;align-items:flex-end"><span>${orderLabel}</span>${badgesWrap}</div></td><td data-label="Customer"><div><b>${customer}</b><br><span style="color:var(--muted);font-size:12px">${phone}</span></div></td><td data-label="Booked" style="font-size:12px">${esc(created)}</td><td data-label="Pickup">${pickup}</td><td data-label="Items"><div>${items||'-'}</div></td><td data-label="Total"><b>₹${total}</b></td><td data-label="Payment"><select onchange="App.setPay('${id}',this.value)"><option value="Paid" ${isPaid?'selected':''}>${isPaid?esc(pay):'Paid'}</option><option value="Pay on Delivery" ${!isPaid?'selected':''}>Pay on Delivery</option></select></td><td data-label="Status"><div style="display:flex;flex-direction:column;gap:4px"><select onchange="App.setStatus('${id}',this.value)"><option value="pending" ${st==='pending'?'selected':''}>Pending</option><option value="picked_up" ${st==='picked_up'?'selected':''}>Picked Up</option><option value="processing" ${st==='processing'?'selected':''}>Processing</option><option value="quality_check" ${st==='quality_check'?'selected':''}>Quality</option><option value="out_for_delivery" ${st==='out_for_delivery'?'selected':''}>Out</option><option value="delivered" ${st==='delivered'?'selected':''}>Delivered</option><option value="cancelled" ${st==='cancelled'?'selected':''}>Cancel</option></select>${nextBtn}</div></td><td data-label="Rider"><div><select id="as_${id}"><option value="">— Boy —</option>${boys.map(b=>`<option value="${esc(b.phone)}" ${pdcPhone10(o.assigned_to)===pdcPhone10(b.phone)?'selected':''}>${esc(b.name)}</option>`).join('')}</select><button class="btn" style="margin-top:4px" onclick="App.assign('${id}')" title="Assign Rider"><i class="fas fa-user-check"></i></button></div></td><td data-label="Actions" class="action-cell"><button class="btn solid" onclick="App.openOrder('${id}')"><i class="fas fa-eye"></i> View</button><button class="btn good" onclick="App.wa('${id}')"><i class="fab fa-whatsapp"></i></button><button class="btn" onclick="App.print('${id}')" title="Print Invoice"><i class="fas fa-print"></i></button><button class="btn" onclick="App.printTags('${id}')" title="Print Garment Tags"><i class="fas fa-tag"></i></button></td></tr>`;
- }).join(''):'<tr><td colspan="11"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';
+ }).join('') + (remainingCount > 0 ? `<tr><td colspan="11" style="text-align:center;padding:14px"><button type="button" class="btn solid" onclick="loadMoreAdminOrders(false)"><i class="fas fa-angles-down"></i> Show More Orders (${remainingCount} more)</button> <button type="button" class="btn" style="margin-left:8px" onclick="loadMoreAdminOrders(true)">Load All</button></td></tr>` : '')):'<tr><td colspan="11"><div class="empty-state"><i class="fas fa-inbox"></i>Koi order nahi</div></td></tr>';
  const bar=$('bulkAssignBar');
  const cnt=$('bulkSelCount');
  if(cnt) cnt.textContent=selectedBulkOrderIds.size;
  if(bar) bar.classList.toggle('show',selectedBulkOrderIds.size>0);
 }
-$('orderSearch').oninput=renderOrders;
+let _orderSearchTimer=null;
+$('orderSearch').oninput=()=>{clearTimeout(_orderSearchTimer);_orderSearchTimer=setTimeout(renderOrders,150);};
 $('orderFilter').onchange=()=>{orderQuickPreset='all';document.querySelectorAll('[data-order-preset]').forEach(b=>b.classList.toggle('solid',b.dataset.orderPreset==='all'));renderOrders();};
 $('customerSearch').oninput=renderCustomers;$('customerFilter').onchange=renderCustomers;
 
