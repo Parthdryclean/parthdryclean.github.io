@@ -38,8 +38,8 @@ messaging.onBackgroundMessage((payload) => {
 
   const options = {
     body: body,
-    icon: '/assets/icon-192.png',
-    badge: '/assets/icon-192.png',
+    icon: '/assets/shirt.png',
+    badge: '/assets/shirt.png',
     data: data,
     tag: data.orderId || data.eventId || 'parth-dc-notification',
     renotify: true,
