@@ -831,7 +831,7 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
 }
 
 /* Fix 1: Ensure Confirm, PIN & Item Modals ALWAYS stack above Rider Chat Modal (z-index:1100) & Order Drawer */
-#confirmModal, #pinModal, #itemModal {
+#confirmModal, #pinModal, #itemModal, #resetChoiceModal {
   z-index: 2200 !important;
 }
 #confirmModal .modal-box {
@@ -864,6 +864,43 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
  <div class="order-drawer-body" id="odBody"></div>
 </aside>
 <div class="modal" id="confirmModal"><div class="modal-box"><p id="confirmMsg">Sure?</p><div class="row"><button id="confirmYes">Yes</button><button id="confirmNo">Cancel</button></div></div></div>
+<div class="modal" id="resetChoiceModal" onclick="if(event.target===this)App.closeResetChoiceModal()">
+ <div class="modal-box" style="max-width:460px;text-align:left">
+  <div class="customer-modal-head" style="margin-bottom:10px">
+   <div>
+    <h3 style="color:var(--text);font-size:16.5px;display:flex;align-items:center;gap:8px"><i class="fas fa-sliders" style="color:var(--pink)"></i> Kya Reset Karna Hai? (Choose Option)</h3>
+    <div style="font-size:11.5px;color:var(--muted);margin-top:3px">Reset se pehle <b>Auto-Backup JSON</b> apne aap download hoga</div>
+   </div>
+   <button class="order-drawer-close" onclick="App.closeResetChoiceModal()"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+   <button type="button" class="btn" onclick="App.executeSafeTestDataReset('orders_only')" style="width:100%;justify-content:flex-start;text-align:left;padding:13px 14px;border-radius:14px;border:2px solid rgba(37,99,235,0.35);background:rgba(37,99,235,0.06);display:flex;align-items:flex-start;gap:12px">
+    <div style="width:36px;height:36px;border-radius:10px;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px"><i class="fas fa-box-open"></i></div>
+    <div style="flex:1">
+     <div style="font-weight:800;font-size:13.5px;color:var(--text)">1. Sirf Orders &amp; Logs Reset Karein <span style="font-size:10px;background:rgba(22,163,74,0.14);color:var(--good);padding:2px 7px;border-radius:99px;margin-left:4px">Customers Safe</span></div>
+     <div style="font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45;font-weight:500">Saare Orders, Notifications, Rider Delivery Counters (0) aur Chat/Logs clear honge. <b>Customer accounts &amp; addresses 100% safe rahenge.</b></div>
+    </div>
+   </button>
+   <button type="button" class="btn" onclick="App.executeSafeTestDataReset('customers_only')" style="width:100%;justify-content:flex-start;text-align:left;padding:13px 14px;border-radius:14px;border:2px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.06);display:flex;align-items:flex-start;gap:12px">
+    <div style="width:36px;height:36px;border-radius:10px;background:#f59e0b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px"><i class="fas fa-users-slash"></i></div>
+    <div style="flex:1">
+     <div style="font-weight:800;font-size:13.5px;color:var(--text)">2. Sirf Customers Data Reset Karein <span style="font-size:10px;background:rgba(37,99,235,0.14);color:var(--pink);padding:2px 7px;border-radius:99px;margin-left:4px">Orders Safe</span></div>
+     <div style="font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45;font-weight:500">Sirf Customer Profiles, Saved Addresses aur Phone Identity mapping clear hongi. <b>Saare Orders aur Revenue 100% safe rahenge.</b></div>
+    </div>
+   </button>
+   <button type="button" class="btn" onclick="App.executeSafeTestDataReset('both')" style="width:100%;justify-content:flex-start;text-align:left;padding:13px 14px;border-radius:14px;border:2px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.06);display:flex;align-items:flex-start;gap:12px">
+    <div style="width:36px;height:36px;border-radius:10px;background:var(--bad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px"><i class="fas fa-broom"></i></div>
+    <div style="flex:1">
+     <div style="font-weight:800;font-size:13.5px;color:var(--bad)">3. Dono Reset Karein (Orders + Customers)</div>
+     <div style="font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45;font-weight:500">Complete fresh start: Saare Test Orders + Test Customers dono clean ho jayenge (Services, Price List, CMS &amp; Riders safe rahenge).</div>
+    </div>
+   </button>
+  </div>
+  <div style="margin-top:12px;display:flex;justify-content:flex-end">
+   <button type="button" class="btn" onclick="App.closeResetChoiceModal()">Cancel</button>
+  </div>
+ </div>
+</div>
 <div class="modal" id="pinModal"><div class="modal-box" style="max-width:390px;text-align:left"><div class="customer-modal-head"><div><h3 id="pinModalTitle">Set Rider PIN</h3><div id="pinModalMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="closePinModal()"><i class="fas fa-xmark"></i></button></div><input id="pinBoyId" type="hidden"/><input id="pinValue" inputmode="numeric" autocomplete="new-password" type="password" maxlength="6" placeholder="6-digit PIN" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px;text-align:center;letter-spacing:4px"><input id="pinConfirm" inputmode="numeric" autocomplete="new-password" type="password" maxlength="6" placeholder="Confirm PIN" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;text-align:center;letter-spacing:4px"><div id="pinModalError" style="display:none;color:var(--bad);font-size:11px;margin-top:8px"></div><button class="btn solid" id="savePinBtn" style="width:100%;justify-content:center;margin-top:14px"><i class="fas fa-key"></i> Save PIN Securely</button></div></div>
 <div class="modal" id="itemModal"><div class="modal-box" style="max-width:390px;text-align:left"><div class="customer-modal-head"><div><h3>Add Service Item</h3><div id="itemModalMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div></div><button class="order-drawer-close" onclick="closeItemModal()"><i class="fas fa-xmark"></i></button></div><input id="itemCatKey" type="hidden"/><input id="itemNameValue" placeholder="Item name" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px"><input id="itemPriceValue" inputmode="numeric" type="number" min="0" placeholder="Price" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px;margin-bottom:10px"><input id="itemOrigValue" inputmode="numeric" type="number" min="0" placeholder="Original price (optional)" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:12px;border-radius:12px"><div id="itemModalError" style="display:none;color:var(--bad);font-size:11px;margin-top:8px"></div><button class="btn solid" id="saveItemBtn" style="width:100%;justify-content:center;margin-top:14px"><i class="fas fa-plus"></i> Add Item</button></div></div>
 <div class="modal" id="boyChatModal" onclick="if(event.target===this)App.closeBoyChat()"><div class="modal-box boy-chat-box"><div class="boy-chat-head"><div class="boy-chat-identity"><div class="boy-chat-avatar" id="boyChatAvatar"><span id="boyChatAvatarInitials">🛵</span><span class="status-dot" id="boyChatStatusDot"></span></div><div style="min-width:0;flex:1"><h3 id="boyChatTitle" style="font-size:15.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Delivery Partner Chat</h3><div id="boyChatMeta" style="font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Select a rider to chat</div></div></div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0"><select id="boyChatSwitcher" onchange="if(this.value)App.openBoyChat(this.value)" style="display:none;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:6px 9px;border-radius:10px;font-size:11.5px;font-weight:700"></select><a id="boyChatCallBtn" href="#" class="btn good" style="padding:7px 10px;text-decoration:none" title="Call Rider"><i class="fas fa-phone"></i></a><a id="boyChatWaBtn" href="#" target="_blank" rel="noopener" class="btn" style="padding:7px 10px;text-decoration:none;color:#16a34a;border-color:rgba(22,163,74,.3)" title="WhatsApp Rider"><i class="fab fa-whatsapp"></i></a><button type="button" class="btn bad" id="boyChatClearBtn" onclick="App.clearBoyChat()" style="padding:7px 10px" title="Clear Chat History"><i class="fas fa-broom"></i></button><button class="order-drawer-close" onclick="App.closeBoyChat()" aria-label="Close"><i class="fas fa-xmark"></i></button></div></div><div class="boy-chat-rider-tabs" id="boyChatRiderTabs"></div><div class="boy-chat-orders-strip" id="boyChatActiveOrdersBar"></div><div id="boyChatMessages" style="flex:1;overflow:auto;padding:10px 6px;margin-top:8px;background:var(--bg);border:1px solid var(--line);border-radius:14px"></div><div class="boy-chat-qchips"><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📍 Pickup location par jaldi pahuncho')">📍 Pickup jaldi karo</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('📞 Customer ko call karke confirm kar lo')">📞 Call Customer</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('🧺 Doorstep par kapde ginkar bill update kar dena')">🧺 Count &amp; Update Bill</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('⚡ Express order hai, priority par pick/deliver karo')">⚡ Express Priority</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('✅ Customer se baat ho gayi hai, ab deliver/pickup kar lo')">✅ Issue Resolved</button><button type="button" class="boy-chat-qchip" onclick="App.sendBoyChat('💵 Sham ko Cash galla store par jama kar dena')">💵 Handover Cash</button></div><div class="boy-chat-composer"><input id="boyChatInput" style="flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px 14px;border-radius:13px;font-size:13.5px;font-weight:600" placeholder="Rider ko message likhein (Instant Push Alert jayega)..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.sendBoyChat()}"/><button class="btn solid" id="boyChatSendBtn" onclick="App.sendBoyChat()" style="padding:11px 18px;border-radius:13px"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>
@@ -1370,29 +1407,54 @@ table select{background:var(--panel2);border:1px solid var(--line);color:var(--t
     </div>
    </div>
 
-   <!-- 4. OWNER-ONLY 1-CLICK SAFE TEST DATA RESET TOOL -->
+   <!-- 4. OWNER-ONLY SAFE DATA RESET TOOL (SEPARATE ORDERS vs CUSTOMERS) -->
    <div class="panel" style="margin-top:18px;border-color:rgba(239,68,68,0.45)">
     <div class="panel-head" style="background:rgba(239,68,68,0.06)">
-     <h3 style="color:var(--bad)"><i class="fas fa-Rotate-left" style="color:var(--bad)"></i> 1-Click Safe Test Data Reset (Launch Fresh from 0)</h3>
+     <h3 style="color:var(--bad)"><i class="fas fa-rotate-left" style="color:var(--bad)"></i> Safe Data Reset Tool (Orders Alag · Customers Alag)</h3>
      <span class="role-pill owner">OWNER ONLY</span>
     </div>
     <div style="padding:16px">
      <div style="font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.55">
-      Testing puri hone ke baad jab aap real customers ke liye fresh start karna chahein, toh ye tool <b>pichhle saare test orders, notification logs, aur test customer records</b> ko clean kar dega (aur delivery boys ka counter 0 kar dega).<br>
+      Ab <b>Orders Reset</b> aur <b>Customers Reset</b> bilkul alag-alag hain! Aap bina customer data khoye sirf Orders &amp; Logs clear kar sakte hain, ya sirf Customers clear kar sakte hain.<br>
       <b style="color:var(--good)">✅ 100% Safe Preserved:</b> Aapki Services &amp; Price List, Website CMS Content, Coupons, Store Settings, Service Areas, aur Delivery Boy logins bilkul safe rahenge. Reset se pehle ek <b>Auto-Backup JSON</b> apne aap download hoga.
+     </div>
+     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:14px">
+      <label style="display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;border:1.5px solid rgba(37,99,235,0.35);background:rgba(37,99,235,0.05);cursor:pointer">
+       <input type="radio" name="resetTargetMode" id="resetModeOrdersOnly" value="orders_only" checked style="width:17px;height:17px;margin-top:2px;accent-color:var(--pink)"/>
+       <div>
+        <div style="font-size:12.5px;font-weight:800;color:var(--text)">📦 Sirf Orders &amp; Logs Clear Karein</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4">Customers &amp; Saved Addresses 100% safe rahenge.</div>
+       </div>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;border:1.5px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.05);cursor:pointer">
+       <input type="radio" name="resetTargetMode" id="resetModeCustomersOnly" value="customers_only" style="width:17px;height:17px;margin-top:2px;accent-color:#f59e0b"/>
+       <div>
+        <div style="font-size:12.5px;font-weight:800;color:var(--text)">👥 Sirf Customers Data Clear Karein</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4">Saare Orders &amp; Revenue 100% safe rahenge.</div>
+       </div>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;border:1.5px solid rgba(239,68,68,0.35);background:rgba(239,68,68,0.05);cursor:pointer">
+       <input type="radio" name="resetTargetMode" id="resetModeBoth" value="both" style="width:17px;height:17px;margin-top:2px;accent-color:var(--bad)"/>
+       <div>
+        <div style="font-size:12.5px;font-weight:800;color:var(--bad)">🧹 Dono Clear Karein (Orders + Customers)</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4">Orders + Customers dono zero se fresh start.</div>
+       </div>
+      </label>
      </div>
      <div class="form-grid" style="margin-bottom:0;border-color:rgba(239,68,68,0.3)">
       <div class="fg">
-       <label> Options</label>
-       <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text);text-transform:none;cursor:pointer;padding-top:8px">
-        <input type="checkbox" id="resetIncludeCustomers" checked style="width:16px;height:16px"/> Clear test customer profiles &amp; coupon claims too
+       <label>Coupon Reset Option (When Keeping Customers)</label>
+       <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);text-transform:none;cursor:pointer;padding-top:8px">
+        <input type="checkbox" id="resetCustomerCouponClaims" checked style="width:16px;height:16px"/> Customers ka used-coupon counter bhi 0 karein (Profile safe rahegi)
        </label>
       </div>
       <div class="fg">
        <label>Type "RESET" to Confirm *</label>
        <input id="resetConfirmInput" placeholder="Type RESET in capital letters" style="border-color:rgba(239,68,68,0.4)"/>
       </div>
-      <button class="btn bad" id="runSafeResetBtn" onclick="App.runSafeTestDataReset()"><i class="fas fa-broom"></i> Auto-Backup &amp; Reset Test Data</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+       <button class="btn bad" id="runSafeResetBtn" onclick="App.runSafeTestDataReset()"><i class="fas fa-broom"></i> Auto-Backup &amp; Reset (Choose Option)</button>
+      </div>
      </div>
     </div>
    </div>
@@ -1595,7 +1657,12 @@ window.addEventListener('popstate', (e) => {
   if (!auth.currentUser) return;
   _adminHandlingPopState = true;
   try {
-    // 1. Close Confirm Modal if open
+    // 1. Close Confirm or Reset Choice Modal if open
+    if ($('resetChoiceModal')?.classList.contains('open')) {
+      $('resetChoiceModal').classList.remove('open');
+      history.pushState({ adminApp: true, adminTab: _adminCurrentTab, adminOverlay: null }, '');
+      return;
+    }
     if ($('confirmModal')?.classList.contains('open')) {
       $('confirmModal').classList.remove('open');
       confirmCb = null;
@@ -3658,41 +3725,81 @@ Thank you for choosing Parth Dry Clean! 💙`;
      toast('✅ Paytm Business UPI & Auto-Verify settings saved!');
    }catch(e){toast(e.message,'err');}
  },
+ closeResetChoiceModal:()=>{
+   $('resetChoiceModal')?.classList.remove('open');
+ },
  runSafeTestDataReset:async()=>{
-   if(CURRENT_ADMIN_ROLE!=='owner') return toast('🔒 Only Store Owner can reset test data','err');
+   if(CURRENT_ADMIN_ROLE!=='owner') return toast('🔒 Only Store Owner can reset data','err');
    const confirmTxt=($('resetConfirmInput')?.value||'').trim();
    if(confirmTxt!=='RESET') return toast('Confirm karne ke liye box me capital me RESET likhein','err');
-   const includeCustomers=!!$('resetIncludeCustomers')?.checked;
+   // Always open the 2-way / 3-way choice modal so Owner explicitly confirms whether to reset Orders Only, Customers Only, or Both
+   $('resetChoiceModal')?.classList.add('open');
+   pushAdminOverlayHistory('resetChoice');
+ },
+ executeSafeTestDataReset:async(chosenMode)=>{
+   App.closeResetChoiceModal();
+   if(CURRENT_ADMIN_ROLE!=='owner') return toast('🔒 Only Store Owner can reset data','err');
+   const confirmTxt=($('resetConfirmInput')?.value||'').trim();
+   if(confirmTxt!=='RESET') return toast('Confirm karne ke liye box me capital me RESET likhein','err');
+   const selectedRadio=document.querySelector('input[name="resetTargetMode"]:checked')?.value||'orders_only';
+   const resetMode=chosenMode||selectedRadio||'orders_only'; // 'orders_only' | 'customers_only' | 'both'
+   const clearCouponClaims=!!$('resetCustomerCouponClaims')?.checked;
+   // Sync radio UI with chosen mode
+   if(resetMode==='orders_only' && $('resetModeOrdersOnly')) $('resetModeOrdersOnly').checked=true;
+   if(resetMode==='customers_only' && $('resetModeCustomersOnly')) $('resetModeCustomersOnly').checked=true;
+   if(resetMode==='both' && $('resetModeBoth')) $('resetModeBoth').checked=true;
+
    const btn=$('runSafeResetBtn');
    if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Backing up & Resetting...';}
    try{
-     // 1. Safe Subpath Auto-Backup (never fails even if /settings root rules weren't deployed yet)
+     // 1. Safe Subpath Auto-Backup before ANY reset
      const safeVal=p=>db.ref(p).once('value').then(s=>s.val()).catch(()=>null);
      const [o,c,b,sGen,sCoup,sAreas,sPay,srv,cms]=await Promise.all([
        safeVal('orders'),safeVal('customers'),safeVal('delivery_boys'),
        safeVal('settings/general'),safeVal('settings/coupons'),safeVal('settings/serviceAreas'),safeVal('settings/payment'),
        safeVal('services'),safeVal('site_content')
      ]);
-     const backupObj={backedUpAt:new Date().toISOString(),orders:o,customers:c,delivery_boys:b,settings:{general:sGen,coupons:sCoup,serviceAreas:sAreas,payment:sPay},services:srv,site_content:cms};
+     const backupObj={backedUpAt:new Date().toISOString(),resetMode,orders:o,customers:c,delivery_boys:b,settings:{general:sGen,coupons:sCoup,serviceAreas:sAreas,payment:sPay},services:srv,site_content:cms};
      const a=document.createElement('a');
      a.href=URL.createObjectURL(new Blob([JSON.stringify(backupObj,null,2)],{type:'application/json'}));
-     a.download=`parth-pre-reset-backup-${dayStr(new Date())}.json`;
+     a.download=`parth-pre-reset-${resetMode}-backup-${dayStr(new Date())}.json`;
      a.click();
 
-     // 2. Try Cloud Function first, fallback to direct Owner RTDB reset
-     let resetDone=false;
-     try{
-       const token=await auth.currentUser.getIdToken(true);
-       const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/resetTestData',{
-         method:'POST',
-         headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-         body:JSON.stringify({confirmText:'RESET',includeCustomers})
-       });
-       const data=await r.json().catch(()=>({}));
-       if(r.ok && data.ok) resetDone=true;
-     }catch(_){}
+     // 2. Execute exact separated reset according to resetMode
+     if(resetMode==='customers_only'){
+       // CRITICAL: Do NOT call old deployed Cloud Function here because old CF wipes orders!
+       // Owner has direct RTDB write privileges to wipe ONLY customers, identity & blocked_phones while keeping orders 100% untouched.
+       const custUpdates={
+         customers:null,
+         identity:null,
+         blocked_phones:null
+       };
+       await db.ref().update(custUpdates);
+       await db.ref('customers').remove().catch(()=>{});
+       await db.ref('identity').remove().catch(()=>{});
+       await db.ref('blocked_phones').remove().catch(()=>{});
+       await writeAudit('Safe Customers-Only Reset executed (Orders Kept 100% Safe)','Customers & Identity Only');
+       toast('👥 Customers data reset ho gaya! Saare Orders 100% safe hain.');
+     } else {
+       const includeCustomers=(resetMode==='both');
+       let resetDone=false;
+       try{
+         const token=await auth.currentUser.getIdToken(true);
+         const r=await fetch('https://asia-southeast1-parth-dry-clean.cloudfunctions.net/resetTestData',{
+           method:'POST',
+           headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+           body:JSON.stringify({
+             confirmText:'RESET',
+             resetMode,
+             keepCustomers:!includeCustomers,
+             includeCustomers
+           })
+         });
+         const data=await r.json().catch(()=>({}));
+         if(r.ok && data.ok) resetDone=true;
+       }catch(_){}
 
-     if(!resetDone){
+       // Always ensure local Owner RTDB paths match exact requested mode
        const updates={
          orders:null,
          notifications:null,
@@ -3704,7 +3811,15 @@ Thank you for choosing Parth Dry Clean! 💙`;
          audit_log:null,
          admin_access_logs:null
        };
-       if(includeCustomers) updates.customers=null;
+       if(includeCustomers){
+         updates.customers=null;
+         updates.blocked_phones=null;
+       } else if(clearCouponClaims && c && typeof c==='object'){
+         Object.keys(c).forEach(uid=>{
+           updates[`customers/${uid}/usedCoupons`]=null;
+           updates[`customers/${uid}/firstOrderDiscountUsed`]=null;
+         });
+       }
        if(b && typeof b==='object'){
          Object.keys(b).forEach(k=>{ updates[`delivery_boys/${k}/total_deliveries`]=0; });
        }
@@ -3713,15 +3828,25 @@ Thank you for choosing Parth Dry Clean! 💙`;
        }
        await db.ref().update(updates);
        await db.ref('orderIds').remove().catch(()=>{});
-       if(includeCustomers) await db.ref('identity').remove().catch(()=>{});
-       await writeAudit('Safe Test Data Reset executed (Store Ready for Launch)',includeCustomers?'All Test Orders, Logs & Test Customers':'Orders & Logs');
+       if(includeCustomers){
+         await db.ref('identity').remove().catch(()=>{});
+       }
+       if(!resetDone){
+         await writeAudit(
+           includeCustomers?'Safe Full Reset executed (Orders + Customers)':'Safe Orders-Only Reset executed (Customers Kept 100% Safe)',
+           includeCustomers?'All Test Orders, Logs & Test Customers':'Orders & Logs Only (Customers Preserved)'
+         );
+       }
+       toast(includeCustomers
+         ? '🧹 Orders + Customers dono safely reset ho gaye! Backup downloaded.'
+         : '📦 Sirf Orders & Logs reset ho gaye! Customers data 100% safe hai.'
+       );
      }
      if($('resetConfirmInput')) $('resetConfirmInput').value='';
-     toast('🎉 Test data safely reset! Backup file downloaded.');
    }catch(e){
      toast('⚠️ '+(e.message||'Reset failed'),'err');
    }finally{
-     if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-broom"></i> Auto-Backup & Reset Test Data';}
+     if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-broom"></i> Auto-Backup &amp; Reset (Choose Option)';}
    }
  }
 };
